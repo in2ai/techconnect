@@ -34,8 +34,3 @@ bun run export:postgres > schema.sql
 - `schema/postgres.ts` - PostgreSQL schema
 - `schema/mysql.ts` - MySQL schema
 - `schema/sqlite.ts` - SQLite schema
-
-## Notes
-
-- The exported SQL is ordered alphabetically by table name. Foreign key constraints are validated at runtime, not during table creation.
-- MSSQL is not supported by Drizzle ORM.
