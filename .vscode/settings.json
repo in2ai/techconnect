@@ -4,9 +4,19 @@
     "biomodel",
     "buffy",
     "cryopreservation",
+    "cryopreservations",
+    "dotenv",
     "facs",
     "ffpe",
+    "mysql",
     "organoid",
-    "Organoid"
+    "Organoid",
+    "organoids",
+    "pycache",
+    "pyproject",
+    "pytest",
+    "Taskfile",
+    "techconnect",
+    "uvicorn"
   ]
 }

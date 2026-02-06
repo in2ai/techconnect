@@ -114,20 +114,7 @@ def get_session(engine) -> Generator[Session, None, None]:
         yield session
 
 
-# Example usage
 if __name__ == "__main__":
     # Will use DATABASE_URL from environment, or fallback to SQLite
     engine = create_db_and_tables(echo=True)
     print("✅ Database tables created successfully!")
-    
-    # Example: Create a patient
-    with Session(engine) as session:
-        patient = Patient(
-            nhc="12345",
-            sex="M",
-        )
-        session.add(patient)
-        session.commit()
-        session.refresh(patient)
-        print(f"✅ Created patient: {patient.nhc}")
-

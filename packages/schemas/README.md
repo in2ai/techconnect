@@ -29,8 +29,6 @@ pip install -e ".[sqlite]"    # For SQLite async support
 
 ### Export SQL Schema (without database connection)
 
-Similar to `drizzle-kit export`, you can generate SQL DDL statements for any dialect:
-
 ```bash
 # Export PostgreSQL schema
 python export_schema.py --dialect postgres
