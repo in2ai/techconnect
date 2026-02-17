@@ -66,13 +66,13 @@ app.add_middleware(
 )
 
 
-@app.get("/")
+@app.get("/", summary="Root Endpoint", tags=["System"])
 async def root():
     """Health check endpoint."""
     return {"status": "ok", "message": "TechConnect API is running"}
 
 
-@app.get("/api/health")
+@app.get("/api/health", summary="Health Check", tags=["System"])
 async def health():
     """Health check endpoint for monitoring."""
     return {"status": "healthy"}
@@ -92,6 +92,8 @@ def create_crud_endpoints(model: Type[ModelType], prefix: str, tag: str):
         response_model=List[model],
         tags=[tag],
         operation_id=f"get_{prefix.replace('-', '_')}",
+        summary=f"List {tag}",
+        description=f"Retrieve a list of {tag} with pagination support.",
     )
     def read_items(
         offset: int = 0,
@@ -107,6 +109,8 @@ def create_crud_endpoints(model: Type[ModelType], prefix: str, tag: str):
         response_model=model,
         tags=[tag],
         operation_id=f"get_{prefix.replace('-', '_')}_by_id",
+        summary=f"Get {model_name}",
+        description=f"Retrieve a specific {model_name} by its ID.",
     )
     def read_item(item_id: str, session: Session = Depends(get_session)):
         """Get an item by ID."""
@@ -120,6 +124,8 @@ def create_crud_endpoints(model: Type[ModelType], prefix: str, tag: str):
         response_model=model,
         tags=[tag],
         operation_id=f"create_{prefix.replace('-', '_')}",
+        summary=f"Create {model_name}",
+        description=f"Create a new {model_name} record.",
     )
     def create_item(item: model, session: Session = Depends(get_session)):
         """Create a new item."""
@@ -147,6 +153,8 @@ def create_crud_endpoints(model: Type[ModelType], prefix: str, tag: str):
         response_model=model,
         tags=[tag],
         operation_id=f"update_{prefix.replace('-', '_')}",
+        summary=f"Update {model_name}",
+        description=f"Update an existing {model_name} record by its ID.",
     )
     def update_item(item_id: str, item: model, session: Session = Depends(get_session)):
         """Update an existing item."""
@@ -193,6 +201,8 @@ def create_crud_endpoints(model: Type[ModelType], prefix: str, tag: str):
         f"/api/{prefix}/{{item_id}}",
         tags=[tag],
         operation_id=f"delete_{prefix.replace('-', '_')}",
+        summary=f"Delete {model_name}",
+        description=f"Remove a specific {model_name} record by its ID.",
     )
     def delete_item(item_id: str, session: Session = Depends(get_session)):
         """Delete an item."""
