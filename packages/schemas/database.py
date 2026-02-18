@@ -12,6 +12,7 @@ Environment Variables:
         - SQLite: sqlite:///path/to/database.db
 """
 
+import importlib
 import os
 from typing import Generator, Optional
 
@@ -34,8 +35,8 @@ try:
 except ImportError:
     pass  # python-dotenv not installed, use system environment variables only
 
-# Import all models to register them with SQLModel
-import models  # noqa: F401
+# Import models package for side effects (model class definitions -> SQLModel.metadata registration)
+importlib.import_module("models")
 
 # Default fallback for development
 DEFAULT_DATABASE_URL = "sqlite:///techconnect.db"
