@@ -84,17 +84,22 @@ uv run pyrefly check .
 ```text
 app/
 ├── __init__.py
-└── main.py          # FastAPI application entry point
+├── api/
+│   ├── dependencies.py
+│   ├── endpoints/
+│   │   ├── entities.py
+│   │   └── health.py
+│   └── router.py
+├── core/
+│   ├── config.py
+│   └── database.py
+├── services/
+│   └── crud.py
+└── main.py
 tests/
 └── test_main.py     # API tests
 ```
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and configure as needed:
-
-```bash
-cp .env.example .env
-```
-
-See `.env.example` for available configuration options.
+- `DATABASE_URL`: SQLAlchemy URL (defaults to `sqlite:///techconnect.db`)
