@@ -4,4 +4,40 @@ Mantener relaciones con DatosMoleculares y secuenciación genomica (id, presenta
 
 Un tumor puede generar hasta 3 biomodelos
 
-Biomodelo -> ensayoPreclinico (texto libre, admite nulos, reunión semana que viene)
+Mover ensayo preclinico de BIOMODELO a ENSAYO (códigos (varios) del ensayo preclinico, admite nulos)
+
+envio biobanco es un nulos
+
+PASE -> quitamos indiceS 
+    -> quitamos viabilidad
+Mover estado de PASE a ENSAYO
+    -> estado (boolean, activo o inactivo)
+
+ENSAYOLC -> confluencia (numero real), tipo placa (string), esferoides (boolean), linea celular (loa quitamos)
+
+FACS -> nombre de medida y valor de medida
+
+Importante tener las dos relaciones en los dos sentidos entre ensayo y pase (un ensayo puede generar otro pase, y es importante cuando un pase está generado a través de otro pase)
+
+ENSAYOPDO -> numero gotas (entero), tipo placa (string), valoración (texto libre), numero organoides congelados (entero), numero organoides (entero), quitamos dia valoración.
+
+ENSAYOPDX -> ffpe (boolean), laminahe (boolean), datosIHQ (texto libre), tieneDatosIHQ (boolean), latencia semanas (real), indiceS pasa a ser similitud (porcentaje), quitamos aumentos escaner 
+
+RATON -> animalario (string), proex (string), cepa (string)
+
+(un raton se asocia a 1 o 2 implantes)
+IMPLANTE -> lugar implante (string), tipo (string)
+
+MEDIDA -> fecha medida (date), valor medida (real)
+
+REGISTRO DE USO -> tipo de uso cambia a código de proyecto (string)
+
+IMAGEN -> AÑADIR aumentos escaner (numero), revisionAP (boolean), tipo (texto libre)
+
+CRIOPRESERVACION -> lugar (biobanco o laboratorio laura)
+
+SECUENCIACION GENOMICA -> id, texto libre
+
+DATOS MOLECULARES -> id, texto libre
+
+VISTA JERARQUICA A PARTIR DEL PACIENTE, DE PASE O DE RATON, 
