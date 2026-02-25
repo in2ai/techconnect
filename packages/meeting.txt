@@ -8,8 +8,7 @@ Mover ensayo preclinico de BIOMODELO a ENSAYO (códigos (varios) del ensayo prec
 
 envio biobanco es un nulos
 
-PASE -> quitamos indiceS 
-    -> quitamos viabilidad
+PASE -> quitamos indiceS y viabilidad
 Mover estado de PASE a ENSAYO
     -> estado (boolean, activo o inactivo)
 
