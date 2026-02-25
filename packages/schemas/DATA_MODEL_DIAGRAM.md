@@ -11,6 +11,8 @@ erDiagram
     TUMOR ||--o| TUMOR_GENOMIC_SEQUENCING : "has"
     BIOMODEL ||--o{ PASSAGE : "has"
     PASSAGE ||--o{ TRIAL : "generates"
+    TRIAL ||--o{ BIOMODEL : "generates (max 2)"
+    TRIAL ||--o| PASSAGE : "generates"
 
     TRIAL ||--o| PDX_TRIAL : "is_a"
     TRIAL ||--o| PDO_TRIAL : "is_a"
@@ -68,6 +70,7 @@ erDiagram
         boolean progresses
         float viability
         string tumor_biobank_code FK
+        uuid parent_trial_id FK
     }
 
     PASSAGE {
@@ -75,6 +78,7 @@ erDiagram
         integer number
         string description
         uuid biomodel_id FK
+        uuid parent_trial_id FK
     }
 
     TRIAL {
