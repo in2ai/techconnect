@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:e2e": "playwright test"
   },
   "prettier": {
     "printWidth": 100,
@@ -39,7 +40,9 @@
     "@angular/cli": "^21.1.4",
     "@angular/compiler-cli": "^21.1.0",
     "@angular/material": "^21.1.5",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.1.12",
+    "@types/node": "^25.3.3",
     "jsdom": "^27.1.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.12",

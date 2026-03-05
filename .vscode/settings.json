@@ -35,6 +35,7 @@
     "sqlmodel",
     "Taskfile",
     "techconnect",
-    "uvicorn"
+    "uvicorn",
+    "viewports"
   ]
 }
