@@ -46,14 +46,17 @@ def _upsert(
     payload: dict[str, object],
     stats: SeedStats,
 ) -> None:
-    existing = session.get(model, primary_key)
+    with session.no_autoflush:
+        existing = session.get(model, primary_key)
     if existing is None:
         session.add(model.model_validate(payload))
+        session.flush()
         stats.created += 1
         return
 
     existing.sqlmodel_update(payload)
     session.add(existing)
+    session.flush()
     stats.updated += 1
 
 
@@ -266,6 +269,23 @@ def seed_database() -> SeedStats:
 
         _upsert(
             session,
+            Mouse,
+            mouse_id,
+            {
+                "id": mouse_id,
+                "birth_date": date(2023, 11, 1),
+                "death_cause": None,
+                "animal_facility": "AF-02",
+                "proex": "PROEX-7781",
+                "strain": "NSG",
+                "sex": "female",
+                "death_date": None,
+                "pdx_trial_id": trial_pdx_id,
+            },
+            stats,
+        )
+        _upsert(
+            session,
             Implant,
             implant_id,
             {
@@ -285,23 +305,6 @@ def seed_database() -> SeedStats:
                 "measure_date": date(2024, 4, 5),
                 "measure_value": 365.0,
                 "implant_id": implant_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Mouse,
-            mouse_id,
-            {
-                "id": mouse_id,
-                "birth_date": date(2023, 11, 1),
-                "death_cause": None,
-                "animal_facility": "AF-02",
-                "proex": "PROEX-7781",
-                "strain": "NSG",
-                "sex": "female",
-                "death_date": None,
-                "pdx_trial_id": trial_pdx_id,
             },
             stats,
         )
