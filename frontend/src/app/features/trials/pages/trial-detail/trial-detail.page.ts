@@ -1,36 +1,36 @@
-import { Component, ChangeDetectionStrategy, inject, input, computed } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { TrialService } from '../../services/trial.service';
-import { Trial, PDXTrial, PDOTrial, LCTrial } from '../../models/trial.model';
-import {
-  UsageRecord,
-  TrialImage,
-  Cryopreservation,
-  Implant,
-  Mouse,
-} from '../../models/trial-related.model';
-import {
-  PageHeaderComponent,
-  Breadcrumb,
-} from '../../../../shared/components/page-header/page-header.component';
-import {
-  DataTableComponent,
-  ColumnDef,
-} from '../../../../shared/components/data-table/data-table.component';
-import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+import { API_URL } from '../../../../core/tokens/api-url.token';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  ColumnDef,
+  DataTableComponent,
+} from '../../../../shared/components/data-table/data-table.component';
+import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+import {
+  Breadcrumb,
+  PageHeaderComponent,
+} from '../../../../shared/components/page-header/page-header.component';
 import { TrialFormComponent } from '../../components/trial-form/trial-form.component';
+import {
+  Cryopreservation,
+  Implant,
+  Mouse,
+  TrialImage,
+  UsageRecord,
+} from '../../models/trial-related.model';
+import { LCTrial, PDOTrial, PDXTrial, Trial } from '../../models/trial.model';
+import { TrialService } from '../../services/trial.service';
 
 @Component({
   selector: 'app-trial-detail',
@@ -113,7 +113,7 @@ import { TrialFormComponent } from '../../components/trial-form/trial-form.compo
       </mat-card>
 
       <!-- PDX Trial Section -->
-      @if (pdxTrialResource.hasValue() && pdxTrialResource.value()) {
+      @if (currentPdxTrial()) {
         <mat-card appearance="outlined" class="section-card">
           <mat-card-header><mat-card-title>PDX Trial Details</mat-card-title></mat-card-header>
           <mat-card-content>
@@ -121,9 +121,9 @@ import { TrialFormComponent } from '../../components/trial-form/trial-form.compo
               <div class="detail-item">
                 <span class="detail-label">FFPE</span
                 ><span class="detail-value">{{
-                  pdxTrialResource.value()!.ffpe === true
+                  currentPdxTrial()!.ffpe === true
                     ? 'Yes'
-                    : pdxTrialResource.value()!.ffpe === false
+                    : currentPdxTrial()!.ffpe === false
                       ? 'No'
                       : '—'
                 }}</span>
@@ -131,22 +131,20 @@ import { TrialFormComponent } from '../../components/trial-form/trial-form.compo
               <div class="detail-item">
                 <span class="detail-label">HE Slide</span
                 ><span class="detail-value">{{
-                  pdxTrialResource.value()!.he_slide === true
+                  currentPdxTrial()!.he_slide === true
                     ? 'Yes'
-                    : pdxTrialResource.value()!.he_slide === false
+                    : currentPdxTrial()!.he_slide === false
                       ? 'No'
                       : '—'
                 }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">IHQ Data</span
-                ><span class="detail-value">{{ pdxTrialResource.value()!.ihq_data || '—' }}</span>
+                ><span class="detail-value">{{ currentPdxTrial()!.ihq_data || '—' }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Latency (weeks)</span
-                ><span class="detail-value">{{
-                  pdxTrialResource.value()!.latency_weeks ?? '—'
-                }}</span>
+                ><span class="detail-value">{{ currentPdxTrial()!.latency_weeks ?? '—' }}</span>
               </div>
             </div>
           </mat-card-content>
@@ -154,34 +152,32 @@ import { TrialFormComponent } from '../../components/trial-form/trial-form.compo
       }
 
       <!-- PDO Trial Section -->
-      @if (pdoTrialResource.hasValue() && pdoTrialResource.value()) {
+      @if (currentPdoTrial()) {
         <mat-card appearance="outlined" class="section-card">
           <mat-card-header><mat-card-title>PDO Trial Details</mat-card-title></mat-card-header>
           <mat-card-content>
             <div class="detail-grid">
               <div class="detail-item">
                 <span class="detail-label">Drop Count</span
-                ><span class="detail-value">{{ pdoTrialResource.value()!.drop_count ?? '—' }}</span>
+                ><span class="detail-value">{{ currentPdoTrial()!.drop_count ?? '—' }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Organoid Count</span
-                ><span class="detail-value">{{
-                  pdoTrialResource.value()!.organoid_count ?? '—'
-                }}</span>
+                ><span class="detail-value">{{ currentPdoTrial()!.organoid_count ?? '—' }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Frozen Organoids</span
                 ><span class="detail-value">{{
-                  pdoTrialResource.value()!.frozen_organoid_count ?? '—'
+                  currentPdoTrial()!.frozen_organoid_count ?? '—'
                 }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Plate Type</span
-                ><span class="detail-value">{{ pdoTrialResource.value()!.plate_type || '—' }}</span>
+                ><span class="detail-value">{{ currentPdoTrial()!.plate_type || '—' }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Assessment</span
-                ><span class="detail-value">{{ pdoTrialResource.value()!.assessment || '—' }}</span>
+                ><span class="detail-value">{{ currentPdoTrial()!.assessment || '—' }}</span>
               </div>
             </div>
           </mat-card-content>
@@ -189,34 +185,32 @@ import { TrialFormComponent } from '../../components/trial-form/trial-form.compo
       }
 
       <!-- LC Trial Section -->
-      @if (lcTrialResource.hasValue() && lcTrialResource.value()) {
+      @if (currentLcTrial()) {
         <mat-card appearance="outlined" class="section-card">
           <mat-card-header><mat-card-title>LC Trial Details</mat-card-title></mat-card-header>
           <mat-card-content>
             <div class="detail-grid">
               <div class="detail-item">
                 <span class="detail-label">Confluence</span
-                ><span class="detail-value">{{ lcTrialResource.value()!.confluence ?? '—' }}</span>
+                ><span class="detail-value">{{ currentLcTrial()!.confluence ?? '—' }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Spheroids</span
                 ><span class="detail-value">{{
-                  lcTrialResource.value()!.spheroids === true
+                  currentLcTrial()!.spheroids === true
                     ? 'Yes'
-                    : lcTrialResource.value()!.spheroids === false
+                    : currentLcTrial()!.spheroids === false
                       ? 'No'
                       : '—'
                 }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Digestion Date</span
-                ><span class="detail-value">{{
-                  lcTrialResource.value()!.digestion_date || '—'
-                }}</span>
+                ><span class="detail-value">{{ currentLcTrial()!.digestion_date || '—' }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">Plate Type</span
-                ><span class="detail-value">{{ lcTrialResource.value()!.plate_type || '—' }}</span>
+                ><span class="detail-value">{{ currentLcTrial()!.plate_type || '—' }}</span>
               </div>
             </div>
           </mat-card-content>
@@ -355,10 +349,16 @@ export class TrialDetailPage {
 
   trialResource = httpResource<Trial>(() => `${this.apiUrl}/trials/${this.id()}`);
 
-  // Type-specific resources — may 404 if not that type, which is fine
-  pdxTrialResource = httpResource<PDXTrial>(() => `${this.apiUrl}/pdx-trials/${this.id()}`);
-  pdoTrialResource = httpResource<PDOTrial>(() => `${this.apiUrl}/pdo-trials/${this.id()}`);
-  lcTrialResource = httpResource<LCTrial>(() => `${this.apiUrl}/lc-trials/${this.id()}`);
+  // Load subtype collections and select by id locally to avoid noisy 404s.
+  pdxTrialsResource = httpResource<PDXTrial[]>(() => `${this.apiUrl}/pdx-trials`, {
+    defaultValue: [],
+  });
+  pdoTrialsResource = httpResource<PDOTrial[]>(() => `${this.apiUrl}/pdo-trials`, {
+    defaultValue: [],
+  });
+  lcTrialsResource = httpResource<LCTrial[]>(() => `${this.apiUrl}/lc-trials`, {
+    defaultValue: [],
+  });
 
   // Child entity resources
   implantsResource = httpResource<Implant[]>(() => `${this.apiUrl}/implants`, { defaultValue: [] });
@@ -370,6 +370,16 @@ export class TrialDetailPage {
   cryoResource = httpResource<Cryopreservation[]>(() => `${this.apiUrl}/cryopreservations`, {
     defaultValue: [],
   });
+
+  currentPdxTrial = computed(
+    () => this.pdxTrialsResource.value()?.find((trial) => trial.id === this.id()) ?? undefined,
+  );
+  currentPdoTrial = computed(
+    () => this.pdoTrialsResource.value()?.find((trial) => trial.id === this.id()) ?? undefined,
+  );
+  currentLcTrial = computed(
+    () => this.lcTrialsResource.value()?.find((trial) => trial.id === this.id()) ?? undefined,
+  );
 
   filteredMice = computed(
     () => this.mouseResource.value()?.filter((m) => m.pdx_trial_id === this.id()) ?? [],
