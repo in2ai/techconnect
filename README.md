@@ -193,6 +193,14 @@ uv run fastapi dev app/main.py
 uv run --package techconnect-api fastapi dev packages/api/app/main.py
 ```
 
+## Docker Compose Deployment
+
+A production-oriented Docker Compose stack is available for VPS deployments with multiple services running on the host. It builds the Angular frontend into an Nginx container, runs the FastAPI backend in a separate container, and persists PostgreSQL data in a named volume.
+
+The web container is published on `127.0.0.1:${TECHCONNECT_HTTP_PORT}` so a host-level Nginx instance can front it without exposing the container port directly.
+
+See `docs/docker-compose-deployment.md` for setup and operations.
+
 ## Development Workflow
 
 1. **Make schema changes** in `packages/schemas/models/`

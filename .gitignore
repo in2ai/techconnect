@@ -27,6 +27,7 @@ Thumbs.db
 
 # Environment files
 .env
+.env.docker
 .env.local
 .env.*.local
 
@@ -49,3 +50,7 @@ out/
 # Logs
 logs/
 *.log
+
+# Docker
+.docker-cache/
+
