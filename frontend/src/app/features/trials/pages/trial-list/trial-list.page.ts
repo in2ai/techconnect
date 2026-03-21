@@ -18,19 +18,19 @@ import { TrialFormComponent } from '../../components/trial-form/trial-form.compo
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, MatIconModule, PageHeaderComponent, DataTableComponent, LoadingStateComponent],
   template: `
-    <app-page-header title="Trials" subtitle="PDX, PDO, and LC trial data with detailed outcomes">
-      <button mat-flat-button (click)="openCreateDialog()">
+    <app-page-header i18n-title="@@trialsTitle" title="Trials" i18n-subtitle="@@trialsSubtitle" subtitle="PDX, PDO, and LC trial data with detailed outcomes">
+      <button mat-flat-button color="primary" (click)="openCreateDialog()">
         <mat-icon>add</mat-icon>
-        Add Trial
+        <ng-container i18n="@@addTrialBtn">Add Trial</ng-container>
       </button>
     </app-page-header>
 
     @if (trialsResource.isLoading()) {
       <app-loading-state status="loading" />
     } @else if (trialsResource.error()) {
-      <app-loading-state status="error" errorMessage="Failed to load trials" (retry)="trialsResource.reload()" />
+      <app-loading-state status="error" i18n-errorMessage="@@failedToLoadTrials" errorMessage="Failed to load trials" (retry)="trialsResource.reload()" />
     } @else if (trialsResource.hasValue() && trialsResource.value()!.length === 0) {
-      <app-loading-state status="empty" emptyIcon="assignment" emptyTitle="No trials yet" emptyMessage="Create your first trial." />
+      <app-loading-state status="empty" emptyIcon="assignment" i18n-emptyTitle="@@noTrialsYet" emptyTitle="No trials yet" i18n-emptyMessage="@@createFirstTrial" emptyMessage="Create your first trial." />
     } @else if (trialsResource.hasValue()) {
       <app-data-table [columns]="columns" [data]="trialsResource.value()!" (rowClicked)="onTrialClick($event)" />
     }
@@ -44,11 +44,11 @@ export class TrialListPage {
   private apiUrl = inject(API_URL);
 
   columns: ColumnDef[] = [
-    { key: 'id', label: 'ID', sortable: true },
-    { key: 'success', label: 'Success', type: 'boolean' },
-    { key: 'creation_date', label: 'Created', sortable: true, type: 'date' },
-    { key: 'biobank_shipment', label: 'Shipment', type: 'boolean' },
-    { key: 'passage_id', label: 'Passage', sortable: true },
+    { key: 'id', label: $localize`ID`, sortable: true },
+    { key: 'success', label: $localize`Success`, type: 'boolean' },
+    { key: 'creation_date', label: $localize`Created`, sortable: true, type: 'date' },
+    { key: 'biobank_shipment', label: $localize`Shipment`, type: 'boolean' },
+    { key: 'passage_id', label: $localize`Passage`, sortable: true },
   ];
 
   trialsResource = httpResource<Trial[]>(() => `${this.apiUrl}/trials`, { defaultValue: [] });

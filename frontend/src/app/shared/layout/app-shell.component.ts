@@ -43,8 +43,8 @@ interface NavItem {
               <mat-icon class="brand-icon">biotech</mat-icon>
             </div>
             <div class="brand-text-wrap">
-              <span class="brand-text">TechConnect</span>
-              <span class="brand-subtitle">Biomedical Registry</span>
+              <span class="brand-text" i18n>TechConnect</span>
+              <span class="brand-subtitle" i18n>Biomedical Registry</span>
             </div>
           </a>
         </div>
@@ -73,10 +73,13 @@ interface NavItem {
       <mat-sidenav-content class="main-content">
         <mat-toolbar class="app-toolbar">
           @if (isMobile()) {
-            <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle navigation">
+            <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle navigation" i18n-aria-label>
               <mat-icon>menu</mat-icon>
             </button>
           }
+          <div style="flex: 1"></div>
+          <button mat-button class="lang-switch-btn" (click)="switchLanguage('en')" i18n>EN</button>
+          <button mat-button class="lang-switch-btn" (click)="switchLanguage('es')" i18n>ES</button>
         </mat-toolbar>
 
         <main class="content-area">
@@ -233,6 +236,12 @@ interface NavItem {
       padding: 0 1.25rem;
     }
 
+    .lang-switch-btn {
+      min-width: unset;
+      padding: 0 12px;
+      font-weight: 600;
+    }
+
     /* ─── Main Content ─────────────────────────────────────────── */
 
     .main-content {
@@ -277,24 +286,39 @@ export class AppShellComponent {
 
   navGroups = [
     {
-      title: 'Overview',
-      items: [{ label: 'Dashboard', icon: 'dashboard', route: '/dashboard' }],
+      title: $localize`Overview`,
+      items: [{ label: $localize`Dashboard`, icon: 'dashboard', route: '/dashboard' }],
     },
     {
-      title: 'Registry',
+      title: $localize`Registry`,
       items: [
-        { label: 'Patients', icon: 'person', route: '/patients' },
-        { label: 'Tumors', icon: 'coronavirus', route: '/tumors' },
-        { label: 'Samples', icon: 'water_drop', route: '/samples' },
+        { label: $localize`Patients`, icon: 'person', route: '/patients' },
+        { label: $localize`Tumors`, icon: 'coronavirus', route: '/tumors' },
+        { label: $localize`Samples`, icon: 'water_drop', route: '/samples' },
       ],
     },
     {
-      title: 'Research',
+      title: $localize`Research`,
       items: [
-        { label: 'Biomodels', icon: 'science', route: '/biomodels' },
-        { label: 'Passages', icon: 'swap_horiz', route: '/passages' },
-        { label: 'Trials', icon: 'assignment', route: '/trials' },
+        { label: $localize`Biomodels`, icon: 'science', route: '/biomodels' },
+        { label: $localize`Passages`, icon: 'swap_horiz', route: '/passages' },
+        { label: $localize`Trials`, icon: 'assignment', route: '/trials' },
       ],
     },
   ];
+
+  switchLanguage(lang: string) {
+    const currentPath = globalThis.location.pathname;
+    // Replace current language code context (either starts with /en/ or /es/ or ends with /en or /es)
+    let newPath = currentPath.replace(/^\/(en|es)(\/|$)/, `/${lang}/`);
+    // If running in development serve it might not have the language base yet
+    if (newPath === currentPath && !currentPath.startsWith('/en/') && !currentPath.startsWith('/es/')) {
+       newPath = `/${lang}${currentPath.endsWith('/') ? currentPath.slice(0, -1) : currentPath}`;
+    }
+    
+    // Redirect if different
+    if (newPath !== currentPath) {
+       globalThis.location.href = newPath;
+    }
+  }
 }

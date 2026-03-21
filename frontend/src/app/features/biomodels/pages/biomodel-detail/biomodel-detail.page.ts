@@ -39,10 +39,10 @@ import {
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header [title]="'Biomodel'" [breadcrumbs]="breadcrumbs()">
-      <button mat-stroked-button (click)="openEditDialog()"><mat-icon>edit</mat-icon> Edit</button>
+    <app-page-header i18n-title="@@biomodelTitle" [title]="'Biomodel ' + id()" [breadcrumbs]="breadcrumbs()">
+      <button mat-stroked-button (click)="openEditDialog()"><mat-icon>edit</mat-icon> <ng-container i18n="@@editBtn">Edit</ng-container></button>
       <button mat-stroked-button color="warn" (click)="confirmDelete()">
-        <mat-icon>delete</mat-icon> Delete
+        <mat-icon>delete</mat-icon> <ng-container i18n="@@deleteBtn">Delete</ng-container>
       </button>
     </app-page-header>
 
@@ -51,6 +51,7 @@ import {
     } @else if (biomodelResource.error()) {
       <app-loading-state
         status="error"
+        i18n-errorMessage="@@failedToLoadBiomodel"
         errorMessage="Failed to load biomodel"
         (retry)="biomodelResource.reload()"
       />
@@ -59,44 +60,45 @@ import {
         <mat-card-content>
           <div class="detail-grid">
             <div class="detail-item">
-              <span class="detail-label">ID</span
+              <span class="detail-label" i18n="@@biomodelIdLbl">ID</span
               ><span class="detail-value">{{ biomodelResource.value()!.id }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Type</span
-              ><span class="detail-value">{{ biomodelResource.value()!.type || '—' }}</span>
+              <span class="detail-label" i18n="@@biomodelTypeLbl">Type</span
+              ><span class="detail-value">{{ biomodelResource.value()!.type }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Status</span
-              ><span class="detail-value">{{ biomodelResource.value()!.status || '—' }}</span>
+              <span class="detail-label" i18n="@@biomodelStatusLbl">Status</span
+              ><span class="detail-value">{{ biomodelResource.value()!.status }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Viability</span
+              <span class="detail-label" i18n="@@biomodelViabilityLbl">Viability</span
               ><span class="detail-value">{{ biomodelResource.value()!.viability ?? '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Progresses</span
-              ><span class="detail-value">{{
-                biomodelResource.value()!.progresses === true
-                  ? 'Yes'
-                  : biomodelResource.value()!.progresses === false
-                    ? 'No'
-                    : '—'
-              }}</span>
+              <span class="detail-label" i18n="@@biomodelProgressesLbl">Progresses</span
+              ><span class="detail-value">
+                @if(biomodelResource.value()!.progresses === true) {
+                  <ng-container i18n="@@yesOpt">Yes</ng-container>
+                } @else if(biomodelResource.value()!.progresses === false) {
+                  <ng-container i18n="@@noOpt">No</ng-container>
+                } @else {
+                  —
+                }
+              </span>
             </div>
-
-            <div class="detail-item">
-              <span class="detail-label">Description</span
+            <div class="detail-item full-width">
+              <span class="detail-label" i18n="@@biomodelDescriptionLbl">Description</span
               ><span class="detail-value">{{ biomodelResource.value()!.description || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Created</span
+              <span class="detail-label" i18n="@@biomodelCreatedLbl">Created</span
               ><span class="detail-value">{{
                 biomodelResource.value()!.creation_date || '—'
               }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Tumor</span
+              <span class="detail-label" i18n="@@biomodelTumorLbl">Tumor</span
               ><span class="detail-value">{{ biomodelResource.value()!.tumor_biobank_code }}</span>
             </div>
           </div>
@@ -104,13 +106,14 @@ import {
       </mat-card>
 
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
-        <mat-tab label="Passages">
+        <mat-tab i18n-label="@@passagesTabLbl" label="Passages">
           <div class="tab-content">
             @if (passagesResource.isLoading()) {
               <app-loading-state status="loading" />
             } @else if (passagesResource.error()) {
               <app-loading-state
                 status="error"
+                i18n-errorMessage="@@failedToLoadPassages"
                 errorMessage="Failed to load passages"
                 (retry)="passagesResource.reload()"
               />
@@ -118,7 +121,9 @@ import {
               <app-loading-state
                 status="empty"
                 emptyIcon="swap_horiz"
+                i18n-emptyTitle="@@noPassagesEmptyLbl"
                 emptyTitle="No passages"
+                i18n-emptyMessage="@@noPassagesMsgLbl"
                 emptyMessage="No passages linked to this biomodel."
               />
             } @else {
@@ -145,7 +150,7 @@ export class BiomodelDetailPage {
   private readonly apiUrl = inject(API_URL);
 
   breadcrumbs = computed<Breadcrumb[]>(() => [
-    { label: 'Biomodels', route: '/biomodels' },
+    { label: $localize`Biomodels`, route: '/biomodels' },
     { label: this.id() },
   ]);
 
@@ -157,11 +162,11 @@ export class BiomodelDetailPage {
   );
 
   passageColumns: ColumnDef[] = [
-    { key: 'id', label: 'ID', sortable: true },
-    { key: 'number', label: 'Number', sortable: true, type: 'number' },
-    { key: 'status', label: 'Status', sortable: true },
-    { key: 'viability', label: 'Viability', sortable: true, type: 'number' },
-    { key: 's_index', label: 'S-Index', sortable: true, type: 'number' },
+    { key: 'id', label: $localize`ID`, sortable: true },
+    { key: 'number', label: $localize`Number`, sortable: true, type: 'number' },
+    { key: 'status', label: $localize`Status`, sortable: true },
+    { key: 'viability', label: $localize`Viability`, sortable: true, type: 'number' },
+    { key: 's_index', label: $localize`S-Index`, sortable: true, type: 'number' },
   ];
 
   onPassageClick(passage: Passage): void {
@@ -194,7 +199,7 @@ export class BiomodelDetailPage {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Biomodel',
+        title: $localize`Delete Biomodel`,
         message: 'Delete this biomodel? This cannot be undone.',
         confirmLabel: 'Delete',
         confirmColor: 'warn',

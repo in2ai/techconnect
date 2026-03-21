@@ -37,7 +37,7 @@ export interface TumorFormData {
     <mat-dialog-content>
       <form class="form-grid" [formGroup]="form">
         <mat-form-field appearance="outline">
-          <mat-label>Biobank Code</mat-label>
+          <mat-label i18n>Biobank Code</mat-label>
           <input
             matInput
             formControlName="biobank_code"
@@ -47,7 +47,7 @@ export interface TumorFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Patient</mat-label>
+          <mat-label i18n>Patient</mat-label>
           @if (patientsResource.isLoading()) {
             <mat-select disabled>
               <mat-option>Loading…</mat-option>
@@ -62,45 +62,45 @@ export interface TumorFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Lab Code</mat-label>
+          <mat-label i18n>Lab Code</mat-label>
           <input matInput formControlName="lab_code" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Classification</mat-label>
+          <mat-label i18n>Classification</mat-label>
           <input matInput formControlName="classification" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Grade</mat-label>
+          <mat-label i18n>Grade</mat-label>
           <input matInput formControlName="grade" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Organ</mat-label>
+          <mat-label i18n>Organ</mat-label>
           <input matInput formControlName="organ" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Status</mat-label>
+          <mat-label i18n>Status</mat-label>
           <input matInput formControlName="status" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>TNM</mat-label>
+          <mat-label i18n>TNM</mat-label>
           <input matInput formControlName="tnm" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>AP Observation</mat-label>
+          <mat-label i18n>AP Observation</mat-label>
           <textarea matInput formControlName="ap_observation" rows="2"></textarea>
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Registration Date</mat-label>
+          <mat-label i18n>Registration Date</mat-label>
           <input matInput formControlName="registration_date" type="date" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Operation Date</mat-label>
+          <mat-label i18n>Operation Date</mat-label>
           <input matInput formControlName="operation_date" type="date" />
         </mat-form-field>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button mat-dialog-close i18n>Cancel</button>
       <button
         mat-flat-button
         [mat-dialog-close]="form.getRawValue()"

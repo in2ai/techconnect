@@ -37,7 +37,7 @@ export interface BiomodelFormData {
     <mat-dialog-content>
       <form class="form-grid" [formGroup]="form">
         <mat-form-field appearance="outline">
-          <mat-label>Tumor</mat-label>
+          <mat-label i18n>Tumor</mat-label>
           @if (tumorsResource.isLoading()) {
             <mat-select disabled>
               <mat-option>Loading…</mat-option>
@@ -52,31 +52,31 @@ export interface BiomodelFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Type</mat-label>
+          <mat-label i18n>Type</mat-label>
           <input matInput formControlName="type" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Status</mat-label>
+          <mat-label i18n>Status</mat-label>
           <input matInput formControlName="status" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Viability</mat-label>
+          <mat-label i18n>Viability</mat-label>
           <input matInput formControlName="viability" type="number" step="0.01" />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Creation Date</mat-label>
+          <mat-label i18n>Creation Date</mat-label>
           <input matInput formControlName="creation_date" type="date" />
         </mat-form-field>
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Description</mat-label>
+          <mat-label i18n>Description</mat-label>
           <textarea matInput formControlName="description" rows="2"></textarea>
         </mat-form-field>
         <mat-checkbox formControlName="progresses">Progresses</mat-checkbox>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button mat-dialog-close i18n>Cancel</button>
       <button mat-flat-button [mat-dialog-close]="buildDialogResult()" [disabled]="form.invalid">
         {{ data.mode === 'create' ? 'Create' : 'Save' }}
       </button>

@@ -1,0 +1,878 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="7915670285501053723" datatype="html">
+        <source>Tumor</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/components/sample-form/sample-form.component.ts</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8650499415827640724" datatype="html">
+        <source>Type</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">404</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">419</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">426</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">204</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5611592591303869712" datatype="html">
+        <source>Status</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">162</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">146</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">205</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="544734906989204894" datatype="html">
+        <source>Viability</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">163</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">206</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6004681856910260407" datatype="html">
+        <source>Creation Date</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/components/trial-form/trial-form.component.ts</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4902817035128594900" datatype="html">
+        <source>Description</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/components/trial-form/trial-form.component.ts</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">420</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2159130950882492111" datatype="html">
+        <source>Cancel</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">79,80</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/components/patient-form/patient-form.component.ts</context>
+          <context context-type="linenumber">57,58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/components/sample-form/sample-form.component.ts</context>
+          <context context-type="linenumber">65,66</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/components/trial-form/trial-form.component.ts</context>
+          <context context-type="linenumber">78,79</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">103,104</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="761802782314570942" datatype="html">
+        <source>Biomodels</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">148</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">295</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">303</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8040881171107393560" datatype="html">
+        <source>ID</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">160</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">134</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">70</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">402</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">409</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">418</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">425</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">432</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-list/trial-list.page.ts</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">203</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">211</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6370642728789544052" datatype="html">
+        <source>Number</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">161</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7008040221148227385" datatype="html">
+        <source>S-Index</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">164</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2912790887397720753" datatype="html">
+        <source>Delete Biomodel</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">197</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2247319617738927601" datatype="html">
+        <source>Progresses</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4207916966377787111" datatype="html">
+        <source>Created</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">136</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-list/trial-list.page.ts</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">207</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="962765493084218985" datatype="html">
+        <source>Platform</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">26,27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3997505011482678902" datatype="html">
+        <source>Welcome to TechConnect</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">27,28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5179035620009609290" datatype="html">
+        <source> Biomedical research data management platform. Navigate through your registry, biomodels, and clinical trial data. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">29,30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2904579647410573959" datatype="html">
+        <source>Patients</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">271</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">127</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">295</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7296718511892339428" datatype="html">
+        <source>View and manage patient records and demographics.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">276</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6079337545315387782" datatype="html">
+        <source>Tumors</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">279</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">180</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">296</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5053112500132073496" datatype="html">
+        <source>Track tumor samples, classifications, and biobank codes.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">284</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="454995570276627183" datatype="html">
+        <source>Samples</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">287</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-detail/sample-detail.page.ts</context>
+          <context context-type="linenumber">123</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">297</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7476441596306372686" datatype="html">
+        <source>Manage serum, buffy coat, and plasma samples.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">292</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="162659748367905081" datatype="html">
+        <source>Preclinical biomodels derived from tumor samples.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">300</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3596035518136048939" datatype="html">
+        <source>Passages</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">303</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">122</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">304</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7512439664993092318" datatype="html">
+        <source>Track biomodel passages, viability, and growth indices.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">308</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5277026421565790837" datatype="html">
+        <source>Trials</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">311</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">346</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">305</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5033494360166054822" datatype="html">
+        <source>PDX, PDO, and LC trial data with detailed outcomes.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">316</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4648900870671159218" datatype="html">
+        <source>Success</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">135</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-list/trial-list.page.ts</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6283988996123974917" datatype="html">
+        <source>Shipment</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">137</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-list/trial-list.page.ts</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3975490307441526848" datatype="html">
+        <source>Delete Passage</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">148</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1834958309425950776" datatype="html">
+        <source>Biomodel</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2628404868623287650" datatype="html">
+        <source>NHC</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/components/patient-form/patient-form.component.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">69,70</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-list/patient-list.page.ts</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2742532852742169962" datatype="html">
+        <source>Sex</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/components/patient-form/patient-form.component.ts</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">73,74</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-list/patient-list.page.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">411</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5568875939225929320" datatype="html">
+        <source>Birth Date</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/components/patient-form/patient-form.component.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">77,78</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-list/patient-list.page.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">412</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="147248468435485756" datatype="html">
+        <source>Biobank Code</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">142</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2000505827844154765" datatype="html">
+        <source>Lab Code</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8846151385804023521" datatype="html">
+        <source>Classification</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">144</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2060021892500932246" datatype="html">
+        <source>Organ</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">145</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">77</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8298333184054476827" datatype="html">
+        <source>Registration</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">147</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8182213789791478633" datatype="html">
+        <source>Delete Patient</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">181</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="168041855379069235" datatype="html">
+        <source>Biopsy Date</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/components/sample-form/sample-form.component.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7198008147472374487" datatype="html">
+        <source>Delete Sample</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-detail/sample-detail.page.ts</context>
+          <context context-type="linenumber">157</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="526000970838208782" datatype="html">
+        <source>Serum</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">212</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3393571693845224543" datatype="html">
+        <source>Buffy Coat</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">213</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="770748809189248828" datatype="html">
+        <source>Plasma</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">214</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3973931101896534797" datatype="html">
+        <source>Date</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">421</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">427</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">434</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">215</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1703564405535089723" datatype="html">
+        <source>Passage</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/components/trial-form/trial-form.component.ts</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-list/trial-list.page.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="96726690238343424" datatype="html">
+        <source>Biobank Arrival Date</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/components/trial-form/trial-form.component.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="471816275243265264" datatype="html">
+        <source>Location</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">403</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">433</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2286330222428622266" datatype="html">
+        <source>Size Limit</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">405</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6571723723605759686" datatype="html">
+        <source>Strain</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">410</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="86377696407487548" datatype="html">
+        <source>Death Date</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">413</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3059959471102276538" datatype="html">
+        <source>Death Cause</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">414</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8897417093635981361" datatype="html">
+        <source>AP Review</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">428</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="709373155497275265" datatype="html">
+        <source>Vials</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">435</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5702320110812968297" datatype="html">
+        <source>Delete Trial</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">466</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2802536080288229427" datatype="html">
+        <source>Patient</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6346357924377938019" datatype="html">
+        <source>Grade</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2831609435145473253" datatype="html">
+        <source>TNM</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">85</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3742311707371722846" datatype="html">
+        <source>AP Observation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="339860602695747533" datatype="html">
+        <source>Registration Date</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8208599228428185724" datatype="html">
+        <source>Operation Date</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2130228186826233628" datatype="html">
+        <source>Delete Tumor</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">248</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1581438108811481268" datatype="html">
+        <source>Patient NHC</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8982530720142227203" datatype="html">
+        <source> <x id="INTERPOLATION" equiv-text="{{ dataSource().filteredData.length }}"/> records </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/data-table/data-table.component.ts</context>
+          <context context-type="linenumber">57,58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2369742814572661392" datatype="html">
+        <source>Loading…</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/loading-state/loading-state.component.ts</context>
+          <context context-type="linenumber">15,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="960665565485640516" datatype="html">
+        <source>Something went wrong</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/loading-state/loading-state.component.ts</context>
+          <context context-type="linenumber">23,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4286083252083752794" datatype="html">
+        <source>TechConnect</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">46,47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1111990786973940588" datatype="html">
+        <source>Biomedical Registry</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">47,48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8255834268347738766" datatype="html">
+        <source>Toggle navigation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4677726785527621059" datatype="html">
+        <source>EN</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">81,82</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8041765285755439154" datatype="html">
+        <source>ES</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">82,83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2614607010577950577" datatype="html">
+        <source>Overview</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">289</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6570363013146073520" datatype="html">
+        <source>Dashboard</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">290</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8956629690682741547" datatype="html">
+        <source>Registry</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">293</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2863431896244142849" datatype="html">
+        <source>Research</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">301</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

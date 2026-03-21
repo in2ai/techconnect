@@ -28,7 +28,7 @@ export interface PatientFormData {
     <mat-dialog-content>
       <form class="form-grid" [formGroup]="form">
         <mat-form-field appearance="outline">
-          <mat-label>NHC</mat-label>
+          <mat-label i18n>NHC</mat-label>
           <input
             matInput
             formControlName="nhc"
@@ -39,7 +39,7 @@ export interface PatientFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Sex</mat-label>
+          <mat-label i18n>Sex</mat-label>
           <mat-select formControlName="sex">
             <mat-option [value]="null">Not specified</mat-option>
             <mat-option value="M">Male</mat-option>
@@ -48,13 +48,13 @@ export interface PatientFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Birth Date</mat-label>
+          <mat-label i18n>Birth Date</mat-label>
           <input matInput formControlName="birth_date" type="date" />
         </mat-form-field>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button mat-dialog-close i18n>Cancel</button>
       <button mat-flat-button [mat-dialog-close]="form.getRawValue()" [disabled]="form.invalid">
         {{ data.mode === 'create' ? 'Create' : 'Save' }}
       </button>

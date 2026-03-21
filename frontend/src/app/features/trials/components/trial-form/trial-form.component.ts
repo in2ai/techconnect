@@ -36,11 +36,17 @@ export interface TrialFormData {
     SlicePipe,
   ],
   template: `
-    <h2 mat-dialog-title>{{ data.mode === 'create' ? 'New Trial' : 'Edit Trial' }}</h2>
+    <h2 mat-dialog-title>
+      @if (data.mode === 'create') {
+        <ng-container i18n="@@newTrialTitle">New Trial</ng-container>
+      } @else {
+        <ng-container i18n="@@editTrialTitle">Edit Trial</ng-container>
+      }
+    </h2>
     <mat-dialog-content>
       <form class="form-grid" [formGroup]="form">
         <mat-form-field appearance="outline">
-          <mat-label>Passage</mat-label>
+          <mat-label i18n>Passage</mat-label>
           @if (passagesResource.isLoading()) {
             <mat-select disabled>
               <mat-option>Loading…</mat-option>
@@ -57,15 +63,15 @@ export interface TrialFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Creation Date</mat-label>
+          <mat-label i18n>Creation Date</mat-label>
           <input matInput formControlName="creation_date" type="date" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Biobank Arrival Date</mat-label>
+          <mat-label i18n>Biobank Arrival Date</mat-label>
           <input matInput formControlName="biobank_arrival_date" type="date" />
         </mat-form-field>
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Description</mat-label>
+          <mat-label i18n>Description</mat-label>
           <textarea matInput formControlName="description" rows="3"></textarea>
         </mat-form-field>
         <div class="checkbox-group">
@@ -75,9 +81,13 @@ export interface TrialFormData {
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button mat-dialog-close i18n>Cancel</button>
       <button mat-flat-button [mat-dialog-close]="buildDialogResult()" [disabled]="form.invalid">
-        {{ data.mode === 'create' ? 'Create' : 'Save' }}
+        @if (data.mode === 'create') {
+          <ng-container i18n="@@createBtn">Create</ng-container>
+        } @else {
+          <ng-container i18n="@@saveBtn">Save</ng-container>
+        }
       </button>
     </mat-dialog-actions>
   `,

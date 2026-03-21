@@ -12,7 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
       @case ('loading') {
         <div class="state-container" role="status" aria-live="polite">
           <mat-spinner diameter="40" aria-label="Loading content"></mat-spinner>
-          <p class="state-text">Loading…</p>
+          <p class="state-text" i18n>Loading…</p>
         </div>
       }
       @case ('error') {
@@ -20,7 +20,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
           <div class="error-icon-wrap">
             <mat-icon class="error-icon">error_outline</mat-icon>
           </div>
-          <p class="state-title">Something went wrong</p>
+          <p class="state-title" i18n>Something went wrong</p>
           <p class="state-text">
             {{ errorMessage() || 'We could not load the data. Please try again.' }}
           </p>

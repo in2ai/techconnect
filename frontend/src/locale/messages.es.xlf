@@ -1,0 +1,1124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" target-language="es" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="7915670285501053723" datatype="html">
+        <source>Tumor</source>
+        <target>Tumor</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/components/sample-form/sample-form.component.ts</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8650499415827640724" datatype="html">
+        <source>Type</source>
+        <target>Tipo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">404</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">419</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">426</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">204</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5611592591303869712" datatype="html">
+        <source>Status</source>
+        <target>Estado</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">162</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">146</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">205</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="544734906989204894" datatype="html">
+        <source>Viability</source>
+        <target>Viabilidad</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">163</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">206</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6004681856910260407" datatype="html">
+        <source>Creation Date</source>
+        <target>Fecha de Creación</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/components/trial-form/trial-form.component.ts</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4902817035128594900" datatype="html">
+        <source>Description</source>
+        <target>Descripción</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/components/trial-form/trial-form.component.ts</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">420</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2159130950882492111" datatype="html">
+        <source>Cancel</source>
+        <target>Cancelar</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/components/biomodel-form/biomodel-form.component.ts</context>
+          <context context-type="linenumber">79,80</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/components/patient-form/patient-form.component.ts</context>
+          <context context-type="linenumber">57,58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/components/sample-form/sample-form.component.ts</context>
+          <context context-type="linenumber">65,66</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/components/trial-form/trial-form.component.ts</context>
+          <context context-type="linenumber">78,79</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">103,104</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="761802782314570942" datatype="html">
+        <source>Biomodels</source>
+        <target>Biomodelos</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">148</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">295</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">303</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8040881171107393560" datatype="html">
+        <source>ID</source>
+        <target>ID</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">160</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">134</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">70</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">402</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">409</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">418</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">425</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">432</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-list/trial-list.page.ts</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">203</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">211</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6370642728789544052" datatype="html">
+        <source>Number</source>
+        <target>Número</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">161</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7008040221148227385" datatype="html">
+        <source>S-Index</source>
+        <target>Índice S</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">164</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2912790887397720753" datatype="html">
+        <source>Delete Biomodel</source>
+        <target>Eliminar Biomodelo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
+          <context context-type="linenumber">197</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2247319617738927601" datatype="html">
+        <source>Progresses</source>
+        <target>Progresos</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4207916966377787111" datatype="html">
+        <source>Created</source>
+        <target>Creado</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">136</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-list/trial-list.page.ts</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">207</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="962765493084218985" datatype="html">
+        <source>Platform</source>
+        <target>Plataforma</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">26,27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3997505011482678902" datatype="html">
+        <source>Welcome to TechConnect</source>
+        <target>Bienvenido a TechConnect</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">27,28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5179035620009609290" datatype="html">
+        <source> Biomedical research data management platform. Navigate through your registry, biomodels, and clinical trial data. </source>
+        <target> Plataforma de gestión de datos de investigación biomédica. Navegue por su registro, biomodelos y datos de ensayos clínicos. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">29,30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2904579647410573959" datatype="html">
+        <source>Patients</source>
+        <target>Pacientes</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">271</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">127</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">295</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7296718511892339428" datatype="html">
+        <source>View and manage patient records and demographics.</source>
+        <target>Ver y gestionar registros de pacientes y datos demográficos.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">276</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6079337545315387782" datatype="html">
+        <source>Tumors</source>
+        <target>Tumores</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">279</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">180</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">296</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5053112500132073496" datatype="html">
+        <source>Track tumor samples, classifications, and biobank codes.</source>
+        <target>Rastrear muestras de tumores, clasificaciones y códigos de biobanco.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">284</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="454995570276627183" datatype="html">
+        <source>Samples</source>
+        <target>Muestras</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">287</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-detail/sample-detail.page.ts</context>
+          <context context-type="linenumber">123</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">297</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7476441596306372686" datatype="html">
+        <source>Manage serum, buffy coat, and plasma samples.</source>
+        <target>Gestionar muestras de suero, capa leucocitaria y plasma.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">292</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="162659748367905081" datatype="html">
+        <source>Preclinical biomodels derived from tumor samples.</source>
+        <target>Biomodelos preclínicos derivados de muestras de tumores.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">300</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3596035518136048939" datatype="html">
+        <source>Passages</source>
+        <target>Pasajes</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">303</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">122</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">304</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7512439664993092318" datatype="html">
+        <source>Track biomodel passages, viability, and growth indices.</source>
+        <target>Rastrear pasajes de biomodelos, viabilidad e índices de crecimiento.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">308</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5277026421565790837" datatype="html">
+        <source>Trials</source>
+        <target>Ensayos</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">311</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">346</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">305</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5033494360166054822" datatype="html">
+        <source>PDX, PDO, and LC trial data with detailed outcomes.</source>
+        <target>Datos de ensayos PDX, PDO y LC con resultados detallados.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
+          <context context-type="linenumber">316</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4648900870671159218" datatype="html">
+        <source>Success</source>
+        <target>Éxito</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">135</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-list/trial-list.page.ts</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6283988996123974917" datatype="html">
+        <source>Shipment</source>
+        <target>Envío</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">137</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-list/trial-list.page.ts</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3975490307441526848" datatype="html">
+        <source>Delete Passage</source>
+        <target>Eliminar Pasaje</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">148</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1834958309425950776" datatype="html">
+        <source>Biomodel</source>
+        <target>Biomodelo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-list/passage-list.page.ts</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2628404868623287650" datatype="html">
+        <source>NHC</source>
+        <target>NHC</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/components/patient-form/patient-form.component.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">69,70</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-list/patient-list.page.ts</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2742532852742169962" datatype="html">
+        <source>Sex</source>
+        <target>Sexo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/components/patient-form/patient-form.component.ts</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">73,74</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-list/patient-list.page.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">411</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5568875939225929320" datatype="html">
+        <source>Birth Date</source>
+        <target>Fecha de Nacimiento</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/components/patient-form/patient-form.component.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">77,78</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-list/patient-list.page.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">412</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="147248468435485756" datatype="html">
+        <source>Biobank Code</source>
+        <target>Código de Biobanco</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">142</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2000505827844154765" datatype="html">
+        <source>Lab Code</source>
+        <target>Código de Laboratorio</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">65</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8846151385804023521" datatype="html">
+        <source>Classification</source>
+        <target>Clasificación</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">144</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2060021892500932246" datatype="html">
+        <source>Organ</source>
+        <target>Órgano</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">145</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">77</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8298333184054476827" datatype="html">
+        <source>Registration</source>
+        <target>Registro</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">147</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8182213789791478633" datatype="html">
+        <source>Delete Patient</source>
+        <target>Eliminar Paciente</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
+          <context context-type="linenumber">181</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="168041855379069235" datatype="html">
+        <source>Biopsy Date</source>
+        <target>Fecha de Biopsia</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/components/sample-form/sample-form.component.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7198008147472374487" datatype="html">
+        <source>Delete Sample</source>
+        <target>Eliminar Muestra</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-detail/sample-detail.page.ts</context>
+          <context context-type="linenumber">157</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="526000970838208782" datatype="html">
+        <source>Serum</source>
+        <target>Suero</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">212</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3393571693845224543" datatype="html">
+        <source>Buffy Coat</source>
+        <target>Capa Leucocitaria</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">213</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="770748809189248828" datatype="html">
+        <source>Plasma</source>
+        <target>Plasma</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">214</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3973931101896534797" datatype="html">
+        <source>Date</source>
+        <target>Fecha</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/samples/pages/sample-list/sample-list.page.ts</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">421</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">427</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">434</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">215</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1703564405535089723" datatype="html">
+        <source>Passage</source>
+        <target>Pasaje</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/components/trial-form/trial-form.component.ts</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-list/trial-list.page.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="96726690238343424" datatype="html">
+        <source>Biobank Arrival Date</source>
+        <target>Fecha de Llegada al Biobanco</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/components/trial-form/trial-form.component.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="471816275243265264" datatype="html">
+        <source>Location</source>
+        <target>Ubicación</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">403</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">433</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2286330222428622266" datatype="html">
+        <source>Size Limit</source>
+        <target>Límite de Tamaño</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">405</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6571723723605759686" datatype="html">
+        <source>Strain</source>
+        <target>Cepa</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">410</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="86377696407487548" datatype="html">
+        <source>Death Date</source>
+        <target>Fecha de Muerte</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">413</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3059959471102276538" datatype="html">
+        <source>Death Cause</source>
+        <target>Causa de Muerte</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">414</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8897417093635981361" datatype="html">
+        <source>AP Review</source>
+        <target>Revisión AP</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">428</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="709373155497275265" datatype="html">
+        <source>Vials</source>
+        <target>Viales</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">435</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5702320110812968297" datatype="html">
+        <source>Delete Trial</source>
+        <target>Eliminar Ensayo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trials/pages/trial-detail/trial-detail.page.ts</context>
+          <context context-type="linenumber">466</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2802536080288229427" datatype="html">
+        <source>Patient</source>
+        <target>Paciente</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6346357924377938019" datatype="html">
+        <source>Grade</source>
+        <target>Grado</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2831609435145473253" datatype="html">
+        <source>TNM</source>
+        <target>TNM</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">85</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3742311707371722846" datatype="html">
+        <source>AP Observation</source>
+        <target>Observación AP</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="339860602695747533" datatype="html">
+        <source>Registration Date</source>
+        <target>Fecha de Registro</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8208599228428185724" datatype="html">
+        <source>Operation Date</source>
+        <target>Fecha de Operación</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2130228186826233628" datatype="html">
+        <source>Delete Tumor</source>
+        <target>Eliminar Tumor</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
+          <context context-type="linenumber">248</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1581438108811481268" datatype="html">
+        <source>Patient NHC</source>
+        <target>NHC del Paciente</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8982530720142227203" datatype="html">
+        <source> <x id="INTERPOLATION" equiv-text="{{ dataSource().filteredData.length }}"/> records </source>
+        <target> <x id="INTERPOLATION" equiv-text="{{ dataSource().filteredData.length }}"/> registros </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/data-table/data-table.component.ts</context>
+          <context context-type="linenumber">57,58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2369742814572661392" datatype="html">
+        <source>Loading…</source>
+        <target>Cargando…</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/loading-state/loading-state.component.ts</context>
+          <context context-type="linenumber">15,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="960665565485640516" datatype="html">
+        <source>Something went wrong</source>
+        <target>Algo salió mal</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/loading-state/loading-state.component.ts</context>
+          <context context-type="linenumber">23,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4286083252083752794" datatype="html">
+        <source>TechConnect</source>
+        <target>TechConnect</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">46,47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1111990786973940588" datatype="html">
+        <source>Biomedical Registry</source>
+        <target>Registro Biomédico</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">47,48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8255834268347738766" datatype="html">
+        <source>Toggle navigation</source>
+        <target>Alternar navegación</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4677726785527621059" datatype="html">
+        <source>EN</source>
+        <target>EN</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">81,82</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8041765285755439154" datatype="html">
+        <source>ES</source>
+        <target>ES</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">82,83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2614607010577950577" datatype="html">
+        <source>Overview</source>
+        <target>Resumen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">289</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6570363013146073520" datatype="html">
+        <source>Dashboard</source>
+        <target>Panel de Control</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">290</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8956629690682741547" datatype="html">
+        <source>Registry</source>
+        <target>Registro</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">293</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2863431896244142849" datatype="html">
+        <source>Research</source>
+        <target>Investigación</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">301</context>
+        </context-group>
+      </trans-unit>
+
+      <trans-unit id="itemsPerPage"><source>Items per page:</source><target>Elementos por página:</target></trans-unit>
+      <trans-unit id="nextPage"><source>Next page</source><target>Siguiente página</target></trans-unit>
+      <trans-unit id="previousPage"><source>Previous page</source><target>Página anterior</target></trans-unit>
+      <trans-unit id="firstPage"><source>First page</source><target>Primera página</target></trans-unit>
+      <trans-unit id="lastPage"><source>Last page</source><target>Última página</target></trans-unit>
+      <trans-unit id="pageOf"><source><x id="start"/> - <x id="end"/> of <x id="length"/></source><target><x id="start"/> - <x id="end"/> de <x id="length"/></target></trans-unit>
+      <trans-unit id="pageOfEmpty"><source>0 of <x id="length"/></source><target>0 de <x id="length"/></target></trans-unit>
+      <trans-unit id="filterRecordsPlaceholder"><source>Filter records…</source><target>Filtrar registros…</target></trans-unit>
+
+      <trans-unit id="patientsTitle"><source>Patients</source><target>Pacientes</target></trans-unit>
+      <trans-unit id="patientsSubtitle"><source>Manage patient records and demographics</source><target>Gestionar registros médicos de pacientes y datos demográficos</target></trans-unit>
+      <trans-unit id="addPatient"><source>Add Patient</source><target>Añadir Paciente</target></trans-unit>
+      <trans-unit id="noPatientsYet"><source>No patients yet</source><target>Aún no hay pacientes</target></trans-unit>
+      <trans-unit id="addFirstPatient"><source>Add your first patient to get started.</source><target>Añade tu primer paciente para empezar.</target></trans-unit>
+      <trans-unit id="patientDetailTitle"><source>Patient <x id="nhc"/></source><target>Paciente <x id="nhc"/></target></trans-unit>
+      <trans-unit id="editBtn"><source>Edit</source><target>Editar</target></trans-unit>
+      <trans-unit id="deleteBtn"><source>Delete</source><target>Eliminar</target></trans-unit>
+      <trans-unit id="failedToLoadPatient"><source>Failed to load patient</source><target>Error al cargar el paciente</target></trans-unit>
+      <trans-unit id="tumorsTab"><source>Tumors</source><target>Tumores</target></trans-unit>
+      <trans-unit id="failedToLoadTumors"><source>Failed to load tumors</source><target>Error al cargar los tumores</target></trans-unit>
+      <trans-unit id="noTumorsEmpty"><source>No tumors</source><target>No hay tumores</target></trans-unit>
+      <trans-unit id="noTumorsMsg"><source>No tumor samples linked to this patient.</source><target>No hay muestras de tumor vinculadas a este paciente.</target></trans-unit>
+
+      <trans-unit id="tumorsTitle"><source>Tumors</source><target>Tumores</target></trans-unit>
+      <trans-unit id="tumorsSubtitle"><source>Track tumor samples, classifications, and biobank codes</source><target>Rastrear muestras de tumores, clasificaciones y códigos de biobanco</target></trans-unit>
+      <trans-unit id="addTumor"><source>Add Tumor</source><target>Añadir Tumor</target></trans-unit>
+      <trans-unit id="tumorDetailTitle"><source>Tumor <x id="code"/></source><target>Tumor <x id="code"/></target></trans-unit>
+      <trans-unit id="failedToLoadTumor"><source>Failed to load tumor</source><target>Error al cargar el tumor</target></trans-unit>
+      
+      <trans-unit id="tumorBiobankCodeLbl"><source>Biobank Code</source><target>Código de Biobanco</target></trans-unit>
+      <trans-unit id="tumorLabCodeLbl"><source>Lab Code</source><target>Código de Laboratorio</target></trans-unit>
+      <trans-unit id="tumorClassificationLbl"><source>Classification</source><target>Clasificación</target></trans-unit>
+      <trans-unit id="tumorGradeLbl"><source>Grade</source><target>Grado</target></trans-unit>
+      <trans-unit id="tumorOrganLbl"><source>Organ</source><target>Órgano</target></trans-unit>
+      <trans-unit id="tumorStatusLbl"><source>Status</source><target>Estado</target></trans-unit>
+      <trans-unit id="tumorTnmLbl"><source>TNM</source><target>TNM</target></trans-unit>
+      <trans-unit id="tumorPatientNhcLbl"><source>Patient NHC</source><target>NHC del Paciente</target></trans-unit>
+      <trans-unit id="tumorRegistrationDateLbl"><source>Registration Date</source><target>Fecha de Registro</target></trans-unit>
+      <trans-unit id="tumorOperationDateLbl"><source>Operation Date</source><target>Fecha de Operación</target></trans-unit>
+      <trans-unit id="tumorApObservationLbl"><source>AP Observation</source><target>Observación AP</target></trans-unit>
+
+      <trans-unit id="biomodelsTab"><source>Biomodels</source><target>Biomodelos</target></trans-unit>
+      <trans-unit id="failedToLoadBiomodels"><source>Failed to load biomodels</source><target>Error al cargar biomodelos</target></trans-unit>
+      <trans-unit id="noBiomodelsEmpty"><source>No biomodels</source><target>No hay biomodelos</target></trans-unit>
+      <trans-unit id="noBiomodelsMsg"><source>No biomodels linked to this tumor.</source><target>No hay biomodelos vinculados a este tumor.</target></trans-unit>
+      
+      <trans-unit id="samplesTab"><source>Samples</source><target>Muestras</target></trans-unit>
+      <trans-unit id="failedToLoadSamples"><source>Failed to load samples</source><target>Error al cargar muestras</target></trans-unit>
+      <trans-unit id="noSamplesEmpty"><source>No samples</source><target>No hay muestras</target></trans-unit>
+      <trans-unit id="noSamplesMsg"><source>No samples linked to this tumor.</source><target>No hay muestras vinculadas a este tumor.</target></trans-unit>
+
+      <trans-unit id="samplesTitle"><source>Samples</source><target>Muestras</target></trans-unit>
+      <trans-unit id="samplesSubtitle"><source>Serum, buffy coat, and plasma samples from tumors</source><target>Muestras de suero, capa leucocitaria y plasma de tumores</target></trans-unit>
+      <trans-unit id="addSample"><source>Add Sample</source><target>Añadir Muestra</target></trans-unit>
+      <trans-unit id="sampleTitle"><source>Sample</source><target>Muestra</target></trans-unit>
+      <trans-unit id="failedToLoadSample"><source>Failed to load sample</source><target>Error al cargar muestra</target></trans-unit>
+
+      <trans-unit id="sampleIdLbl"><source>ID</source><target>ID</target></trans-unit>
+      <trans-unit id="sampleBiopsyDateLbl"><source>Biopsy Date</source><target>Fecha de Biopsia</target></trans-unit>
+      <trans-unit id="sampleTumorLbl"><source>Tumor</source><target>Tumor</target></trans-unit>
+      <trans-unit id="sampleHasSerumLbl"><source>Has Serum</source><target>Tiene Suero</target></trans-unit>
+      <trans-unit id="sampleHasBuffyCoatLbl"><source>Has Buffy Coat</source><target>Tiene Capa Leucocitaria</target></trans-unit>
+      <trans-unit id="sampleHasPlasmaLbl"><source>Has Plasma</source><target>Tiene Plasma</target></trans-unit>
+      <trans-unit id="yesOpt"><source>Yes</source><target>Sí</target></trans-unit>
+      <trans-unit id="noOpt"><source>No</source><target>No</target></trans-unit>
+
+      <trans-unit id="newTrialTitle"><source>New Trial</source><target>Nuevo Ensayo</target></trans-unit>
+      <trans-unit id="editTrialTitle"><source>Edit Trial</source><target>Editar Ensayo</target></trans-unit>
+      <trans-unit id="createBtn"><source>Create</source><target>Crear</target></trans-unit>
+      <trans-unit id="saveBtn"><source>Save</source><target>Guardar</target></trans-unit>
+
+      <trans-unit id="biomodelsTitle"><source>Biomodels</source><target>Biomodelos</target></trans-unit>
+      <trans-unit id="biomodelsSubtitle"><source>Preclinical biomodels derived from tumor samples</source><target>Biomodelos preclínicos derivados de muestras de tumores</target></trans-unit>
+      <trans-unit id="addBiomodel"><source>Add Biomodel</source><target>Añadir Biomodelo</target></trans-unit>
+      <trans-unit id="failedToLoadBiomodels"><source>Failed to load biomodels</source><target>Error al cargar biomodelos</target></trans-unit>
+      <trans-unit id="noBiomodelsYet"><source>No biomodels yet</source><target>Aún no hay biomodelos</target></trans-unit>
+      <trans-unit id="createFirstBiomodel"><source>Create your first biomodel.</source><target>Crea tu primer biomodelo.</target></trans-unit>
+
+      <trans-unit id="biomodelTitle"><source>Biomodel</source><target>Biomodelo</target></trans-unit>
+      <trans-unit id="failedToLoadBiomodel"><source>Failed to load biomodel</source><target>Error al cargar el biomodelo</target></trans-unit>
+      <trans-unit id="biomodelIdLbl"><source>ID</source><target>ID</target></trans-unit>
+      <trans-unit id="biomodelTypeLbl"><source>Type</source><target>Tipo</target></trans-unit>
+      <trans-unit id="biomodelStatusLbl"><source>Status</source><target>Estado</target></trans-unit>
+      <trans-unit id="biomodelViabilityLbl"><source>Viability</source><target>Viabilidad</target></trans-unit>
+      <trans-unit id="biomodelProgressesLbl"><source>Progresses</source><target>Progresiones</target></trans-unit>
+      <trans-unit id="biomodelDescriptionLbl"><source>Description</source><target>Descripción</target></trans-unit>
+      <trans-unit id="biomodelCreatedLbl"><source>Created</source><target>Creado</target></trans-unit>
+      <trans-unit id="biomodelTumorLbl"><source>Tumor</source><target>Tumor</target></trans-unit>
+
+      <trans-unit id="passagesTabLbl"><source>Passages</source><target>Pasajes</target></trans-unit>
+      <trans-unit id="failedToLoadPassages"><source>Failed to load passages</source><target>Error al cargar pasajes</target></trans-unit>
+      <trans-unit id="noPassagesEmptyLbl"><source>No passages</source><target>Sin pasajes</target></trans-unit>
+      <trans-unit id="noPassagesMsgLbl"><source>No passages linked to this biomodel.</source><target>No hay pasajes vinculados a este biomodelo.</target></trans-unit>
+
+      <trans-unit id="passagesTitle"><source>Passages</source><target>Pasajes</target></trans-unit>
+      <trans-unit id="passagesSubtitle"><source>Track biomodel passages, viability, and growth indices</source><target>Rastrear pasajes de biomodelos, viabilidad e índices de crecimiento</target></trans-unit>
+      <trans-unit id="passageTitleLbl"><source>Passage</source><target>Pasaje</target></trans-unit>
+      <trans-unit id="failedToLoadPassage"><source>Failed to load passage</source><target>Error al cargar pasaje</target></trans-unit>
+      <trans-unit id="passageIdLbl"><source>ID</source><target>ID</target></trans-unit>
+      <trans-unit id="passageNumberLbl"><source>Number</source><target>Número</target></trans-unit>
+      <trans-unit id="passageDescLbl"><source>Description</source><target>Descripción</target></trans-unit>
+      <trans-unit id="passageBiomodelLbl"><source>Biomodel</source><target>Biomodelo</target></trans-unit>
+      <trans-unit id="noPassagesYet"><source>No passages yet</source><target>Aún no hay pasajes</target></trans-unit>
+      <trans-unit id="createFirstPassage"><source>Passages are created from biomodel detail pages.</source><target>Los pasajes se crean desde las páginas de detalle del biomodelo.</target></trans-unit>
+
+      <trans-unit id="trialsTabLbl"><source>Trials</source><target>Ensayos</target></trans-unit>
+      <trans-unit id="failedToLoadTrials"><source>Failed to load trials</source><target>Error al cargar ensayos</target></trans-unit>
+      <trans-unit id="noTrialsEmptyLbl"><source>No trials</source><target>Sin ensayos</target></trans-unit>
+      <trans-unit id="noTrialsMsgLbl"><source>No trials linked to this passage.</source><target>No hay ensayos vinculados a este pasaje.</target></trans-unit>
+
+      <trans-unit id="trialsTitle"><source>Trials</source><target>Ensayos</target></trans-unit>
+      <trans-unit id="trialsSubtitle"><source>PDX, PDO, and LC trial data with detailed outcomes</source><target>Datos de ensayos PDX, PDO y LC con resultados detallados</target></trans-unit>
+      <trans-unit id="addTrialBtn"><source>Add Trial</source><target>Añadir Ensayo</target></trans-unit>
+      <trans-unit id="noTrialsYet"><source>No trials yet</source><target>Aún no hay ensayos</target></trans-unit>
+      <trans-unit id="createFirstTrial"><source>Create your first trial.</source><target>Crea tu primer ensayo.</target></trans-unit>
+
+      <trans-unit id="trialIdLbl"><source>ID</source><target>ID</target></trans-unit>
+      <trans-unit id="trialSuccessLbl"><source>Success</source><target>Éxito</target></trans-unit>
+      <trans-unit id="trialCreatedLbl"><source>Created</source><target>Creado</target></trans-unit>
+      <trans-unit id="trialBiobankShipmentLbl"><source>Biobank Shipment</source><target>Envío al Biobanco</target></trans-unit>
+      <trans-unit id="trialArrivalDateLbl"><source>Arrival Date</source><target>Fecha de llegada</target></trans-unit>
+      <trans-unit id="trialPassageLbl"><source>Passage</source><target>Pasaje</target></trans-unit>
+      <trans-unit id="trialDescLbl"><source>Description</source><target>Descripción</target></trans-unit>
+
+      <trans-unit id="implantsTabLbl"><source>Implants</source><target>Implantes</target></trans-unit>
+      <trans-unit id="failedToLoadImplants"><source>Failed to load implants</source><target>Error al cargar implantes</target></trans-unit>
+      <trans-unit id="noImplantsTitle"><source>No implants</source><target>Sin implantes</target></trans-unit>
+      <trans-unit id="noImplantsMsg"><source>No implants linked to this trial.</source><target>No hay implantes vinculados a este ensayo.</target></trans-unit>
+
+      <trans-unit id="mouseTabLbl"><source>Mouse</source><target>Ratón</target></trans-unit>
+      <trans-unit id="failedToLoadMice"><source>Failed to load mice</source><target>Error al cargar ratones</target></trans-unit>
+      <trans-unit id="noMiceTitle"><source>No mice</source><target>Sin ratones</target></trans-unit>
+      <trans-unit id="noMiceMsg"><source>No mice linked to this trial.</source><target>No hay ratones vinculados a este ensayo.</target></trans-unit>
+
+      <trans-unit id="usageRecordsTabLbl"><source>Usage Records</source><target>Registros de Uso</target></trans-unit>
+      <trans-unit id="failedToLoadUsage"><source>Failed to load usage records</source><target>Error al cargar registros</target></trans-unit>
+      <trans-unit id="noUsageTitle"><source>No usage records</source><target>Sin registros</target></trans-unit>
+      <trans-unit id="noUsageMsg"><source>No usage records for this trial.</source><target>No hay registros de uso para este ensayo.</target></trans-unit>
+
+      <trans-unit id="imagesTabLbl"><source>Images</source><target>Imágenes</target></trans-unit>
+      <trans-unit id="failedToLoadImages"><source>Failed to load images</source><target>Error al cargar imágenes</target></trans-unit>
+      <trans-unit id="noImagesTitle"><source>No images</source><target>Sin imágenes</target></trans-unit>
+      <trans-unit id="noImagesMsg"><source>No images for this trial.</source><target>No hay imágenes para este ensayo.</target></trans-unit>
+
+      <trans-unit id="pdxTrialDetailsTitle"><source>PDX Trial Details</source><target>Detalles del Ensayo PDX</target></trans-unit>
+      <trans-unit id="pdxFfpeLbl"><source>FFPE</source><target>FFPE</target></trans-unit>
+      <trans-unit id="pdxHeSlideLbl"><source>HE Slide</source><target>HE Slide</target></trans-unit>
+      <trans-unit id="pdxIhqDataLbl"><source>IHQ Data</source><target>Datos IHQ</target></trans-unit>
+      <trans-unit id="pdxLatencyLbl"><source>Latency (weeks)</source><target>Latencia (semanas)</target></trans-unit>
+
+      <trans-unit id="pdoTrialDetailsTitle"><source>PDO Trial Details</source><target>Detalles del Ensayo PDO</target></trans-unit>
+      <trans-unit id="pdoDropCountLbl"><source>Drop Count</source><target>Recuento de gotas</target></trans-unit>
+      <trans-unit id="pdoOrganoidCountLbl"><source>Organoid Count</source><target>Recuento de organoides</target></trans-unit>
+      <trans-unit id="pdoFrozenOrganoidsLbl"><source>Frozen Organoids</source><target>Organoides congelados</target></trans-unit>
+      <trans-unit id="pdoPlateTypeLbl"><source>Plate Type</source><target>Tipo de placa</target></trans-unit>
+      <trans-unit id="pdoAssessmentLbl"><source>Assessment</source><target>Evaluación</target></trans-unit>
+
+      <trans-unit id="lcTrialDetailsTitle"><source>LC Trial Details</source><target>Detalles del Ensayo LC</target></trans-unit>
+      <trans-unit id="lcConfluenceLbl"><source>Confluence</source><target>Confluencia</target></trans-unit>
+      <trans-unit id="lcSpheroidsLbl"><source>Spheroids</source><target>Esferoides</target></trans-unit>
+      <trans-unit id="lcDigestionDateLbl"><source>Digestion Date</source><target>Fecha de digestión</target></trans-unit>
+      <trans-unit id="lcPlateTypeLbl"><source>Plate Type</source><target>Tipo de placa</target></trans-unit>
+
+      <trans-unit id="cryoTabLbl"><source>Cryopreservation</source><target>Criopreservación</target></trans-unit>
+      <trans-unit id="failedToLoadCryo"><source>Failed to load cryopreservations</source><target>Error al cargar criopreservaciones</target></trans-unit>
+      <trans-unit id="noCryoTitle"><source>No cryopreservations</source><target>Sin criopreservaciones</target></trans-unit>
+      <trans-unit id="noCryoMsg"><source>No cryopreservation records for this trial.</source><target>No hay registros de criopreservación para este ensayo.</target></trans-unit>
+
+    </body>
+  </file>
+</xliff>

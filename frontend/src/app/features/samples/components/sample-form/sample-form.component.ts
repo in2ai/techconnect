@@ -36,7 +36,7 @@ export interface SampleFormData {
     <mat-dialog-content>
       <form class="form-grid" [formGroup]="form">
         <mat-form-field appearance="outline">
-          <mat-label>Tumor</mat-label>
+          <mat-label i18n>Tumor</mat-label>
           @if (tumorsResource.isLoading()) {
             <mat-select disabled>
               <mat-option>Loading…</mat-option>
@@ -51,7 +51,7 @@ export interface SampleFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Biopsy Date</mat-label>
+          <mat-label i18n>Biopsy Date</mat-label>
           <input matInput formControlName="biopsy_date" type="date" />
         </mat-form-field>
         <div class="checkbox-group">
@@ -62,7 +62,7 @@ export interface SampleFormData {
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button mat-dialog-close i18n>Cancel</button>
       <button mat-flat-button [mat-dialog-close]="buildDialogResult()" [disabled]="form.invalid">
         {{ data.mode === 'create' ? 'Create' : 'Save' }}
       </button>

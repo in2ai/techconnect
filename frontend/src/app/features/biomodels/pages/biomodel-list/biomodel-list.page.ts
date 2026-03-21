@@ -18,19 +18,19 @@ import { BiomodelFormComponent } from '../../components/biomodel-form/biomodel-f
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, MatIconModule, PageHeaderComponent, DataTableComponent, LoadingStateComponent],
   template: `
-    <app-page-header title="Biomodels" subtitle="Preclinical biomodels derived from tumor samples">
-      <button mat-flat-button (click)="openCreateDialog()">
+    <app-page-header i18n-title="@@biomodelsTitle" title="Biomodels" i18n-subtitle="@@biomodelsSubtitle" subtitle="Preclinical biomodels derived from tumor samples">
+      <button mat-flat-button color="primary" (click)="openCreateDialog()">
         <mat-icon>add</mat-icon>
-        Add Biomodel
+        <ng-container i18n="@@addBiomodel">Add Biomodel</ng-container>
       </button>
     </app-page-header>
 
     @if (biomodelsResource.isLoading()) {
       <app-loading-state status="loading" />
     } @else if (biomodelsResource.error()) {
-      <app-loading-state status="error" errorMessage="Failed to load biomodels" (retry)="biomodelsResource.reload()" />
+      <app-loading-state status="error" i18n-errorMessage="@@failedToLoadBiomodels" errorMessage="Failed to load biomodels" (retry)="biomodelsResource.reload()" />
     } @else if (biomodelsResource.hasValue() && biomodelsResource.value()!.length === 0) {
-      <app-loading-state status="empty" emptyIcon="science" emptyTitle="No biomodels yet" emptyMessage="Create your first biomodel." />
+      <app-loading-state status="empty" emptyIcon="science" i18n-emptyTitle="@@noBiomodelsYet" emptyTitle="No biomodels yet" i18n-emptyMessage="@@createFirstBiomodel" emptyMessage="Create your first biomodel." />
     } @else if (biomodelsResource.hasValue()) {
       <app-data-table [columns]="columns" [data]="biomodelsResource.value()!" (rowClicked)="onBiomodelClick($event)" />
     }
@@ -44,13 +44,13 @@ export class BiomodelListPage {
   private apiUrl = inject(API_URL);
 
   columns: ColumnDef[] = [
-    { key: 'id', label: 'ID', sortable: true },
-    { key: 'type', label: 'Type', sortable: true },
-    { key: 'status', label: 'Status', sortable: true },
-    { key: 'viability', label: 'Viability', sortable: true, type: 'number' },
-    { key: 'progresses', label: 'Progresses', type: 'boolean' },
-    { key: 'creation_date', label: 'Created', sortable: true, type: 'date' },
-    { key: 'tumor_biobank_code', label: 'Tumor', sortable: true },
+    { key: 'id', label: $localize`ID`, sortable: true },
+    { key: 'type', label: $localize`Type`, sortable: true },
+    { key: 'status', label: $localize`Status`, sortable: true },
+    { key: 'viability', label: $localize`Viability`, sortable: true, type: 'number' },
+    { key: 'progresses', label: $localize`Progresses`, type: 'boolean' },
+    { key: 'creation_date', label: $localize`Created`, sortable: true, type: 'date' },
+    { key: 'tumor_biobank_code', label: $localize`Tumor`, sortable: true },
   ];
 
   biomodelsResource = httpResource<Biomodel[]>(() => `${this.apiUrl}/biomodels`, { defaultValue: [] });

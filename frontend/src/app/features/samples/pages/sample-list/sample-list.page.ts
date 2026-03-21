@@ -28,10 +28,10 @@ import { SampleFormComponent } from '../../components/sample-form/sample-form.co
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header title="Samples" subtitle="Serum, buffy coat, and plasma samples from tumors">
-      <button mat-flat-button (click)="openCreateDialog()">
+    <app-page-header i18n-title="@@samplesTitle" title="Samples" i18n-subtitle="@@samplesSubtitle" subtitle="Serum, buffy coat, and plasma samples from tumors">
+      <button mat-flat-button color="primary" (click)="openCreateDialog()">
         <mat-icon>add</mat-icon>
-        Add Sample
+        <ng-container i18n="@@addSample">Add Sample</ng-container>
       </button>
     </app-page-header>
 
@@ -67,12 +67,12 @@ export class SampleListPage {
   private apiUrl = inject(API_URL);
 
   columns: ColumnDef[] = [
-    { key: 'id', label: 'ID', sortable: true },
-    { key: 'has_serum', label: 'Serum', type: 'boolean' },
-    { key: 'has_buffy', label: 'Buffy Coat', type: 'boolean' },
-    { key: 'has_plasma', label: 'Plasma', type: 'boolean' },
-    { key: 'biopsy_date', label: 'Date', sortable: true, type: 'date' },
-    { key: 'tumor_biobank_code', label: 'Tumor', sortable: true },
+    { key: 'id', label: $localize`ID`, sortable: true },
+    { key: 'has_serum', label: $localize`Serum`, type: 'boolean' },
+    { key: 'has_buffy', label: $localize`Buffy Coat`, type: 'boolean' },
+    { key: 'has_plasma', label: $localize`Plasma`, type: 'boolean' },
+    { key: 'biopsy_date', label: $localize`Date`, sortable: true, type: 'date' },
+    { key: 'tumor_biobank_code', label: $localize`Tumor`, sortable: true },
   ];
 
   resource = httpResource<Sample[]>(() => `${this.apiUrl}/samples`, { defaultValue: [] });

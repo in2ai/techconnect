@@ -40,14 +40,14 @@ import {
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header [title]="'Tumor ' + biobank_code()" [breadcrumbs]="breadcrumbs()">
+    <app-page-header [title]="pageTitle()" [breadcrumbs]="breadcrumbs()">
       <button mat-stroked-button (click)="openEditDialog()">
         <mat-icon>edit</mat-icon>
-        Edit
+        <ng-container i18n="@@editBtn">Edit</ng-container>
       </button>
       <button mat-stroked-button color="warn" (click)="confirmDelete()">
         <mat-icon>delete</mat-icon>
-        Delete
+        <ng-container i18n="@@deleteBtn">Delete</ng-container>
       </button>
     </app-page-header>
 
@@ -56,6 +56,7 @@ import {
     } @else if (tumorResource.error()) {
       <app-loading-state
         status="error"
+        i18n-errorMessage="@@failedToLoadTumor"
         errorMessage="Failed to load tumor"
         (retry)="tumorResource.reload()"
       />
@@ -64,49 +65,49 @@ import {
         <mat-card-content>
           <div class="detail-grid">
             <div class="detail-item">
-              <span class="detail-label">Biobank Code</span
+              <span class="detail-label" i18n="@@tumorBiobankCodeLbl">Biobank Code</span
               ><span class="detail-value">{{ tumorResource.value()!.biobank_code }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Lab Code</span
+              <span class="detail-label" i18n="@@tumorLabCodeLbl">Lab Code</span
               ><span class="detail-value">{{ tumorResource.value()!.lab_code || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Classification</span
+              <span class="detail-label" i18n="@@tumorClassificationLbl">Classification</span
               ><span class="detail-value">{{ tumorResource.value()!.classification || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Grade</span
+              <span class="detail-label" i18n="@@tumorGradeLbl">Grade</span
               ><span class="detail-value">{{ tumorResource.value()!.grade || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Organ</span
+              <span class="detail-label" i18n="@@tumorOrganLbl">Organ</span
               ><span class="detail-value">{{ tumorResource.value()!.organ || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Status</span
+              <span class="detail-label" i18n="@@tumorStatusLbl">Status</span
               ><span class="detail-value">{{ tumorResource.value()!.status || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">TNM</span
+              <span class="detail-label" i18n="@@tumorTnmLbl">TNM</span
               ><span class="detail-value">{{ tumorResource.value()!.tnm || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Patient NHC</span
+              <span class="detail-label" i18n="@@tumorPatientNhcLbl">Patient NHC</span
               ><span class="detail-value">{{ tumorResource.value()!.patient_nhc }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Registration Date</span
+              <span class="detail-label" i18n="@@tumorRegistrationDateLbl">Registration Date</span
               ><span class="detail-value">{{
                 tumorResource.value()!.registration_date || '—'
               }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Operation Date</span
+              <span class="detail-label" i18n="@@tumorOperationDateLbl">Operation Date</span
               ><span class="detail-value">{{ tumorResource.value()!.operation_date || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">AP Observation</span
+              <span class="detail-label" i18n="@@tumorApObservationLbl">AP Observation</span
               ><span class="detail-value">{{ tumorResource.value()!.ap_observation || '—' }}</span>
             </div>
           </div>
@@ -114,13 +115,14 @@ import {
       </mat-card>
 
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
-        <mat-tab label="Biomodels">
+        <mat-tab i18n-label="@@biomodelsTab" label="Biomodels">
           <div class="tab-content">
             @if (biomodelsResource.isLoading()) {
               <app-loading-state status="loading" />
             } @else if (biomodelsResource.error()) {
               <app-loading-state
                 status="error"
+                i18n-errorMessage="@@failedToLoadBiomodels"
                 errorMessage="Failed to load biomodels"
                 (retry)="biomodelsResource.reload()"
               />
@@ -128,7 +130,9 @@ import {
               <app-loading-state
                 status="empty"
                 emptyIcon="science"
+                i18n-emptyTitle="@@noBiomodelsEmpty"
                 emptyTitle="No biomodels"
+                i18n-emptyMessage="@@noBiomodelsMsg"
                 emptyMessage="No biomodels linked to this tumor."
               />
             } @else {
@@ -140,13 +144,14 @@ import {
             }
           </div>
         </mat-tab>
-        <mat-tab label="Samples">
+        <mat-tab i18n-label="@@samplesTab" label="Samples">
           <div class="tab-content">
             @if (samplesResource.isLoading()) {
               <app-loading-state status="loading" />
             } @else if (samplesResource.error()) {
               <app-loading-state
                 status="error"
+                i18n-errorMessage="@@failedToLoadSamples"
                 errorMessage="Failed to load samples"
                 (retry)="samplesResource.reload()"
               />
@@ -154,7 +159,9 @@ import {
               <app-loading-state
                 status="empty"
                 emptyIcon="water_drop"
+                i18n-emptyTitle="@@noSamplesEmpty"
                 emptyTitle="No samples"
+                i18n-emptyMessage="@@noSamplesMsg"
                 emptyMessage="No samples linked to this tumor."
               />
             } @else {
@@ -169,15 +176,16 @@ import {
 })
 export class TumorDetailPage {
   biobank_code = input.required<string>();
+  pageTitle = computed(() => $localize`:@@tumorDetailTitle:Tumor ${this.biobank_code()}:code:`);
 
-  private router = inject(Router);
-  private dialog = inject(MatDialog);
-  private tumorService = inject(TumorService);
-  private notification = inject(NotificationService);
-  private apiUrl = inject(API_URL);
+  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
+  private readonly tumorService = inject(TumorService);
+  private readonly notification = inject(NotificationService);
+  private readonly apiUrl = inject(API_URL);
 
   breadcrumbs = computed<Breadcrumb[]>(() => [
-    { label: 'Tumors', route: '/tumors' },
+    { label: $localize`Tumors`, route: '/tumors' },
     { label: this.biobank_code() },
   ]);
 
@@ -200,19 +208,19 @@ export class TumorDetailPage {
   );
 
   biomodelColumns: ColumnDef[] = [
-    { key: 'id', label: 'ID', sortable: true },
-    { key: 'type', label: 'Type', sortable: true },
-    { key: 'status', label: 'Status', sortable: true },
-    { key: 'viability', label: 'Viability', sortable: true, type: 'number' },
-    { key: 'creation_date', label: 'Created', sortable: true, type: 'date' },
+    { key: 'id', label: $localize`ID`, sortable: true },
+    { key: 'type', label: $localize`Type`, sortable: true },
+    { key: 'status', label: $localize`Status`, sortable: true },
+    { key: 'viability', label: $localize`Viability`, sortable: true, type: 'number' },
+    { key: 'creation_date', label: $localize`Created`, sortable: true, type: 'date' },
   ];
 
   lbColumns: ColumnDef[] = [
-    { key: 'id', label: 'ID', sortable: true },
-    { key: 'has_serum', label: 'Serum', type: 'boolean' },
-    { key: 'has_buffy', label: 'Buffy Coat', type: 'boolean' },
-    { key: 'has_plasma', label: 'Plasma', type: 'boolean' },
-    { key: 'biopsy_date', label: 'Date', sortable: true, type: 'date' },
+    { key: 'id', label: $localize`ID`, sortable: true },
+    { key: 'has_serum', label: $localize`Serum`, type: 'boolean' },
+    { key: 'has_buffy', label: $localize`Buffy Coat`, type: 'boolean' },
+    { key: 'has_plasma', label: $localize`Plasma`, type: 'boolean' },
+    { key: 'biopsy_date', label: $localize`Date`, sortable: true, type: 'date' },
   ];
 
   onBiomodelClick(biomodel: Biomodel): void {
@@ -245,7 +253,7 @@ export class TumorDetailPage {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Tumor',
+        title: $localize`Delete Tumor`,
         message: `Delete tumor ${this.biobank_code()}? This cannot be undone.`,
         confirmLabel: 'Delete',
         confirmColor: 'warn',

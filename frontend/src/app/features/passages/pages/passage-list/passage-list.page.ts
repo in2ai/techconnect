@@ -14,14 +14,14 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, MatIconModule, PageHeaderComponent, DataTableComponent, LoadingStateComponent],
   template: `
-    <app-page-header title="Passages" subtitle="Track biomodel passages, viability, and growth indices" />
+    <app-page-header i18n-title="@@passagesTitle" title="Passages" i18n-subtitle="@@passagesSubtitle" subtitle="Track biomodel passages, viability, and growth indices" />
 
     @if (passagesResource.isLoading()) {
       <app-loading-state status="loading" />
     } @else if (passagesResource.error()) {
-      <app-loading-state status="error" errorMessage="Failed to load passages" (retry)="passagesResource.reload()" />
+      <app-loading-state status="error" i18n-errorMessage="@@failedToLoadPassages" errorMessage="Failed to load passages" (retry)="passagesResource.reload()" />
     } @else if (passagesResource.hasValue() && passagesResource.value()!.length === 0) {
-      <app-loading-state status="empty" emptyIcon="swap_horiz" emptyTitle="No passages yet" emptyMessage="Passages are created from biomodel detail pages." />
+      <app-loading-state status="empty" emptyIcon="swap_horiz" i18n-emptyTitle="@@noPassagesYet" emptyTitle="No passages yet" i18n-emptyMessage="@@createFirstPassage" emptyMessage="Passages are created from biomodel detail pages." />
     } @else if (passagesResource.hasValue()) {
       <app-data-table [columns]="columns" [data]="passagesResource.value()!" (rowClicked)="onPassageClick($event)" />
     }
@@ -32,12 +32,12 @@ export class PassageListPage {
   private apiUrl = inject(API_URL);
 
   columns: ColumnDef[] = [
-    { key: 'id', label: 'ID', sortable: true },
-    { key: 'number', label: 'Number', sortable: true, type: 'number' },
-    { key: 'status', label: 'Status', sortable: true },
-    { key: 'viability', label: 'Viability', sortable: true, type: 'number' },
-    { key: 's_index', label: 'S-Index', sortable: true, type: 'number' },
-    { key: 'biomodel_id', label: 'Biomodel', sortable: true },
+    { key: 'id', label: $localize`ID`, sortable: true },
+    { key: 'number', label: $localize`Number`, sortable: true, type: 'number' },
+    { key: 'status', label: $localize`Status`, sortable: true },
+    { key: 'viability', label: $localize`Viability`, sortable: true, type: 'number' },
+    { key: 's_index', label: $localize`S-Index`, sortable: true, type: 'number' },
+    { key: 'biomodel_id', label: $localize`Biomodel`, sortable: true },
   ];
 
   passagesResource = httpResource<Passage[]>(() => `${this.apiUrl}/passages`, { defaultValue: [] });

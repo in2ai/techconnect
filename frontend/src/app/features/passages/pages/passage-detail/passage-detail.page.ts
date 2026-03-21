@@ -38,9 +38,9 @@ import {
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header title="Passage" [breadcrumbs]="breadcrumbs()">
+    <app-page-header i18n-title="@@passageTitleLbl" title="Passage" [breadcrumbs]="breadcrumbs()">
       <button mat-stroked-button color="warn" (click)="confirmDelete()">
-        <mat-icon>delete</mat-icon> Delete
+        <mat-icon>delete</mat-icon> <ng-container i18n="@@deleteBtn">Delete</ng-container>
       </button>
     </app-page-header>
 
@@ -49,6 +49,7 @@ import {
     } @else if (passageResource.error()) {
       <app-loading-state
         status="error"
+        i18n-errorMessage="@@failedToLoadPassage"
         errorMessage="Failed to load passage"
         (retry)="passageResource.reload()"
       />
@@ -57,20 +58,19 @@ import {
         <mat-card-content>
           <div class="detail-grid">
             <div class="detail-item">
-              <span class="detail-label">ID</span
+              <span class="detail-label" i18n="@@passageIdLbl">ID</span
               ><span class="detail-value">{{ passageResource.value()!.id }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Number</span
+              <span class="detail-label" i18n="@@passageNumberLbl">Number</span
               ><span class="detail-value">{{ passageResource.value()!.number ?? '—' }}</span>
             </div>
-
             <div class="detail-item">
-              <span class="detail-label">Description</span
+              <span class="detail-label" i18n="@@passageDescLbl">Description</span
               ><span class="detail-value">{{ passageResource.value()!.description || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Biomodel</span
+              <span class="detail-label" i18n="@@passageBiomodelLbl">Biomodel</span
               ><span class="detail-value">{{ passageResource.value()!.biomodel_id }}</span>
             </div>
           </div>
@@ -78,13 +78,14 @@ import {
       </mat-card>
 
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
-        <mat-tab label="Trials">
+        <mat-tab i18n-label="@@trialsTabLbl" label="Trials">
           <div class="tab-content">
             @if (trialsResource.isLoading()) {
               <app-loading-state status="loading" />
             } @else if (trialsResource.error()) {
               <app-loading-state
                 status="error"
+                i18n-errorMessage="@@failedToLoadTrials"
                 errorMessage="Unable to load trials"
                 (retry)="trialsResource.reload()"
               />
@@ -92,7 +93,9 @@ import {
               <app-loading-state
                 status="empty"
                 emptyIcon="assignment"
+                i18n-emptyTitle="@@noTrialsEmptyLbl"
                 emptyTitle="No trials"
+                i18n-emptyMessage="@@noTrialsMsgLbl"
                 emptyMessage="No trials linked to this passage."
               />
             } @else {
@@ -119,7 +122,7 @@ export class PassageDetailPage {
   private readonly apiUrl = inject(API_URL);
 
   breadcrumbs = computed<Breadcrumb[]>(() => [
-    { label: 'Passages', route: '/passages' },
+    { label: $localize`Passages`, route: '/passages' },
     { label: this.id() },
   ]);
 
@@ -131,10 +134,10 @@ export class PassageDetailPage {
   );
 
   trialColumns: ColumnDef[] = [
-    { key: 'id', label: 'ID', sortable: true },
-    { key: 'success', label: 'Success', type: 'boolean' },
-    { key: 'creation_date', label: 'Created', sortable: true, type: 'date' },
-    { key: 'biobank_shipment', label: 'Shipment', type: 'boolean' },
+    { key: 'id', label: $localize`ID`, sortable: true },
+    { key: 'success', label: $localize`Success`, type: 'boolean' },
+    { key: 'creation_date', label: $localize`Created`, sortable: true, type: 'date' },
+    { key: 'biobank_shipment', label: $localize`Shipment`, type: 'boolean' },
   ];
 
   onTrialClick(trial: Trial): void {
@@ -145,7 +148,7 @@ export class PassageDetailPage {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Passage',
+        title: $localize`Delete Passage`,
         message: 'Delete this passage? This cannot be undone.',
         confirmLabel: 'Delete',
         confirmColor: 'warn',

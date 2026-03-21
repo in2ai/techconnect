@@ -20,10 +20,10 @@ import { TumorFormComponent } from '../../components/tumor-form/tumor-form.compo
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, MatIconModule, PageHeaderComponent, DataTableComponent, LoadingStateComponent],
   template: `
-    <app-page-header title="Tumors" subtitle="Tumor samples, classifications, and biobank registry">
-      <button mat-flat-button (click)="openCreateDialog()">
+    <app-page-header i18n-title="@@tumorsTitle" title="Tumors" i18n-subtitle="@@tumorsSubtitle" subtitle="Track tumor samples, classifications, and biobank codes">
+      <button mat-flat-button color="primary" (click)="openCreateDialog()">
         <mat-icon>add</mat-icon>
-        Add Tumor
+        <ng-container i18n="@@addTumor">Add Tumor</ng-container>
       </button>
     </app-page-header>
 
@@ -47,13 +47,13 @@ export class TumorListPage {
   private destroyRef = inject(DestroyRef);
 
   columns: ColumnDef[] = [
-    { key: 'biobank_code', label: 'Biobank Code', sortable: true },
-    { key: 'lab_code', label: 'Lab Code', sortable: true },
-    { key: 'classification', label: 'Classification', sortable: true },
-    { key: 'organ', label: 'Organ', sortable: true },
-    { key: 'grade', label: 'Grade', sortable: true },
-    { key: 'status', label: 'Status', sortable: true },
-    { key: 'patient_nhc', label: 'Patient NHC', sortable: true },
+    { key: 'biobank_code', label: $localize`Biobank Code`, sortable: true },
+    { key: 'lab_code', label: $localize`Lab Code`, sortable: true },
+    { key: 'classification', label: $localize`Classification`, sortable: true },
+    { key: 'organ', label: $localize`Organ`, sortable: true },
+    { key: 'grade', label: $localize`Grade`, sortable: true },
+    { key: 'status', label: $localize`Status`, sortable: true },
+    { key: 'patient_nhc', label: $localize`Patient NHC`, sortable: true },
   ];
 
   tumorsResource = httpResource<Tumor[]>(() => `${this.apiUrl}/tumors`, { defaultValue: [] });

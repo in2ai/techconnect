@@ -7,14 +7,34 @@ import {
   computed,
   viewChild,
   effect,
+  Injectable,
 } from '@angular/core';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatPaginatorModule, MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+
+@Injectable()
+export class CustomPaginatorIntl extends MatPaginatorIntl {
+  override itemsPerPageLabel = $localize`:@@itemsPerPage:Items per page:`;
+  override nextPageLabel     = $localize`:@@nextPage:Next page`;
+  override previousPageLabel = $localize`:@@previousPage:Previous page`;
+  override firstPageLabel    = $localize`:@@firstPage:First page`;
+  override lastPageLabel     = $localize`:@@lastPage:Last page`;
+
+  override getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (length === 0 || pageSize === 0) {
+      return $localize`:@@pageOfEmpty:0 of ${length}:length:`;
+    }
+    length = Math.max(length, 0);
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+    return $localize`:@@pageOf:${startIndex + 1}:start: - ${endIndex}:end: of ${length}:length:`;
+  };
+}
 
 export interface ColumnDef {
   key: string;
@@ -26,6 +46,7 @@ export interface ColumnDef {
 @Component({
   selector: 'app-data-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [{ provide: MatPaginatorIntl, useClass: CustomPaginatorIntl }],
   imports: [
     MatTableModule,
     MatSortModule,
@@ -42,6 +63,7 @@ export interface ColumnDef {
           <mat-icon matPrefix>search</mat-icon>
           <input
             matInput
+            i18n-placeholder="@@filterRecordsPlaceholder"
             placeholder="Filter records…"
             [value]="filterValue()"
             (input)="applyFilter($any($event.target).value)"
@@ -54,7 +76,7 @@ export interface ColumnDef {
           }
         </mat-form-field>
 
-        <span class="table-count"> {{ dataSource().filteredData.length }} records </span>
+        <span class="table-count" i18n> {{ dataSource().filteredData.length }} records </span>
       </div>
 
       <div class="table-container">

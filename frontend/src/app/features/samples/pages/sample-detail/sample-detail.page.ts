@@ -31,13 +31,13 @@ import {
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header title="Sample" [breadcrumbs]="breadcrumbs()">
+    <app-page-header i18n-title="@@sampleTitle" title="Sample" [breadcrumbs]="breadcrumbs()">
       <button
         mat-stroked-button
         (click)="openEditDialog()"
         [disabled]="!resource.hasValue()"
       >
-        <mat-icon>edit</mat-icon> Edit
+        <mat-icon>edit</mat-icon> <ng-container i18n="@@editBtn">Edit</ng-container>
       </button>
       <button
         mat-stroked-button
@@ -45,7 +45,7 @@ import {
         (click)="confirmDelete()"
         [disabled]="!resource.hasValue()"
       >
-        <mat-icon>delete</mat-icon> Delete
+        <mat-icon>delete</mat-icon> <ng-container i18n="@@deleteBtn">Delete</ng-container>
       </button>
     </app-page-header>
 
@@ -54,6 +54,7 @@ import {
     } @else if (resource.error()) {
       <app-loading-state
         status="error"
+        i18n-errorMessage="@@failedToLoadSample"
         errorMessage="Failed to load sample"
         (retry)="resource.reload()"
       />
@@ -62,46 +63,52 @@ import {
         <mat-card-content>
           <div class="detail-grid">
             <div class="detail-item">
-              <span class="detail-label">ID</span
+              <span class="detail-label" i18n="@@sampleIdLbl">ID</span
               ><span class="detail-value">{{ resource.value()!.id }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Biopsy Date</span
+              <span class="detail-label" i18n="@@sampleBiopsyDateLbl">Biopsy Date</span
               ><span class="detail-value">{{ resource.value()!.biopsy_date || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Tumor</span
+              <span class="detail-label" i18n="@@sampleTumorLbl">Tumor</span
               ><span class="detail-value">{{ resource.value()!.tumor_biobank_code || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Has Serum</span
-              ><span class="detail-value">{{
-                resource.value()!.has_serum === true
-                  ? 'Yes'
-                  : resource.value()!.has_serum === false
-                    ? 'No'
-                    : '—'
-              }}</span>
+              <span class="detail-label" i18n="@@sampleHasSerumLbl">Has Serum</span
+              ><span class="detail-value">
+                @if(resource.value()!.has_serum === true) {
+                  <ng-container i18n="@@yesOpt">Yes</ng-container>
+                } @else if(resource.value()!.has_serum === false) {
+                  <ng-container i18n="@@noOpt">No</ng-container>
+                } @else {
+                  —
+                }
+              </span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Has Buffy Coat</span
-              ><span class="detail-value">{{
-                resource.value()!.has_buffy === true
-                  ? 'Yes'
-                  : resource.value()!.has_buffy === false
-                    ? 'No'
-                    : '—'
-              }}</span>
+              <span class="detail-label" i18n="@@sampleHasBuffyCoatLbl">Has Buffy Coat</span
+              ><span class="detail-value">
+                @if(resource.value()!.has_buffy === true) {
+                  <ng-container i18n="@@yesOpt">Yes</ng-container>
+                } @else if(resource.value()!.has_buffy === false) {
+                  <ng-container i18n="@@noOpt">No</ng-container>
+                } @else {
+                  —
+                }
+              </span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Has Plasma</span
-              ><span class="detail-value">{{
-                resource.value()!.has_plasma === true
-                  ? 'Yes'
-                  : resource.value()!.has_plasma === false
-                    ? 'No'
-                    : '—'
-              }}</span>
+              <span class="detail-label" i18n="@@sampleHasPlasmaLbl">Has Plasma</span
+              ><span class="detail-value">
+                @if(resource.value()!.has_plasma === true) {
+                  <ng-container i18n="@@yesOpt">Yes</ng-container>
+                } @else if(resource.value()!.has_plasma === false) {
+                  <ng-container i18n="@@noOpt">No</ng-container>
+                } @else {
+                  —
+                }
+              </span>
             </div>
           </div>
         </mat-card-content>
@@ -120,7 +127,7 @@ export class SampleDetailPage {
   private readonly apiUrl = inject(API_URL);
 
   breadcrumbs = computed<Breadcrumb[]>(() => [
-    { label: 'Samples', route: '/samples' },
+    { label: $localize`Samples`, route: '/samples' },
     { label: this.id() },
   ]);
 
@@ -154,7 +161,7 @@ export class SampleDetailPage {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Sample',
+        title: $localize`Delete Sample`,
         message: 'Delete this sample? This cannot be undone.',
         confirmLabel: 'Delete',
         confirmColor: 'warn',

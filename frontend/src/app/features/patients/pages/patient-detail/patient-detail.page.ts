@@ -42,14 +42,14 @@ import {
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header [title]="'Patient ' + nhc()" [breadcrumbs]="breadcrumbs()">
+    <app-page-header [title]="pageTitle()" [breadcrumbs]="breadcrumbs()">
       <button mat-stroked-button (click)="openEditDialog()">
         <mat-icon>edit</mat-icon>
-        Edit
+        <ng-container i18n="@@editBtn">Edit</ng-container>
       </button>
       <button mat-stroked-button color="warn" (click)="confirmDelete()">
         <mat-icon>delete</mat-icon>
-        Delete
+        <ng-container i18n="@@deleteBtn">Delete</ng-container>
       </button>
     </app-page-header>
 
@@ -58,6 +58,7 @@ import {
     } @else if (patientResource.error()) {
       <app-loading-state
         status="error"
+        i18n-errorMessage="@@failedToLoadPatient"
         errorMessage="Failed to load patient"
         (retry)="patientResource.reload()"
       />
@@ -66,15 +67,15 @@ import {
         <mat-card-content>
           <div class="detail-grid">
             <div class="detail-item">
-              <span class="detail-label">NHC</span>
+              <span class="detail-label" i18n>NHC</span>
               <span class="detail-value">{{ patientResource.value()!.nhc }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Sex</span>
+              <span class="detail-label" i18n>Sex</span>
               <span class="detail-value">{{ patientResource.value()!.sex || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label">Birth Date</span>
+              <span class="detail-label" i18n>Birth Date</span>
               <span class="detail-value">{{ patientResource.value()!.birth_date || '—' }}</span>
             </div>
           </div>
@@ -82,13 +83,14 @@ import {
       </mat-card>
 
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
-        <mat-tab label="Tumors">
+        <mat-tab i18n-label="@@tumorsTab" label="Tumors">
           <div class="tab-content">
             @if (tumorsResource.isLoading()) {
               <app-loading-state status="loading" />
             } @else if (tumorsResource.error()) {
               <app-loading-state
                 status="error"
+                i18n-errorMessage="@@failedToLoadTumors"
                 errorMessage="Failed to load tumors"
                 (retry)="tumorsResource.reload()"
               />
@@ -96,7 +98,9 @@ import {
               <app-loading-state
                 status="empty"
                 emptyIcon="coronavirus"
+                i18n-emptyTitle="@@noTumorsEmpty"
                 emptyTitle="No tumors"
+                i18n-emptyMessage="@@noTumorsMsg"
                 emptyMessage="No tumor samples linked to this patient."
               />
             } @else if (tumorsResource.hasValue()) {
@@ -115,16 +119,16 @@ import {
 })
 export class PatientDetailPage {
   nhc = input.required<string>();
+  pageTitle = computed(() => $localize`:@@patientDetailTitle:Patient ${this.nhc()}:nhc:`);
 
-  private router = inject(Router);
-  private dialog = inject(MatDialog);
-  private patientService = inject(PatientService);
-  private tumorService = inject(TumorService);
-  private notification = inject(NotificationService);
-  private apiUrl = inject(API_URL);
+  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
+  private readonly patientService = inject(PatientService);
+  private readonly notification = inject(NotificationService);
+  private readonly apiUrl = inject(API_URL);
 
   breadcrumbs = computed<Breadcrumb[]>(() => [
-    { label: 'Patients', route: '/patients' },
+    { label: $localize`Patients`, route: '/patients' },
     { label: this.nhc() },
   ]);
 
@@ -139,12 +143,12 @@ export class PatientDetailPage {
   );
 
   tumorColumns: ColumnDef[] = [
-    { key: 'biobank_code', label: 'Biobank Code', sortable: true },
-    { key: 'lab_code', label: 'Lab Code', sortable: true },
-    { key: 'classification', label: 'Classification', sortable: true },
-    { key: 'organ', label: 'Organ', sortable: true },
-    { key: 'status', label: 'Status', sortable: true },
-    { key: 'registration_date', label: 'Registration', sortable: true, type: 'date' },
+    { key: 'biobank_code', label: $localize`Biobank Code`, sortable: true },
+    { key: 'lab_code', label: $localize`Lab Code`, sortable: true },
+    { key: 'classification', label: $localize`Classification`, sortable: true },
+    { key: 'organ', label: $localize`Organ`, sortable: true },
+    { key: 'status', label: $localize`Status`, sortable: true },
+    { key: 'registration_date', label: $localize`Registration`, sortable: true, type: 'date' },
   ];
 
   onTumorClick(tumor: Tumor): void {
@@ -178,7 +182,7 @@ export class PatientDetailPage {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '400px',
       data: {
-        title: 'Delete Patient',
+        title: $localize`Delete Patient`,
         message: `Are you sure you want to delete patient ${this.nhc()}? This action cannot be undone.`,
         confirmLabel: 'Delete',
         confirmColor: 'warn',

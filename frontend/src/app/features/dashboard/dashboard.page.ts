@@ -23,9 +23,9 @@ interface DashboardCard {
   template: `
     <div class="dashboard-hero">
       <div class="hero-content">
-        <span class="hero-badge">Platform</span>
-        <h1 class="hero-title">Welcome to TechConnect</h1>
-        <p class="hero-subtitle">
+        <span class="hero-badge" i18n>Platform</span>
+        <h1 class="hero-title" i18n>Welcome to TechConnect</h1>
+        <p class="hero-subtitle" i18n>
           Biomedical research data management platform. Navigate through your registry, biomodels,
           and clinical trial data.
         </p>
@@ -268,52 +268,52 @@ export class DashboardPage {
 
   cards: DashboardCard[] = [
     {
-      title: 'Patients',
+      title: $localize`Patients`,
       icon: 'person',
       route: '/patients',
       endpoint: 'patients',
       color: '#2563eb',
-      description: 'View and manage patient records and demographics.',
+      description: $localize`View and manage patient records and demographics.`,
     },
     {
-      title: 'Tumors',
+      title: $localize`Tumors`,
       icon: 'coronavirus',
       route: '/tumors',
       endpoint: 'tumors',
       color: '#dc2626',
-      description: 'Track tumor samples, classifications, and biobank codes.',
+      description: $localize`Track tumor samples, classifications, and biobank codes.`,
     },
     {
-      title: 'Samples',
+      title: $localize`Samples`,
       icon: 'water_drop',
       route: '/samples',
       endpoint: 'samples',
       color: '#0891b2',
-      description: 'Manage serum, buffy coat, and plasma samples.',
+      description: $localize`Manage serum, buffy coat, and plasma samples.`,
     },
     {
-      title: 'Biomodels',
+      title: $localize`Biomodels`,
       icon: 'science',
       route: '/biomodels',
       endpoint: 'biomodels',
       color: '#7c3aed',
-      description: 'Preclinical biomodels derived from tumor samples.',
+      description: $localize`Preclinical biomodels derived from tumor samples.`,
     },
     {
-      title: 'Passages',
+      title: $localize`Passages`,
       icon: 'swap_horiz',
       route: '/passages',
       endpoint: 'passages',
       color: '#059669',
-      description: 'Track biomodel passages, viability, and growth indices.',
+      description: $localize`Track biomodel passages, viability, and growth indices.`,
     },
     {
-      title: 'Trials',
+      title: $localize`Trials`,
       icon: 'assignment',
       route: '/trials',
       endpoint: 'trials',
       color: '#d97706',
-      description: 'PDX, PDO, and LC trial data with detailed outcomes.',
+      description: $localize`PDX, PDO, and LC trial data with detailed outcomes.`,
     },
   ];
 

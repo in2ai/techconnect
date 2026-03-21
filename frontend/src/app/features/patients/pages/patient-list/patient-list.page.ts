@@ -24,10 +24,10 @@ import { PatientFormComponent } from '../../components/patient-form/patient-form
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header title="Patients" subtitle="Manage patient records and demographics">
+    <app-page-header i18n-title="@@patientsTitle" title="Patients" i18n-subtitle="@@patientsSubtitle" subtitle="Manage patient records and demographics">
       <button mat-flat-button (click)="openCreateDialog()">
         <mat-icon>add</mat-icon>
-        Add Patient
+        <ng-container i18n="@@addPatient">Add Patient</ng-container>
       </button>
     </app-page-header>
 
@@ -39,7 +39,9 @@ import { PatientFormComponent } from '../../components/patient-form/patient-form
       <app-loading-state
         status="empty"
         emptyIcon="person_off"
+        i18n-emptyTitle="@@noPatientsYet"
         emptyTitle="No patients yet"
+        i18n-emptyMessage="@@addFirstPatient"
         emptyMessage="Add your first patient to get started."
       />
     } @else if (patientsResource.hasValue()) {
@@ -59,9 +61,9 @@ export class PatientListPage {
   private apiUrl = inject(API_URL);
 
   columns: ColumnDef[] = [
-    { key: 'nhc', label: 'NHC', sortable: true },
-    { key: 'sex', label: 'Sex', sortable: true },
-    { key: 'birth_date', label: 'Birth Date', sortable: true, type: 'date' },
+    { key: 'nhc', label: $localize`NHC`, sortable: true },
+    { key: 'sex', label: $localize`Sex`, sortable: true },
+    { key: 'birth_date', label: $localize`Birth Date`, sortable: true, type: 'date' },
   ];
 
   patientsResource = httpResource<Patient[]>(() => `${this.apiUrl}/patients`, {
