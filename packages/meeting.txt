@@ -40,3 +40,5 @@ SECUENCIACION GENOMICA -> id, texto libre
 DATOS MOLECULARES -> id, texto libre
 
 VISTA JERARQUICA A PARTIR DEL PACIENTE, DE PASE O DE RATON, 
+
+Órgano en tumor admite nulos

@@ -58,6 +58,8 @@ erDiagram
         boolean has_tumor_tissue
         boolean has_non_tumor_tissue
         date obtain_date
+        string organ
+        boolean is_metastasis
         string tumor_biobank_code FK
     }
 
