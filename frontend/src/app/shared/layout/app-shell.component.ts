@@ -1,10 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
@@ -27,6 +28,7 @@ interface NavItem {
     MatListModule,
     MatIconModule,
     MatButtonModule,
+    MatMenuModule,
   ],
   template: `
     <mat-sidenav-container class="shell-container">
@@ -78,8 +80,41 @@ interface NavItem {
             </button>
           }
           <div style="flex: 1"></div>
-          <button mat-button class="lang-switch-btn" (click)="switchLanguage('en')" i18n>EN</button>
-          <button mat-button class="lang-switch-btn" (click)="switchLanguage('es')" i18n>ES</button>
+          
+          <button 
+            mat-button 
+            [matMenuTriggerFor]="langMenu" 
+            class="lang-selector-btn"
+            aria-label="Select language"
+            i18n-aria-label
+          >
+            <mat-icon class="lang-icon">language</mat-icon>
+            <span class="lang-label">
+              {{ currentLangName() }}
+            </span>
+            <mat-icon class="chevron-icon">keyboard_arrow_down</mat-icon>
+          </button>
+
+          <mat-menu #langMenu="matMenu" class="lang-dropdown-menu">
+            <button mat-menu-item (click)="switchLanguage('en')" [class.active-lang]="currentLang() === 'en'">
+              <span class="lang-item-content">
+                <span class="lang-code">EN</span>
+                <span class="lang-full" i18n>English</span>
+                @if (currentLang() === 'en') {
+                  <mat-icon class="check-icon">check</mat-icon>
+                }
+              </span>
+            </button>
+            <button mat-menu-item (click)="switchLanguage('es')" [class.active-lang]="currentLang() === 'es'">
+              <span class="lang-item-content">
+                <span class="lang-code">ES</span>
+                <span class="lang-full" i18n>Español</span>
+                @if (currentLang() === 'es') {
+                  <mat-icon class="check-icon">check</mat-icon>
+                }
+              </span>
+            </button>
+          </mat-menu>
         </mat-toolbar>
 
         <main class="content-area">
@@ -236,10 +271,83 @@ interface NavItem {
       padding: 0 1.25rem;
     }
 
-    .lang-switch-btn {
-      min-width: unset;
-      padding: 0 12px;
-      font-weight: 600;
+    .lang-selector-btn {
+      height: 40px;
+      padding: 0 12px 0 8px !important;
+      border-radius: 20px !important;
+      background: var(--mat-sys-surface-container-high);
+      color: var(--mat-sys-on-surface);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      border: 1px solid transparent;
+
+      &:hover {
+        background: var(--mat-sys-surface-container-highest);
+        border-color: var(--mat-sys-outline-variant);
+      }
+
+      .lang-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        color: var(--mat-sys-primary);
+      }
+
+      .lang-label {
+        font: var(--mat-sys-label-large);
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+
+      .chevron-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: var(--mat-sys-on-surface-variant);
+        margin-left: -4px;
+      }
+    }
+
+    .lang-item-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .lang-code {
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: var(--mat-sys-primary);
+      background: var(--mat-sys-primary-container);
+      padding: 2px 6px;
+      border-radius: 4px;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .lang-full {
+      flex: 1;
+    }
+
+    .check-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: var(--mat-sys-primary);
+      margin-left: 8px;
+    }
+
+    .active-lang {
+      background-color: var(--mat-sys-surface-variant) !important;
+      
+      .lang-full {
+        font-weight: 600;
+        color: var(--mat-sys-primary);
+      }
     }
 
     /* ─── Main Content ─────────────────────────────────────────── */
@@ -283,6 +391,15 @@ export class AppShellComponent {
   isMobile = toSignal(this.breakpoint.observe([Breakpoints.Handset]).pipe(map((r) => r.matches)), {
     initialValue: false,
   });
+
+  currentLang = signal(this.detectLanguage());
+  currentLangName = computed(() => (this.currentLang() === 'es' ? 'Español' : 'English'));
+
+  private detectLanguage(): string {
+    const path = globalThis.location.pathname;
+    if (path.startsWith('/es/') || path === '/es') return 'es';
+    return 'en';
+  }
 
   navGroups = [
     {
