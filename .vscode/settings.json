@@ -10,6 +10,7 @@
     "biomodelos",
     "Biomodelos",
     "biomodels",
+    "bloodtype",
     "buffy",
     "certbot",
     "Certbot",
@@ -22,6 +23,7 @@
     "facs",
     "fastapi",
     "ffpe",
+    "formcontrolname",
     "fullchain",
     "healthcheck",
     "healthz",
@@ -53,6 +55,7 @@
     "Taskfile",
     "techconnect",
     "uvicorn",
-    "viewports"
+    "viewports",
+    "WCAG"
   ]
 }

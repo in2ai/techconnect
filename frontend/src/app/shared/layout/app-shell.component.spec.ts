@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { AppShellComponent } from './app-shell.component';
 
 describe('AppShellComponent', () => {
@@ -11,7 +10,6 @@ describe('AppShellComponent', () => {
       providers: [
         provideRouter([]),
         provideHttpClient(),
-        provideNoopAnimations(),
       ],
     }).compileComponents();
   });

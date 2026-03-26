@@ -27,7 +27,11 @@ interface SamplePayload {
   has_serum: boolean | null;
   has_buffy: boolean | null;
   has_plasma: boolean | null;
-  biopsy_date: string | null;
+  has_tumor_tissue: boolean | null;
+  has_non_tumor_tissue: boolean | null;
+  obtain_date: string | null;
+  organ: string | null;
+  is_metastasis: boolean | null;
   tumor_biobank_code: string;
 }
 
@@ -133,13 +137,17 @@ export async function createTumor(
 export async function createSample(
   request: APIRequestContext,
   tumorBiobankCode: string,
-  biopsyDate: string,
+  obtainDate: string,
 ): Promise<SamplePayload> {
   return postJson<SamplePayload>(request, '/samples', {
     has_serum: true,
     has_buffy: false,
     has_plasma: true,
-    biopsy_date: biopsyDate,
+    has_tumor_tissue: false,
+    has_non_tumor_tissue: false,
+    obtain_date: obtainDate,
+    organ: 'Lung',
+    is_metastasis: false,
     tumor_biobank_code: tumorBiobankCode,
   });
 }

@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
 import { API_URL } from '../../../../core/tokens/api-url.token';
 import { BiomodelFormComponent, BiomodelFormData } from './biomodel-form.component';
@@ -12,7 +11,6 @@ describe('BiomodelFormComponent', () => {
     await TestBed.configureTestingModule({
       imports: [BiomodelFormComponent],
       providers: [
-        provideNoopAnimations(),
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: API_URL, useValue: '/api' },
@@ -25,6 +23,7 @@ describe('BiomodelFormComponent', () => {
     fixture.detectChanges();
 
     httpMock.expectOne('/api/tumors').flush([{ biobank_code: 'TB-1', classification: null }]);
+    httpMock.expectOne('/api/trials').flush([{ id: 'T-1', description: 'Trial 1' }]);
     fixture.detectChanges();
 
     return { fixture, component: fixture.componentInstance, httpMock };

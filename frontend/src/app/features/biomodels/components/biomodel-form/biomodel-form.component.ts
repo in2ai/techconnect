@@ -1,18 +1,23 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { httpResource } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { API_URL } from '../../../../core/tokens/api-url.token';
 import { Biomodel } from '../../models/biomodel.model';
 
 interface Tumor {
   biobank_code: string;
   classification: string | null;
+}
+
+interface Trial {
+  id: string;
+  description: string | null;
 }
 
 export interface BiomodelFormData {
@@ -46,6 +51,22 @@ export interface BiomodelFormData {
             <mat-select formControlName="tumor_biobank_code" required>
               @for (tumor of tumorsResource.value(); track tumor.biobank_code) {
                 <mat-option [value]="tumor.biobank_code">{{ tumor.biobank_code }}</mat-option>
+              }
+            </mat-select>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label i18n>Parent Trial (Optional)</mat-label>
+          @if (trialsResource.isLoading()) {
+            <mat-select disabled>
+              <mat-option>Loading…</mat-option>
+            </mat-select>
+          } @else {
+            <mat-select formControlName="parent_trial_id">
+              <mat-option [value]="null">None</mat-option>
+              @for (trial of trialsResource.value(); track trial.id) {
+                <mat-option [value]="trial.id">{{ trial.description || trial.id }}</mat-option>
               }
             </mat-select>
           }
@@ -100,6 +121,7 @@ export class BiomodelFormComponent {
   private readonly formBuilder = inject(FormBuilder);
 
   tumorsResource = httpResource<Tumor[]>(() => `${this.apiUrl}/tumors`, { defaultValue: [] });
+  trialsResource = httpResource<Trial[]>(() => `${this.apiUrl}/trials`, { defaultValue: [] });
 
   readonly form = this.formBuilder.group({
     id: this.formBuilder.nonNullable.control(this.data.biomodel?.id ?? ''),
@@ -114,7 +136,9 @@ export class BiomodelFormComponent {
     progresses: this.formBuilder.control<Biomodel['progresses']>(
       this.data.biomodel?.progresses ?? null,
     ),
-    viability: this.formBuilder.control<Biomodel['viability']>(this.data.biomodel?.viability ?? null),
+    viability: this.formBuilder.control<Biomodel['viability']>(
+      this.data.biomodel?.viability ?? null,
+    ),
     tumor_biobank_code: this.formBuilder.nonNullable.control(
       this.data.biomodel?.tumor_biobank_code ?? '',
       { validators: [Validators.required] },

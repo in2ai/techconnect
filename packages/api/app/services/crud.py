@@ -5,7 +5,7 @@ from uuid import UUID
 
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
-from sqlmodel import SQLModel, Session, select
+from sqlmodel import SQLModel, Session, select, func
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 
@@ -19,6 +19,35 @@ def _coerce_pk(model: type[ModelType], item_id: str) -> Any:
         except ValueError as exc:
             raise HTTPException(status_code=422, detail=f"Invalid UUID: {item_id}") from exc
     return item_id
+
+
+def _check_constraints(session: Session, model: type[ModelType], payload_data: dict, item_id: Any = None) -> None:
+    if model.__name__ == "Biomodel":
+        tumor_code = payload_data.get("tumor_biobank_code")
+        if tumor_code:
+            stmt = select(func.count()).select_from(model).where(getattr(model, "tumor_biobank_code") == tumor_code)
+            if item_id:
+                stmt = stmt.where(getattr(model, "id") != item_id)
+            if (session.scalar(stmt) or 0) >= 3:
+                raise HTTPException(status_code=400, detail="A tumor can generate max 3 biomodels")
+
+        trial_id = payload_data.get("parent_trial_id")
+        if trial_id:
+            stmt = select(func.count()).select_from(model).where(getattr(model, "parent_trial_id") == trial_id)
+            if item_id:
+                stmt = stmt.where(getattr(model, "id") != item_id)
+            if (session.scalar(stmt) or 0) >= 2:
+                raise HTTPException(status_code=400, detail="A trial generates max 2 biomodel")
+
+    elif model.__name__ == "Implant":
+        mouse_id = payload_data.get("mouse_id")
+        if mouse_id:
+            stmt = select(func.count()).select_from(model).where(getattr(model, "mouse_id") == mouse_id)
+            if item_id:
+                stmt = stmt.where(getattr(model, "id") != item_id)
+            if (session.scalar(stmt) or 0) >= 2:
+                raise HTTPException(status_code=400, detail="A mouse can have 1 or 2 implants")
+
 
 
 def list_items(
@@ -44,7 +73,10 @@ def get_item_or_404(session: Session, model: type[ModelType], item_id: str) -> M
 
 def create_item(session: Session, model: type[ModelType], payload: ModelType) -> ModelType:
     """Create and persist one entity."""
-    validated = model.model_validate(payload.model_dump())
+    payload_dump = payload.model_dump()
+    _check_constraints(session, model, payload_dump)
+    
+    validated = model.model_validate(payload_dump)
     session.add(validated)
     _commit_or_400(session)
     session.refresh(validated)
@@ -65,6 +97,8 @@ def update_item(
         return db_item
 
     merged_data = {**db_item.model_dump(), **payload_data}
+    _check_constraints(session, model, merged_data, _coerce_pk(model, item_id))
+    
     validated_item = model.model_validate(merged_data)
     validated_data = validated_item.model_dump()
     clean_data = {field: validated_data[field] for field in payload_data}

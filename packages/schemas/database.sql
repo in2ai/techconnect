@@ -47,7 +47,11 @@ CREATE TABLE sample (
 	has_serum BOOLEAN, 
 	has_buffy BOOLEAN, 
 	has_plasma BOOLEAN, 
-	biopsy_date DATE, 
+	has_tumor_tissue BOOLEAN, 
+	has_non_tumor_tissue BOOLEAN, 
+	obtain_date DATE, 
+	organ VARCHAR, 
+	is_metastasis BOOLEAN, 
 	tumor_biobank_code VARCHAR, 
 	PRIMARY KEY (id), 
 	FOREIGN KEY(tumor_biobank_code) REFERENCES tumor (biobank_code)

@@ -1119,6 +1119,45 @@
       <trans-unit id="noCryoTitle"><source>No cryopreservations</source><target>Sin criopreservaciones</target></trans-unit>
       <trans-unit id="noCryoMsg"><source>No cryopreservation records for this trial.</source><target>No hay registros de criopreservación para este ensayo.</target></trans-unit>
 
+      <trans-unit id="4385813074342091317" datatype="html"><source>Parent Trial (Optional)</source><target>Ensayo Padre (Opcional)</target></trans-unit>
+      <trans-unit id="7268599344128109192" datatype="html"><source>Obtain Date</source><target>Fecha de Obtención</target></trans-unit>
+      <trans-unit id="sampleObtainDateLbl" datatype="html"><source>Obtain Date</source><target>Fecha de Obtención</target></trans-unit>
+      <trans-unit id="sampleOrganLbl" datatype="html"><source>Organ</source><target>Órgano</target></trans-unit>
+      <trans-unit id="sampleHasTumorTissueLbl" datatype="html"><source>Has Tumor Tissue</source><target>Tiene Tejido Tumoral</target></trans-unit>
+      <trans-unit id="sampleHasNonTumorTissueLbl" datatype="html"><source>Has Non-Tumor Tissue</source><target>Tiene Tejido No Tumoral</target></trans-unit>
+      <trans-unit id="sampleIsMetastasisLbl" datatype="html"><source>Is Metastasis</source><target>Es Metástasis</target></trans-unit>
+      <trans-unit id="inVivoDataTabLbl" datatype="html"><source>In Vivo Data</source><target>Datos In Vivo</target></trans-unit>
+      <trans-unit id="mouseSectionTitle" datatype="html"><source>Mouse Details</source><target>Detalles del Ratón</target></trans-unit>
+      <trans-unit id="addMouseBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="implantsSectionTitle" datatype="html"><source>Implants</source><target>Implantes</target></trans-unit>
+      <trans-unit id="addImplantBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="measuresSectionTitle" datatype="html"><source>Measures</source><target>Medidas</target></trans-unit>
+      <trans-unit id="addMeasureBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="facsTabLbl" datatype="html"><source>FACS</source><target>FACS</target></trans-unit>
+      <trans-unit id="facsSectionTitle" datatype="html"><source>FACS Data</source><target>Datos de FACS</target></trans-unit>
+      <trans-unit id="addFacsBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="usageRecordsTitle" datatype="html"><source>Usage Records</source><target>Registros de Uso</target></trans-unit>
+      <trans-unit id="addUsageBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="imagesTitle" datatype="html"><source>Images</source><target>Imágenes</target></trans-unit>
+      <trans-unit id="addImageBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="cryoTitle" datatype="html"><source>Cryopreservation</source><target>Criopreservación</target></trans-unit>
+      <trans-unit id="addCryoBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="biomodelsTabLbl" datatype="html"><source>Biomodels</source><target>Biomodelos</target></trans-unit>
+      <trans-unit id="addBiomodelBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="genomicTabLbl" datatype="html"><source>Genomic Sequencing</source><target>Secuenciación Genómica</target></trans-unit>
+      <trans-unit id="genomicsTitle" datatype="html"><source>Genomic Sequencing</source><target>Secuenciación Genómica</target></trans-unit>
+      <trans-unit id="addGenomicsBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="molecularTabLbl" datatype="html"><source>Molecular Data</source><target>Datos Moleculares</target></trans-unit>
+      <trans-unit id="molecularTitle" datatype="html"><source>Molecular Data</source><target>Datos Moleculares</target></trans-unit>
+      <trans-unit id="addMolecularBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="1675689016821020718" datatype="html"><source>Mouse ID</source><target>ID del Ratón</target></trans-unit>
+      <trans-unit id="8692557689585740385" datatype="html"><source>Implant ID</source><target>ID del Implante</target></trans-unit>
+      <trans-unit id="6555318547274416232" datatype="html"><source>Value</source><target>Valor</target></trans-unit>
+      <trans-unit id="770492681595827297" datatype="html"><source>Measure</source><target>Medida</target></trans-unit>
+      <trans-unit id="8286804311024638809" datatype="html"><source>Annotations</source><target>Anotaciones</target></trans-unit>
+      <trans-unit id="8197760814140039374" datatype="html"><source>Select language</source><target>Seleccionar idioma</target></trans-unit>
+      <trans-unit id="5866254605255506989" datatype="html"><source>English</source><target>Inglés</target></trans-unit>
+      <trans-unit id="7535527225967694107" datatype="html"><source>Español</source><target>Español</target></trans-unit>
     </body>
   </file>
 </xliff>

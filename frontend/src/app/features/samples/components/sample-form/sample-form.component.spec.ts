@@ -1,9 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
+import { By } from '@angular/platform-browser';
+
 import { API_URL } from '../../../../core/tokens/api-url.token';
 import { SampleFormComponent, SampleFormData } from './sample-form.component';
 
@@ -12,7 +12,6 @@ describe('SampleFormComponent', () => {
     await TestBed.configureTestingModule({
       imports: [SampleFormComponent],
       providers: [
-        provideNoopAnimations(),
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: API_URL, useValue: '/api' },
@@ -51,7 +50,11 @@ describe('SampleFormComponent', () => {
         has_serum: true,
         has_buffy: false,
         has_plasma: true,
-        biopsy_date: '2023-03-11',
+        has_tumor_tissue: false,
+        has_non_tumor_tissue: false,
+        organ: 'Lung',
+        is_metastasis: false,
+        obtain_date: '2023-03-11',
         tumor_biobank_code: 'TB-1',
       },
     });
@@ -61,7 +64,11 @@ describe('SampleFormComponent', () => {
       has_serum: true,
       has_buffy: false,
       has_plasma: true,
-      biopsy_date: '2023-03-11',
+      has_tumor_tissue: false,
+      has_non_tumor_tissue: false,
+      organ: 'Lung',
+      is_metastasis: false,
+      obtain_date: '2023-03-11',
       tumor_biobank_code: 'TB-1',
     });
     httpMock.verify();
@@ -72,7 +79,7 @@ describe('SampleFormComponent', () => {
 
     component.form.patchValue({
       tumor_biobank_code: 'TB-1',
-      biopsy_date: '2024-05-18',
+      obtain_date: '2024-05-18',
       has_serum: true,
     });
     fixture.detectChanges();
@@ -85,7 +92,11 @@ describe('SampleFormComponent', () => {
       has_serum: true,
       has_buffy: null,
       has_plasma: null,
-      biopsy_date: '2024-05-18',
+      has_tumor_tissue: null,
+      has_non_tumor_tissue: null,
+      organ: null,
+      is_metastasis: null,
+      obtain_date: '2024-05-18',
       tumor_biobank_code: 'TB-1',
     });
     httpMock.verify();

@@ -1,21 +1,21 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
 import { httpResource } from '@angular/common/http';
-import { filter, switchMap, tap, catchError, take, EMPTY } from 'rxjs';
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
+import { catchError, EMPTY, filter, switchMap, take, tap } from 'rxjs';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { SampleService } from '../../services/sample.service';
-import { Sample } from '../../models/sample.model';
-import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
+import { API_URL } from '../../../../core/tokens/api-url.token';
 import {
-  DataTableComponent,
   ColumnDef,
+  DataTableComponent,
 } from '../../../../shared/components/data-table/data-table.component';
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { SampleFormComponent } from '../../components/sample-form/sample-form.component';
+import { Sample } from '../../models/sample.model';
+import { SampleService } from '../../services/sample.service';
 
 @Component({
   selector: 'app-sample-list',
@@ -28,7 +28,12 @@ import { SampleFormComponent } from '../../components/sample-form/sample-form.co
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header i18n-title="@@samplesTitle" title="Samples" i18n-subtitle="@@samplesSubtitle" subtitle="Serum, buffy coat, and plasma samples from tumors">
+    <app-page-header
+      i18n-title="@@samplesTitle"
+      title="Samples"
+      i18n-subtitle="@@samplesSubtitle"
+      subtitle="Serum, buffy coat, and plasma samples from tumors"
+    >
       <button mat-flat-button color="primary" (click)="openCreateDialog()">
         <mat-icon>add</mat-icon>
         <ng-container i18n="@@addSample">Add Sample</ng-container>
@@ -60,18 +65,18 @@ import { SampleFormComponent } from '../../components/sample-form/sample-form.co
   `,
 })
 export class SampleListPage {
-  private router = inject(Router);
-  private dialog = inject(MatDialog);
-  private service = inject(SampleService);
-  private notification = inject(NotificationService);
-  private apiUrl = inject(API_URL);
+  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
+  private readonly service = inject(SampleService);
+  private readonly notification = inject(NotificationService);
+  private readonly apiUrl = inject(API_URL);
 
   columns: ColumnDef[] = [
     { key: 'id', label: $localize`ID`, sortable: true },
     { key: 'has_serum', label: $localize`Serum`, type: 'boolean' },
     { key: 'has_buffy', label: $localize`Buffy Coat`, type: 'boolean' },
     { key: 'has_plasma', label: $localize`Plasma`, type: 'boolean' },
-    { key: 'biopsy_date', label: $localize`Date`, sortable: true, type: 'date' },
+    { key: 'obtain_date', label: $localize`Date`, sortable: true, type: 'date' },
     { key: 'tumor_biobank_code', label: $localize`Tumor`, sortable: true },
   ];
 

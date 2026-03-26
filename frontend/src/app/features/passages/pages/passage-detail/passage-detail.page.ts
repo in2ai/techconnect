@@ -1,29 +1,29 @@
-import { Component, ChangeDetectionStrategy, inject, input, computed } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { PassageService } from '../../services/passage.service';
-import { Passage } from '../../models/passage.model';
-import { Trial } from '../../../trials/models/trial.model';
-import {
-  PageHeaderComponent,
-  Breadcrumb,
-} from '../../../../shared/components/page-header/page-header.component';
-import {
-  DataTableComponent,
-  ColumnDef,
-} from '../../../../shared/components/data-table/data-table.component';
-import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+import { API_URL } from '../../../../core/tokens/api-url.token';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  ColumnDef,
+  DataTableComponent,
+} from '../../../../shared/components/data-table/data-table.component';
+import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+import {
+  Breadcrumb,
+  PageHeaderComponent,
+} from '../../../../shared/components/page-header/page-header.component';
+import { LCTrial, PDOTrial, PDXTrial, Trial } from '../../../trials/models/trial.model';
+import { Passage } from '../../models/passage.model';
+import { PassageService } from '../../services/passage.service';
 
 @Component({
   selector: 'app-passage-detail',
@@ -80,13 +80,18 @@ import {
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
         <mat-tab i18n-label="@@trialsTabLbl" label="Trials">
           <div class="tab-content">
-            @if (trialsResource.isLoading()) {
+            @if (
+              trialsResource.isLoading() ||
+              pdxTrialsResource.isLoading() ||
+              pdoTrialsResource.isLoading() ||
+              lcTrialsResource.isLoading()
+            ) {
               <app-loading-state status="loading" />
             } @else if (trialsResource.error()) {
               <app-loading-state
                 status="error"
                 i18n-errorMessage="@@failedToLoadTrials"
-                errorMessage="Unable to load trials"
+                errorMessage="Failed to load trials"
                 (retry)="trialsResource.reload()"
               />
             } @else if (filteredTrials().length === 0) {
@@ -128,13 +133,31 @@ export class PassageDetailPage {
 
   passageResource = httpResource<Passage>(() => `${this.apiUrl}/passages/${this.id()}`);
   trialsResource = httpResource<Trial[]>(() => `${this.apiUrl}/trials`, { defaultValue: [] });
+  pdxTrialsResource = httpResource<PDXTrial[]>(() => `${this.apiUrl}/pdx-trials`, {
+    defaultValue: [],
+  });
+  pdoTrialsResource = httpResource<PDOTrial[]>(() => `${this.apiUrl}/pdo-trials`, {
+    defaultValue: [],
+  });
+  lcTrialsResource = httpResource<LCTrial[]>(() => `${this.apiUrl}/lc-trials`, {
+    defaultValue: [],
+  });
 
-  filteredTrials = computed(
-    () => this.trialsResource.value()?.filter((t) => t.passage_id === this.id()) ?? [],
-  );
+  filteredTrials = computed(() => {
+    const trials = this.trialsResource.value()?.filter((t) => t.passage_id === this.id()) ?? [];
+    const pdx = new Set(this.pdxTrialsResource.value()?.map((t) => t.id) ?? []);
+    const pdo = new Set(this.pdoTrialsResource.value()?.map((t) => t.id) ?? []);
+    const lc = new Set(this.lcTrialsResource.value()?.map((t) => t.id) ?? []);
+
+    return trials.map((t) => ({
+      ...t,
+      type: pdx.has(t.id) ? 'PDX' : pdo.has(t.id) ? 'PDO' : lc.has(t.id) ? 'LC' : 'Unknown',
+    }));
+  });
 
   trialColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID`, sortable: true },
+    { key: 'type', label: $localize`Type`, sortable: true },
     { key: 'success', label: $localize`Success`, type: 'boolean' },
     { key: 'creation_date', label: $localize`Created`, sortable: true, type: 'date' },
     { key: 'biobank_shipment', label: $localize`Shipment`, type: 'boolean' },

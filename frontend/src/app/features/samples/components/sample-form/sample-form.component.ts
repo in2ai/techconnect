@@ -1,12 +1,12 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { httpResource } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { API_URL } from '../../../../core/tokens/api-url.token';
 import { Sample } from '../../models/sample.model';
 
@@ -51,13 +51,21 @@ export interface SampleFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n>Biopsy Date</mat-label>
-          <input matInput formControlName="biopsy_date" type="date" />
+          <mat-label i18n>Obtain Date</mat-label>
+          <input matInput formControlName="obtain_date" type="date" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label i18n>Organ</mat-label>
+          <input matInput formControlName="organ" />
         </mat-form-field>
         <div class="checkbox-group">
           <mat-checkbox formControlName="has_serum">Has Serum</mat-checkbox>
           <mat-checkbox formControlName="has_buffy">Has Buffy Coat</mat-checkbox>
           <mat-checkbox formControlName="has_plasma">Has Plasma</mat-checkbox>
+          <mat-checkbox formControlName="has_tumor_tissue">Has Tumor Tissue</mat-checkbox>
+          <mat-checkbox formControlName="has_non_tumor_tissue">Has Non-Tumor Tissue</mat-checkbox>
+          <mat-checkbox formControlName="is_metastasis">Is Metastasis</mat-checkbox>
         </div>
       </form>
     </mat-dialog-content>
@@ -78,6 +86,7 @@ export interface SampleFormData {
     .checkbox-group {
       grid-column: 1 / -1;
       display: flex;
+      flex-wrap: wrap;
       gap: 1.5rem;
       padding: 0.5rem 0;
     }
@@ -94,8 +103,22 @@ export class SampleFormComponent {
     id: this.formBuilder.nonNullable.control(this.data.biopsy?.id ?? ''),
     has_serum: this.formBuilder.control<Sample['has_serum']>(this.data.biopsy?.has_serum ?? null),
     has_buffy: this.formBuilder.control<Sample['has_buffy']>(this.data.biopsy?.has_buffy ?? null),
-    has_plasma: this.formBuilder.control<Sample['has_plasma']>(this.data.biopsy?.has_plasma ?? null),
-    biopsy_date: this.formBuilder.control<Sample['biopsy_date']>(this.data.biopsy?.biopsy_date ?? null),
+    has_plasma: this.formBuilder.control<Sample['has_plasma']>(
+      this.data.biopsy?.has_plasma ?? null,
+    ),
+    has_tumor_tissue: this.formBuilder.control<Sample['has_tumor_tissue']>(
+      this.data.biopsy?.has_tumor_tissue ?? null,
+    ),
+    has_non_tumor_tissue: this.formBuilder.control<Sample['has_non_tumor_tissue']>(
+      this.data.biopsy?.has_non_tumor_tissue ?? null,
+    ),
+    obtain_date: this.formBuilder.control<Sample['obtain_date']>(
+      this.data.biopsy?.obtain_date ?? null,
+    ),
+    organ: this.formBuilder.control<Sample['organ']>(this.data.biopsy?.organ ?? null),
+    is_metastasis: this.formBuilder.control<Sample['is_metastasis']>(
+      this.data.biopsy?.is_metastasis ?? null,
+    ),
     tumor_biobank_code: this.formBuilder.nonNullable.control(
       this.data.biopsy?.tumor_biobank_code ?? '',
       { validators: [Validators.required] },

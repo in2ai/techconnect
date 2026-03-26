@@ -42,3 +42,5 @@ DATOS MOLECULARES -> id, texto libre
 VISTA JERARQUICA A PARTIR DEL PACIENTE, DE PASE O DE RATON, 
 
 Órgano en tumor admite nulos
+
+Permitir filtrar por tipo de órgano y de tumor en los biomodelos, y crear filtros para los diferentes tipos de datos

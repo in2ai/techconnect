@@ -16,17 +16,27 @@ import {
   ColumnDef,
   DataTableComponent,
 } from '../../../../shared/components/data-table/data-table.component';
+import {
+  EntityField,
+  GenericEntityDialogData,
+  GenericEntityFormComponent,
+} from '../../../../shared/components/generic-entity-form/generic-entity-form.component';
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import {
   Breadcrumb,
   PageHeaderComponent,
 } from '../../../../shared/components/page-header/page-header.component';
+import { Biomodel } from '../../../biomodels/models/biomodel.model';
 import { TrialFormComponent } from '../../components/trial-form/trial-form.component';
 import {
   Cryopreservation,
+  FACS,
   Implant,
+  Measure,
   Mouse,
+  TrialGenomicSequencing,
   TrialImage,
+  TrialMolecularData,
   UsageRecord,
 } from '../../models/trial-related.model';
 import { LCTrial, PDOTrial, PDXTrial, Trial } from '../../models/trial.model';
@@ -119,7 +129,11 @@ import { TrialService } from '../../services/trial.service';
       <!-- PDX Trial Section -->
       @if (currentPdxTrial()) {
         <mat-card appearance="outlined" class="section-card">
-          <mat-card-header><mat-card-title i18n="@@pdxTrialDetailsTitle">PDX Trial Details</mat-card-title></mat-card-header>
+          <mat-card-header
+            ><mat-card-title i18n="@@pdxTrialDetailsTitle"
+              >PDX Trial Details</mat-card-title
+            ></mat-card-header
+          >
           <mat-card-content>
             <div class="detail-grid">
               <div class="detail-item">
@@ -162,7 +176,11 @@ import { TrialService } from '../../services/trial.service';
       <!-- PDO Trial Section -->
       @if (currentPdoTrial()) {
         <mat-card appearance="outlined" class="section-card">
-          <mat-card-header><mat-card-title i18n="@@pdoTrialDetailsTitle">PDO Trial Details</mat-card-title></mat-card-header>
+          <mat-card-header
+            ><mat-card-title i18n="@@pdoTrialDetailsTitle"
+              >PDO Trial Details</mat-card-title
+            ></mat-card-header
+          >
           <mat-card-content>
             <div class="detail-grid">
               <div class="detail-item">
@@ -195,7 +213,11 @@ import { TrialService } from '../../services/trial.service';
       <!-- LC Trial Section -->
       @if (currentLcTrial()) {
         <mat-card appearance="outlined" class="section-card">
-          <mat-card-header><mat-card-title i18n="@@lcTrialDetailsTitle">LC Trial Details</mat-card-title></mat-card-header>
+          <mat-card-header
+            ><mat-card-title i18n="@@lcTrialDetailsTitle"
+              >LC Trial Details</mat-card-title
+            ></mat-card-header
+          >
           <mat-card-content>
             <div class="detail-grid">
               <div class="detail-item">
@@ -228,135 +250,372 @@ import { TrialService } from '../../services/trial.service';
       }
 
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
-        <mat-tab i18n-label="@@implantsTabLbl" label="Implants">
-          <div class="tab-content">
-            @if (implantsResource.isLoading()) {
-              <app-loading-state status="loading" />
-            } @else if (implantsResource.error()) {
-              <app-loading-state
-                status="error"
-                i18n-errorMessage="@@failedToLoadImplants"
-                errorMessage="Failed to load implants"
-                (retry)="implantsResource.reload()"
-              />
-            } @else if (filteredImplants().length === 0) {
-              <app-loading-state
-                status="empty"
-                emptyIcon="build"
-                i18n-emptyTitle="@@noImplantsTitle"
-                emptyTitle="No implants"
-                i18n-emptyMessage="@@noImplantsMsg"
-                emptyMessage="No implants linked to this trial."
-              />
-            } @else {
-              <app-data-table [columns]="implantColumns" [data]="filteredImplants()" />
-            }
-          </div>
-        </mat-tab>
-        <mat-tab i18n-label="@@mouseTabLbl" label="Mouse">
-          <div class="tab-content">
-            @if (mouseResource.isLoading()) {
-              <app-loading-state status="loading" />
-            } @else if (mouseResource.error()) {
-              <app-loading-state
-                status="error"
-                i18n-errorMessage="@@failedToLoadMice"
-                errorMessage="Failed to load mice"
-                (retry)="mouseResource.reload()"
-              />
-            } @else if (filteredMice().length === 0) {
-              <app-loading-state
-                status="empty"
-                emptyIcon="pets"
-                i18n-emptyTitle="@@noMiceTitle"
-                emptyTitle="No mice"
-                i18n-emptyMessage="@@noMiceMsg"
-                emptyMessage="No mice linked to this trial."
-              />
-            } @else {
-              <app-data-table [columns]="mouseColumns" [data]="filteredMice()" />
-            }
-          </div>
-        </mat-tab>
+        @if (currentPdxTrial()) {
+          <mat-tab i18n-label="@@inVivoDataTabLbl" label="In Vivo Data">
+            <div class="tab-content in-vivo-content">
+              <div class="section-container">
+                <div class="section-header">
+                  <h3 i18n="@@mouseSectionTitle">Mouse Details</h3>
+                  <button mat-flat-button color="primary" (click)="openMouseForm()">
+                    <mat-icon>add</mat-icon> <ng-container i18n="@@addMouseBtn">Add</ng-container>
+                  </button>
+                </div>
+                @if (mouseResource.isLoading()) {
+                  <app-loading-state status="loading" />
+                } @else if (mouseResource.error()) {
+                  <app-loading-state
+                    status="error"
+                    errorMessage="Failed to load mice"
+                    (retry)="mouseResource.reload()"
+                  />
+                } @else if (filteredMice().length === 0) {
+                  <app-loading-state
+                    status="empty"
+                    emptyIcon="pets"
+                    emptyTitle="No mice"
+                    emptyMessage="No mice linked to this trial."
+                  />
+                } @else {
+                  <app-data-table
+                    [columns]="mouseColumns"
+                    [data]="filteredMice()"
+                    (rowClicked)="openMouseForm($event)"
+                  />
+                }
+              </div>
+
+              <div class="section-container">
+                <div class="section-header">
+                  <h3 i18n="@@implantsSectionTitle">Implants</h3>
+                  <button mat-flat-button color="primary" (click)="openImplantForm()">
+                    <mat-icon>add</mat-icon> <ng-container i18n="@@addImplantBtn">Add</ng-container>
+                  </button>
+                </div>
+                @if (implantsResource.isLoading()) {
+                  <app-loading-state status="loading" />
+                } @else if (implantsResource.error()) {
+                  <app-loading-state
+                    status="error"
+                    errorMessage="Failed to load implants"
+                    (retry)="implantsResource.reload()"
+                  />
+                } @else if (filteredImplants().length === 0) {
+                  <app-loading-state
+                    status="empty"
+                    emptyIcon="build"
+                    emptyTitle="No implants"
+                    emptyMessage="No implants linked to this trial."
+                  />
+                } @else {
+                  <app-data-table
+                    [columns]="implantColumns"
+                    [data]="filteredImplants()"
+                    (rowClicked)="openImplantForm($event)"
+                  />
+                }
+              </div>
+
+              <div class="section-container">
+                <div class="section-header">
+                  <h3 i18n="@@measuresSectionTitle">Measures</h3>
+                  <button mat-flat-button color="primary" (click)="openMeasureForm()">
+                    <mat-icon>add</mat-icon> <ng-container i18n="@@addMeasureBtn">Add</ng-container>
+                  </button>
+                </div>
+                @if (measuresResource.isLoading()) {
+                  <app-loading-state status="loading" />
+                } @else if (measuresResource.error()) {
+                  <app-loading-state
+                    status="error"
+                    errorMessage="Failed to load measures"
+                    (retry)="measuresResource.reload()"
+                  />
+                } @else if (filteredMeasures().length === 0) {
+                  <app-loading-state
+                    status="empty"
+                    emptyIcon="straighten"
+                    emptyTitle="No measures"
+                    emptyMessage="No measures linked to this trial's implants."
+                  />
+                } @else {
+                  <app-data-table
+                    [columns]="measureColumns"
+                    [data]="filteredMeasures()"
+                    (rowClicked)="openMeasureForm($event)"
+                  />
+                }
+              </div>
+            </div>
+          </mat-tab>
+        }
+
+        @if (currentLcTrial()) {
+          <mat-tab i18n-label="@@facsTabLbl" label="FACS">
+            <div class="tab-content in-vivo-content">
+              <div class="section-container">
+                <div class="section-header">
+                  <h3 i18n="@@facsSectionTitle">FACS Data</h3>
+                  <button mat-flat-button color="primary" (click)="openFacsForm()">
+                    <mat-icon>add</mat-icon> <ng-container i18n="@@addFacsBtn">Add</ng-container>
+                  </button>
+                </div>
+                @if (facsResource.isLoading()) {
+                  <app-loading-state status="loading" />
+                } @else if (facsResource.error()) {
+                  <app-loading-state
+                    status="error"
+                    errorMessage="Failed to load FACS"
+                    (retry)="facsResource.reload()"
+                  />
+                } @else if (filteredFACS().length === 0) {
+                  <app-loading-state
+                    status="empty"
+                    emptyIcon="biotech"
+                    emptyTitle="No FACS data"
+                    emptyMessage="No FACS data linked to this trial."
+                  />
+                } @else {
+                  <app-data-table
+                    [columns]="facsColumns"
+                    [data]="filteredFACS()"
+                    (rowClicked)="openFacsForm($event)"
+                  />
+                }
+              </div>
+            </div>
+          </mat-tab>
+        }
+
         <mat-tab i18n-label="@@usageRecordsTabLbl" label="Usage Records">
-          <div class="tab-content">
-            @if (usageResource.isLoading()) {
-              <app-loading-state status="loading" />
-            } @else if (usageResource.error()) {
-              <app-loading-state
-                status="error"
-                i18n-errorMessage="@@failedToLoadUsage"
-                errorMessage="Failed to load usage records"
-                (retry)="usageResource.reload()"
-              />
-            } @else if (filteredUsage().length === 0) {
-              <app-loading-state
-                status="empty"
-                emptyIcon="receipt"
-                i18n-emptyTitle="@@noUsageTitle"
-                emptyTitle="No usage records"
-                i18n-emptyMessage="@@noUsageMsg"
-                emptyMessage="No usage records for this trial."
-              />
-            } @else {
-              <app-data-table [columns]="usageColumns" [data]="filteredUsage()" />
-            }
+          <div class="tab-content in-vivo-content">
+            <div class="section-container">
+              <div class="section-header">
+                <h3 i18n="@@usageRecordsTitle">Usage Records</h3>
+                <button mat-flat-button color="primary" (click)="openUsageForm()">
+                  <mat-icon>add</mat-icon> <ng-container i18n="@@addUsageBtn">Add</ng-container>
+                </button>
+              </div>
+              @if (usageResource.isLoading()) {
+                <app-loading-state status="loading" />
+              } @else if (usageResource.error()) {
+                <app-loading-state
+                  status="error"
+                  errorMessage="Failed to load usage records"
+                  (retry)="usageResource.reload()"
+                />
+              } @else if (filteredUsage().length === 0) {
+                <app-loading-state
+                  status="empty"
+                  emptyIcon="receipt"
+                  emptyTitle="No usage records"
+                  emptyMessage="No usage records for this trial."
+                />
+              } @else {
+                <app-data-table
+                  [columns]="usageColumns"
+                  [data]="filteredUsage()"
+                  (rowClicked)="openUsageForm($event)"
+                />
+              }
+            </div>
           </div>
         </mat-tab>
         <mat-tab i18n-label="@@imagesTabLbl" label="Images">
-          <div class="tab-content">
-            @if (imagesResource.isLoading()) {
-              <app-loading-state status="loading" />
-            } @else if (imagesResource.error()) {
-              <app-loading-state
-                status="error"
-                i18n-errorMessage="@@failedToLoadImages"
-                errorMessage="Failed to load images"
-                (retry)="imagesResource.reload()"
-              />
-            } @else if (filteredImages().length === 0) {
-              <app-loading-state
-                status="empty"
-                emptyIcon="image"
-                i18n-emptyTitle="@@noImagesTitle"
-                emptyTitle="No images"
-                i18n-emptyMessage="@@noImagesMsg"
-                emptyMessage="No images for this trial."
-              />
-            } @else {
-              <app-data-table [columns]="imageColumns" [data]="filteredImages()" />
-            }
+          <div class="tab-content in-vivo-content">
+            <div class="section-container">
+              <div class="section-header">
+                <h3 i18n="@@imagesTitle">Images</h3>
+                <button mat-flat-button color="primary" (click)="openImageForm()">
+                  <mat-icon>add</mat-icon> <ng-container i18n="@@addImageBtn">Add</ng-container>
+                </button>
+              </div>
+              @if (imagesResource.isLoading()) {
+                <app-loading-state status="loading" />
+              } @else if (imagesResource.error()) {
+                <app-loading-state
+                  status="error"
+                  errorMessage="Failed to load images"
+                  (retry)="imagesResource.reload()"
+                />
+              } @else if (filteredImages().length === 0) {
+                <app-loading-state
+                  status="empty"
+                  emptyIcon="image"
+                  emptyTitle="No images"
+                  emptyMessage="No images for this trial."
+                />
+              } @else {
+                <app-data-table
+                  [columns]="imageColumns"
+                  [data]="filteredImages()"
+                  (rowClicked)="openImageForm($event)"
+                />
+              }
+            </div>
           </div>
         </mat-tab>
         <mat-tab i18n-label="@@cryoTabLbl" label="Cryopreservation">
-          <div class="tab-content">
-            @if (cryoResource.isLoading()) {
-              <app-loading-state status="loading" />
-            } @else if (cryoResource.error()) {
-              <app-loading-state
-                status="error"
-                i18n-errorMessage="@@failedToLoadCryo"
-                errorMessage="Failed to load cryopreservations"
-                (retry)="cryoResource.reload()"
-              />
-            } @else if (filteredCryo().length === 0) {
-              <app-loading-state
-                status="empty"
-                emptyIcon="ac_unit"
-                i18n-emptyTitle="@@noCryoTitle"
-                emptyTitle="No cryopreservations"
-                i18n-emptyMessage="@@noCryoMsg"
-                emptyMessage="No cryopreservation records for this trial."
-              />
-            } @else {
-              <app-data-table [columns]="cryoColumns" [data]="filteredCryo()" />
-            }
+          <div class="tab-content in-vivo-content">
+            <div class="section-container">
+              <div class="section-header">
+                <h3 i18n="@@cryoTitle">Cryopreservation</h3>
+                <button mat-flat-button color="primary" (click)="openCryoForm()">
+                  <mat-icon>add</mat-icon> <ng-container i18n="@@addCryoBtn">Add</ng-container>
+                </button>
+              </div>
+              @if (cryoResource.isLoading()) {
+                <app-loading-state status="loading" />
+              } @else if (cryoResource.error()) {
+                <app-loading-state
+                  status="error"
+                  errorMessage="Failed to load cryo"
+                  (retry)="cryoResource.reload()"
+                />
+              } @else if (filteredCryo().length === 0) {
+                <app-loading-state
+                  status="empty"
+                  emptyIcon="ac_unit"
+                  emptyTitle="No cryopreservations"
+                  emptyMessage="No cryo records for this trial."
+                />
+              } @else {
+                <app-data-table
+                  [columns]="cryoColumns"
+                  [data]="filteredCryo()"
+                  (rowClicked)="openCryoForm($event)"
+                />
+              }
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab i18n-label="@@biomodelsTabLbl" label="Biomodels">
+          <div class="tab-content in-vivo-content">
+            <div class="section-container">
+              <div class="section-header">
+                <h3 i18n="@@biomodelsTitle">Biomodels</h3>
+                <button mat-flat-button color="primary" (click)="openBiomodelForm()">
+                  <mat-icon>add</mat-icon> <ng-container i18n="@@addBiomodelBtn">Add</ng-container>
+                </button>
+              </div>
+              @if (biomodelsResource.isLoading()) {
+                <app-loading-state status="loading" />
+              } @else if (biomodelsResource.error()) {
+                <app-loading-state
+                  status="error"
+                  errorMessage="Failed to load biomodels"
+                  (retry)="biomodelsResource.reload()"
+                />
+              } @else if (filteredBiomodels().length === 0) {
+                <app-loading-state
+                  status="empty"
+                  emptyIcon="science"
+                  emptyTitle="No biomodels"
+                  emptyMessage="No biomodels generated by this trial."
+                />
+              } @else {
+                <app-data-table
+                  [columns]="biomodelColumns"
+                  [data]="filteredBiomodels()"
+                  (rowClicked)="openBiomodelForm($event)"
+                />
+              }
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab i18n-label="@@genomicTabLbl" label="Genomic Sequencing">
+          <div class="tab-content in-vivo-content">
+            <div class="section-container">
+              <div class="section-header">
+                <h3 i18n="@@genomicsTitle">Genomic Sequencing</h3>
+                <button mat-flat-button color="primary" (click)="openGenomicForm()">
+                  <mat-icon>add</mat-icon> <ng-container i18n="@@addGenomicsBtn">Add</ng-container>
+                </button>
+              </div>
+              @if (genomicResource.isLoading()) {
+                <app-loading-state status="loading" />
+              } @else if (genomicResource.error()) {
+                <app-loading-state
+                  status="error"
+                  errorMessage="Failed to load genomic data"
+                  (retry)="genomicResource.reload()"
+                />
+              } @else if (filteredGenomic().length === 0) {
+                <app-loading-state
+                  status="empty"
+                  emptyIcon="science"
+                  emptyTitle="No genomic data"
+                  emptyMessage="No genomic sequencing data for this trial."
+                />
+              } @else {
+                <app-data-table
+                  [columns]="genomicColumns"
+                  [data]="filteredGenomic()"
+                  (rowClicked)="openGenomicForm($event)"
+                />
+              }
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab i18n-label="@@molecularTabLbl" label="Molecular Data">
+          <div class="tab-content in-vivo-content">
+            <div class="section-container">
+              <div class="section-header">
+                <h3 i18n="@@molecularTitle">Molecular Data</h3>
+                <button mat-flat-button color="primary" (click)="openMolecularForm()">
+                  <mat-icon>add</mat-icon> <ng-container i18n="@@addMolecularBtn">Add</ng-container>
+                </button>
+              </div>
+              @if (molecularResource.isLoading()) {
+                <app-loading-state status="loading" />
+              } @else if (molecularResource.error()) {
+                <app-loading-state
+                  status="error"
+                  errorMessage="Failed to load molecular data"
+                  (retry)="molecularResource.reload()"
+                />
+              } @else if (filteredMolecular().length === 0) {
+                <app-loading-state
+                  status="empty"
+                  emptyIcon="biotech"
+                  emptyTitle="No molecular data"
+                  emptyMessage="No molecular data for this trial."
+                />
+              } @else {
+                <app-data-table
+                  [columns]="molecularColumns"
+                  [data]="filteredMolecular()"
+                  (rowClicked)="openMolecularForm($event)"
+                />
+              }
+            </div>
           </div>
         </mat-tab>
       </mat-tab-group>
     }
   `,
-  styles: [],
+  styles: [
+    `
+      .in-vivo-content {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding-top: 16px;
+      }
+      .section-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .section-header h3 {
+        margin: 0;
+      }
+    `,
+  ],
 })
 export class TrialDetailPage {
   id = input.required<string>();
@@ -395,6 +654,23 @@ export class TrialDetailPage {
   cryoResource = httpResource<Cryopreservation[]>(() => `${this.apiUrl}/cryopreservations`, {
     defaultValue: [],
   });
+  measuresResource = httpResource<Measure[]>(() => `${this.apiUrl}/measures`, { defaultValue: [] });
+  facsResource = httpResource<FACS[]>(() => `${this.apiUrl}/facs`, { defaultValue: [] });
+  genomicResource = httpResource<TrialGenomicSequencing[]>(
+    () => `${this.apiUrl}/trial-genomic-sequencings`,
+    {
+      defaultValue: [],
+    },
+  );
+  molecularResource = httpResource<TrialMolecularData[]>(
+    () => `${this.apiUrl}/trial-molecular-data`,
+    {
+      defaultValue: [],
+    },
+  );
+  biomodelsResource = httpResource<Biomodel[]>(() => `${this.apiUrl}/biomodels`, {
+    defaultValue: [],
+  });
 
   currentPdxTrial = computed(
     () => this.pdxTrialsResource.value()?.find((trial) => trial.id === this.id()) ?? undefined,
@@ -422,12 +698,27 @@ export class TrialDetailPage {
   filteredCryo = computed(
     () => this.cryoResource.value()?.filter((c) => c.trial_id === this.id()) ?? [],
   );
-
+  filteredMeasures = computed(() => {
+    const implantIds = new Set(this.filteredImplants().map((i) => i.id));
+    return this.measuresResource.value()?.filter((m) => implantIds.has(m.implant_id)) ?? [];
+  });
+  filteredFACS = computed(
+    () => this.facsResource.value()?.filter((f) => f.lc_trial_id === this.id()) ?? [],
+  );
+  filteredGenomic = computed(
+    () => this.genomicResource.value()?.filter((g) => g.trial_id === this.id()) ?? [],
+  );
+  filteredMolecular = computed(
+    () => this.molecularResource.value()?.filter((m) => m.trial_id === this.id()) ?? [],
+  );
+  filteredBiomodels = computed(
+    () => this.biomodelsResource.value()?.filter((b) => b.parent_trial_id === this.id()) ?? [],
+  );
   implantColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID` },
+    { key: 'mouse_id', label: $localize`Mouse ID` },
     { key: 'implant_location', label: $localize`Location` },
     { key: 'type', label: $localize`Type` },
-    { key: 'size_limit', label: $localize`Size Limit`, type: 'number' },
   ];
 
   mouseColumns: ColumnDef[] = [
@@ -459,6 +750,210 @@ export class TrialDetailPage {
     { key: 'cryo_date', label: $localize`Date`, type: 'date' },
     { key: 'vial_count', label: $localize`Vials`, type: 'number' },
   ];
+
+  measureColumns: ColumnDef[] = [
+    { key: 'id', label: $localize`ID` },
+    { key: 'implant_id', label: $localize`Implant ID` },
+    { key: 'measure_date', label: $localize`Date`, type: 'date' },
+    { key: 'measure_value', label: $localize`Value`, type: 'number' },
+  ];
+
+  facsColumns: ColumnDef[] = [
+    { key: 'id', label: $localize`ID` },
+    { key: 'measure', label: $localize`Measure` },
+    { key: 'measure_value', label: $localize`Value`, type: 'number' },
+  ];
+
+  genomicColumns: ColumnDef[] = [
+    { key: 'id', label: $localize`ID` },
+    { key: 'annotations', label: $localize`Annotations` },
+  ];
+
+  molecularColumns: ColumnDef[] = [
+    { key: 'id', label: $localize`ID` },
+    { key: 'annotations', label: $localize`Annotations` },
+  ];
+
+  biomodelColumns: ColumnDef[] = [
+    { key: 'id', label: $localize`ID` },
+    { key: 'type', label: $localize`Type` },
+    { key: 'status', label: $localize`Status` },
+    { key: 'viability', label: $localize`Viability`, type: 'number' },
+    { key: 'creation_date', label: $localize`Created`, type: 'date' },
+  ];
+
+  openEntityForm(
+    title: string,
+    endpoint: string,
+    fields: EntityField[],
+    resource: any,
+    entity: any = null,
+    defaultValues: any = {},
+  ) {
+    const dialogRef = this.dialog.open(GenericEntityFormComponent, {
+      width: '500px',
+      data: { title, endpoint, fields, entity, defaultValues } as GenericEntityDialogData,
+    });
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res) resource.reload();
+    });
+  }
+
+  openMouseForm(entity: Mouse | null = null) {
+    this.openEntityForm(
+      'Mouse',
+      '/mice',
+      [
+        { name: 'strain', label: 'Strain', type: 'text' },
+        { name: 'sex', label: 'Sex', type: 'text' },
+        { name: 'birth_date', label: 'Birth Date', type: 'date' },
+        { name: 'death_date', label: 'Death Date', type: 'date' },
+        { name: 'death_cause', label: 'Death Cause', type: 'text' },
+        { name: 'animal_facility', label: 'Animal Facility', type: 'text' },
+        { name: 'proex', label: 'Proex', type: 'text' },
+      ],
+      this.mouseResource,
+      entity,
+      { pdx_trial_id: this.id() },
+    );
+  }
+
+  openImplantForm(entity: Implant | null = null) {
+    const miceOpts = this.filteredMice().map((m) => ({ value: m.id, label: m.id }));
+    this.openEntityForm(
+      'Implant',
+      '/implants',
+      [
+        { name: 'mouse_id', label: 'Mouse ID', type: 'select', options: miceOpts, required: true },
+        { name: 'implant_location', label: 'Location', type: 'text' },
+        { name: 'type', label: 'Type', type: 'text' },
+      ],
+      this.implantsResource,
+      entity,
+      {},
+    );
+  }
+
+  openMeasureForm(entity: Measure | null = null) {
+    const implantOpts = this.filteredImplants().map((i) => ({ value: i.id, label: i.id }));
+    this.openEntityForm(
+      'Measure',
+      '/measures',
+      [
+        {
+          name: 'implant_id',
+          label: 'Implant ID',
+          type: 'select',
+          options: implantOpts,
+          required: true,
+        },
+        { name: 'measure_date', label: 'Date', type: 'date' },
+        { name: 'measure_value', label: 'Value', type: 'number' },
+      ],
+      this.measuresResource,
+      entity,
+      {},
+    );
+  }
+
+  openFacsForm(entity: FACS | null = null) {
+    this.openEntityForm(
+      'FACS',
+      '/facs',
+      [
+        { name: 'measure', label: 'Measure', type: 'text' },
+        { name: 'measure_value', label: 'Value', type: 'number' },
+      ],
+      this.facsResource,
+      entity,
+      { lc_trial_id: this.id() },
+    );
+  }
+
+  openUsageForm(entity: UsageRecord | null = null) {
+    this.openEntityForm(
+      'Usage Record',
+      '/usage-records',
+      [
+        { name: 'record_type', label: 'Record Type', type: 'text' },
+        { name: 'description', label: 'Description', type: 'text' },
+        { name: 'record_date', label: 'Date', type: 'date' },
+      ],
+      this.usageResource,
+      entity,
+      { trial_id: this.id() },
+    );
+  }
+
+  openImageForm(entity: TrialImage | null = null) {
+    this.openEntityForm(
+      'Image',
+      '/images',
+      [
+        { name: 'image_date', label: 'Date', type: 'date' },
+        { name: 'scanner_magnification', label: 'Magnification', type: 'number' },
+        { name: 'type', label: 'Type', type: 'text' },
+        { name: 'ap_review', label: 'AP Review', type: 'boolean' },
+      ],
+      this.imagesResource,
+      entity,
+      { trial_id: this.id() },
+    );
+  }
+
+  openCryoForm(entity: Cryopreservation | null = null) {
+    this.openEntityForm(
+      'Cryopreservation',
+      '/cryopreservations',
+      [
+        { name: 'location', label: 'Location', type: 'text' },
+        { name: 'cryo_date', label: 'Date', type: 'date' },
+        { name: 'vial_count', label: 'Vial Count', type: 'number' },
+      ],
+      this.cryoResource,
+      entity,
+      { trial_id: this.id() },
+    );
+  }
+
+  openGenomicForm(entity: TrialGenomicSequencing | null = null) {
+    this.openEntityForm(
+      'Genomic Sequence',
+      '/trial-genomic-sequencings',
+      [{ name: 'annotations', label: 'Annotations', type: 'text' }],
+      this.genomicResource,
+      entity,
+      { trial_id: this.id() },
+    );
+  }
+
+  openMolecularForm(entity: TrialMolecularData | null = null) {
+    this.openEntityForm(
+      'Molecular Data',
+      '/trial-molecular-data',
+      [{ name: 'annotations', label: 'Annotations', type: 'text' }],
+      this.molecularResource,
+      entity,
+      { trial_id: this.id() },
+    );
+  }
+
+  openBiomodelForm(entity: Biomodel | null = null) {
+    this.openEntityForm(
+      'Biomodel',
+      '/biomodels',
+      [
+        { name: 'type', label: 'Type', type: 'text' },
+        { name: 'description', label: 'Description', type: 'text' },
+        { name: 'status', label: 'Status', type: 'text' },
+        { name: 'progresses', label: 'Progresses', type: 'boolean' },
+        { name: 'viability', label: 'Viability', type: 'number' },
+      ],
+      this.biomodelsResource,
+      entity,
+      { parent_trial_id: this.id() },
+    );
+  }
 
   openEditDialog(): void {
     const trial = this.trialResource.value();

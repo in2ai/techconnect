@@ -1,31 +1,31 @@
-import { Component, ChangeDetectionStrategy, inject, input, computed } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { TumorService } from '../../services/tumor.service';
-import { Tumor } from '../../models/tumor.model';
-import { Biomodel } from '../../../biomodels/models/biomodel.model';
-import { Sample } from '../../../samples/models/sample.model';
-import {
-  PageHeaderComponent,
-  Breadcrumb,
-} from '../../../../shared/components/page-header/page-header.component';
-import {
-  DataTableComponent,
-  ColumnDef,
-} from '../../../../shared/components/data-table/data-table.component';
-import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
-import { TumorFormComponent } from '../../components/tumor-form/tumor-form.component';
+import { API_URL } from '../../../../core/tokens/api-url.token';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {
+  ColumnDef,
+  DataTableComponent,
+} from '../../../../shared/components/data-table/data-table.component';
+import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+import {
+  Breadcrumb,
+  PageHeaderComponent,
+} from '../../../../shared/components/page-header/page-header.component';
+import { Biomodel } from '../../../biomodels/models/biomodel.model';
+import { Sample } from '../../../samples/models/sample.model';
+import { TumorFormComponent } from '../../components/tumor-form/tumor-form.component';
+import { Tumor } from '../../models/tumor.model';
+import { TumorService } from '../../services/tumor.service';
 
 @Component({
   selector: 'app-tumor-detail',
@@ -165,7 +165,11 @@ import {
                 emptyMessage="No samples linked to this tumor."
               />
             } @else {
-              <app-data-table [columns]="lbColumns" [data]="filteredSamples()" />
+              <app-data-table
+                [columns]="lbColumns"
+                [data]="filteredSamples()"
+                (rowClicked)="onSampleClick($event)"
+              />
             }
           </div>
         </mat-tab>
@@ -220,11 +224,15 @@ export class TumorDetailPage {
     { key: 'has_serum', label: $localize`Serum`, type: 'boolean' },
     { key: 'has_buffy', label: $localize`Buffy Coat`, type: 'boolean' },
     { key: 'has_plasma', label: $localize`Plasma`, type: 'boolean' },
-    { key: 'biopsy_date', label: $localize`Date`, sortable: true, type: 'date' },
+    { key: 'obtain_date', label: $localize`Date`, sortable: true, type: 'date' },
   ];
 
   onBiomodelClick(biomodel: Biomodel): void {
     this.router.navigate(['/biomodels', biomodel.id]);
+  }
+
+  onSampleClick(sample: Sample): void {
+    this.router.navigate(['/samples', sample.id]);
   }
 
   openEditDialog(): void {

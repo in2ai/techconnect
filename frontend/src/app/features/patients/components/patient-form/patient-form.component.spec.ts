@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
 import { PatientFormComponent, PatientFormData } from './patient-form.component';
 
@@ -9,7 +8,6 @@ describe('PatientFormComponent', () => {
     await TestBed.configureTestingModule({
       imports: [PatientFormComponent],
       providers: [
-        provideNoopAnimations(),
         { provide: MAT_DIALOG_DATA, useValue: data },
       ],
     }).compileComponents();

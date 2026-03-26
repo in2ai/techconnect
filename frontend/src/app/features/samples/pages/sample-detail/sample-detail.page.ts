@@ -1,24 +1,24 @@
-import { Component, ChangeDetectionStrategy, inject, input, computed } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { SampleService } from '../../services/sample.service';
-import { Sample } from '../../models/sample.model';
-import { SampleFormComponent } from '../../components/sample-form/sample-form.component';
-import {
-  PageHeaderComponent,
-  Breadcrumb,
-} from '../../../../shared/components/page-header/page-header.component';
-import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+import { API_URL } from '../../../../core/tokens/api-url.token';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+import {
+  Breadcrumb,
+  PageHeaderComponent,
+} from '../../../../shared/components/page-header/page-header.component';
+import { SampleFormComponent } from '../../components/sample-form/sample-form.component';
+import { Sample } from '../../models/sample.model';
+import { SampleService } from '../../services/sample.service';
 
 @Component({
   selector: 'app-sample-detail',
@@ -32,11 +32,7 @@ import {
   ],
   template: `
     <app-page-header i18n-title="@@sampleTitle" title="Sample" [breadcrumbs]="breadcrumbs()">
-      <button
-        mat-stroked-button
-        (click)="openEditDialog()"
-        [disabled]="!resource.hasValue()"
-      >
+      <button mat-stroked-button (click)="openEditDialog()" [disabled]="!resource.hasValue()">
         <mat-icon>edit</mat-icon> <ng-container i18n="@@editBtn">Edit</ng-container>
       </button>
       <button
@@ -67,8 +63,12 @@ import {
               ><span class="detail-value">{{ resource.value()!.id }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label" i18n="@@sampleBiopsyDateLbl">Biopsy Date</span
-              ><span class="detail-value">{{ resource.value()!.biopsy_date || '—' }}</span>
+              <span class="detail-label" i18n="@@sampleObtainDateLbl">Obtain Date</span
+              ><span class="detail-value">{{ resource.value()!.obtain_date || '—' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label" i18n="@@sampleOrganLbl">Organ</span
+              ><span class="detail-value">{{ resource.value()!.organ || '—' }}</span>
             </div>
             <div class="detail-item">
               <span class="detail-label" i18n="@@sampleTumorLbl">Tumor</span
@@ -77,9 +77,9 @@ import {
             <div class="detail-item">
               <span class="detail-label" i18n="@@sampleHasSerumLbl">Has Serum</span
               ><span class="detail-value">
-                @if(resource.value()!.has_serum === true) {
+                @if (resource.value()!.has_serum === true) {
                   <ng-container i18n="@@yesOpt">Yes</ng-container>
-                } @else if(resource.value()!.has_serum === false) {
+                } @else if (resource.value()!.has_serum === false) {
                   <ng-container i18n="@@noOpt">No</ng-container>
                 } @else {
                   —
@@ -89,9 +89,9 @@ import {
             <div class="detail-item">
               <span class="detail-label" i18n="@@sampleHasBuffyCoatLbl">Has Buffy Coat</span
               ><span class="detail-value">
-                @if(resource.value()!.has_buffy === true) {
+                @if (resource.value()!.has_buffy === true) {
                   <ng-container i18n="@@yesOpt">Yes</ng-container>
-                } @else if(resource.value()!.has_buffy === false) {
+                } @else if (resource.value()!.has_buffy === false) {
                   <ng-container i18n="@@noOpt">No</ng-container>
                 } @else {
                   —
@@ -101,9 +101,46 @@ import {
             <div class="detail-item">
               <span class="detail-label" i18n="@@sampleHasPlasmaLbl">Has Plasma</span
               ><span class="detail-value">
-                @if(resource.value()!.has_plasma === true) {
+                @if (resource.value()!.has_plasma === true) {
                   <ng-container i18n="@@yesOpt">Yes</ng-container>
-                } @else if(resource.value()!.has_plasma === false) {
+                } @else if (resource.value()!.has_plasma === false) {
+                  <ng-container i18n="@@noOpt">No</ng-container>
+                } @else {
+                  —
+                }
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label" i18n="@@sampleHasTumorTissueLbl">Has Tumor Tissue</span
+              ><span class="detail-value">
+                @if (resource.value()!.has_tumor_tissue === true) {
+                  <ng-container i18n="@@yesOpt">Yes</ng-container>
+                } @else if (resource.value()!.has_tumor_tissue === false) {
+                  <ng-container i18n="@@noOpt">No</ng-container>
+                } @else {
+                  —
+                }
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label" i18n="@@sampleHasNonTumorTissueLbl"
+                >Has Non-Tumor Tissue</span
+              ><span class="detail-value">
+                @if (resource.value()!.has_non_tumor_tissue === true) {
+                  <ng-container i18n="@@yesOpt">Yes</ng-container>
+                } @else if (resource.value()!.has_non_tumor_tissue === false) {
+                  <ng-container i18n="@@noOpt">No</ng-container>
+                } @else {
+                  —
+                }
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label" i18n="@@sampleIsMetastasisLbl">Is Metastasis</span
+              ><span class="detail-value">
+                @if (resource.value()!.is_metastasis === true) {
+                  <ng-container i18n="@@yesOpt">Yes</ng-container>
+                } @else if (resource.value()!.is_metastasis === false) {
                   <ng-container i18n="@@noOpt">No</ng-container>
                 } @else {
                   —

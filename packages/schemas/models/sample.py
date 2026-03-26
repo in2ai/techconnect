@@ -19,8 +19,12 @@ class Sample(SQLModel, table=True):
         has_serum: Whether serum is available
         has_buffy: Whether buffy coat is available
         has_plasma: Whether plasma is available
+        has_tumor_tissue: Whether tumor tissue is available
+        has_non_tumor_tissue: Whether non-tumor tissue is available
+        obtain_date: Date of obtaining the sample
+        organ: Organ of the sample
+        is_metastasis: Whether it is a metastasis
         tumor_biobank_code: FK to Tumor (optional)
-        biopsy_date: Date of the biopsy
     """
     
     __tablename__ = "sample"
@@ -32,7 +36,11 @@ class Sample(SQLModel, table=True):
     has_serum: Optional[bool] = Field(default=None)
     has_buffy: Optional[bool] = Field(default=None)
     has_plasma: Optional[bool] = Field(default=None)
-    biopsy_date: Union[date, None] = Field(default=None)
+    has_tumor_tissue: Optional[bool] = Field(default=None)
+    has_non_tumor_tissue: Optional[bool] = Field(default=None)
+    obtain_date: Union[date, None] = Field(default=None)
+    organ: Optional[str] = Field(default=None)
+    is_metastasis: Optional[bool] = Field(default=None)
     
     # Foreign keys (optional - 0..1:1 relationship with Tumor)
     tumor_biobank_code: Optional[str] = Field(
