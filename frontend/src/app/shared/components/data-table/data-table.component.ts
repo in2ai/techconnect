@@ -1,29 +1,31 @@
 import {
-  Component,
   ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  Injectable,
   input,
   output,
   signal,
-  computed,
   viewChild,
-  effect,
-  Injectable,
 } from '@angular/core';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatSortModule, MatSort } from '@angular/material/sort';
-import { MatPaginatorModule, MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
-import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginator, MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 @Injectable()
 export class CustomPaginatorIntl extends MatPaginatorIntl {
   override itemsPerPageLabel = $localize`:@@itemsPerPage:Items per page:`;
-  override nextPageLabel     = $localize`:@@nextPage:Next page`;
+  override nextPageLabel = $localize`:@@nextPage:Next page`;
   override previousPageLabel = $localize`:@@previousPage:Previous page`;
-  override firstPageLabel    = $localize`:@@firstPage:First page`;
-  override lastPageLabel     = $localize`:@@lastPage:Last page`;
+  override firstPageLabel = $localize`:@@firstPage:First page`;
+  override lastPageLabel = $localize`:@@lastPage:Last page`;
 
   override getRangeLabel = (page: number, pageSize: number, length: number) => {
     if (length === 0 || pageSize === 0) {
@@ -31,9 +33,16 @@ export class CustomPaginatorIntl extends MatPaginatorIntl {
     }
     length = Math.max(length, 0);
     const startIndex = page * pageSize;
-    const endIndex = startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
+    const endIndex =
+      startIndex < length ? Math.min(startIndex + pageSize, length) : startIndex + pageSize;
     return $localize`:@@pageOf:${startIndex + 1}:start: - ${endIndex}:end: of ${length}:length:`;
   };
+}
+
+export interface TableFilter {
+  key: string;
+  label: string;
+  options: { label: string; value: any }[];
 }
 
 export interface ColumnDef {
@@ -45,6 +54,7 @@ export interface ColumnDef {
 
 @Component({
   selector: 'app-data-table',
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: MatPaginatorIntl, useClass: CustomPaginatorIntl }],
   imports: [
@@ -55,6 +65,8 @@ export interface ColumnDef {
     MatFormFieldModule,
     MatIconModule,
     MatButtonModule,
+    MatSelectModule,
+    MatMenuModule,
   ],
   template: `
     <div class="table-wrapper">
@@ -75,6 +87,30 @@ export interface ColumnDef {
             </button>
           }
         </mat-form-field>
+
+        <div class="filter-controls">
+          @for (filter of filters(); track filter.key) {
+            <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
+              <mat-label>{{ filter.label }}</mat-label>
+              <mat-select
+                [value]="activeFilters()[filter.key]"
+                (selectionChange)="updateFilter(filter.key, $event.value)"
+              >
+                <mat-option [value]="undefined" i18n>Any</mat-option>
+                @for (opt of filter.options; track opt.value) {
+                  <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
+
+          @if (hasActiveFilters()) {
+            <button mat-stroked-button color="warn" (click)="clearAllFilters()" class="clear-all">
+              <mat-icon>filter_alt_off</mat-icon>
+              <span i18n>Clear Filters</span>
+            </button>
+          }
+        </div>
 
         <span class="table-count" i18n> {{ dataSource().filteredData.length }} records </span>
       </div>
@@ -128,6 +164,14 @@ export interface ColumnDef {
             tabindex="0"
             role="button"
           ></tr>
+          <tr class="mat-row empty-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="columnKeys().length">
+              <div class="no-data-msg">
+                <mat-icon>search_off</mat-icon>
+                <span i18n>No records matching the filters.</span>
+              </div>
+            </td>
+          </tr>
         </table>
       </div>
 
@@ -146,14 +190,32 @@ export interface ColumnDef {
 
     .table-toolbar {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 1rem;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
     }
 
     .search-field {
       flex: 1;
+      min-width: 240px;
       max-width: 360px;
+    }
+
+    .filter-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-field {
+      width: 180px;
+    }
+
+    .clear-all {
+      height: 40px;
+      border-radius: 8px;
     }
 
     .table-count {
@@ -178,6 +240,7 @@ export interface ColumnDef {
       font-weight: 600;
       letter-spacing: 0.02em;
       color: var(--mat-sys-on-surface-variant);
+      background: var(--mat-sys-surface-container-low);
     }
 
     .clickable-row {
@@ -198,9 +261,8 @@ export interface ColumnDef {
       }
     }
 
-    /* Subtle alternating row tint */
     tr.mat-mdc-row:nth-child(even) {
-      background-color: color-mix(in srgb, var(--mat-sys-surface-variant) 25%, transparent);
+      background-color: color-mix(in srgb, var(--mat-sys-surface-variant) 15%, transparent);
     }
 
     tr.mat-mdc-row:nth-child(even):hover {
@@ -224,9 +286,24 @@ export interface ColumnDef {
       color: var(--mat-sys-outline);
     }
 
+    .no-data-msg {
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      color: var(--mat-sys-outline);
+
+      mat-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        opacity: 0.5;
+      }
+    }
+
     mat-paginator {
       border-top: 1px solid var(--mat-sys-outline-variant);
-      border-radius: 0 0 14px 14px;
     }
 
     @keyframes tableEnter {
@@ -244,25 +321,57 @@ export interface ColumnDef {
 export class DataTableComponent<T> {
   columns = input.required<ColumnDef[]>();
   data = input.required<T[]>();
+  filters = input<TableFilter[]>([]);
   pageSize = input(25);
 
   rowClicked = output<T>();
 
   filterValue = signal('');
+  activeFilters = signal<Record<string, any>>({});
   selectedRow = signal<T | null>(null);
 
   columnKeys = computed(() => this.columns().map((c) => c.key));
+  hasActiveFilters = computed(() => Object.keys(this.activeFilters()).length > 0);
 
   private readonly sort = viewChild(MatSort);
   private readonly paginator = viewChild(MatPaginator);
 
   dataSource = computed(() => {
     const ds = new MatTableDataSource<T>(this.data());
+
+    // Configure filter predicate to handle both global search and specific filters
+    ds.filterPredicate = (dataRow: any, filterStr: string) => {
+      const filtersObj = JSON.parse(filterStr);
+
+      // Global search
+      if (filtersObj.global) {
+        const globalStr = filtersObj.global.toLowerCase();
+        const dataStr = Object.values(dataRow).join(' ').toLowerCase();
+        if (!dataStr.includes(globalStr)) return false;
+      }
+
+      // Specific filters
+      for (const [key, value] of Object.entries(filtersObj.specific)) {
+        if (value !== undefined && value !== null && value !== '') {
+          const rowValue = dataRow[key];
+          if (rowValue !== value) return false;
+        }
+      }
+
+      return true;
+    };
+
     const sort = this.sort();
     const paginator = this.paginator();
     if (sort) ds.sort = sort;
     if (paginator) ds.paginator = paginator;
-    ds.filter = this.filterValue().trim().toLowerCase();
+
+    // Trigger filter with combined state
+    ds.filter = JSON.stringify({
+      global: this.filterValue().trim(),
+      specific: this.activeFilters(),
+    });
+
     return ds;
   });
 
@@ -278,6 +387,23 @@ export class DataTableComponent<T> {
 
   applyFilter(value: string): void {
     this.filterValue.set(value);
+  }
+
+  updateFilter(key: string, value: any): void {
+    this.activeFilters.update((prev) => {
+      const next = { ...prev };
+      if (value === undefined || value === null || value === '') {
+        delete next[key];
+      } else {
+        next[key] = value;
+      }
+      return next;
+    });
+  }
+
+  clearAllFilters(): void {
+    this.activeFilters.set({});
+    this.filterValue.set('');
   }
 
   onRowClick(row: T): void {

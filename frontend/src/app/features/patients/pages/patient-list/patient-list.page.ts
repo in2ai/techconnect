@@ -1,17 +1,21 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { PatientService } from '../../services/patient.service';
-import { Patient } from '../../models/patient.model';
-import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
-import { DataTableComponent, ColumnDef } from '../../../../shared/components/data-table/data-table.component';
+import { API_URL } from '../../../../core/tokens/api-url.token';
+import {
+  ColumnDef,
+  DataTableComponent,
+  TableFilter,
+} from '../../../../shared/components/data-table/data-table.component';
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { PatientFormComponent } from '../../components/patient-form/patient-form.component';
+import { Patient } from '../../models/patient.model';
+import { PatientService } from '../../services/patient.service';
 
 @Component({
   selector: 'app-patient-list',
@@ -24,8 +28,13 @@ import { PatientFormComponent } from '../../components/patient-form/patient-form
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header i18n-title="@@patientsTitle" title="Patients" i18n-subtitle="@@patientsSubtitle" subtitle="Manage patient records and demographics">
-      <button mat-flat-button (click)="openCreateDialog()">
+    <app-page-header
+      i18n-title="@@patientsTitle"
+      title="Patients"
+      i18n-subtitle="@@patientsSubtitle"
+      subtitle="Manage patient records and demographics"
+    >
+      <button mat-flat-button color="primary" (click)="openCreateDialog()">
         <mat-icon>add</mat-icon>
         <ng-container i18n="@@addPatient">Add Patient</ng-container>
       </button>
@@ -34,7 +43,11 @@ import { PatientFormComponent } from '../../components/patient-form/patient-form
     @if (patientsResource.isLoading()) {
       <app-loading-state status="loading" />
     } @else if (patientsResource.error()) {
-      <app-loading-state status="error" errorMessage="Failed to load patients" (retry)="patientsResource.reload()" />
+      <app-loading-state
+        status="error"
+        errorMessage="Failed to load patients"
+        (retry)="patientsResource.reload()"
+      />
     } @else if (patientsResource.hasValue() && patientsResource.value()!.length === 0) {
       <app-loading-state
         status="empty"
@@ -48,17 +61,18 @@ import { PatientFormComponent } from '../../components/patient-form/patient-form
       <app-data-table
         [columns]="columns"
         [data]="patientsResource.value()!"
+        [filters]="tableFilters()"
         (rowClicked)="onPatientClick($event)"
       />
     }
   `,
 })
 export class PatientListPage {
-  private router = inject(Router);
-  private dialog = inject(MatDialog);
-  private patientService = inject(PatientService);
-  private notification = inject(NotificationService);
-  private apiUrl = inject(API_URL);
+  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
+  private readonly patientService = inject(PatientService);
+  private readonly notification = inject(NotificationService);
+  private readonly apiUrl = inject(API_URL);
 
   columns: ColumnDef[] = [
     { key: 'nhc', label: $localize`NHC`, sortable: true },
@@ -68,6 +82,21 @@ export class PatientListPage {
 
   patientsResource = httpResource<Patient[]>(() => `${this.apiUrl}/patients`, {
     defaultValue: [],
+  });
+
+  tableFilters = computed<TableFilter[]>(() => {
+    const data = this.patientsResource.value() || [];
+    const sexes = Array.from(new Set(data.map((p) => p.sex).filter((s): s is string => !!s))).sort(
+      (a, b) => a.localeCompare(b),
+    );
+
+    return [
+      {
+        key: 'sex',
+        label: $localize`Sex`,
+        options: sexes.map((s) => ({ label: s, value: s })),
+      },
+    ];
   });
 
   onPatientClick(patient: Patient): void {

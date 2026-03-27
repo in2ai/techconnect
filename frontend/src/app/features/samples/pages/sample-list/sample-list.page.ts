@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +10,7 @@ import { API_URL } from '../../../../core/tokens/api-url.token';
 import {
   ColumnDef,
   DataTableComponent,
+  TableFilter,
 } from '../../../../shared/components/data-table/data-table.component';
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
@@ -59,6 +60,7 @@ import { SampleService } from '../../services/sample.service';
       <app-data-table
         [columns]="columns"
         [data]="resource.value()!"
+        [filters]="tableFilters()"
         (rowClicked)="onRowClick($event)"
       />
     }
@@ -81,6 +83,35 @@ export class SampleListPage {
   ];
 
   resource = httpResource<Sample[]>(() => `${this.apiUrl}/samples`, { defaultValue: [] });
+
+  tableFilters = computed<TableFilter[]>(() => {
+    return [
+      {
+        key: 'has_serum',
+        label: $localize`Serum`,
+        options: [
+          { label: $localize`Yes`, value: true },
+          { label: $localize`No`, value: false },
+        ],
+      },
+      {
+        key: 'has_buffy',
+        label: $localize`Buffy Coat`,
+        options: [
+          { label: $localize`Yes`, value: true },
+          { label: $localize`No`, value: false },
+        ],
+      },
+      {
+        key: 'has_plasma',
+        label: $localize`Plasma`,
+        options: [
+          { label: $localize`Yes`, value: true },
+          { label: $localize`No`, value: false },
+        ],
+      },
+    ];
+  });
 
   onRowClick(biopsy: Sample): void {
     this.router.navigate(['/samples', biopsy.id]);

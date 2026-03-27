@@ -9,6 +9,7 @@ import { API_URL } from '../../../../core/tokens/api-url.token';
 import {
   ColumnDef,
   DataTableComponent,
+  TableFilter,
 } from '../../../../shared/components/data-table/data-table.component';
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
@@ -66,6 +67,7 @@ import { TrialService } from '../../services/trial.service';
       <app-data-table
         [columns]="columns"
         [data]="trialsWithType()"
+        [filters]="tableFilters()"
         (rowClicked)="onTrialClick($event)"
       />
     }
@@ -110,6 +112,27 @@ export class TrialListPage {
     }));
   });
 
+  tableFilters = computed<TableFilter[]>(() => {
+    return [
+      {
+        key: 'type',
+        label: $localize`Trial Type`,
+        options: [
+          { label: 'PDX', value: 'PDX' },
+          { label: 'PDO', value: 'PDO' },
+          { label: 'LC', value: 'LC' },
+        ],
+      },
+      {
+        key: 'success',
+        label: $localize`Success`,
+        options: [
+          { label: $localize`Yes`, value: true },
+          { label: $localize`No`, value: false },
+        ],
+      },
+    ];
+  });
   onTrialClick(trial: Trial): void {
     this.router.navigate(['/trials', trial.id]);
   }
