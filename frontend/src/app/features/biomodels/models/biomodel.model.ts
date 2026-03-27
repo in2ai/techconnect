@@ -7,5 +7,6 @@ export interface Biomodel {
   progresses: boolean | null;
   viability: number | null;
   tumor_biobank_code: string;
+  tumor_organ: string | null;
   parent_trial_id: string | null;
 }

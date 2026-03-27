@@ -37,15 +37,16 @@ import { BiomodelFormComponent } from '../../components/biomodel-form/biomodel-f
   `,
 })
 export class BiomodelListPage {
-  private router = inject(Router);
-  private dialog = inject(MatDialog);
-  private biomodelService = inject(BiomodelService);
-  private notification = inject(NotificationService);
-  private apiUrl = inject(API_URL);
+  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
+  private readonly biomodelService = inject(BiomodelService);
+  private readonly notification = inject(NotificationService);
+  private readonly apiUrl = inject(API_URL);
 
   columns: ColumnDef[] = [
     { key: 'id', label: $localize`ID`, sortable: true },
     { key: 'type', label: $localize`Type`, sortable: true },
+    { key: 'tumor_organ', label: $localize`Organ`, sortable: true },
     { key: 'status', label: $localize`Status`, sortable: true },
     { key: 'viability', label: $localize`Viability`, sortable: true, type: 'number' },
     { key: 'progresses', label: $localize`Progresses`, type: 'boolean' },

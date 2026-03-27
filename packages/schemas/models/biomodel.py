@@ -13,6 +13,9 @@ if TYPE_CHECKING:
     from .trial import Trial
 
 
+from pydantic import computed_field
+
+
 class Biomodel(SQLModel, table=True):
     """
     Biomodel entity representing a biological model (PDX, PDO, etc.) derived from a tumor.
@@ -57,3 +60,9 @@ class Biomodel(SQLModel, table=True):
     tumor: Optional["Tumor"] = Relationship(back_populates="biomodels")
     passages: list["Passage"] = Relationship(back_populates="biomodel")
     parent_trial: Optional["Trial"] = Relationship(back_populates="child_biomodels")
+
+    @computed_field
+    @property
+    def tumor_organ(self) -> Optional[str]:
+        """Organ of origin derived from the associated Tumor."""
+        return self.tumor.organ if self.tumor else None

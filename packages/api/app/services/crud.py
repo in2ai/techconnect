@@ -50,6 +50,9 @@ def _check_constraints(session: Session, model: type[ModelType], payload_data: d
 
 
 
+from sqlalchemy.orm import joinedload
+
+
 def list_items(
     session: Session,
     model: type[ModelType],
@@ -59,13 +62,19 @@ def list_items(
 ) -> list[ModelType]:
     """List entities with offset/limit pagination."""
     statement = select(model).offset(offset).limit(limit)
+    if model.__name__ == "Biomodel":
+        statement = statement.options(joinedload(model.tumor))
     return list(session.exec(statement))
 
 
 def get_item_or_404(session: Session, model: type[ModelType], item_id: str) -> ModelType:
     """Fetch one entity or raise 404."""
     pk = _coerce_pk(model, item_id)
-    item = session.get(model, pk)
+    if model.__name__ == "Biomodel":
+        statement = select(model).where(getattr(model, "id") == pk).options(joinedload(model.tumor))
+        item = session.exec(statement).first()
+    else:
+        item = session.get(model, pk)
     if item is None:
         raise HTTPException(status_code=404, detail=f"{model.__name__} not found")
     return item
