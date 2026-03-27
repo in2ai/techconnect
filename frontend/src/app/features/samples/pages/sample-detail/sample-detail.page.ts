@@ -5,19 +5,19 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { NotificationService } from '../../../../core/services/notification.service';
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { NotificationService } from '@core/services/notification.service';
+import { API_URL } from '@core/tokens/api-url.token';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
-} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+} from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import {
   Breadcrumb,
   PageHeaderComponent,
-} from '../../../../shared/components/page-header/page-header.component';
+} from '@shared/components/page-header/page-header.component';
 import { SampleFormComponent } from '../../components/sample-form/sample-form.component';
-import { Sample } from '../../../../generated/models';
+import { Sample } from '@generated/models';
 import { SampleService } from '../../services/sample.service';
 
 @Component({

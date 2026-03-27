@@ -6,24 +6,24 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '../../../../core/tokens/api-url.token';
-import { NotificationService } from '../../../../core/services/notification.service';
+import { API_URL } from '@core/tokens/api-url.token';
+import { NotificationService } from '@core/services/notification.service';
 import { BiomodelService } from '../../services/biomodel.service';
-import { Biomodel, Passage } from '../../../../generated/models';
+import { Biomodel, Passage } from '@generated/models';
 import {
   PageHeaderComponent,
   Breadcrumb,
-} from '../../../../shared/components/page-header/page-header.component';
+} from '@shared/components/page-header/page-header.component';
 import {
   DataTableComponent,
   ColumnDef,
-} from '../../../../shared/components/data-table/data-table.component';
-import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+} from '@shared/components/data-table/data-table.component';
+import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import { BiomodelFormComponent } from '../../components/biomodel-form/biomodel-form.component';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
-} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+} from '@shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-biomodel-detail',

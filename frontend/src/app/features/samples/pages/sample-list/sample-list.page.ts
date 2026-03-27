@@ -5,17 +5,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { catchError, EMPTY, filter, switchMap, take, tap } from 'rxjs';
-import { NotificationService } from '../../../../core/services/notification.service';
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { NotificationService } from '@core/services/notification.service';
+import { API_URL } from '@core/tokens/api-url.token';
 import {
   ColumnDef,
   DataTableComponent,
   TableFilter,
-} from '../../../../shared/components/data-table/data-table.component';
-import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
-import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
+} from '@shared/components/data-table/data-table.component';
+import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { SampleFormComponent } from '../../components/sample-form/sample-form.component';
-import { Sample } from '../../../../generated/models';
+import { Sample } from '@generated/models';
 import { SampleService } from '../../services/sample.service';
 
 @Component({

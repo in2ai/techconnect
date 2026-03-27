@@ -10,8 +10,8 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { NotificationService } from '../../../core/services/notification.service';
-import { API_URL } from '../../../core/tokens/api-url.token';
+import { NotificationService } from '@core/services/notification.service';
+import { API_URL } from '@core/tokens/api-url.token';
 
 export interface EntityField {
   name: string;

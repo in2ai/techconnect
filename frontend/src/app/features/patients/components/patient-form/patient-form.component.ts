@@ -5,7 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Patient } from '../../../../generated/models';
+import { Patient } from '@generated/models';
 
 export interface PatientFormData {
   mode: 'create' | 'edit';

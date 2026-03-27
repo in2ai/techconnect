@@ -8,8 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '../../../../core/tokens/api-url.token';
-import { Passage, Trial } from '../../../../generated/models';
+import { API_URL } from '@core/tokens/api-url.token';
+import { Passage, Trial } from '@generated/models';
 
 type PassageOption = Pick<Passage, 'id' | 'number' | 'biomodel_id'>;
 

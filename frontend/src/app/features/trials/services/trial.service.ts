@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BaseCrudService } from '../../../core/services/base-crud.service';
+import { BaseCrudService } from '@core/services/base-crud.service';
 import {
   Cryopreservation,
   FACS,
@@ -14,7 +14,7 @@ import {
   TrialImage,
   TrialMolecularData,
   UsageRecord,
-} from '../../../generated/models';
+} from '@generated/models';
 
 @Injectable({ providedIn: 'root' })
 export class TrialService extends BaseCrudService<Trial> {

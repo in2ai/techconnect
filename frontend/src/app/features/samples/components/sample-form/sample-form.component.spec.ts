@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { API_URL } from '@core/tokens/api-url.token';
 import { SampleFormComponent, SampleFormData } from './sample-form.component';
 
 describe('SampleFormComponent', () => {

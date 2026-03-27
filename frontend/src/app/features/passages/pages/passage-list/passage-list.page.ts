@@ -3,11 +3,11 @@ import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '../../../../core/tokens/api-url.token';
-import { Passage } from '../../../../generated/models';
-import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
-import { DataTableComponent, ColumnDef } from '../../../../shared/components/data-table/data-table.component';
-import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+import { API_URL } from '@core/tokens/api-url.token';
+import { Passage } from '@generated/models';
+import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { DataTableComponent, ColumnDef } from '@shared/components/data-table/data-table.component';
+import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 
 @Component({
   selector: 'app-passage-list',

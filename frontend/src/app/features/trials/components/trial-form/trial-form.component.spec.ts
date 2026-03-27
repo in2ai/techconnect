@@ -3,7 +3,7 @@ import { By } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { API_URL } from '@core/tokens/api-url.token';
 import { TrialFormComponent, TrialFormData } from './trial-form.component';
 
 describe('TrialFormComponent', () => {

@@ -7,8 +7,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '../../../../core/tokens/api-url.token';
-import { Patient, Tumor } from '../../../../generated/models';
+import { API_URL } from '@core/tokens/api-url.token';
+import { Patient, Tumor } from '@generated/models';
 
 type PatientOption = Pick<Patient, 'nhc' | 'sex'>;
 

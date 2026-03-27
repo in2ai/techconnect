@@ -6,22 +6,22 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
-import { NotificationService } from '../../../../core/services/notification.service';
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { NotificationService } from '@core/services/notification.service';
+import { API_URL } from '@core/tokens/api-url.token';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
-} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+} from '@shared/components/confirm-dialog/confirm-dialog.component';
 import {
   ColumnDef,
   DataTableComponent,
-} from '../../../../shared/components/data-table/data-table.component';
-import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+} from '@shared/components/data-table/data-table.component';
+import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import {
   Breadcrumb,
   PageHeaderComponent,
-} from '../../../../shared/components/page-header/page-header.component';
-import { LCTrial, PDOTrial, PDXTrial, Passage, Trial } from '../../../../generated/models';
+} from '@shared/components/page-header/page-header.component';
+import { LCTrial, PDOTrial, PDXTrial, Passage, Trial } from '@generated/models';
 import { PassageService } from '../../services/passage.service';
 
 @Component({

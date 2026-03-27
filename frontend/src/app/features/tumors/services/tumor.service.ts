@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BaseCrudService } from '../../../core/services/base-crud.service';
-import { Tumor, TumorGenomicSequencing, TumorMolecularData } from '../../../generated/models';
+import { BaseCrudService } from '@core/services/base-crud.service';
+import { Tumor, TumorGenomicSequencing, TumorMolecularData } from '@generated/models';
 
 @Injectable({ providedIn: 'root' })
 export class TumorService extends BaseCrudService<Tumor> {

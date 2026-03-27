@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '../../core/tokens/api-url.token';
+import { API_URL } from '@core/tokens/api-url.token';
 
 interface DashboardCard {
   title: string;

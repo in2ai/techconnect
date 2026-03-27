@@ -7,25 +7,25 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '../../../../core/tokens/api-url.token';
-import { NotificationService } from '../../../../core/services/notification.service';
+import { API_URL } from '@core/tokens/api-url.token';
+import { NotificationService } from '@core/services/notification.service';
 import { PatientService } from '../../services/patient.service';
-import { Patient, Tumor } from '../../../../generated/models';
+import { Patient, Tumor } from '@generated/models';
 import { TumorService } from '../../../tumors/services/tumor.service';
 import {
   PageHeaderComponent,
   Breadcrumb,
-} from '../../../../shared/components/page-header/page-header.component';
+} from '@shared/components/page-header/page-header.component';
 import {
   DataTableComponent,
   ColumnDef,
-} from '../../../../shared/components/data-table/data-table.component';
-import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+} from '@shared/components/data-table/data-table.component';
+import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import { PatientFormComponent } from '../../components/patient-form/patient-form.component';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
-} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+} from '@shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-patient-detail',

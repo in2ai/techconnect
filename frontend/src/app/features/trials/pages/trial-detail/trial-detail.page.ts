@@ -6,26 +6,26 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
-import { NotificationService } from '../../../../core/services/notification.service';
-import { API_URL } from '../../../../core/tokens/api-url.token';
+import { NotificationService } from '@core/services/notification.service';
+import { API_URL } from '@core/tokens/api-url.token';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
-} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+} from '@shared/components/confirm-dialog/confirm-dialog.component';
 import {
   ColumnDef,
   DataTableComponent,
-} from '../../../../shared/components/data-table/data-table.component';
+} from '@shared/components/data-table/data-table.component';
 import {
   EntityField,
   GenericEntityDialogData,
   GenericEntityFormComponent,
-} from '../../../../shared/components/generic-entity-form/generic-entity-form.component';
-import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
+} from '@shared/components/generic-entity-form/generic-entity-form.component';
+import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import {
   Breadcrumb,
   PageHeaderComponent,
-} from '../../../../shared/components/page-header/page-header.component';
+} from '@shared/components/page-header/page-header.component';
 import {
   Biomodel,
   Cryopreservation,
@@ -41,7 +41,7 @@ import {
   TrialImage,
   TrialMolecularData,
   UsageRecord,
-} from '../../../../generated/models';
+} from '@generated/models';
 import { TrialFormComponent } from '../../components/trial-form/trial-form.component';
 import { TrialService } from '../../services/trial.service';
 

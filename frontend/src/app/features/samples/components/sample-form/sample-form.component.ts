@@ -7,8 +7,8 @@ import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { API_URL } from '../../../../core/tokens/api-url.token';
-import { Sample, Tumor } from '../../../../generated/models';
+import { API_URL } from '@core/tokens/api-url.token';
+import { Sample, Tumor } from '@generated/models';
 
 type TumorOption = Pick<Tumor, 'biobank_code'>;
 
