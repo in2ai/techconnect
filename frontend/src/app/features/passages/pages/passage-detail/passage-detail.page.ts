@@ -21,8 +21,7 @@ import {
   Breadcrumb,
   PageHeaderComponent,
 } from '../../../../shared/components/page-header/page-header.component';
-import { LCTrial, PDOTrial, PDXTrial, Trial } from '../../../trials/models/trial.model';
-import { Passage } from '../../models/passage.model';
+import { LCTrial, PDOTrial, PDXTrial, Passage, Trial } from '../../../../generated/models';
 import { PassageService } from '../../services/passage.service';
 
 @Component({

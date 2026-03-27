@@ -8,11 +8,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { API_URL } from '../../../../core/tokens/api-url.token';
-import { Sample } from '../../models/sample.model';
+import { Sample, Tumor } from '../../../../generated/models';
 
-interface Tumor {
-  biobank_code: string;
-}
+type TumorOption = Pick<Tumor, 'biobank_code'>;
 
 export interface SampleFormData {
   mode: 'create' | 'edit';
@@ -97,7 +95,9 @@ export class SampleFormComponent {
   readonly data = inject<SampleFormData>(MAT_DIALOG_DATA);
   private readonly formBuilder = inject(FormBuilder);
 
-  tumorsResource = httpResource<Tumor[]>(() => `${this.apiUrl}/tumors`, { defaultValue: [] });
+  tumorsResource = httpResource<TumorOption[]>(() => `${this.apiUrl}/tumors`, {
+    defaultValue: [],
+  });
 
   readonly form = this.formBuilder.group({
     id: this.formBuilder.nonNullable.control(this.data.biopsy?.id ?? ''),

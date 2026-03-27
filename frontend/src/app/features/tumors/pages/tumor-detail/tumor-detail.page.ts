@@ -21,10 +21,8 @@ import {
   Breadcrumb,
   PageHeaderComponent,
 } from '../../../../shared/components/page-header/page-header.component';
-import { Biomodel } from '../../../biomodels/models/biomodel.model';
-import { Sample } from '../../../samples/models/sample.model';
+import { Biomodel, Sample, Tumor } from '../../../../generated/models';
 import { TumorFormComponent } from '../../components/tumor-form/tumor-form.component';
-import { Tumor } from '../../models/tumor.model';
 import { TumorService } from '../../services/tumor.service';
 
 @Component({

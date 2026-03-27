@@ -14,7 +14,7 @@ import {
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { TrialFormComponent } from '../../components/trial-form/trial-form.component';
-import { LCTrial, PDOTrial, PDXTrial, Trial } from '../../models/trial.model';
+import { LCTrial, PDOTrial, PDXTrial, Trial } from '../../../../generated/models';
 import { TrialService } from '../../services/trial.service';
 
 @Component({

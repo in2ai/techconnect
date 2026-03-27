@@ -9,13 +9,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { httpResource } from '@angular/common/http';
 import { API_URL } from '../../../../core/tokens/api-url.token';
-import { Trial } from '../../models/trial.model';
+import { Passage, Trial } from '../../../../generated/models';
 
-interface Passage {
-  id: string;
-  number: number | null;
-  biomodel_id: string;
-}
+type PassageOption = Pick<Passage, 'id' | 'number' | 'biomodel_id'>;
 
 export interface TrialFormData {
   mode: 'create' | 'edit';
@@ -114,7 +110,9 @@ export class TrialFormComponent {
   readonly data = inject<TrialFormData>(MAT_DIALOG_DATA);
   private readonly formBuilder = inject(FormBuilder);
 
-  passagesResource = httpResource<Passage[]>(() => `${this.apiUrl}/passages`, { defaultValue: [] });
+  passagesResource = httpResource<PassageOption[]>(() => `${this.apiUrl}/passages`, {
+    defaultValue: [],
+  });
 
   readonly form = this.formBuilder.group({
     id: this.formBuilder.nonNullable.control(this.data.trial?.id ?? ''),

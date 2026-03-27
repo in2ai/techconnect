@@ -14,7 +14,7 @@ import {
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { PatientFormComponent } from '../../components/patient-form/patient-form.component';
-import { Patient } from '../../models/patient.model';
+import { Patient } from '../../../../generated/models';
 import { PatientService } from '../../services/patient.service';
 
 @Component({

@@ -15,7 +15,7 @@ import {
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { SampleFormComponent } from '../../components/sample-form/sample-form.component';
-import { Sample } from '../../models/sample.model';
+import { Sample } from '../../../../generated/models';
 import { SampleService } from '../../services/sample.service';
 
 @Component({

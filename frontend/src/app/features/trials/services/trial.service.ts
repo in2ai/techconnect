@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
 import { BaseCrudService } from '../../../core/services/base-crud.service';
-import { Trial, PDXTrial, PDOTrial, LCTrial } from '../models/trial.model';
 import {
+  Cryopreservation,
+  FACS,
   Implant,
+  LCTrial,
   Measure,
   Mouse,
-  FACS,
-  UsageRecord,
-  TrialImage,
-  Cryopreservation,
+  PDXTrial,
+  PDOTrial,
+  Trial,
   TrialGenomicSequencing,
+  TrialImage,
   TrialMolecularData,
-} from '../models/trial-related.model';
+  UsageRecord,
+} from '../../../generated/models';
 
 @Injectable({ providedIn: 'root' })
 export class TrialService extends BaseCrudService<Trial> {

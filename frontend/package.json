@@ -2,14 +2,15 @@
   "name": "frontend",
   "version": "0.0.0",
   "scripts": {
+    "codegen:models": "cd .. && uv run --package techconnect-schemas export-schema --format typescript --output frontend/src/app/generated/models.ts",
     "ng": "ng",
-    "start": "ng serve",
-    "start:es": "ng serve --configuration=es",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "test:e2e": "playwright test",
-    "extract-i18n": "ng extract-i18n --output-path src/locale"
+    "start": "npm run codegen:models && ng serve",
+    "start:es": "npm run codegen:models && ng serve --configuration=es",
+    "build": "npm run codegen:models && ng build",
+    "watch": "npm run codegen:models && ng build --watch --configuration development",
+    "test": "npm run codegen:models && ng test",
+    "test:e2e": "npm run codegen:models && playwright test",
+    "extract-i18n": "npm run codegen:models && ng extract-i18n --output-path src/locale"
   },
   "prettier": {
     "printWidth": 100,

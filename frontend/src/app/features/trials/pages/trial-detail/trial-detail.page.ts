@@ -26,20 +26,23 @@ import {
   Breadcrumb,
   PageHeaderComponent,
 } from '../../../../shared/components/page-header/page-header.component';
-import { Biomodel } from '../../../biomodels/models/biomodel.model';
-import { TrialFormComponent } from '../../components/trial-form/trial-form.component';
 import {
+  Biomodel,
   Cryopreservation,
   FACS,
   Implant,
+  LCTrial,
   Measure,
   Mouse,
+  PDOTrial,
+  PDXTrial,
+  Trial,
   TrialGenomicSequencing,
   TrialImage,
   TrialMolecularData,
   UsageRecord,
-} from '../../models/trial-related.model';
-import { LCTrial, PDOTrial, PDXTrial, Trial } from '../../models/trial.model';
+} from '../../../../generated/models';
+import { TrialFormComponent } from '../../components/trial-form/trial-form.component';
 import { TrialService } from '../../services/trial.service';
 
 @Component({

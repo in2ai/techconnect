@@ -14,7 +14,7 @@ import {
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { BiomodelFormComponent } from '../../components/biomodel-form/biomodel-form.component';
-import { Biomodel } from '../../models/biomodel.model';
+import { Biomodel } from '../../../../generated/models';
 import { BiomodelService } from '../../services/biomodel.service';
 
 @Component({

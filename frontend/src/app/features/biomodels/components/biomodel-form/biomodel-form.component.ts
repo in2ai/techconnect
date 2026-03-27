@@ -8,17 +8,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { API_URL } from '../../../../core/tokens/api-url.token';
-import { Biomodel } from '../../models/biomodel.model';
+import { Biomodel, Trial, Tumor } from '../../../../generated/models';
 
-interface Tumor {
-  biobank_code: string;
-  classification: string | null;
-}
-
-interface Trial {
-  id: string;
-  description: string | null;
-}
+type TumorOption = Pick<Tumor, 'biobank_code' | 'classification'>;
+type TrialOption = Pick<Trial, 'id' | 'description'>;
 
 export interface BiomodelFormData {
   mode: 'create' | 'edit';
@@ -120,8 +113,12 @@ export class BiomodelFormComponent {
   readonly data = inject<BiomodelFormData>(MAT_DIALOG_DATA);
   private readonly formBuilder = inject(FormBuilder);
 
-  tumorsResource = httpResource<Tumor[]>(() => `${this.apiUrl}/tumors`, { defaultValue: [] });
-  trialsResource = httpResource<Trial[]>(() => `${this.apiUrl}/trials`, { defaultValue: [] });
+  tumorsResource = httpResource<TumorOption[]>(() => `${this.apiUrl}/tumors`, {
+    defaultValue: [],
+  });
+  trialsResource = httpResource<TrialOption[]>(() => `${this.apiUrl}/trials`, {
+    defaultValue: [],
+  });
 
   readonly form = this.formBuilder.group({
     id: this.formBuilder.nonNullable.control(this.data.biomodel?.id ?? ''),

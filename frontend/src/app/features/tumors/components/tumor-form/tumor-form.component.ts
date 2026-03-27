@@ -8,12 +8,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { httpResource } from '@angular/common/http';
 import { API_URL } from '../../../../core/tokens/api-url.token';
-import { Tumor } from '../../models/tumor.model';
+import { Patient, Tumor } from '../../../../generated/models';
 
-interface Patient {
-  nhc: string;
-  sex: string | null;
-}
+type PatientOption = Pick<Patient, 'nhc' | 'sex'>;
 
 export interface TumorFormData {
   mode: 'create' | 'edit';
@@ -128,7 +125,9 @@ export class TumorFormComponent {
   readonly data = inject<TumorFormData>(MAT_DIALOG_DATA);
   private readonly formBuilder = inject(FormBuilder);
 
-  patientsResource = httpResource<Patient[]>(() => `${this.apiUrl}/patients`, { defaultValue: [] });
+  patientsResource = httpResource<PatientOption[]>(() => `${this.apiUrl}/patients`, {
+    defaultValue: [],
+  });
 
   readonly form = this.formBuilder.group({
     biobank_code: this.formBuilder.nonNullable.control(this.data.tumor?.biobank_code ?? '', {

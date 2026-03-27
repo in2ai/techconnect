@@ -10,8 +10,7 @@ import { httpResource } from '@angular/common/http';
 import { API_URL } from '../../../../core/tokens/api-url.token';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { PatientService } from '../../services/patient.service';
-import { Patient } from '../../models/patient.model';
-import { Tumor } from '../../../tumors/models/tumor.model';
+import { Patient, Tumor } from '../../../../generated/models';
 import { TumorService } from '../../../tumors/services/tumor.service';
 import {
   PageHeaderComponent,

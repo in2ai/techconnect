@@ -1,15 +1,15 @@
-# TechConnect Backend Monorepo
+# TechConnect Monorepo
 
-A UV workspace monorepo for the TechConnect biomedical research application api and schemas.
+A workspace monorepo for the TechConnect biomedical research application, including the Angular frontend, FastAPI backend, and shared SQLModel schema package.
 
 ## Structure
 
 ```text
 .
+├── frontend/         # Angular frontend application
 ├── packages/
 │   ├── schemas/      # Python - SQLModel schemas & SQL export
 │   └── api/      # Python - FastAPI backend
-├── frontend/         # React Admin frontend (separate project, not in workspace)
 └── pyproject.toml    # UV workspace root
 ```
 
@@ -40,6 +40,12 @@ uv sync --all-packages
 
 # Run backend development server (from workspace root)
 uv run --package techconnect-api fastapi dev packages/api/app/main.py
+
+# Generate frontend TypeScript models from the Python schemas
+uv run --package techconnect-schemas export-schema --format typescript --output frontend/src/app/generated/models.ts
+
+# Run the Angular frontend
+cd frontend && npm install && npm start
 
 # Or run from the package directory
 cd packages/api && uv run fastapi dev app/main.py
@@ -85,6 +91,17 @@ uv run --package techconnect-api uvicorn app.main:app --reload --host 0.0.0.0 --
 # - Docs: http://localhost:8000/docs
 ```
 
+### Frontend
+
+```bash
+# From the frontend directory
+cd frontend
+npm install
+npm start
+
+# The frontend scripts regenerate TypeScript models from packages/schemas automatically.
+```
+
 ### Schema Export
 
 ```bash
@@ -96,6 +113,9 @@ uv run --package techconnect-schemas export-schema --dialect postgresql
 
 # Export MySQL schema
 uv run --package techconnect-schemas export-schema --dialect mysql
+
+# Export generated TypeScript models for the Angular frontend
+uv run --package techconnect-schemas export-schema --format typescript --output frontend/src/app/generated/models.ts
 ```
 
 ### Database Initialization
@@ -204,8 +224,9 @@ See `docs/docker-compose-deployment.md` for setup and operations.
 ## Development Workflow
 
 1. **Make schema changes** in `packages/schemas/models/`
-2. **Export and apply** DDL to your database or run `uv run --package techconnect-schemas init-db`
-3. **Add API endpoints** in `packages/api/app/`
+2. **Regenerate frontend types** with `uv run --package techconnect-schemas export-schema --format typescript --output frontend/src/app/generated/models.ts` or any frontend npm script
+3. **Export and apply** DDL to your database or run `uv run --package techconnect-schemas init-db`
+4. **Add API endpoints** in `packages/api/app/`
 
 ## Adding a New Workspace Package
 

@@ -16,7 +16,7 @@ import {
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { TumorFormComponent } from '../../components/tumor-form/tumor-form.component';
-import { Tumor } from '../../models/tumor.model';
+import { Tumor } from '../../../../generated/models';
 import { TumorService } from '../../services/tumor.service';
 
 @Component({

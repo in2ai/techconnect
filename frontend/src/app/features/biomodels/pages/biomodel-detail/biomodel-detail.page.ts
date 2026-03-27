@@ -9,8 +9,7 @@ import { httpResource } from '@angular/common/http';
 import { API_URL } from '../../../../core/tokens/api-url.token';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { BiomodelService } from '../../services/biomodel.service';
-import { Biomodel } from '../../models/biomodel.model';
-import { Passage } from '../../../passages/models/passage.model';
+import { Biomodel, Passage } from '../../../../generated/models';
 import {
   PageHeaderComponent,
   Breadcrumb,
