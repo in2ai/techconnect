@@ -4,16 +4,20 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlmodel import Session
 
 from app.api.router import api_router
 from app.core.config import get_settings
-from app.core.database import create_db_and_tables
+from app.core.database import create_db_and_tables, get_engine
+from app.services.auth import ensure_bootstrap_user
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     """Handle startup and shutdown events for shared resources."""
     create_db_and_tables()
+    with Session(get_engine()) as session:
+        ensure_bootstrap_user(session)
     yield
 
 

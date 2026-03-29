@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
@@ -9,6 +9,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
+
+import { AuthService } from '@core/services/auth.service';
 
 interface NavItem {
   label: string;
@@ -95,6 +97,18 @@ interface NavItem {
             <mat-icon class="chevron-icon">keyboard_arrow_down</mat-icon>
           </button>
 
+          <button
+            mat-button
+            [matMenuTriggerFor]="accountMenu"
+            class="account-selector-btn"
+            aria-label="Open account menu"
+            i18n-aria-label
+          >
+            <mat-icon class="account-icon">account_circle</mat-icon>
+            <span class="account-label">{{ currentUserLabel() }}</span>
+            <mat-icon class="chevron-icon">keyboard_arrow_down</mat-icon>
+          </button>
+
           <mat-menu #langMenu="matMenu" class="lang-dropdown-menu">
             <button mat-menu-item (click)="switchLanguage('en')" [class.active-lang]="currentLang() === 'en'">
               <span class="lang-item-content">
@@ -113,6 +127,19 @@ interface NavItem {
                   <mat-icon class="check-icon">check</mat-icon>
                 }
               </span>
+            </button>
+          </mat-menu>
+
+          <mat-menu #accountMenu="matMenu" class="account-dropdown-menu">
+            <button mat-menu-item disabled>
+              <span class="account-menu-label">
+                <span i18n="@@signedInAs">Signed in as</span>
+                <strong>{{ currentUserLabel() }}</strong>
+              </span>
+            </button>
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span i18n="@@signOut">Sign out</span>
             </button>
           </mat-menu>
         </mat-toolbar>
@@ -271,7 +298,8 @@ interface NavItem {
       padding: 0 1.25rem;
     }
 
-    .lang-selector-btn {
+    .lang-selector-btn,
+    .account-selector-btn {
       height: 40px;
       padding: 0 12px 0 8px !important;
       border-radius: 20px !important;
@@ -288,27 +316,46 @@ interface NavItem {
         background: var(--mat-sys-surface-container-highest);
         border-color: var(--mat-sys-outline-variant);
       }
+    }
 
-      .lang-icon {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-        color: var(--mat-sys-primary);
-      }
+    .lang-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      color: var(--mat-sys-primary);
+    }
 
-      .lang-label {
-        font: var(--mat-sys-label-large);
-        font-weight: 600;
-        letter-spacing: 0.01em;
-      }
+    .lang-label {
+      font: var(--mat-sys-label-large);
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
 
-      .chevron-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-        color: var(--mat-sys-on-surface-variant);
-        margin-left: -4px;
-      }
+    .chevron-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: var(--mat-sys-on-surface-variant);
+      margin-left: -4px;
+    }
+
+    .account-icon {
+      color: var(--mat-sys-secondary);
+    }
+
+    .account-label {
+      max-width: 12rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font: var(--mat-sys-label-large);
+      font-weight: 600;
+    }
+
+    .account-menu-label {
+      display: grid;
+      gap: 0.15rem;
+      line-height: 1.35;
     }
 
     .lang-item-content {
@@ -387,6 +434,8 @@ interface NavItem {
 })
 export class AppShellComponent {
   private readonly breakpoint = inject(BreakpointObserver);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
   isMobile = toSignal(this.breakpoint.observe([Breakpoints.Handset]).pipe(map((r) => r.matches)), {
     initialValue: false,
@@ -394,6 +443,10 @@ export class AppShellComponent {
 
   currentLang = signal(this.detectLanguage());
   currentLangName = computed(() => (this.currentLang() === 'es' ? 'Español' : 'English'));
+  currentUserLabel = computed(() => {
+    const user = this.auth.currentUser();
+    return user?.full_name?.trim() || user?.email || $localize`Account`;
+  });
 
   private detectLanguage(): string {
     const path = globalThis.location.pathname;
@@ -437,5 +490,16 @@ export class AppShellComponent {
     if (newPath !== currentPath) {
        globalThis.location.href = newPath;
     }
+  }
+
+  logout(): void {
+    this.auth.logout().subscribe({
+      next: () => {
+        void this.router.navigate(['/login']);
+      },
+      error: () => {
+        void this.router.navigate(['/login']);
+      },
+    });
   }
 }

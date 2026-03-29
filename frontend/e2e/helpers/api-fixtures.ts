@@ -1,6 +1,8 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
 
 export const apiBaseUrl = process.env.E2E_API_URL ?? 'http://127.0.0.1:8000/api';
+const authEmail = process.env.E2E_AUTH_EMAIL ?? 'admin@techconnect.local';
+const authPassword = process.env.E2E_AUTH_PASSWORD ?? 'techconnect-dev-password';
 
 interface PatientPayload {
   nhc: string;
@@ -76,7 +78,18 @@ async function ensureOk(response: APIResponse, action: string): Promise<void> {
   throw new Error(`${action} failed (${response.status()}): ${body}`);
 }
 
+async function ensureAuthenticated(request: APIRequestContext): Promise<void> {
+  const response = await request.post(`${apiBaseUrl}/auth/login`, {
+    data: {
+      email: authEmail,
+      password: authPassword,
+    },
+  });
+  await ensureOk(response, 'POST /auth/login');
+}
+
 async function postJson<T>(request: APIRequestContext, path: string, payload: unknown): Promise<T> {
+  await ensureAuthenticated(request);
   const response = await request.post(`${apiBaseUrl}${path}`, { data: payload });
   await ensureOk(response, `POST ${path}`);
   return (await response.json()) as T;
@@ -86,6 +99,7 @@ async function deleteIgnoreNotFound(
   request: APIRequestContext,
   path: string,
 ): Promise<void> {
+  await ensureAuthenticated(request);
   const response = await request.delete(`${apiBaseUrl}${path}`);
   if (response.status() === 404) {
     return;
@@ -98,6 +112,7 @@ export async function listCollection<T>(
   request: APIRequestContext,
   path: string,
 ): Promise<T[]> {
+  await ensureAuthenticated(request);
   const response = await request.get(`${apiBaseUrl}${path}?offset=0&limit=1000`);
   await ensureOk(response, `GET ${path}`);
   return (await response.json()) as T[];

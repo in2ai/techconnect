@@ -12,6 +12,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (error.status === 0) {
         message = 'Unable to connect to the server. Please check your connection.';
+      } else if (error.status === 401) {
+        return throwError(() => error);
       } else if (error.status === 404) {
         message = 'The requested resource was not found.';
       } else if (error.status === 422) {

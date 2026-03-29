@@ -57,6 +57,28 @@ uv run --package techconnect-schemas export-schema --dialect postgresql
 uv run --package techconnect-schemas init-db
 ```
 
+## Authentication
+
+The application now requires authentication for the domain API routes and the Angular workspace UI.
+
+- Local SQLite development automatically bootstraps a default administrator account:
+   - Email: `admin@techconnect.local`
+   - Password: `techconnect-dev-password`
+- Non-SQLite environments should define bootstrap credentials explicitly before first start:
+   - `AUTH_BOOTSTRAP_EMAIL`
+   - `AUTH_BOOTSTRAP_PASSWORD`
+   - Optional: `AUTH_BOOTSTRAP_FULL_NAME`
+- Session cookies are HTTP-only and issued by the API at `POST /api/auth/login`.
+
+Example environment values for a deployed environment:
+
+```bash
+AUTH_BOOTSTRAP_EMAIL=admin@example.com
+AUTH_BOOTSTRAP_PASSWORD=change-me-now
+AUTH_BOOTSTRAP_FULL_NAME="TechConnect Administrator"
+AUTH_COOKIE_SECURE=true
+```
+
 ## Common Commands
 
 ### Installation

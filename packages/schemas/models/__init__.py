@@ -4,6 +4,7 @@ TechConnect SQLModel Schemas
 This module exports all database models for the biomedical research application.
 """
 
+from .auth import AuthSession, AuthUser
 from .patient import Patient
 from .tumor import Tumor, TumorGenomicSequencing, TumorMolecularData
 from .sample import Sample

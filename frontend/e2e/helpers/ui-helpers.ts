@@ -1,12 +1,27 @@
 import { expect, Page } from '@playwright/test';
 
+const authEmail = process.env.E2E_AUTH_EMAIL ?? 'admin@techconnect.local';
+const authPassword = process.env.E2E_AUTH_PASSWORD ?? 'techconnect-dev-password';
+
 export function uniqueSuffix(): string {
   return `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 }
 
 export async function goToList(page: Page, path: string, title: string): Promise<void> {
   await page.goto(path);
+  await loginIfNeeded(page);
   await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible();
+}
+
+export async function loginIfNeeded(page: Page): Promise<void> {
+  const emailField = page.getByLabel('Email address');
+  if (!(await emailField.isVisible().catch(() => false))) {
+    return;
+  }
+
+  await emailField.fill(authEmail);
+  await page.getByLabel('Password').fill(authPassword);
+  await page.getByRole('button', { name: 'Sign in' }).click();
 }
 
 export async function selectMatOption(
