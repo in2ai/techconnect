@@ -6,26 +6,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogData,
-} from '@shared/components/confirm-dialog/confirm-dialog.component';
-import {
-  ColumnDef,
-  DataTableComponent,
-} from '@shared/components/data-table/data-table.component';
-import {
-  EntityField,
-  GenericEntityDialogData,
-  GenericEntityFormComponent,
-} from '@shared/components/generic-entity-form/generic-entity-form.component';
-import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
-import {
-  Breadcrumb,
-  PageHeaderComponent,
-} from '@shared/components/page-header/page-header.component';
 import {
   Biomodel,
   Cryopreservation,
@@ -42,6 +25,21 @@ import {
   TrialMolecularData,
   UsageRecord,
 } from '@generated/models';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData,
+} from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { ColumnDef, DataTableComponent } from '@shared/components/data-table/data-table.component';
+import {
+  EntityField,
+  GenericEntityDialogData,
+  GenericEntityFormComponent,
+} from '@shared/components/generic-entity-form/generic-entity-form.component';
+import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
+import {
+  Breadcrumb,
+  PageHeaderComponent,
+} from '@shared/components/page-header/page-header.component';
 import { TrialFormComponent } from '../../components/trial-form/trial-form.component';
 import { TrialService } from '../../services/trial.service';
 
@@ -59,12 +57,18 @@ import { TrialService } from '../../services/trial.service';
   ],
   template: `
     <app-page-header title="Trial" [breadcrumbs]="breadcrumbs()">
-      <button mat-stroked-button (click)="openEditDialog()" [disabled]="!trialResource.hasValue()">
-        <mat-icon>edit</mat-icon> <ng-container i18n="@@editBtn">Edit</ng-container>
-      </button>
-      <button mat-stroked-button color="warn" (click)="confirmDelete()">
-        <mat-icon>delete</mat-icon> <ng-container i18n="@@deleteBtn">Delete</ng-container>
-      </button>
+      @if (auth.isAdmin()) {
+        <button
+          mat-stroked-button
+          (click)="openEditDialog()"
+          [disabled]="!trialResource.hasValue()"
+        >
+          <mat-icon>edit</mat-icon> <ng-container i18n="@@editBtn">Edit</ng-container>
+        </button>
+        <button mat-stroked-button color="warn" (click)="confirmDelete()">
+          <mat-icon>delete</mat-icon> <ng-container i18n="@@deleteBtn">Delete</ng-container>
+        </button>
+      }
     </app-page-header>
 
     @if (trialResource.isLoading()) {
@@ -259,9 +263,11 @@ import { TrialService } from '../../services/trial.service';
               <div class="section-container">
                 <div class="section-header">
                   <h3 i18n="@@mouseSectionTitle">Mouse Details</h3>
-                  <button mat-flat-button color="primary" (click)="openMouseForm()">
-                    <mat-icon>add</mat-icon> <ng-container i18n="@@addMouseBtn">Add</ng-container>
-                  </button>
+                  @if (auth.isAdmin()) {
+                    <button mat-flat-button color="primary" (click)="openMouseForm()">
+                      <mat-icon>add</mat-icon> <ng-container i18n="@@addMouseBtn">Add</ng-container>
+                    </button>
+                  }
                 </div>
                 @if (mouseResource.isLoading()) {
                   <app-loading-state status="loading" />
@@ -290,9 +296,12 @@ import { TrialService } from '../../services/trial.service';
               <div class="section-container">
                 <div class="section-header">
                   <h3 i18n="@@implantsSectionTitle">Implants</h3>
-                  <button mat-flat-button color="primary" (click)="openImplantForm()">
-                    <mat-icon>add</mat-icon> <ng-container i18n="@@addImplantBtn">Add</ng-container>
-                  </button>
+                  @if (auth.isAdmin()) {
+                    <button mat-flat-button color="primary" (click)="openImplantForm()">
+                      <mat-icon>add</mat-icon>
+                      <ng-container i18n="@@addImplantBtn">Add</ng-container>
+                    </button>
+                  }
                 </div>
                 @if (implantsResource.isLoading()) {
                   <app-loading-state status="loading" />
@@ -321,9 +330,12 @@ import { TrialService } from '../../services/trial.service';
               <div class="section-container">
                 <div class="section-header">
                   <h3 i18n="@@measuresSectionTitle">Measures</h3>
-                  <button mat-flat-button color="primary" (click)="openMeasureForm()">
-                    <mat-icon>add</mat-icon> <ng-container i18n="@@addMeasureBtn">Add</ng-container>
-                  </button>
+                  @if (auth.isAdmin()) {
+                    <button mat-flat-button color="primary" (click)="openMeasureForm()">
+                      <mat-icon>add</mat-icon>
+                      <ng-container i18n="@@addMeasureBtn">Add</ng-container>
+                    </button>
+                  }
                 </div>
                 @if (measuresResource.isLoading()) {
                   <app-loading-state status="loading" />
@@ -358,9 +370,11 @@ import { TrialService } from '../../services/trial.service';
               <div class="section-container">
                 <div class="section-header">
                   <h3 i18n="@@facsSectionTitle">FACS Data</h3>
-                  <button mat-flat-button color="primary" (click)="openFacsForm()">
-                    <mat-icon>add</mat-icon> <ng-container i18n="@@addFacsBtn">Add</ng-container>
-                  </button>
+                  @if (auth.isAdmin()) {
+                    <button mat-flat-button color="primary" (click)="openFacsForm()">
+                      <mat-icon>add</mat-icon> <ng-container i18n="@@addFacsBtn">Add</ng-container>
+                    </button>
+                  }
                 </div>
                 @if (facsResource.isLoading()) {
                   <app-loading-state status="loading" />
@@ -394,9 +408,11 @@ import { TrialService } from '../../services/trial.service';
             <div class="section-container">
               <div class="section-header">
                 <h3 i18n="@@usageRecordsTitle">Usage Records</h3>
-                <button mat-flat-button color="primary" (click)="openUsageForm()">
-                  <mat-icon>add</mat-icon> <ng-container i18n="@@addUsageBtn">Add</ng-container>
-                </button>
+                @if (auth.isAdmin()) {
+                  <button mat-flat-button color="primary" (click)="openUsageForm()">
+                    <mat-icon>add</mat-icon> <ng-container i18n="@@addUsageBtn">Add</ng-container>
+                  </button>
+                }
               </div>
               @if (usageResource.isLoading()) {
                 <app-loading-state status="loading" />
@@ -428,9 +444,11 @@ import { TrialService } from '../../services/trial.service';
             <div class="section-container">
               <div class="section-header">
                 <h3 i18n="@@imagesTitle">Images</h3>
-                <button mat-flat-button color="primary" (click)="openImageForm()">
-                  <mat-icon>add</mat-icon> <ng-container i18n="@@addImageBtn">Add</ng-container>
-                </button>
+                @if (auth.isAdmin()) {
+                  <button mat-flat-button color="primary" (click)="openImageForm()">
+                    <mat-icon>add</mat-icon> <ng-container i18n="@@addImageBtn">Add</ng-container>
+                  </button>
+                }
               </div>
               @if (imagesResource.isLoading()) {
                 <app-loading-state status="loading" />
@@ -462,9 +480,11 @@ import { TrialService } from '../../services/trial.service';
             <div class="section-container">
               <div class="section-header">
                 <h3 i18n="@@cryoTitle">Cryopreservation</h3>
-                <button mat-flat-button color="primary" (click)="openCryoForm()">
-                  <mat-icon>add</mat-icon> <ng-container i18n="@@addCryoBtn">Add</ng-container>
-                </button>
+                @if (auth.isAdmin()) {
+                  <button mat-flat-button color="primary" (click)="openCryoForm()">
+                    <mat-icon>add</mat-icon> <ng-container i18n="@@addCryoBtn">Add</ng-container>
+                  </button>
+                }
               </div>
               @if (cryoResource.isLoading()) {
                 <app-loading-state status="loading" />
@@ -496,9 +516,12 @@ import { TrialService } from '../../services/trial.service';
             <div class="section-container">
               <div class="section-header">
                 <h3 i18n="@@biomodelsTitle">Biomodels</h3>
-                <button mat-flat-button color="primary" (click)="openBiomodelForm()">
-                  <mat-icon>add</mat-icon> <ng-container i18n="@@addBiomodelBtn">Add</ng-container>
-                </button>
+                @if (auth.isAdmin()) {
+                  <button mat-flat-button color="primary" (click)="openBiomodelForm()">
+                    <mat-icon>add</mat-icon>
+                    <ng-container i18n="@@addBiomodelBtn">Add</ng-container>
+                  </button>
+                }
               </div>
               @if (biomodelsResource.isLoading()) {
                 <app-loading-state status="loading" />
@@ -530,9 +553,12 @@ import { TrialService } from '../../services/trial.service';
             <div class="section-container">
               <div class="section-header">
                 <h3 i18n="@@genomicsTitle">Genomic Sequencing</h3>
-                <button mat-flat-button color="primary" (click)="openGenomicForm()">
-                  <mat-icon>add</mat-icon> <ng-container i18n="@@addGenomicsBtn">Add</ng-container>
-                </button>
+                @if (auth.isAdmin()) {
+                  <button mat-flat-button color="primary" (click)="openGenomicForm()">
+                    <mat-icon>add</mat-icon>
+                    <ng-container i18n="@@addGenomicsBtn">Add</ng-container>
+                  </button>
+                }
               </div>
               @if (genomicResource.isLoading()) {
                 <app-loading-state status="loading" />
@@ -564,9 +590,12 @@ import { TrialService } from '../../services/trial.service';
             <div class="section-container">
               <div class="section-header">
                 <h3 i18n="@@molecularTitle">Molecular Data</h3>
-                <button mat-flat-button color="primary" (click)="openMolecularForm()">
-                  <mat-icon>add</mat-icon> <ng-container i18n="@@addMolecularBtn">Add</ng-container>
-                </button>
+                @if (auth.isAdmin()) {
+                  <button mat-flat-button color="primary" (click)="openMolecularForm()">
+                    <mat-icon>add</mat-icon>
+                    <ng-container i18n="@@addMolecularBtn">Add</ng-container>
+                  </button>
+                }
               </div>
               @if (molecularResource.isLoading()) {
                 <app-loading-state status="loading" />
@@ -628,6 +657,7 @@ export class TrialDetailPage {
   private readonly trialService = inject(TrialService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
+  protected readonly auth = inject(AuthService);
 
   breadcrumbs = computed<Breadcrumb[]>(() => [
     { label: $localize`Trials`, route: '/trials' },

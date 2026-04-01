@@ -1,31 +1,28 @@
-import { Component, ChangeDetectionStrategy, inject, input, computed } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatTabsModule } from '@angular/material/tabs';
+import { httpResource } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
-import { httpResource } from '@angular/common/http';
-import { API_URL } from '@core/tokens/api-url.token';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { Router } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
-import { PatientService } from '../../services/patient.service';
+import { API_URL } from '@core/tokens/api-url.token';
 import { Patient, Tumor } from '@generated/models';
-import { TumorService } from '../../../tumors/services/tumor.service';
-import {
-  PageHeaderComponent,
-  Breadcrumb,
-} from '@shared/components/page-header/page-header.component';
-import {
-  DataTableComponent,
-  ColumnDef,
-} from '@shared/components/data-table/data-table.component';
-import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
-import { PatientFormComponent } from '../../components/patient-form/patient-form.component';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { ColumnDef, DataTableComponent } from '@shared/components/data-table/data-table.component';
+import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
+import {
+  Breadcrumb,
+  PageHeaderComponent,
+} from '@shared/components/page-header/page-header.component';
+import { PatientFormComponent } from '../../components/patient-form/patient-form.component';
+import { PatientService } from '../../services/patient.service';
 
 @Component({
   selector: 'app-patient-detail',
@@ -42,14 +39,16 @@ import {
   ],
   template: `
     <app-page-header [title]="pageTitle()" [breadcrumbs]="breadcrumbs()">
-      <button mat-stroked-button (click)="openEditDialog()">
-        <mat-icon>edit</mat-icon>
-        <ng-container i18n="@@editBtn">Edit</ng-container>
-      </button>
-      <button mat-stroked-button color="warn" (click)="confirmDelete()">
-        <mat-icon>delete</mat-icon>
-        <ng-container i18n="@@deleteBtn">Delete</ng-container>
-      </button>
+      @if (auth.isAdmin()) {
+        <button mat-stroked-button (click)="openEditDialog()">
+          <mat-icon>edit</mat-icon>
+          <ng-container i18n="@@editBtn">Edit</ng-container>
+        </button>
+        <button mat-stroked-button color="warn" (click)="confirmDelete()">
+          <mat-icon>delete</mat-icon>
+          <ng-container i18n="@@deleteBtn">Delete</ng-container>
+        </button>
+      }
     </app-page-header>
 
     @if (patientResource.isLoading()) {
@@ -125,6 +124,7 @@ export class PatientDetailPage {
   private readonly patientService = inject(PatientService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
+  protected readonly auth = inject(AuthService);
 
   breadcrumbs = computed<Breadcrumb[]>(() => [
     { label: $localize`Patients`, route: '/patients' },

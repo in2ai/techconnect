@@ -16,6 +16,9 @@ from .lc_entities import FACS
 from .trial_entities import UsageRecord, Image, Cryopreservation, TrialGenomicSequencing, TrialMolecularData
 
 __all__ = [
+    # Auth entities
+    "AuthSession",
+    "AuthUser",
     # Main entities
     "Patient",
     "Tumor",

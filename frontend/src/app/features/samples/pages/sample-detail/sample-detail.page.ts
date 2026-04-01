@@ -5,8 +5,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
+import { Sample } from '@generated/models';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
@@ -17,7 +19,6 @@ import {
   PageHeaderComponent,
 } from '@shared/components/page-header/page-header.component';
 import { SampleFormComponent } from '../../components/sample-form/sample-form.component';
-import { Sample } from '@generated/models';
 import { SampleService } from '../../services/sample.service';
 
 @Component({
@@ -32,17 +33,19 @@ import { SampleService } from '../../services/sample.service';
   ],
   template: `
     <app-page-header i18n-title="@@sampleTitle" title="Sample" [breadcrumbs]="breadcrumbs()">
-      <button mat-stroked-button (click)="openEditDialog()" [disabled]="!resource.hasValue()">
-        <mat-icon>edit</mat-icon> <ng-container i18n="@@editBtn">Edit</ng-container>
-      </button>
-      <button
-        mat-stroked-button
-        color="warn"
-        (click)="confirmDelete()"
-        [disabled]="!resource.hasValue()"
-      >
-        <mat-icon>delete</mat-icon> <ng-container i18n="@@deleteBtn">Delete</ng-container>
-      </button>
+      @if (auth.isAdmin()) {
+        <button mat-stroked-button (click)="openEditDialog()" [disabled]="!resource.hasValue()">
+          <mat-icon>edit</mat-icon> <ng-container i18n="@@editBtn">Edit</ng-container>
+        </button>
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="confirmDelete()"
+          [disabled]="!resource.hasValue()"
+        >
+          <mat-icon>delete</mat-icon> <ng-container i18n="@@deleteBtn">Delete</ng-container>
+        </button>
+      }
     </app-page-header>
 
     @if (resource.isLoading()) {
@@ -162,6 +165,7 @@ export class SampleDetailPage {
   private readonly service = inject(SampleService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
+  protected readonly auth = inject(AuthService);
 
   breadcrumbs = computed<Breadcrumb[]>(() => [
     { label: $localize`Samples`, route: '/samples' },

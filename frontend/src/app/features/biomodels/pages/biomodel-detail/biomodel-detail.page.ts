@@ -1,29 +1,27 @@
-import { Component, ChangeDetectionStrategy, inject, input, computed } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
 import { httpResource } from '@angular/common/http';
-import { API_URL } from '@core/tokens/api-url.token';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { Router } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
-import { BiomodelService } from '../../services/biomodel.service';
+import { API_URL } from '@core/tokens/api-url.token';
 import { Biomodel, Passage } from '@generated/models';
-import {
-  PageHeaderComponent,
-  Breadcrumb,
-} from '@shared/components/page-header/page-header.component';
-import {
-  DataTableComponent,
-  ColumnDef,
-} from '@shared/components/data-table/data-table.component';
-import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
-import { BiomodelFormComponent } from '../../components/biomodel-form/biomodel-form.component';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '@shared/components/confirm-dialog/confirm-dialog.component';
+import { ColumnDef, DataTableComponent } from '@shared/components/data-table/data-table.component';
+import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
+import {
+  Breadcrumb,
+  PageHeaderComponent,
+} from '@shared/components/page-header/page-header.component';
+import { BiomodelFormComponent } from '../../components/biomodel-form/biomodel-form.component';
+import { BiomodelService } from '../../services/biomodel.service';
 
 @Component({
   selector: 'app-biomodel-detail',
@@ -38,11 +36,19 @@ import {
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header i18n-title="@@biomodelTitle" [title]="'Biomodel ' + id()" [breadcrumbs]="breadcrumbs()">
-      <button mat-stroked-button (click)="openEditDialog()"><mat-icon>edit</mat-icon> <ng-container i18n="@@editBtn">Edit</ng-container></button>
-      <button mat-stroked-button color="warn" (click)="confirmDelete()">
-        <mat-icon>delete</mat-icon> <ng-container i18n="@@deleteBtn">Delete</ng-container>
-      </button>
+    <app-page-header
+      i18n-title="@@biomodelTitle"
+      [title]="'Biomodel ' + id()"
+      [breadcrumbs]="breadcrumbs()"
+    >
+      @if (auth.isAdmin()) {
+        <button mat-stroked-button (click)="openEditDialog()">
+          <mat-icon>edit</mat-icon> <ng-container i18n="@@editBtn">Edit</ng-container>
+        </button>
+        <button mat-stroked-button color="warn" (click)="confirmDelete()">
+          <mat-icon>delete</mat-icon> <ng-container i18n="@@deleteBtn">Delete</ng-container>
+        </button>
+      }
     </app-page-header>
 
     @if (biomodelResource.isLoading()) {
@@ -77,9 +83,9 @@ import {
             <div class="detail-item">
               <span class="detail-label" i18n="@@biomodelProgressesLbl">Progresses</span
               ><span class="detail-value">
-                @if(biomodelResource.value()!.progresses === true) {
+                @if (biomodelResource.value()!.progresses === true) {
                   <ng-container i18n="@@yesOpt">Yes</ng-container>
-                } @else if(biomodelResource.value()!.progresses === false) {
+                } @else if (biomodelResource.value()!.progresses === false) {
                   <ng-container i18n="@@noOpt">No</ng-container>
                 } @else {
                   —
@@ -147,6 +153,7 @@ export class BiomodelDetailPage {
   private readonly biomodelService = inject(BiomodelService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
+  protected readonly auth = inject(AuthService);
 
   breadcrumbs = computed<Breadcrumb[]>(() => [
     { label: $localize`Biomodels`, route: '/biomodels' },

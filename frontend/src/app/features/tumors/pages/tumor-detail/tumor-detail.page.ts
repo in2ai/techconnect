@@ -6,22 +6,20 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
+import { Biomodel, Sample, Tumor } from '@generated/models';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '@shared/components/confirm-dialog/confirm-dialog.component';
-import {
-  ColumnDef,
-  DataTableComponent,
-} from '@shared/components/data-table/data-table.component';
+import { ColumnDef, DataTableComponent } from '@shared/components/data-table/data-table.component';
 import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import {
   Breadcrumb,
   PageHeaderComponent,
 } from '@shared/components/page-header/page-header.component';
-import { Biomodel, Sample, Tumor } from '@generated/models';
 import { TumorFormComponent } from '../../components/tumor-form/tumor-form.component';
 import { TumorService } from '../../services/tumor.service';
 
@@ -39,14 +37,16 @@ import { TumorService } from '../../services/tumor.service';
   ],
   template: `
     <app-page-header [title]="pageTitle()" [breadcrumbs]="breadcrumbs()">
-      <button mat-stroked-button (click)="openEditDialog()">
-        <mat-icon>edit</mat-icon>
-        <ng-container i18n="@@editBtn">Edit</ng-container>
-      </button>
-      <button mat-stroked-button color="warn" (click)="confirmDelete()">
-        <mat-icon>delete</mat-icon>
-        <ng-container i18n="@@deleteBtn">Delete</ng-container>
-      </button>
+      @if (auth.isAdmin()) {
+        <button mat-stroked-button (click)="openEditDialog()">
+          <mat-icon>edit</mat-icon>
+          <ng-container i18n="@@editBtn">Edit</ng-container>
+        </button>
+        <button mat-stroked-button color="warn" (click)="confirmDelete()">
+          <mat-icon>delete</mat-icon>
+          <ng-container i18n="@@deleteBtn">Delete</ng-container>
+        </button>
+      }
     </app-page-header>
 
     @if (tumorResource.isLoading()) {
@@ -185,6 +185,7 @@ export class TumorDetailPage {
   private readonly tumorService = inject(TumorService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
+  protected readonly auth = inject(AuthService);
 
   breadcrumbs = computed<Breadcrumb[]>(() => [
     { label: $localize`Tumors`, route: '/tumors' },

@@ -15,6 +15,7 @@ export class AuthService {
   readonly currentUser = signal<AuthUser | null>(null);
   readonly initialized = signal(false);
   readonly isAuthenticated = computed(() => this.currentUser() !== null);
+  readonly isAdmin = computed(() => this.currentUser()?.is_admin ?? false);
 
   private readonly pendingRedirectUrl = signal<string | null>(null);
   private restoreRequest$: Observable<AuthUser | null> | null = null;

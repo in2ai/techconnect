@@ -1,6 +1,6 @@
 """Entity CRUD endpoints."""
 
-from typing import TypeVar
+from typing import Annotated, TypeVar
 
 from fastapi import APIRouter, Query
 from models import (
@@ -27,7 +27,7 @@ from models import (
 )
 from sqlmodel import SQLModel
 
-from app.api.dependencies import SessionDep
+from app.api.dependencies import AdminUserDep, SessionDep
 from app.services.crud import create_item, delete_item, get_item_or_404, list_items, update_item
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
@@ -51,7 +51,7 @@ def build_entity_router(model: type[ModelType], *, prefix: str, tag: str) -> API
     def read_items(
         session: SessionDep,
         offset: int = 0,
-        limit: int = Query(default=100, ge=1, le=100),
+        limit: Annotated[int, Query(ge=1, le=100)] = 100,
     ):
         """List all items."""
         return list_items(session, model, offset=offset, limit=limit)
@@ -74,7 +74,7 @@ def build_entity_router(model: type[ModelType], *, prefix: str, tag: str) -> API
         summary=f"Create {model_name}",
         description=f"Create a new {model_name} record.",
     )
-    def create_entity(item: model, session: SessionDep):
+    def create_entity(item: model, session: SessionDep, admin: AdminUserDep):
         """Create a new item."""
         return create_item(session, model, item)
 
@@ -85,7 +85,7 @@ def build_entity_router(model: type[ModelType], *, prefix: str, tag: str) -> API
         summary=f"Update {model_name}",
         description=f"Update an existing {model_name} record by its ID.",
     )
-    def update_entity(item_id: str, item: model, session: SessionDep):
+    def update_entity(item_id: str, item: model, session: SessionDep, admin: AdminUserDep):
         """Update an existing item."""
         return update_item(session, model, item_id, item)
 
@@ -95,7 +95,7 @@ def build_entity_router(model: type[ModelType], *, prefix: str, tag: str) -> API
         summary=f"Delete {model_name}",
         description=f"Remove a specific {model_name} record by its ID.",
     )
-    def delete_entity(item_id: str, session: SessionDep):
+    def delete_entity(item_id: str, session: SessionDep, admin: AdminUserDep):
         """Delete an item."""
         return delete_item(session, model, item_id)
 

@@ -4,8 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
+import { LCTrial, PDOTrial, PDXTrial, Trial } from '@generated/models';
 import {
   ColumnDef,
   DataTableComponent,
@@ -14,7 +16,6 @@ import {
 import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { TrialFormComponent } from '../../components/trial-form/trial-form.component';
-import { LCTrial, PDOTrial, PDXTrial, Trial } from '@generated/models';
 import { TrialService } from '../../services/trial.service';
 
 @Component({
@@ -34,10 +35,12 @@ import { TrialService } from '../../services/trial.service';
       i18n-subtitle="@@trialsSubtitle"
       subtitle="PDX, PDO, and LC trial data with detailed outcomes"
     >
-      <button mat-flat-button color="primary" (click)="openCreateDialog()">
-        <mat-icon>add</mat-icon>
-        <ng-container i18n="@@addTrialBtn">Add Trial</ng-container>
-      </button>
+      @if (auth.isAdmin()) {
+        <button mat-flat-button color="primary" (click)="openCreateDialog()">
+          <mat-icon>add</mat-icon>
+          <ng-container i18n="@@addTrialBtn">Add Trial</ng-container>
+        </button>
+      }
     </app-page-header>
 
     @if (
@@ -79,6 +82,7 @@ export class TrialListPage {
   private readonly trialService = inject(TrialService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
+  protected readonly auth = inject(AuthService);
 
   columns: ColumnDef[] = [
     { key: 'id', label: $localize`ID`, sortable: true },

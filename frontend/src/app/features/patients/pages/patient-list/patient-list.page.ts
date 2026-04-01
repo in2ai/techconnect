@@ -4,8 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
+import { Patient } from '@generated/models';
 import {
   ColumnDef,
   DataTableComponent,
@@ -14,7 +16,6 @@ import {
 import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { PatientFormComponent } from '../../components/patient-form/patient-form.component';
-import { Patient } from '@generated/models';
 import { PatientService } from '../../services/patient.service';
 
 @Component({
@@ -34,10 +35,12 @@ import { PatientService } from '../../services/patient.service';
       i18n-subtitle="@@patientsSubtitle"
       subtitle="Manage patient records and demographics"
     >
-      <button mat-flat-button color="primary" (click)="openCreateDialog()">
-        <mat-icon>add</mat-icon>
-        <ng-container i18n="@@addPatient">Add Patient</ng-container>
-      </button>
+      @if (auth.isAdmin()) {
+        <button mat-flat-button color="primary" (click)="openCreateDialog()">
+          <mat-icon>add</mat-icon>
+          <ng-container i18n="@@addPatient">Add Patient</ng-container>
+        </button>
+      }
     </app-page-header>
 
     @if (patientsResource.isLoading()) {
@@ -73,6 +76,7 @@ export class PatientListPage {
   private readonly patientService = inject(PatientService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
+  protected readonly auth = inject(AuthService);
 
   columns: ColumnDef[] = [
     { key: 'nhc', label: $localize`NHC`, sortable: true },

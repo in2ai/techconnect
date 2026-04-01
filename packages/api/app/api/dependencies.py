@@ -35,3 +35,15 @@ def require_authenticated_user(request: Request, session: SessionDep) -> AuthUse
 
 CurrentUserDep = Annotated[AuthUser, Depends(require_authenticated_user)]
 
+
+def require_admin_user(current_user: CurrentUserDep) -> AuthUser:
+    """Ensure the authenticated user has administrator privileges."""
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Administrator privileges required.",
+        )
+    return current_user
+
+
+AdminUserDep = Annotated[AuthUser, Depends(require_admin_user)]

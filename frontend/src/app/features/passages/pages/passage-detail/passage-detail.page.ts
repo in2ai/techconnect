@@ -6,22 +6,20 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Router } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
+import { LCTrial, PDOTrial, PDXTrial, Passage, Trial } from '@generated/models';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '@shared/components/confirm-dialog/confirm-dialog.component';
-import {
-  ColumnDef,
-  DataTableComponent,
-} from '@shared/components/data-table/data-table.component';
+import { ColumnDef, DataTableComponent } from '@shared/components/data-table/data-table.component';
 import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import {
   Breadcrumb,
   PageHeaderComponent,
 } from '@shared/components/page-header/page-header.component';
-import { LCTrial, PDOTrial, PDXTrial, Passage, Trial } from '@generated/models';
 import { PassageService } from '../../services/passage.service';
 
 @Component({
@@ -38,9 +36,11 @@ import { PassageService } from '../../services/passage.service';
   ],
   template: `
     <app-page-header i18n-title="@@passageTitleLbl" title="Passage" [breadcrumbs]="breadcrumbs()">
-      <button mat-stroked-button color="warn" (click)="confirmDelete()">
-        <mat-icon>delete</mat-icon> <ng-container i18n="@@deleteBtn">Delete</ng-container>
-      </button>
+      @if (auth.isAdmin()) {
+        <button mat-stroked-button color="warn" (click)="confirmDelete()">
+          <mat-icon>delete</mat-icon> <ng-container i18n="@@deleteBtn">Delete</ng-container>
+        </button>
+      }
     </app-page-header>
 
     @if (passageResource.isLoading()) {
@@ -124,6 +124,7 @@ export class PassageDetailPage {
   private readonly passageService = inject(PassageService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
+  protected readonly auth = inject(AuthService);
 
   breadcrumbs = computed<Breadcrumb[]>(() => [
     { label: $localize`Passages`, route: '/passages' },

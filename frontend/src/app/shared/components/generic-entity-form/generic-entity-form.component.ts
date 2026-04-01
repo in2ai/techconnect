@@ -10,6 +10,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
 
@@ -86,19 +87,24 @@ export interface GenericEntityDialogData {
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      @if (isEdit) {
-        <button mat-button color="warn" (click)="deleteEntity()">Delete</button>
+      @if (auth.isAdmin()) {
+        @if (isEdit) {
+          <button mat-button color="warn" (click)="deleteEntity()">Delete</button>
+        }
+        <span class="spacer"></span>
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button
+          mat-flat-button
+          color="primary"
+          [disabled]="form.invalid || submitting"
+          (click)="save()"
+        >
+          Save
+        </button>
+      } @else {
+        <span class="spacer"></span>
+        <button mat-button mat-dialog-close>Close</button>
       }
-      <span class="spacer"></span>
-      <button mat-button mat-dialog-close>Cancel</button>
-      <button
-        mat-flat-button
-        color="primary"
-        [disabled]="form.invalid || submitting"
-        (click)="save()"
-      >
-        Save
-      </button>
     </mat-dialog-actions>
   `,
   styles: [
@@ -128,6 +134,7 @@ export class GenericEntityFormComponent implements OnInit {
   http = inject(HttpClient);
   notification = inject(NotificationService);
   apiUrl = inject(API_URL);
+  auth = inject(AuthService);
 
   form!: FormGroup;
   isEdit = false;
@@ -155,6 +162,10 @@ export class GenericEntityFormComponent implements OnInit {
       group[field.name] = [initValue, validators];
     }
     this.form = this.fb.group(group);
+
+    if (!this.auth.isAdmin()) {
+      this.form.disable();
+    }
   }
 
   save() {

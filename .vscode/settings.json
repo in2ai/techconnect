@@ -30,6 +30,7 @@
     "fullchain",
     "healthcheck",
     "healthz",
+    "horiz",
     "httpx",
     "ipynb",
     "isready",

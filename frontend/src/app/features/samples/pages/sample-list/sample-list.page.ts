@@ -4,9 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { catchError, EMPTY, filter, switchMap, take, tap } from 'rxjs';
+import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
+import { Sample } from '@generated/models';
 import {
   ColumnDef,
   DataTableComponent,
@@ -14,8 +15,8 @@ import {
 } from '@shared/components/data-table/data-table.component';
 import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { catchError, EMPTY, filter, switchMap, take, tap } from 'rxjs';
 import { SampleFormComponent } from '../../components/sample-form/sample-form.component';
-import { Sample } from '@generated/models';
 import { SampleService } from '../../services/sample.service';
 
 @Component({
@@ -35,10 +36,12 @@ import { SampleService } from '../../services/sample.service';
       i18n-subtitle="@@samplesSubtitle"
       subtitle="Serum, buffy coat, and plasma samples from tumors"
     >
-      <button mat-flat-button color="primary" (click)="openCreateDialog()">
-        <mat-icon>add</mat-icon>
-        <ng-container i18n="@@addSample">Add Sample</ng-container>
-      </button>
+      @if (auth.isAdmin()) {
+        <button mat-flat-button color="primary" (click)="openCreateDialog()">
+          <mat-icon>add</mat-icon>
+          <ng-container i18n="@@addSample">Add Sample</ng-container>
+        </button>
+      }
     </app-page-header>
 
     @if (resource.isLoading()) {
@@ -72,6 +75,7 @@ export class SampleListPage {
   private readonly service = inject(SampleService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
+  protected readonly auth = inject(AuthService);
 
   columns: ColumnDef[] = [
     { key: 'id', label: $localize`ID`, sortable: true },

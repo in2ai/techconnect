@@ -4,8 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
+import { Biomodel } from '@generated/models';
 import {
   ColumnDef,
   DataTableComponent,
@@ -14,7 +16,6 @@ import {
 import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { BiomodelFormComponent } from '../../components/biomodel-form/biomodel-form.component';
-import { Biomodel } from '@generated/models';
 import { BiomodelService } from '../../services/biomodel.service';
 
 @Component({
@@ -34,10 +35,12 @@ import { BiomodelService } from '../../services/biomodel.service';
       i18n-subtitle="@@biomodelsSubtitle"
       subtitle="Preclinical biomodels derived from tumor samples"
     >
-      <button mat-flat-button color="primary" (click)="openCreateDialog()">
-        <mat-icon>add</mat-icon>
-        <ng-container i18n="@@addBiomodel">Add Biomodel</ng-container>
-      </button>
+      @if (auth.isAdmin()) {
+        <button mat-flat-button color="primary" (click)="openCreateDialog()">
+          <mat-icon>add</mat-icon>
+          <ng-container i18n="@@addBiomodel">Add Biomodel</ng-container>
+        </button>
+      }
     </app-page-header>
 
     @if (biomodelsResource.isLoading()) {
@@ -74,6 +77,7 @@ export class BiomodelListPage {
   private readonly biomodelService = inject(BiomodelService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
+  protected readonly auth = inject(AuthService);
 
   columns: ColumnDef[] = [
     { key: 'id', label: $localize`ID`, sortable: true },
