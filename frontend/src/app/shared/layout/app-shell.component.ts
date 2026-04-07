@@ -296,7 +296,11 @@ interface NavItem {
       z-index: 10;
       gap: 0.5rem;
       padding: 0 1.25rem;
+      flex-shrink: 0;
+      min-height: 64px;
+      box-sizing: border-box;
     }
+
 
     .lang-selector-btn,
     .account-selector-btn {
