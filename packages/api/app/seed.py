@@ -9,7 +9,9 @@ from uuid import UUID
 from sqlmodel import SQLModel, Session
 
 from app.core.database import create_db_and_tables, get_engine
+from app.core.security import hash_password
 from models import (
+    AuthUser,
     FACS,
     Biomodel,
     Cryopreservation,
@@ -88,6 +90,7 @@ def seed_database() -> SeedStats:
     cryo_id = UUID("60000000-0000-0000-0000-000000000005")
     genomic_id = UUID("60000000-0000-0000-0000-000000000006")
     molecular_id = UUID("60000000-0000-0000-0000-000000000007")
+    viewer_user_id = UUID("70000000-0000-0000-0000-000000000001")
 
     with Session(get_engine()) as session:
         _upsert(
@@ -438,6 +441,21 @@ def seed_database() -> SeedStats:
                 "has_data": True,
                 "data": "Sample data",
                 "tumor_biobank_code": tumor_1,
+            },
+            stats,
+        )
+
+        _upsert(
+            session,
+            AuthUser,
+            viewer_user_id,
+            {
+                "id": viewer_user_id,
+                "email": "viewer@techconnect.local",
+                "password_hash": hash_password("viewerpassword"),
+                "full_name": "Viewer Tester",
+                "is_active": True,
+                "is_admin": False,
             },
             stats,
         )

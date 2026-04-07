@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "aiosqlite",
+    "autoflush",
     "biobanco",
     "biobank",
     "biomédica",
@@ -26,6 +27,7 @@
     "facs",
     "fastapi",
     "ffpe",
+    "FITC",
     "formcontrolname",
     "fullchain",
     "healthcheck",
@@ -60,6 +62,7 @@
     "Taskfile",
     "techconnect",
     "uvicorn",
+    "viewerpassword",
     "viewports",
     "WCAG"
   ]
