@@ -7,7 +7,7 @@ RUN npm ci
 
 COPY frontend ./
 
-RUN npm run build && \
+RUN npx ng build && \
     build_dir="$(find dist -mindepth 1 -maxdepth 2 -type d -name browser | head -n 1)" && \
     test -n "$build_dir" && \
     mkdir -p /tmp/frontend-dist && \
