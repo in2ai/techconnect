@@ -1058,6 +1058,9 @@
 
       <trans-unit id="trialsTabLbl"><source>Trials</source><target>Ensayos</target></trans-unit>
       <trans-unit id="failedToLoadTrials"><source>Failed to load trials</source><target>Error al cargar ensayos</target></trans-unit>
+      <trans-unit id="failedToLoadTrial"><source>Failed to load trial</source><target>Error al cargar ensayo</target></trans-unit>
+      <trans-unit id="cancelBtn"><source>Cancel</source><target>Cancelar</target></trans-unit>
+      <trans-unit id="loadingLbl"><source>Loading…</source><target>Cargando…</target></trans-unit>
       <trans-unit id="noTrialsEmptyLbl"><source>No trials</source><target>Sin ensayos</target></trans-unit>
       <trans-unit id="noTrialsMsgLbl"><source>No trials linked to this passage.</source><target>No hay ensayos vinculados a este pasaje.</target></trans-unit>
 

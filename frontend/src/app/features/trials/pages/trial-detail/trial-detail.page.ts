@@ -56,7 +56,7 @@ import { TrialService } from '../../services/trial.service';
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header title="Trial" [breadcrumbs]="breadcrumbs()">
+    <app-page-header i18n-title="@@trialsTitle" title="Trial" [breadcrumbs]="breadcrumbs()">
       @if (auth.isAdmin()) {
         <button
           mat-stroked-button
@@ -76,6 +76,7 @@ import { TrialService } from '../../services/trial.service';
     } @else if (trialResource.error()) {
       <app-loading-state
         status="error"
+        i18n-errorMessage="@@failedToLoadTrial"
         errorMessage="Failed to load trial"
         (retry)="trialResource.reload()"
       />
@@ -274,6 +275,7 @@ import { TrialService } from '../../services/trial.service';
                 } @else if (mouseResource.error()) {
                   <app-loading-state
                     status="error"
+                    i18n-errorMessage="@@failedToLoadMice"
                     errorMessage="Failed to load mice"
                     (retry)="mouseResource.reload()"
                   />
@@ -281,7 +283,9 @@ import { TrialService } from '../../services/trial.service';
                   <app-loading-state
                     status="empty"
                     emptyIcon="pets"
+                    i18n-emptyTitle="@@noMiceTitle"
                     emptyTitle="No mice"
+                    i18n-emptyMessage="@@noMiceMsg"
                     emptyMessage="No mice linked to this trial."
                   />
                 } @else {
@@ -308,6 +312,7 @@ import { TrialService } from '../../services/trial.service';
                 } @else if (implantsResource.error()) {
                   <app-loading-state
                     status="error"
+                    i18n-errorMessage="@@failedToLoadImplants"
                     errorMessage="Failed to load implants"
                     (retry)="implantsResource.reload()"
                   />
@@ -315,7 +320,9 @@ import { TrialService } from '../../services/trial.service';
                   <app-loading-state
                     status="empty"
                     emptyIcon="build"
+                    i18n-emptyTitle="@@noImplantsTitle"
                     emptyTitle="No implants"
+                    i18n-emptyMessage="@@noImplantsMsg"
                     emptyMessage="No implants linked to this trial."
                   />
                 } @else {
@@ -419,6 +426,7 @@ import { TrialService } from '../../services/trial.service';
               } @else if (usageResource.error()) {
                 <app-loading-state
                   status="error"
+                  i18n-errorMessage="@@failedToLoadUsage"
                   errorMessage="Failed to load usage records"
                   (retry)="usageResource.reload()"
                 />
@@ -426,7 +434,9 @@ import { TrialService } from '../../services/trial.service';
                 <app-loading-state
                   status="empty"
                   emptyIcon="receipt"
+                  i18n-emptyTitle="@@noUsageTitle"
                   emptyTitle="No usage records"
+                  i18n-emptyMessage="@@noUsageMsg"
                   emptyMessage="No usage records for this trial."
                 />
               } @else {
@@ -455,6 +465,7 @@ import { TrialService } from '../../services/trial.service';
               } @else if (imagesResource.error()) {
                 <app-loading-state
                   status="error"
+                  i18n-errorMessage="@@failedToLoadImages"
                   errorMessage="Failed to load images"
                   (retry)="imagesResource.reload()"
                 />
@@ -462,7 +473,9 @@ import { TrialService } from '../../services/trial.service';
                 <app-loading-state
                   status="empty"
                   emptyIcon="image"
+                  i18n-emptyTitle="@@noImagesTitle"
                   emptyTitle="No images"
+                  i18n-emptyMessage="@@noImagesMsg"
                   emptyMessage="No images for this trial."
                 />
               } @else {
@@ -491,6 +504,7 @@ import { TrialService } from '../../services/trial.service';
               } @else if (cryoResource.error()) {
                 <app-loading-state
                   status="error"
+                  i18n-errorMessage="@@failedToLoadCryo"
                   errorMessage="Failed to load cryo"
                   (retry)="cryoResource.reload()"
                 />
@@ -498,7 +512,9 @@ import { TrialService } from '../../services/trial.service';
                 <app-loading-state
                   status="empty"
                   emptyIcon="ac_unit"
+                  i18n-emptyTitle="@@noCryoTitle"
                   emptyTitle="No cryopreservations"
+                  i18n-emptyMessage="@@noCryoMsg"
                   emptyMessage="No cryo records for this trial."
                 />
               } @else {

@@ -42,10 +42,10 @@ export interface TrialFormData {
     <mat-dialog-content>
       <form class="form-grid" [formGroup]="form">
         <mat-form-field appearance="outline">
-          <mat-label i18n>Passage</mat-label>
+          <mat-label i18n="@@passageTitleLbl">Passage</mat-label>
           @if (passagesResource.isLoading()) {
             <mat-select disabled>
-              <mat-option>Loading…</mat-option>
+              <mat-option i18n="@@loadingLbl">Loading…</mat-option>
             </mat-select>
           } @else {
             <mat-select formControlName="passage_id" required>
@@ -59,25 +59,25 @@ export interface TrialFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n>Creation Date</mat-label>
+          <mat-label i18n="@@trialCreatedLbl">Creation Date</mat-label>
           <input matInput formControlName="creation_date" type="date" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n>Biobank Arrival Date</mat-label>
+          <mat-label i18n="@@trialArrivalDateLbl">Biobank Arrival Date</mat-label>
           <input matInput formControlName="biobank_arrival_date" type="date" />
         </mat-form-field>
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label i18n>Description</mat-label>
+          <mat-label i18n="@@trialDescLbl">Description</mat-label>
           <textarea matInput formControlName="description" rows="3"></textarea>
         </mat-form-field>
         <div class="checkbox-group">
-          <mat-checkbox formControlName="success">Success</mat-checkbox>
-          <mat-checkbox formControlName="biobank_shipment">Biobank Shipment</mat-checkbox>
+          <mat-checkbox formControlName="success" i18n="@@trialSuccessLbl">Success</mat-checkbox>
+          <mat-checkbox formControlName="biobank_shipment" i18n="@@trialBiobankShipmentLbl">Biobank Shipment</mat-checkbox>
         </div>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close i18n>Cancel</button>
+      <button mat-button mat-dialog-close i18n="@@cancelBtn">Cancel</button>
       <button mat-flat-button [mat-dialog-close]="buildDialogResult()" [disabled]="form.invalid">
         @if (data.mode === 'create') {
           <ng-container i18n="@@createBtn">Create</ng-container>
