@@ -120,7 +120,7 @@ export class TrialListPage {
     return [
       {
         key: 'type',
-        label: $localize`Trial Type`,
+        label: $localize`:@@trialTypeLabel:Trial Type`,
         options: [
           { label: 'PDX', value: 'PDX' },
           { label: 'PDO', value: 'PDO' },
@@ -131,8 +131,8 @@ export class TrialListPage {
         key: 'success',
         label: $localize`Success`,
         options: [
-          { label: $localize`Yes`, value: true },
-          { label: $localize`No`, value: false },
+          { label: $localize`:@@yesLabel:Yes`, value: true },
+          { label: $localize`:@@noLabel:No`, value: false },
         ],
       },
     ];

@@ -2199,6 +2199,30 @@
       <trans-unit id="loadingLbl" datatype="html">
         <source>Loading…</source>
       </trans-unit>
+      <trans-unit id="anyFilterLabel" datatype="html">
+        <source>Any</source>
+      </trans-unit>
+      <trans-unit id="clearFiltersBtn" datatype="html">
+        <source>Clear Filters</source>
+      </trans-unit>
+      <trans-unit id="tableRecordCount" datatype="html">
+        <source> <x id="INTERPOLATION" /> records </source>
+      </trans-unit>
+      <trans-unit id="noMatchingRecords" datatype="html">
+        <source>No records matching the filters.</source>
+      </trans-unit>
+      <trans-unit id="trialTypeLabel" datatype="html">
+        <source>Trial Type</source>
+      </trans-unit>
+      <trans-unit id="biomodelTypeLabel" datatype="html">
+        <source>Biomodel Type</source>
+      </trans-unit>
+      <trans-unit id="yesLabel" datatype="html">
+        <source>Yes</source>
+      </trans-unit>
+      <trans-unit id="noLabel" datatype="html">
+        <source>No</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

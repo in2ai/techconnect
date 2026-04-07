@@ -1059,6 +1059,14 @@
       <trans-unit id="trialsTabLbl"><source>Trials</source><target>Ensayos</target></trans-unit>
       <trans-unit id="failedToLoadTrials"><source>Failed to load trials</source><target>Error al cargar ensayos</target></trans-unit>
       <trans-unit id="failedToLoadTrial"><source>Failed to load trial</source><target>Error al cargar ensayo</target></trans-unit>
+      <trans-unit id="anyFilterLabel"><source>Any</source><target>Cualquiera</target></trans-unit>
+      <trans-unit id="clearFiltersBtn"><source>Clear Filters</source><target>Limpiar filtros</target></trans-unit>
+      <trans-unit id="tableRecordCount"><source> <x id="INTERPOLATION" /> records </source><target> <x id="INTERPOLATION" /> registros </target></trans-unit>
+      <trans-unit id="noMatchingRecords"><source>No records matching the filters.</source><target>No se han encontrado registros coincidiendo con los filtros.</target></trans-unit>
+      <trans-unit id="trialTypeLabel"><source>Trial Type</source><target>Tipo de ensayo</target></trans-unit>
+      <trans-unit id="biomodelTypeLabel"><source>Biomodel Type</source><target>Tipo de biomodelo</target></trans-unit>
+      <trans-unit id="yesLabel"><source>Yes</source><target>Sí</target></trans-unit>
+      <trans-unit id="noLabel"><source>No</source><target>No</target></trans-unit>
       <trans-unit id="cancelBtn"><source>Cancel</source><target>Cancelar</target></trans-unit>
       <trans-unit id="loadingLbl"><source>Loading…</source><target>Cargando…</target></trans-unit>
       <trans-unit id="noTrialsEmptyLbl"><source>No trials</source><target>Sin ensayos</target></trans-unit>

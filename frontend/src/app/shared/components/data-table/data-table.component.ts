@@ -96,7 +96,7 @@ export interface ColumnDef {
                 [value]="activeFilters()[filter.key]"
                 (selectionChange)="updateFilter(filter.key, $event.value)"
               >
-                <mat-option [value]="undefined" i18n>Any</mat-option>
+                <mat-option [value]="undefined" i18n="@@anyFilterLabel">Any</mat-option>
                 @for (opt of filter.options; track opt.value) {
                   <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
                 }
@@ -107,12 +107,12 @@ export interface ColumnDef {
           @if (hasActiveFilters()) {
             <button mat-stroked-button color="warn" (click)="clearAllFilters()" class="clear-all">
               <mat-icon>filter_alt_off</mat-icon>
-              <span i18n>Clear Filters</span>
+              <span i18n="@@clearFiltersBtn">Clear Filters</span>
             </button>
           }
         </div>
 
-        <span class="table-count" i18n> {{ dataSource().filteredData.length }} records </span>
+        <span class="table-count" i18n="@@tableRecordCount"> {{ dataSource().filteredData.length }} records </span>
       </div>
 
       <div class="table-container">
@@ -168,7 +168,7 @@ export interface ColumnDef {
             <td class="mat-cell" [attr.colspan]="columnKeys().length">
               <div class="no-data-msg">
                 <mat-icon>search_off</mat-icon>
-                <span i18n>No records matching the filters.</span>
+                <span i18n="@@noMatchingRecords">No records matching the filters.</span>
               </div>
             </td>
           </tr>

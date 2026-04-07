@@ -94,24 +94,24 @@ export class SampleListPage {
         key: 'has_serum',
         label: $localize`Serum`,
         options: [
-          { label: $localize`Yes`, value: true },
-          { label: $localize`No`, value: false },
+          { label: $localize`:@@yesLabel:Yes`, value: true },
+          { label: $localize`:@@noLabel:No`, value: false },
         ],
       },
       {
         key: 'has_buffy',
         label: $localize`Buffy Coat`,
         options: [
-          { label: $localize`Yes`, value: true },
-          { label: $localize`No`, value: false },
+          { label: $localize`:@@yesLabel:Yes`, value: true },
+          { label: $localize`:@@noLabel:No`, value: false },
         ],
       },
       {
         key: 'has_plasma',
         label: $localize`Plasma`,
         options: [
-          { label: $localize`Yes`, value: true },
-          { label: $localize`No`, value: false },
+          { label: $localize`:@@yesLabel:Yes`, value: true },
+          { label: $localize`:@@noLabel:No`, value: false },
         ],
       },
     ];

@@ -111,7 +111,7 @@ export class BiomodelListPage {
       },
       {
         key: 'type',
-        label: $localize`Biomodel Type`,
+        label: $localize`:@@biomodelTypeLabel:Biomodel Type`,
         options: types.map((t) => ({ label: t, value: t })),
       },
     ];
