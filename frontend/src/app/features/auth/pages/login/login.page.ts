@@ -70,7 +70,7 @@ import { NotificationService } from '@core/services/notification.service';
               mat-icon-button
               matSuffix
               type="button"
-              [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+              [attr.aria-label]="hidePassword() ? showPasswordLbl : hidePasswordLbl"
               (click)="hidePassword.set(!hidePassword())"
             >
               <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
@@ -80,9 +80,19 @@ import { NotificationService } from '@core/services/notification.service';
             }
           </mat-form-field>
 
-          <button mat-flat-button color="primary" type="submit" class="submit-btn" [disabled]="isSubmitting()">
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            class="submit-btn"
+            [disabled]="isSubmitting()"
+          >
             @if (isSubmitting()) {
-              <mat-progress-spinner mode="indeterminate" diameter="18" aria-hidden="true"></mat-progress-spinner>
+              <mat-progress-spinner
+                mode="indeterminate"
+                diameter="18"
+                aria-hidden="true"
+              ></mat-progress-spinner>
             }
             <span i18n="@@loginAction">Sign in</span>
           </button>
@@ -103,8 +113,16 @@ import { NotificationService } from '@core/services/notification.service';
       overflow: hidden;
       padding: 1.5rem;
       background:
-        radial-gradient(circle at top left, color-mix(in srgb, var(--mat-sys-primary) 20%, transparent), transparent 38%),
-        radial-gradient(circle at bottom right, color-mix(in srgb, var(--mat-sys-tertiary) 24%, transparent), transparent 42%),
+        radial-gradient(
+          circle at top left,
+          color-mix(in srgb, var(--mat-sys-primary) 20%, transparent),
+          transparent 38%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          color-mix(in srgb, var(--mat-sys-tertiary) 24%, transparent),
+          transparent 42%
+        ),
         linear-gradient(160deg, var(--mat-sys-surface-container-lowest), var(--mat-sys-surface));
     }
 
@@ -225,6 +243,9 @@ export class LoginPage {
   readonly isSubmitting = signal(false);
   readonly hidePassword = signal(true);
 
+  readonly showPasswordLbl = $localize`:@@showPasswordLbl:Show password`;
+  readonly hidePasswordLbl = $localize`:@@hidePasswordLbl:Hide password`;
+
   readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
@@ -237,18 +258,21 @@ export class LoginPage {
     }
 
     this.isSubmitting.set(true);
-    this.auth.login(this.form.getRawValue()).pipe(
-      finalize(() => {
-        this.isSubmitting.set(false);
-      }),
-    ).subscribe({
-      next: () => {
-        this.notification.success($localize`Signed in successfully.`);
-        void this.router.navigateByUrl(this.auth.consumeRedirectUrl());
-      },
-      error: () => {
-        this.notification.error($localize`Invalid email or password.`);
-      },
-    });
+    this.auth
+      .login(this.form.getRawValue())
+      .pipe(
+        finalize(() => {
+          this.isSubmitting.set(false);
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.notification.success($localize`:@@loginSuccessToast:Signed in successfully.`);
+          void this.router.navigateByUrl(this.auth.consumeRedirectUrl());
+        },
+        error: () => {
+          this.notification.error($localize`:@@loginErrorToast:Invalid email or password.`);
+        },
+      });
   }
 }

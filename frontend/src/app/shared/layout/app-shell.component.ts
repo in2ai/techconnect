@@ -47,8 +47,8 @@ interface NavItem {
               <mat-icon class="brand-icon">biotech</mat-icon>
             </div>
             <div class="brand-text-wrap">
-              <span class="brand-text" i18n>TechConnect</span>
-              <span class="brand-subtitle" i18n>Biomedical Registry</span>
+              <span class="brand-text" i18n="@@brandName">TechConnect</span>
+              <span class="brand-subtitle" i18n="@@brandSubtitle">Biomedical Registry</span>
             </div>
           </a>
         </div>
@@ -113,7 +113,7 @@ interface NavItem {
             <button mat-menu-item (click)="switchLanguage('en')" [class.active-lang]="currentLang() === 'en'">
               <span class="lang-item-content">
                 <span class="lang-code">EN</span>
-                <span class="lang-full" i18n>English</span>
+                <span class="lang-full" i18n="@@langEnglish">English</span>
                 @if (currentLang() === 'en') {
                   <mat-icon class="check-icon">check</mat-icon>
                 }
@@ -122,7 +122,7 @@ interface NavItem {
             <button mat-menu-item (click)="switchLanguage('es')" [class.active-lang]="currentLang() === 'es'">
               <span class="lang-item-content">
                 <span class="lang-code">ES</span>
-                <span class="lang-full" i18n>Español</span>
+                <span class="lang-full" i18n="@@langSpanish">Español</span>
                 @if (currentLang() === 'es') {
                   <mat-icon class="check-icon">check</mat-icon>
                 }
@@ -449,7 +449,7 @@ export class AppShellComponent {
   currentLangName = computed(() => (this.currentLang() === 'es' ? 'Español' : 'English'));
   currentUserLabel = computed(() => {
     const user = this.auth.currentUser();
-    return user?.full_name?.trim() || user?.email || $localize`Account`;
+    return user?.full_name?.trim() || user?.email || $localize`:@@accountLabel:Account`;
   });
 
   private detectLanguage(): string {
@@ -460,23 +460,23 @@ export class AppShellComponent {
 
   navGroups = [
     {
-      title: $localize`Overview`,
-      items: [{ label: $localize`Dashboard`, icon: 'dashboard', route: '/dashboard' }],
+      title: $localize`:@@navOverview:Overview`,
+      items: [{ label: $localize`:@@navDashboard:Dashboard`, icon: 'dashboard', route: '/dashboard' }],
     },
     {
-      title: $localize`Registry`,
+      title: $localize`:@@navRegistry:Registry`,
       items: [
-        { label: $localize`Patients`, icon: 'person', route: '/patients' },
-        { label: $localize`Tumors`, icon: 'coronavirus', route: '/tumors' },
-        { label: $localize`Samples`, icon: 'water_drop', route: '/samples' },
+        { label: $localize`:@@navPatients:Patients`, icon: 'person', route: '/patients' },
+        { label: $localize`:@@navTumors:Tumors`, icon: 'coronavirus', route: '/tumors' },
+        { label: $localize`:@@navSamples:Samples`, icon: 'water_drop', route: '/samples' },
       ],
     },
     {
-      title: $localize`Research`,
+      title: $localize`:@@navResearch:Research`,
       items: [
-        { label: $localize`Biomodels`, icon: 'science', route: '/biomodels' },
-        { label: $localize`Passages`, icon: 'swap_horiz', route: '/passages' },
-        { label: $localize`Trials`, icon: 'assignment', route: '/trials' },
+        { label: $localize`:@@navBiomodels:Biomodels`, icon: 'science', route: '/biomodels' },
+        { label: $localize`:@@navPassages:Passages`, icon: 'swap_horiz', route: '/passages' },
+        { label: $localize`:@@navTrials:Trials`, icon: 'assignment', route: '/trials' },
       ],
     },
   ];

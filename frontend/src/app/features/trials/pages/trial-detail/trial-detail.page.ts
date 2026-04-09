@@ -56,7 +56,7 @@ import { TrialService } from '../../services/trial.service';
     LoadingStateComponent,
   ],
   template: `
-    <app-page-header i18n-title="@@trialsTitle" title="Trial" [breadcrumbs]="breadcrumbs()">
+    <app-page-header i18n-title="@@trialTitle" title="Trial" [breadcrumbs]="breadcrumbs()">
       @if (auth.isAdmin()) {
         <button
           mat-stroked-button

@@ -2,6 +2,26 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en" target-language="es" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="showPasswordLbl" datatype="html">
+        <source>Show password</source>
+        <target>Mostrar contraseña</target>
+      </trans-unit>
+      <trans-unit id="hidePasswordLbl" datatype="html">
+        <source>Hide password</source>
+        <target>Ocultar contraseña</target>
+      </trans-unit>
+      <trans-unit id="trialCreationDateLbl" datatype="html">
+        <source>Creation Date</source>
+        <target>Fecha de creación</target>
+      </trans-unit>
+      <trans-unit id="trialBiobankArrivalDateLbl" datatype="html">
+        <source>Biobank Arrival Date</source>
+        <target>Fecha de llegada al biobanco</target>
+      </trans-unit>
+      <trans-unit id="trialTitle" datatype="html">
+        <source>Trial</source>
+        <target>Ensayo</target>
+      </trans-unit>
       <trans-unit id="7915670285501053723" datatype="html">
         <source>Tumor</source>
         <target>Tumor</target>
@@ -1169,6 +1189,37 @@
       <trans-unit id="8197760814140039374" datatype="html"><source>Select language</source><target>Seleccionar idioma</target></trans-unit>
       <trans-unit id="5866254605255506989" datatype="html"><source>English</source><target>Inglés</target></trans-unit>
       <trans-unit id="7535527225967694107" datatype="html"><source>Español</source><target>Español</target></trans-unit>
+      <trans-unit id="brandName" datatype="html"><source>TechConnect</source><target>TechConnect</target></trans-unit>
+      <trans-unit id="brandSubtitle" datatype="html"><source>Biomedical Registry</source><target>Registro Biomédico</target></trans-unit>
+      <trans-unit id="loginEyebrow" datatype="html"><source>TechConnect access</source><target>Acceso a TechConnect</target></trans-unit>
+      <trans-unit id="loginTitle" datatype="html"><source>Sign in</source><target>Iniciar sesión</target></trans-unit>
+      <trans-unit id="loginSubtitle" datatype="html"><source>Continue to the biomedical registry and research workspace.</source><target>Continúe al registro biomédico y al espacio de trabajo de investigación.</target></trans-unit>
+      <trans-unit id="loginEmail" datatype="html"><source>Email address</source><target>Correo electrónico</target></trans-unit>
+      <trans-unit id="loginEmailError" datatype="html"><source>Enter a valid email address.</source><target>Ingrese un correo electrónico válido.</target></trans-unit>
+      <trans-unit id="loginPassword" datatype="html"><source>Password</source><target>Contraseña</target></trans-unit>
+      <trans-unit id="loginPasswordError" datatype="html"><source>Enter your password.</source><target>Ingrese su contraseña.</target></trans-unit>
+      <trans-unit id="loginAction" datatype="html"><source>Sign in</source><target>Iniciar sesión</target></trans-unit>
+      <trans-unit id="loginHelperCopy" datatype="html"><source>Use the administrator account configured for this environment.</source><target>Use la cuenta de administrador configurada para este entorno.</target></trans-unit>
+      <trans-unit id="loginSuccessToast" datatype="html"><source>Signed in successfully.</source><target>Sesión iniciada con éxito.</target></trans-unit>
+      <trans-unit id="loginErrorToast" datatype="html"><source>Invalid email or password.</source><target>Correo electrónico o contraseña no válidos.</target></trans-unit>
+      <trans-unit id="signedInAs" datatype="html"><source>Signed in as</source><target>Sesión iniciada como</target></trans-unit>
+      <trans-unit id="signOut" datatype="html"><source>Sign out</source><target>Cerrar sesión</target></trans-unit>
+      <trans-unit id="closeAction" datatype="html"><source>Close</source><target>Cerrar</target></trans-unit>
+      <trans-unit id="showPassword" datatype="html"><source>Show password</source><target>Mostrar contraseña</target></trans-unit>
+      <trans-unit id="hidePassword" datatype="html"><source>Hide password</source><target>Ocultar contraseña</target></trans-unit>
+      <trans-unit id="langEnglish" datatype="html"><source>English</source><target>Inglés</target></trans-unit>
+      <trans-unit id="langSpanish" datatype="html"><source>Español</source><target>Español</target></trans-unit>
+      <trans-unit id="accountLabel" datatype="html"><source>Account</source><target>Cuenta</target></trans-unit>
+      <trans-unit id="navOverview" datatype="html"><source>Overview</source><target>Resumen</target></trans-unit>
+      <trans-unit id="navDashboard" datatype="html"><source>Dashboard</source><target>Panel de Control</target></trans-unit>
+      <trans-unit id="navRegistry" datatype="html"><source>Registry</source><target>Registro</target></trans-unit>
+      <trans-unit id="navPatients" datatype="html"><source>Patients</source><target>Pacientes</target></trans-unit>
+      <trans-unit id="navTumors" datatype="html"><source>Tumors</source><target>Tumores</target></trans-unit>
+      <trans-unit id="navSamples" datatype="html"><source>Samples</source><target>Muestras</target></trans-unit>
+      <trans-unit id="navResearch" datatype="html"><source>Research</source><target>Investigación</target></trans-unit>
+      <trans-unit id="navBiomodels" datatype="html"><source>Biomodels</source><target>Biomodelos</target></trans-unit>
+      <trans-unit id="navPassages" datatype="html"><source>Passages</source><target>Pasajes</target></trans-unit>
+      <trans-unit id="navTrials" datatype="html"><source>Trials</source><target>Ensayos</target></trans-unit>
     </body>
   </file>
 </xliff>

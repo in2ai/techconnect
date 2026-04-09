@@ -3,10 +3,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
-  private snackBar = inject(MatSnackBar);
+  private readonly snackBar = inject(MatSnackBar);
 
   success(message: string): void {
-    this.snackBar.open(message, 'Close', {
+    this.snackBar.open(message, $localize`:@@closeAction:Close`, {
       duration: 4000,
       panelClass: 'snackbar-success',
       horizontalPosition: 'end',
@@ -15,7 +15,7 @@ export class NotificationService {
   }
 
   error(message: string): void {
-    this.snackBar.open(message, 'Close', {
+    this.snackBar.open(message, $localize`:@@closeAction:Close`, {
       duration: 6000,
       panelClass: 'snackbar-error',
       horizontalPosition: 'end',
@@ -24,7 +24,7 @@ export class NotificationService {
   }
 
   info(message: string): void {
-    this.snackBar.open(message, 'Close', {
+    this.snackBar.open(message, $localize`:@@closeAction:Close`, {
       duration: 4000,
       horizontalPosition: 'end',
       verticalPosition: 'bottom',

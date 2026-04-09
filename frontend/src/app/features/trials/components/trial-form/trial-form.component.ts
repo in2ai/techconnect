@@ -59,11 +59,11 @@ export interface TrialFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n="@@trialCreatedLbl">Creation Date</mat-label>
+          <mat-label i18n="@@trialCreationDateLbl">Creation Date</mat-label>
           <input matInput formControlName="creation_date" type="date" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n="@@trialArrivalDateLbl">Biobank Arrival Date</mat-label>
+          <mat-label i18n="@@trialBiobankArrivalDateLbl">Biobank Arrival Date</mat-label>
           <input matInput formControlName="biobank_arrival_date" type="date" />
         </mat-form-field>
         <mat-form-field appearance="outline" class="full-width">
