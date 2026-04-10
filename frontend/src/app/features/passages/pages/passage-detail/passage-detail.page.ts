@@ -21,6 +21,11 @@ import {
   PageHeaderComponent,
 } from '@shared/components/page-header/page-header.component';
 import { PassageService } from '../../services/passage.service';
+import {
+  TrialFormComponent,
+  TrialFormResult,
+} from '../../../trials/components/trial-form/trial-form.component';
+import { TrialService } from '../../../trials/services/trial.service';
 
 @Component({
   selector: 'app-passage-detail',
@@ -79,6 +84,14 @@ import { PassageService } from '../../services/passage.service';
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
         <mat-tab i18n-label="@@trialsTabLbl" label="Trials">
           <div class="tab-content">
+            <div class="tab-toolbar" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+              @if (auth.isAdmin()) {
+                <button mat-button color="primary" (click)="openCreateTrialDialog()">
+                  <mat-icon>add</mat-icon>
+                  <ng-container i18n="@@addTrialBtn">Add Trial</ng-container>
+                </button>
+              }
+            </div>
             @if (
               trialsResource.isLoading() ||
               pdxTrialsResource.isLoading() ||
@@ -122,6 +135,7 @@ export class PassageDetailPage {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly passageService = inject(PassageService);
+  private readonly trialService = inject(TrialService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
   protected readonly auth = inject(AuthService);
@@ -165,6 +179,29 @@ export class PassageDetailPage {
 
   onTrialClick(trial: Trial): void {
     this.router.navigate(['/trials', trial.id]);
+  }
+
+  openCreateTrialDialog(): void {
+    const dialogRef = this.dialog.open(TrialFormComponent, {
+      width: '600px',
+      data: { mode: 'create', trial: { passage_id: this.id() } as Partial<Trial> },
+    });
+    dialogRef.afterClosed().subscribe((result: TrialFormResult | undefined) => {
+      if (!result) return;
+      if ('trialType' in result && result.trialType) {
+        const { trialType, ...trialPayload } = result;
+        this.trialService.createWithSubtype(trialPayload, trialType).subscribe({
+          next: () => {
+            this.notification.success('Trial created');
+            this.trialsResource.reload();
+            this.pdxTrialsResource.reload();
+            this.pdoTrialsResource.reload();
+            this.lcTrialsResource.reload();
+          },
+          error: () => this.notification.error('Failed to create trial'),
+        });
+      }
+    });
   }
 
   confirmDelete(): void {

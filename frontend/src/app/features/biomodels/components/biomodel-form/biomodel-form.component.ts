@@ -1,6 +1,8 @@
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NumericInputDirective } from '@shared/directives/numeric-input.directive';
+import { numberFormatValidator } from '@shared/forms/numeric-input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -29,16 +31,23 @@ export interface BiomodelFormData {
     MatSelectModule,
     MatCheckboxModule,
     ReactiveFormsModule,
+    NumericInputDirective,
   ],
   template: `
-    <h2 mat-dialog-title>{{ data.mode === 'create' ? 'New Biomodel' : 'Edit Biomodel' }}</h2>
+    <h2 mat-dialog-title>
+      @if (data.mode === 'create') {
+        <ng-container i18n="@@newBiomodelTitle">New Biomodel</ng-container>
+      } @else {
+        <ng-container i18n="@@editBiomodelTitle">Edit Biomodel</ng-container>
+      }
+    </h2>
     <mat-dialog-content>
       <form class="form-grid" [formGroup]="form">
         <mat-form-field appearance="outline">
-          <mat-label i18n>Tumor</mat-label>
+          <mat-label i18n="@@biomodelTumorLbl">Tumor</mat-label>
           @if (tumorsResource.isLoading()) {
             <mat-select disabled>
-              <mat-option>Loading…</mat-option>
+              <mat-option i18n="@@loadingLbl">Loading…</mat-option>
             </mat-select>
           } @else {
             <mat-select formControlName="tumor_biobank_code" required>
@@ -50,14 +59,14 @@ export interface BiomodelFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n>Parent Trial (Optional)</mat-label>
+          <mat-label i18n="@@biomodelParentTrialOptionalLbl">Parent Trial (Optional)</mat-label>
           @if (trialsResource.isLoading()) {
             <mat-select disabled>
-              <mat-option>Loading…</mat-option>
+              <mat-option i18n="@@loadingLbl">Loading…</mat-option>
             </mat-select>
           } @else {
             <mat-select formControlName="parent_trial_id">
-              <mat-option [value]="null">None</mat-option>
+              <mat-option [value]="null" i18n="@@noneOptionLbl">None</mat-option>
               @for (trial of trialsResource.value(); track trial.id) {
                 <mat-option [value]="trial.id">{{ trial.description || trial.id }}</mat-option>
               }
@@ -66,33 +75,44 @@ export interface BiomodelFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n>Type</mat-label>
+          <mat-label i18n="@@biomodelTypeLbl">Type</mat-label>
           <input matInput formControlName="type" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n>Status</mat-label>
+          <mat-label i18n="@@biomodelStatusLbl">Status</mat-label>
           <input matInput formControlName="status" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n>Viability</mat-label>
-          <input matInput formControlName="viability" type="number" step="0.01" />
+          <mat-label i18n="@@biomodelViabilityLbl">Viability</mat-label>
+          <input
+            matInput
+            type="text"
+            inputmode="decimal"
+            formControlName="viability"
+            appNumericInput
+            autocomplete="off"
+          />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n>Creation Date</mat-label>
+          <mat-label i18n="@@trialCreationDateLbl">Creation Date</mat-label>
           <input matInput formControlName="creation_date" type="date" />
         </mat-form-field>
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label i18n>Description</mat-label>
+          <mat-label i18n="@@biomodelDescriptionLbl">Description</mat-label>
           <textarea matInput formControlName="description" rows="2"></textarea>
         </mat-form-field>
-        <mat-checkbox formControlName="progresses">Progresses</mat-checkbox>
+        <mat-checkbox formControlName="progresses" i18n="@@biomodelProgressesLbl">Progresses</mat-checkbox>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close i18n>Cancel</button>
+      <button mat-button mat-dialog-close i18n="@@cancelBtn">Cancel</button>
       <button mat-flat-button [mat-dialog-close]="buildDialogResult()" [disabled]="form.invalid">
-        {{ data.mode === 'create' ? 'Create' : 'Save' }}
+        @if (data.mode === 'create') {
+          <ng-container i18n="@@createBtn">Create</ng-container>
+        } @else {
+          <ng-container i18n="@@saveBtn">Save</ng-container>
+        }
       </button>
     </mat-dialog-actions>
   `,
@@ -133,9 +153,9 @@ export class BiomodelFormComponent {
     progresses: this.formBuilder.control<Biomodel['progresses']>(
       this.data.biomodel?.progresses ?? null,
     ),
-    viability: this.formBuilder.control<Biomodel['viability']>(
-      this.data.biomodel?.viability ?? null,
-    ),
+    viability: this.formBuilder.control<number | string | null>(this.data.biomodel?.viability ?? null, {
+      validators: [numberFormatValidator(false)],
+    }),
     tumor_biobank_code: this.formBuilder.nonNullable.control(
       this.data.biomodel?.tumor_biobank_code ?? '',
       { validators: [Validators.required] },
@@ -147,10 +167,15 @@ export class BiomodelFormComponent {
 
   buildDialogResult(): Partial<Biomodel> {
     const value = this.form.getRawValue();
+    const viability =
+      value.viability === '' || value.viability == null
+        ? null
+        : Number(value.viability);
+    const withNumeric = { ...value, viability: Number.isFinite(viability) ? viability : null };
     if (this.data.mode === 'create') {
-      const { id: _, ...createPayload } = value;
+      const { id: _, ...createPayload } = withNumeric;
       return createPayload;
     }
-    return value;
+    return withNumeric;
   }
 }

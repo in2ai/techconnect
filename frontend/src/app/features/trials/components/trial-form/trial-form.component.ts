@@ -10,8 +10,12 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { httpResource } from '@angular/common/http';
 import { API_URL } from '@core/tokens/api-url.token';
 import { Passage, Trial } from '@generated/models';
+import { TrialSubtype } from '../../services/trial.service';
 
 type PassageOption = Pick<Passage, 'id' | 'number' | 'biomodel_id'>;
+
+/** Create flow includes subtype; edit sends only `Trial` fields. */
+export type TrialFormResult = (Partial<Trial> & { trialType: TrialSubtype }) | Partial<Trial>;
 
 export interface TrialFormData {
   mode: 'create' | 'edit';
@@ -66,6 +70,16 @@ export interface TrialFormData {
           <mat-label i18n="@@trialBiobankArrivalDateLbl">Biobank Arrival Date</mat-label>
           <input matInput formControlName="biobank_arrival_date" type="date" />
         </mat-form-field>
+        @if (data.mode === 'create') {
+          <mat-form-field appearance="outline">
+            <mat-label i18n="@@trialTypeFieldLbl">Trial Type</mat-label>
+            <mat-select formControlName="trial_type" required>
+              <mat-option value="PDX">PDX</mat-option>
+              <mat-option value="PDO">PDO</mat-option>
+              <mat-option value="LC">LC</mat-option>
+            </mat-select>
+          </mat-form-field>
+        }
         <mat-form-field appearance="outline" class="full-width">
           <mat-label i18n="@@trialDescLbl">Description</mat-label>
           <textarea matInput formControlName="description" rows="3"></textarea>
@@ -134,13 +148,22 @@ export class TrialFormComponent {
     passage_id: this.formBuilder.nonNullable.control(this.data.trial?.passage_id ?? '', {
       validators: [Validators.required],
     }),
+    ...(this.data.mode === 'create'
+      ? {
+          trial_type: this.formBuilder.nonNullable.control<TrialSubtype>('PDX', {
+            validators: [Validators.required],
+          }),
+        }
+      : {}),
   });
 
-  buildDialogResult(): Partial<Trial> {
+  buildDialogResult(): TrialFormResult {
     const value = this.form.getRawValue();
     if (this.data.mode === 'create') {
-      const { id: _, ...createPayload } = value;
-      return createPayload;
+      const { id: _, trial_type, ...createPayload } = value as typeof value & {
+        trial_type: TrialSubtype;
+      };
+      return { ...createPayload, trialType: trial_type };
     }
     return value;
   }

@@ -44,6 +44,7 @@ test('trials CRUD flow', async ({ page, request }) => {
     await page.getByRole('button', { name: 'Add Trial' }).click();
     const createDialog = page.locator('mat-dialog-container');
     await selectMatOption(page, 'Passage', new RegExp(passage.id.slice(0, 8)));
+    await selectMatOption(page, 'Trial Type', 'PDX');
     await createDialog.getByLabel('Description').fill(trialDescription);
     await createDialog.getByLabel('Creation Date').fill('2025-01-15');
     await createDialog.getByRole('button', { name: 'Create' }).click();

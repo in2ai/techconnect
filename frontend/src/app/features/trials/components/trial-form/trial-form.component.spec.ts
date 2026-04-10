@@ -81,6 +81,7 @@ describe('TrialFormComponent', () => {
       passage_id: 'P-1',
       success: true,
       description: 'trial payload',
+      trialType: 'PDX',
     });
     httpMock.verify();
   });

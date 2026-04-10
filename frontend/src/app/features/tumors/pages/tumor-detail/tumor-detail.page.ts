@@ -20,6 +20,10 @@ import {
   Breadcrumb,
   PageHeaderComponent,
 } from '@shared/components/page-header/page-header.component';
+import { BiomodelFormComponent } from '../../../biomodels/components/biomodel-form/biomodel-form.component';
+import { BiomodelService } from '../../../biomodels/services/biomodel.service';
+import { SampleFormComponent } from '../../../samples/components/sample-form/sample-form.component';
+import { SampleService } from '../../../samples/services/sample.service';
 import { TumorFormComponent } from '../../components/tumor-form/tumor-form.component';
 import { TumorService } from '../../services/tumor.service';
 
@@ -115,6 +119,14 @@ import { TumorService } from '../../services/tumor.service';
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
         <mat-tab i18n-label="@@biomodelsTab" label="Biomodels">
           <div class="tab-content">
+            <div class="tab-toolbar" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+              @if (auth.isAdmin()) {
+                <button mat-button color="primary" (click)="openCreateBiomodelDialog()">
+                  <mat-icon>add</mat-icon>
+                  <ng-container i18n="@@addBiomodelFullBtn">Add Biomodel</ng-container>
+                </button>
+              }
+            </div>
             @if (biomodelsResource.isLoading()) {
               <app-loading-state status="loading" />
             } @else if (biomodelsResource.error()) {
@@ -144,6 +156,14 @@ import { TumorService } from '../../services/tumor.service';
         </mat-tab>
         <mat-tab i18n-label="@@samplesTab" label="Samples">
           <div class="tab-content">
+            <div class="tab-toolbar" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+              @if (auth.isAdmin()) {
+                <button mat-button color="primary" (click)="openCreateSampleDialog()">
+                  <mat-icon>add</mat-icon>
+                  <ng-container i18n="@@addSampleBtn">Add Sample</ng-container>
+                </button>
+              }
+            </div>
             @if (samplesResource.isLoading()) {
               <app-loading-state status="loading" />
             } @else if (samplesResource.error()) {
@@ -183,6 +203,8 @@ export class TumorDetailPage {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly tumorService = inject(TumorService);
+  private readonly biomodelService = inject(BiomodelService);
+  private readonly sampleService = inject(SampleService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
   protected readonly auth = inject(AuthService);
@@ -251,6 +273,42 @@ export class TumorDetailPage {
           error: () => {
             this.notification.error('Failed to update tumor');
           },
+        });
+      }
+    });
+  }
+
+  openCreateBiomodelDialog(): void {
+    const dialogRef = this.dialog.open(BiomodelFormComponent, {
+      width: '600px',
+      data: { mode: 'create', biomodel: { tumor_biobank_code: this.biobank_code() } as Partial<Biomodel> },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.biomodelService.create(result).subscribe({
+          next: () => {
+            this.notification.success('Biomodel created');
+            this.biomodelsResource.reload();
+          },
+          error: () => this.notification.error('Failed to create biomodel'),
+        });
+      }
+    });
+  }
+
+  openCreateSampleDialog(): void {
+    const dialogRef = this.dialog.open(SampleFormComponent, {
+      width: '600px',
+      data: { mode: 'create', biopsy: { tumor_biobank_code: this.biobank_code() } as Partial<Sample> },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.sampleService.create(result).subscribe({
+          next: () => {
+            this.notification.success('Sample created');
+            this.samplesResource.reload();
+          },
+          error: () => this.notification.error('Failed to create sample'),
         });
       }
     });

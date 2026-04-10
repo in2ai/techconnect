@@ -15,7 +15,10 @@ import {
 } from '@shared/components/data-table/data-table.component';
 import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
-import { TrialFormComponent } from '../../components/trial-form/trial-form.component';
+import {
+  TrialFormComponent,
+  TrialFormResult,
+} from '../../components/trial-form/trial-form.component';
 import { TrialService } from '../../services/trial.service';
 
 @Component({
@@ -146,12 +149,17 @@ export class TrialListPage {
       width: '600px',
       data: { mode: 'create' },
     });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.trialService.create(result).subscribe({
+    dialogRef.afterClosed().subscribe((result: TrialFormResult | undefined) => {
+      if (!result) return;
+      if ('trialType' in result && result.trialType) {
+        const { trialType, ...trialPayload } = result;
+        this.trialService.createWithSubtype(trialPayload, trialType).subscribe({
           next: () => {
             this.notification.success('Trial created');
             this.trialsResource.reload();
+            this.pdxTrialsResource.reload();
+            this.pdoTrialsResource.reload();
+            this.lcTrialsResource.reload();
           },
           error: () => {
             this.notification.error('Failed to create trial');

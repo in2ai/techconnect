@@ -22,6 +22,8 @@ import {
 } from '@shared/components/page-header/page-header.component';
 import { BiomodelFormComponent } from '../../components/biomodel-form/biomodel-form.component';
 import { BiomodelService } from '../../services/biomodel.service';
+import { PassageFormComponent } from '../../../passages/components/passage-form/passage-form.component';
+import { PassageService } from '../../../passages/services/passage.service';
 
 @Component({
   selector: 'app-biomodel-detail',
@@ -113,6 +115,14 @@ import { BiomodelService } from '../../services/biomodel.service';
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
         <mat-tab i18n-label="@@passagesTabLbl" label="Passages">
           <div class="tab-content">
+            <div class="tab-toolbar" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+              @if (auth.isAdmin()) {
+                <button mat-button color="primary" (click)="openCreatePassageDialog()">
+                  <mat-icon>add</mat-icon>
+                  <ng-container i18n="@@addPassageBtn">Add Passage</ng-container>
+                </button>
+              }
+            </div>
             @if (passagesResource.isLoading()) {
               <app-loading-state status="loading" />
             } @else if (passagesResource.error()) {
@@ -151,6 +161,7 @@ export class BiomodelDetailPage {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly biomodelService = inject(BiomodelService);
+  private readonly passageService = inject(PassageService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
   protected readonly auth = inject(AuthService);
@@ -195,6 +206,26 @@ export class BiomodelDetailPage {
           },
           error: () => {
             this.notification.error('Failed to update biomodel');
+          },
+        });
+      }
+    });
+  }
+
+  openCreatePassageDialog(): void {
+    const dialogRef = this.dialog.open(PassageFormComponent, {
+      width: '600px',
+      data: { mode: 'create', passage: { biomodel_id: this.id() } as Partial<Passage> },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.passageService.create(result).subscribe({
+          next: () => {
+            this.notification.success('Passage created');
+            this.passagesResource.reload();
+          },
+          error: () => {
+            this.notification.error('Failed to create passage');
           },
         });
       }

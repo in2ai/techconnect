@@ -79,9 +79,9 @@ export class PatientListPage {
   protected readonly auth = inject(AuthService);
 
   columns: ColumnDef[] = [
-    { key: 'nhc', label: $localize`NHC`, sortable: true },
-    { key: 'sex', label: $localize`Sex`, sortable: true },
-    { key: 'birth_date', label: $localize`Birth Date`, sortable: true, type: 'date' },
+    { key: 'nhc', label: $localize`:@@nhcLbl:NHC`, sortable: true },
+    { key: 'sex', label: $localize`:@@sexLbl:Sex`, sortable: true },
+    { key: 'birth_date', label: $localize`:@@birthDateLbl:Birth Date`, sortable: true, type: 'date' },
   ];
 
   patientsResource = httpResource<Patient[]>(() => `${this.apiUrl}/patients`, {
@@ -97,7 +97,7 @@ export class PatientListPage {
     return [
       {
         key: 'sex',
-        label: $localize`Sex`,
+        label: $localize`:@@sexLbl:Sex`,
         options: sexes.map((s) => ({ label: s, value: s })),
       },
     ];

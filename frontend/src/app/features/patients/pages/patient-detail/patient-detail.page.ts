@@ -21,6 +21,8 @@ import {
   Breadcrumb,
   PageHeaderComponent,
 } from '@shared/components/page-header/page-header.component';
+import { TumorFormComponent } from '../../../tumors/components/tumor-form/tumor-form.component';
+import { TumorService } from '../../../tumors/services/tumor.service';
 import { PatientFormComponent } from '../../components/patient-form/patient-form.component';
 import { PatientService } from '../../services/patient.service';
 
@@ -65,15 +67,15 @@ import { PatientService } from '../../services/patient.service';
         <mat-card-content>
           <div class="detail-grid">
             <div class="detail-item">
-              <span class="detail-label" i18n>NHC</span>
+              <span class="detail-label" i18n="@@nhcLbl">NHC</span>
               <span class="detail-value">{{ patientResource.value()!.nhc }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label" i18n>Sex</span>
+              <span class="detail-label" i18n="@@sexLbl">Sex</span>
               <span class="detail-value">{{ patientResource.value()!.sex || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label" i18n>Birth Date</span>
+              <span class="detail-label" i18n="@@birthDateLbl">Birth Date</span>
               <span class="detail-value">{{ patientResource.value()!.birth_date || '—' }}</span>
             </div>
           </div>
@@ -83,6 +85,14 @@ import { PatientService } from '../../services/patient.service';
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
         <mat-tab i18n-label="@@tumorsTab" label="Tumors">
           <div class="tab-content">
+            <div class="tab-toolbar" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+              @if (auth.isAdmin()) {
+                <button mat-button color="primary" (click)="openCreateTumorDialog()">
+                  <mat-icon>add</mat-icon>
+                  <ng-container i18n="@@addTumorBtn">Add Tumor</ng-container>
+                </button>
+              }
+            </div>
             @if (tumorsResource.isLoading()) {
               <app-loading-state status="loading" />
             } @else if (tumorsResource.error()) {
@@ -122,6 +132,7 @@ export class PatientDetailPage {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly patientService = inject(PatientService);
+  private readonly tumorService = inject(TumorService);
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
   protected readonly auth = inject(AuthService);
@@ -142,12 +153,17 @@ export class PatientDetailPage {
   );
 
   tumorColumns: ColumnDef[] = [
-    { key: 'biobank_code', label: $localize`Biobank Code`, sortable: true },
-    { key: 'lab_code', label: $localize`Lab Code`, sortable: true },
-    { key: 'classification', label: $localize`Classification`, sortable: true },
-    { key: 'organ', label: $localize`Organ`, sortable: true },
-    { key: 'status', label: $localize`Status`, sortable: true },
-    { key: 'registration_date', label: $localize`Registration`, sortable: true, type: 'date' },
+    { key: 'biobank_code', label: $localize`:@@biobankCodeLbl:Biobank Code`, sortable: true },
+    { key: 'lab_code', label: $localize`:@@labCodeLbl:Lab Code`, sortable: true },
+    { key: 'classification', label: $localize`:@@classificationLbl:Classification`, sortable: true },
+    { key: 'organ', label: $localize`:@@organLbl:Organ`, sortable: true },
+    { key: 'status', label: $localize`:@@tumorStatusLbl:Status`, sortable: true },
+    {
+      key: 'registration_date',
+      label: $localize`:@@tumorRegistrationDateLbl:Registration Date`,
+      sortable: true,
+      type: 'date',
+    },
   ];
 
   onTumorClick(tumor: Tumor): void {
@@ -171,6 +187,27 @@ export class PatientDetailPage {
           },
           error: () => {
             this.notification.error('Failed to update patient');
+          },
+        });
+      }
+    });
+  }
+
+  openCreateTumorDialog(): void {
+    const dialogRef = this.dialog.open(TumorFormComponent, {
+      width: '600px',
+      data: { mode: 'create', tumor: { patient_nhc: this.nhc() } as Partial<Tumor> },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.tumorService.create(result).subscribe({
+          next: () => {
+            this.notification.success('Tumor created successfully');
+            this.tumorsResource.reload();
+          },
+          error: () => {
+            this.notification.error('Failed to create tumor');
           },
         });
       }

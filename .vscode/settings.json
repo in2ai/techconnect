@@ -34,6 +34,7 @@
     "healthz",
     "horiz",
     "httpx",
+    "inputmode",
     "ipynb",
     "isready",
     "letsencrypt",
@@ -67,5 +68,6 @@
     "viewerpassword",
     "viewports",
     "WCAG"
-  ]
+  ],
+  "python.languageServer": "None"
 }

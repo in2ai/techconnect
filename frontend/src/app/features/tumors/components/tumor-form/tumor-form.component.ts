@@ -30,11 +30,17 @@ export interface TumorFormData {
     ReactiveFormsModule,
   ],
   template: `
-    <h2 mat-dialog-title>{{ data.mode === 'create' ? 'New Tumor' : 'Edit Tumor' }}</h2>
+    <h2 mat-dialog-title>
+      @if (data.mode === 'create') {
+        <ng-container i18n="@@newTumorTitle">New Tumor</ng-container>
+      } @else {
+        <ng-container i18n="@@editTumorTitle">Edit Tumor</ng-container>
+      }
+    </h2>
     <mat-dialog-content>
       <form class="form-grid" [formGroup]="form">
         <mat-form-field appearance="outline">
-          <mat-label i18n>Biobank Code</mat-label>
+          <mat-label i18n="@@biobankCodeLbl">Biobank Code</mat-label>
           <input
             matInput
             formControlName="biobank_code"
@@ -44,10 +50,10 @@ export interface TumorFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n>Patient</mat-label>
+          <mat-label i18n="@@tumorPatientLbl">Patient</mat-label>
           @if (patientsResource.isLoading()) {
             <mat-select disabled>
-              <mat-option>Loading…</mat-option>
+              <mat-option i18n="@@loadingLbl">Loading…</mat-option>
             </mat-select>
           } @else {
             <mat-select formControlName="patient_nhc" required>
@@ -59,51 +65,55 @@ export interface TumorFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n>Lab Code</mat-label>
+          <mat-label i18n="@@labCodeLbl">Lab Code</mat-label>
           <input matInput formControlName="lab_code" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n>Classification</mat-label>
+          <mat-label i18n="@@classificationLbl">Classification</mat-label>
           <input matInput formControlName="classification" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n>Grade</mat-label>
+          <mat-label i18n="@@tumorGradeLbl">Grade</mat-label>
           <input matInput formControlName="grade" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n>Organ</mat-label>
+          <mat-label i18n="@@organLbl">Organ</mat-label>
           <input matInput formControlName="organ" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n>Status</mat-label>
+          <mat-label i18n="@@tumorStatusLbl">Status</mat-label>
           <input matInput formControlName="status" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n>TNM</mat-label>
+          <mat-label i18n="@@tumorTnmLbl">TNM</mat-label>
           <input matInput formControlName="tnm" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n>AP Observation</mat-label>
+          <mat-label i18n="@@tumorApObservationLbl">AP Observation</mat-label>
           <textarea matInput formControlName="ap_observation" rows="2"></textarea>
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n>Registration Date</mat-label>
+          <mat-label i18n="@@tumorRegistrationDateLbl">Registration Date</mat-label>
           <input matInput formControlName="registration_date" type="date" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n>Operation Date</mat-label>
+          <mat-label i18n="@@tumorOperationDateLbl">Operation Date</mat-label>
           <input matInput formControlName="operation_date" type="date" />
         </mat-form-field>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close i18n>Cancel</button>
+      <button mat-button mat-dialog-close i18n="@@cancelBtn">Cancel</button>
       <button
         mat-flat-button
         [mat-dialog-close]="form.getRawValue()"
         [disabled]="form.invalid"
       >
-        {{ data.mode === 'create' ? 'Create' : 'Save' }}
+        @if (data.mode === 'create') {
+          <ng-container i18n="@@createBtn">Create</ng-container>
+        } @else {
+          <ng-container i18n="@@saveBtn">Save</ng-container>
+        }
       </button>
     </mat-dialog-actions>
   `,

@@ -30,14 +30,20 @@ export interface SampleFormData {
     ReactiveFormsModule,
   ],
   template: `
-    <h2 mat-dialog-title>{{ data.mode === 'create' ? 'New Sample' : 'Edit Sample' }}</h2>
+    <h2 mat-dialog-title>
+      @if (data.mode === 'create') {
+        <ng-container i18n="@@newSampleTitle">New Sample</ng-container>
+      } @else {
+        <ng-container i18n="@@editSampleTitle">Edit Sample</ng-container>
+      }
+    </h2>
     <mat-dialog-content>
       <form class="form-grid" [formGroup]="form">
         <mat-form-field appearance="outline">
-          <mat-label i18n>Tumor</mat-label>
+          <mat-label i18n="@@sampleTumorLbl">Tumor</mat-label>
           @if (tumorsResource.isLoading()) {
             <mat-select disabled>
-              <mat-option>Loading…</mat-option>
+              <mat-option i18n="@@loadingLbl">Loading…</mat-option>
             </mat-select>
           } @else {
             <mat-select formControlName="tumor_biobank_code" required>
@@ -49,28 +55,36 @@ export interface SampleFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n>Obtain Date</mat-label>
+          <mat-label i18n="@@sampleObtainDateLbl">Obtain Date</mat-label>
           <input matInput formControlName="obtain_date" type="date" />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n>Organ</mat-label>
+          <mat-label i18n="@@sampleOrganLbl">Organ</mat-label>
           <input matInput formControlName="organ" />
         </mat-form-field>
         <div class="checkbox-group">
-          <mat-checkbox formControlName="has_serum">Has Serum</mat-checkbox>
-          <mat-checkbox formControlName="has_buffy">Has Buffy Coat</mat-checkbox>
-          <mat-checkbox formControlName="has_plasma">Has Plasma</mat-checkbox>
-          <mat-checkbox formControlName="has_tumor_tissue">Has Tumor Tissue</mat-checkbox>
-          <mat-checkbox formControlName="has_non_tumor_tissue">Has Non-Tumor Tissue</mat-checkbox>
-          <mat-checkbox formControlName="is_metastasis">Is Metastasis</mat-checkbox>
+          <mat-checkbox formControlName="has_serum" i18n="@@sampleHasSerumLbl">Has Serum</mat-checkbox>
+          <mat-checkbox formControlName="has_buffy" i18n="@@sampleHasBuffyCoatLbl"
+            >Has Buffy Coat</mat-checkbox>
+          <mat-checkbox formControlName="has_plasma" i18n="@@sampleHasPlasmaLbl">Has Plasma</mat-checkbox>
+          <mat-checkbox formControlName="has_tumor_tissue" i18n="@@sampleHasTumorTissueLbl"
+            >Has Tumor Tissue</mat-checkbox>
+          <mat-checkbox formControlName="has_non_tumor_tissue" i18n="@@sampleHasNonTumorTissueLbl"
+            >Has Non-Tumor Tissue</mat-checkbox>
+          <mat-checkbox formControlName="is_metastasis" i18n="@@sampleIsMetastasisLbl"
+            >Is Metastasis</mat-checkbox>
         </div>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close i18n>Cancel</button>
+      <button mat-button mat-dialog-close i18n="@@cancelBtn">Cancel</button>
       <button mat-flat-button [mat-dialog-close]="buildDialogResult()" [disabled]="form.invalid">
-        {{ data.mode === 'create' ? 'Create' : 'Save' }}
+        @if (data.mode === 'create') {
+          <ng-container i18n="@@createBtn">Create</ng-container>
+        } @else {
+          <ng-container i18n="@@saveBtn">Save</ng-container>
+        }
       </button>
     </mat-dialog-actions>
   `,

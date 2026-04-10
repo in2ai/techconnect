@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NumericInputDirective } from '@shared/directives/numeric-input.directive';
+import { numberFormatValidator } from '@shared/forms/numeric-input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -18,6 +18,8 @@ export interface EntityField {
   name: string;
   label: string;
   type: 'text' | 'number' | 'date' | 'boolean' | 'select';
+  /** For numeric fields: allow only integers (no decimal separator). */
+  integerOnly?: boolean;
   required?: boolean;
   options?: { value: any; label: string }[];
 }
@@ -30,9 +32,44 @@ export interface GenericEntityDialogData {
   defaultValues?: Record<string, any>; // default fields like mouse_id: 'auto'
 }
 
+/** Values for native `<input type="date">` (yyyy-MM-dd). */
+function toDateInputValue(value: unknown): string | null {
+  if (value == null || value === '') return null;
+  if (typeof value === 'string') return value.split('T')[0];
+  if (value instanceof Date) {
+    const d = value;
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+  return null;
+}
+
+function toApiDateString(value: unknown): string | null {
+  if (value === '' || value == null) return null;
+  if (value instanceof Date) return value.toISOString().split('T')[0];
+  if (typeof value === 'string') return value.split('T')[0];
+  return null;
+}
+
+function toApiNumber(value: unknown, integerOnly: boolean): number | null {
+  if (value === '' || value == null) return null;
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  return integerOnly ? Math.trunc(n) : n;
+}
+
+function applyPayloadFieldTransforms(payload: Record<string, unknown>, fields: EntityField[]): void {
+  for (const field of fields) {
+    if (field.type === 'date') {
+      payload[field.name] = toApiDateString(payload[field.name]);
+    }
+    if (field.type === 'number') {
+      payload[field.name] = toApiNumber(payload[field.name], field.integerOnly ?? false);
+    }
+  }
+}
+
 @Component({
   selector: 'app-generic-entity-form',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
@@ -42,28 +79,40 @@ export interface GenericEntityDialogData {
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
     MatCheckboxModule,
+    NumericInputDirective,
   ],
   template: `
     <h2 mat-dialog-title>{{ data.title }}</h2>
     <mat-dialog-content>
       <form [formGroup]="form" class="entity-form">
         @for (field of data.fields; track field.name) {
-          @if (field.type === 'text' || field.type === 'number') {
+          @if (field.type === 'text') {
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>{{ field.label }}</mat-label>
-              <input matInput [type]="field.type" [formControlName]="field.name" />
+              <input matInput type="text" [formControlName]="field.name" />
+            </mat-form-field>
+          }
+
+          @if (field.type === 'number') {
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ field.label }}</mat-label>
+              <input
+                matInput
+                type="text"
+                [attr.inputmode]="field.integerOnly ? 'numeric' : 'decimal'"
+                [formControlName]="field.name"
+                appNumericInput
+                [integerOnly]="field.integerOnly ?? false"
+                autocomplete="off"
+              />
             </mat-form-field>
           }
 
           @if (field.type === 'date') {
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>{{ field.label }}</mat-label>
-              <input matInput [matDatepicker]="picker" [formControlName]="field.name" />
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
+              <input matInput [formControlName]="field.name" type="date" />
             </mat-form-field>
           }
 
@@ -89,21 +138,20 @@ export interface GenericEntityDialogData {
     <mat-dialog-actions align="end">
       @if (auth.isAdmin()) {
         @if (isEdit) {
-          <button mat-button color="warn" (click)="deleteEntity()">Delete</button>
+          <button mat-button color="warn" (click)="deleteEntity()" i18n="@@deleteBtn">Delete</button>
         }
         <span class="spacer"></span>
-        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-button mat-dialog-close i18n="@@cancelBtn">Cancel</button>
         <button
           mat-flat-button
           color="primary"
           [disabled]="form.invalid || submitting"
           (click)="save()"
-        >
-          Save
-        </button>
+          i18n="@@saveBtn"
+        >Save</button>
       } @else {
         <span class="spacer"></span>
-        <button mat-button mat-dialog-close>Close</button>
+        <button mat-button mat-dialog-close i18n="@@closeAction">Close</button>
       }
     </mat-dialog-actions>
   `,
@@ -145,7 +193,10 @@ export class GenericEntityFormComponent implements OnInit {
     const group: Record<string, any> = {};
 
     for (const field of this.data.fields) {
-      const validators = field.required ? [Validators.required] : [];
+      const validators = [...(field.required ? [Validators.required] : [])];
+      if (field.type === 'number') {
+        validators.push(numberFormatValidator(field.integerOnly ?? false));
+      }
 
       let initValue = null;
       if (this.isEdit && this.data.entity) {
@@ -154,9 +205,8 @@ export class GenericEntityFormComponent implements OnInit {
         initValue = this.data.defaultValues[field.name];
       }
 
-      // Automatically convert YYYY-MM-DD strings to Date for datepicker if needed
-      if (field.type === 'date' && initValue && typeof initValue === 'string') {
-        initValue = new Date(initValue);
+      if (field.type === 'date') {
+        initValue = toDateInputValue(initValue);
       }
 
       group[field.name] = [initValue, validators];
@@ -183,12 +233,7 @@ export class GenericEntityFormComponent implements OnInit {
       }
     }
 
-    // Convert Date objects back to ISO for backend
-    for (const field of this.data.fields) {
-      if (field.type === 'date' && payload[field.name] instanceof Date) {
-        payload[field.name] = payload[field.name].toISOString().split('T')[0];
-      }
-    }
+    applyPayloadFieldTransforms(payload, this.data.fields);
 
     const request = this.isEdit
       ? this.http.patch(`${this.apiUrl}${this.data.endpoint}/${this.data.entity.id}`, payload)

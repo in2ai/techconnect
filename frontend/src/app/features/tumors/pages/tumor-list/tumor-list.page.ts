@@ -80,13 +80,13 @@ export class TumorListPage {
   protected readonly auth = inject(AuthService);
 
   columns: ColumnDef[] = [
-    { key: 'biobank_code', label: $localize`Biobank Code`, sortable: true },
-    { key: 'lab_code', label: $localize`Lab Code`, sortable: true },
-    { key: 'classification', label: $localize`Classification`, sortable: true },
-    { key: 'organ', label: $localize`Organ`, sortable: true },
-    { key: 'grade', label: $localize`Grade`, sortable: true },
-    { key: 'status', label: $localize`Status`, sortable: true },
-    { key: 'patient_nhc', label: $localize`Patient NHC`, sortable: true },
+    { key: 'biobank_code', label: $localize`:@@biobankCodeLbl:Biobank Code`, sortable: true },
+    { key: 'lab_code', label: $localize`:@@labCodeLbl:Lab Code`, sortable: true },
+    { key: 'classification', label: $localize`:@@classificationLbl:Classification`, sortable: true },
+    { key: 'organ', label: $localize`:@@organLbl:Organ`, sortable: true },
+    { key: 'grade', label: $localize`:@@tumorGradeLbl:Grade`, sortable: true },
+    { key: 'status', label: $localize`:@@tumorStatusLbl:Status`, sortable: true },
+    { key: 'patient_nhc', label: $localize`:@@tumorPatientNhcLbl:Patient NHC`, sortable: true },
   ];
 
   tumorsResource = httpResource<Tumor[]>(() => `${this.apiUrl}/tumors`, { defaultValue: [] });
@@ -103,12 +103,12 @@ export class TumorListPage {
     return [
       {
         key: 'organ',
-        label: $localize`Organ`,
+        label: $localize`:@@organLbl:Organ`,
         options: organs.map((o) => ({ label: o, value: o })),
       },
       {
         key: 'classification',
-        label: $localize`Classification`,
+        label: $localize`:@@classificationLbl:Classification`,
         options: classifications.map((c) => ({ label: c, value: c })),
       },
     ];

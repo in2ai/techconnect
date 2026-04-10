@@ -1,4 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { BaseCrudService } from '@core/services/base-crud.service';
 import {
   Cryopreservation,
@@ -16,9 +19,27 @@ import {
   UsageRecord,
 } from '@generated/models';
 
+/** Discriminator used when creating a trial so the correct subtype row is inserted. */
+export type TrialSubtype = 'PDX' | 'PDO' | 'LC';
+
 @Injectable({ providedIn: 'root' })
 export class TrialService extends BaseCrudService<Trial> {
   protected endpoint = 'trials';
+  private readonly httpClient = inject(HttpClient);
+
+  /**
+   * Creates the base trial then the matching PDX / PDO / LC row (same id).
+   * Required for list and detail pages that resolve type from subtype tables.
+   */
+  createWithSubtype(body: Partial<Trial>, trialType: TrialSubtype): Observable<Trial> {
+    const subPath =
+      trialType === 'PDX' ? 'pdx-trials' : trialType === 'PDO' ? 'pdo-trials' : 'lc-trials';
+    return this.create(body).pipe(
+      switchMap((trial) =>
+        this.httpClient.post(`${this.apiUrl}/${subPath}`, { id: trial.id }).pipe(map(() => trial)),
+      ),
+    );
+  }
 }
 
 @Injectable({ providedIn: 'root' })
