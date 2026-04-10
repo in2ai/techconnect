@@ -10,8 +10,8 @@ html {
   height: 100%;
   @include mat.theme((
     color: (
-      primary: mat.$violet-palette,
-      tertiary: mat.$rose-palette,
+      primary: mat.$azure-palette,
+      tertiary: mat.$cyan-palette,
     ),
     typography: ("DM Sans", Roboto, sans-serif),
     density: 0,

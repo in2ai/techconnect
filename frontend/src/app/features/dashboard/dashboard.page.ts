@@ -296,7 +296,7 @@ export class DashboardPage {
       icon: 'science',
       route: '/biomodels',
       endpoint: 'biomodels',
-      color: '#7c3aed',
+      color: '#6366f1',
       description: $localize`Preclinical biomodels derived from tumor samples.`,
     },
     {

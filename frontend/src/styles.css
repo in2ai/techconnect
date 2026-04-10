@@ -39,7 +39,7 @@
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: oklch(70% 0.02 280) transparent;
+  scrollbar-color: oklch(70% 0.02 230) transparent;
 }
 
 ::-webkit-scrollbar {
@@ -52,12 +52,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: oklch(70% 0.02 280);
+  background: oklch(70% 0.02 230);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: oklch(55% 0.02 280);
+  background: oklch(55% 0.02 230);
 }
 
 /* ─── Card Transitions ───────────────────────────────────────────── */
