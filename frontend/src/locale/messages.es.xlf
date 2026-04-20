@@ -424,7 +424,7 @@
       </trans-unit>
       <trans-unit id="3596035518136048939" datatype="html">
         <source>Passages</source>
-        <target>Pasajes</target>
+        <target>Pases</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
           <context context-type="linenumber">303</context>
@@ -440,7 +440,7 @@
       </trans-unit>
       <trans-unit id="7512439664993092318" datatype="html">
         <source>Track biomodel passages, viability, and growth indices.</source>
-        <target>Rastrear pasajes de biomodelos, viabilidad e índices de crecimiento.</target>
+        <target>Rastrear pases de biomodelos, viabilidad e índices de crecimiento.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
           <context context-type="linenumber">308</context>
@@ -496,7 +496,7 @@
       </trans-unit>
       <trans-unit id="3975490307441526848" datatype="html">
         <source>Delete Passage</source>
-        <target>Eliminar Pasaje</target>
+        <target>Eliminar Pase</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
           <context context-type="linenumber">148</context>
@@ -724,7 +724,7 @@
       </trans-unit>
       <trans-unit id="1703564405535089723" datatype="html">
         <source>Passage</source>
-        <target>Pasaje</target>
+        <target>Pase</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/trials/components/trial-form/trial-form.component.ts</context>
           <context context-type="linenumber">43</context>
@@ -1063,21 +1063,21 @@
       <trans-unit id="biomodelCreatedLbl"><source>Created</source><target>Creado</target></trans-unit>
       <trans-unit id="biomodelTumorLbl"><source>Tumor</source><target>Tumor</target></trans-unit>
 
-      <trans-unit id="passagesTabLbl"><source>Passages</source><target>Pasajes</target></trans-unit>
-      <trans-unit id="failedToLoadPassages"><source>Failed to load passages</source><target>Error al cargar pasajes</target></trans-unit>
-      <trans-unit id="noPassagesEmptyLbl"><source>No passages</source><target>Sin pasajes</target></trans-unit>
-      <trans-unit id="noPassagesMsgLbl"><source>No passages linked to this biomodel.</source><target>No hay pasajes vinculados a este biomodelo.</target></trans-unit>
+      <trans-unit id="passagesTabLbl"><source>Passages</source><target>Pases</target></trans-unit>
+      <trans-unit id="failedToLoadPassages"><source>Failed to load passages</source><target>Error al cargar pases</target></trans-unit>
+      <trans-unit id="noPassagesEmptyLbl"><source>No passages</source><target>Sin pases</target></trans-unit>
+      <trans-unit id="noPassagesMsgLbl"><source>No passages linked to this biomodel.</source><target>No hay pases vinculados a este biomodelo.</target></trans-unit>
 
-      <trans-unit id="passagesTitle"><source>Passages</source><target>Pasajes</target></trans-unit>
-      <trans-unit id="passagesSubtitle"><source>Track biomodel passages, viability, and growth indices</source><target>Rastrear pasajes de biomodelos, viabilidad e índices de crecimiento</target></trans-unit>
-      <trans-unit id="passageTitleLbl"><source>Passage</source><target>Pasaje</target></trans-unit>
-      <trans-unit id="failedToLoadPassage"><source>Failed to load passage</source><target>Error al cargar pasaje</target></trans-unit>
+      <trans-unit id="passagesTitle"><source>Passages</source><target>Pases</target></trans-unit>
+      <trans-unit id="passagesSubtitle"><source>Track biomodel passages, viability, and growth indices</source><target>Rastrear pases de biomodelos, viabilidad e índices de crecimiento</target></trans-unit>
+      <trans-unit id="passageTitleLbl"><source>Passage</source><target>Pase</target></trans-unit>
+      <trans-unit id="failedToLoadPassage"><source>Failed to load passage</source><target>Error al cargar pase</target></trans-unit>
       <trans-unit id="passageIdLbl"><source>ID</source><target>ID</target></trans-unit>
       <trans-unit id="passageNumberLbl"><source>Number</source><target>Número</target></trans-unit>
       <trans-unit id="passageDescLbl"><source>Description</source><target>Descripción</target></trans-unit>
       <trans-unit id="passageBiomodelLbl"><source>Biomodel</source><target>Biomodelo</target></trans-unit>
-      <trans-unit id="noPassagesYet"><source>No passages yet</source><target>Aún no hay pasajes</target></trans-unit>
-      <trans-unit id="createFirstPassage"><source>Use Add Passage above or create one from a biomodel detail page.</source><target>Puede añadir un pasaje con el botón superior o desde la página de detalle de un biomodelo.</target></trans-unit>
+      <trans-unit id="noPassagesYet"><source>No passages yet</source><target>Aún no hay pases</target></trans-unit>
+      <trans-unit id="createFirstPassage"><source>Use Add Passage above or create one from a biomodel detail page.</source><target>Puede añadir un pase con el botón superior o desde la página de detalle de un biomodelo.</target></trans-unit>
 
       <trans-unit id="trialsTabLbl"><source>Trials</source><target>Ensayos</target></trans-unit>
       <trans-unit id="failedToLoadTrials"><source>Failed to load trials</source><target>Error al cargar ensayos</target></trans-unit>
@@ -1093,7 +1093,7 @@
       <trans-unit id="cancelBtn"><source>Cancel</source><target>Cancelar</target></trans-unit>
       <trans-unit id="loadingLbl"><source>Loading…</source><target>Cargando…</target></trans-unit>
       <trans-unit id="noTrialsEmptyLbl"><source>No trials</source><target>Sin ensayos</target></trans-unit>
-      <trans-unit id="noTrialsMsgLbl"><source>No trials linked to this passage.</source><target>No hay ensayos vinculados a este pasaje.</target></trans-unit>
+      <trans-unit id="noTrialsMsgLbl"><source>No trials linked to this passage.</source><target>No hay ensayos vinculados a este pase.</target></trans-unit>
 
       <trans-unit id="trialsTitle"><source>Trials</source><target>Ensayos</target></trans-unit>
       <trans-unit id="trialsSubtitle"><source>PDX, PDO, and LC trial data with detailed outcomes</source><target>Datos de ensayos PDX, PDO y LC con resultados detallados</target></trans-unit>
@@ -1106,7 +1106,7 @@
       <trans-unit id="trialCreatedLbl"><source>Created</source><target>Creado</target></trans-unit>
       <trans-unit id="trialBiobankShipmentLbl"><source>Biobank Shipment</source><target>Envío al Biobanco</target></trans-unit>
       <trans-unit id="trialArrivalDateLbl"><source>Arrival Date</source><target>Fecha de llegada</target></trans-unit>
-      <trans-unit id="trialPassageLbl"><source>Passage</source><target>Pasaje</target></trans-unit>
+      <trans-unit id="trialPassageLbl"><source>Passage</source><target>Pase</target></trans-unit>
       <trans-unit id="trialDescLbl"><source>Description</source><target>Descripción</target></trans-unit>
 
       <trans-unit id="implantsTabLbl"><source>Implants</source><target>Implantes</target></trans-unit>
@@ -1247,12 +1247,12 @@
       <trans-unit id="navSamples" datatype="html"><source>Samples</source><target>Muestras</target></trans-unit>
       <trans-unit id="navResearch" datatype="html"><source>Research</source><target>Investigación</target></trans-unit>
       <trans-unit id="navBiomodels" datatype="html"><source>Biomodels</source><target>Biomodelos</target></trans-unit>
-      <trans-unit id="navPassages" datatype="html"><source>Passages</source><target>Pasajes</target></trans-unit>
+      <trans-unit id="navPassages" datatype="html"><source>Passages</source><target>Pases</target></trans-unit>
       <trans-unit id="navTrials" datatype="html"><source>Trials</source><target>Ensayos</target></trans-unit>
       <trans-unit id="addTumorBtn" datatype="html"><source>Add Tumor</source><target>Añadir Tumor</target></trans-unit>
       <trans-unit id="addBiomodelFullBtn" datatype="html"><source>Add Biomodel</source><target>Añadir Biomodelo</target></trans-unit>
       <trans-unit id="addSampleBtn" datatype="html"><source>Add Sample</source><target>Añadir Muestra</target></trans-unit>
-      <trans-unit id="addPassageBtn" datatype="html"><source>Add Passage</source><target>Añadir Pasaje</target></trans-unit>
+      <trans-unit id="addPassageBtn" datatype="html"><source>Add Passage</source><target>Añadir Pase</target></trans-unit>
       <trans-unit id="addTrialBtn" datatype="html"><source>Add Trial</source><target>Añadir Ensayo</target></trans-unit>
       <trans-unit id="8136629956200302115" datatype="html"><source>Open account menu</source><target>Abrir menú de cuenta</target></trans-unit>
 
@@ -1282,10 +1282,10 @@
       <trans-unit id="biomodelParentTrialOptionalLbl" datatype="html"><source>Parent Trial (Optional)</source><target>Ensayo Padre (Opcional)</target></trans-unit>
       <trans-unit id="noneOptionLbl" datatype="html"><source>None</source><target>Ninguno</target></trans-unit>
 
-      <trans-unit id="newPassageTitle" datatype="html"><source>New Passage</source><target>Nuevo Pasaje</target></trans-unit>
-      <trans-unit id="editPassageTitle" datatype="html"><source>Edit Passage</source><target>Editar Pasaje</target></trans-unit>
-      <trans-unit id="passageCreatedToast" datatype="html"><source>Passage created</source><target>Pasaje creado</target></trans-unit>
-      <trans-unit id="passageCreateFailedToast" datatype="html"><source>Failed to create passage</source><target>Error al crear el pasaje</target></trans-unit>
+      <trans-unit id="newPassageTitle" datatype="html"><source>New Passage</source><target>Nuevo Pase</target></trans-unit>
+      <trans-unit id="editPassageTitle" datatype="html"><source>Edit Passage</source><target>Editar Pase</target></trans-unit>
+      <trans-unit id="passageCreatedToast" datatype="html"><source>Passage created</source><target>Pase creado</target></trans-unit>
+      <trans-unit id="passageCreateFailedToast" datatype="html"><source>Failed to create passage</source><target>Error al crear el pase</target></trans-unit>
     </body>
   </file>
 </xliff>
