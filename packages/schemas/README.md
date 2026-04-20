@@ -102,7 +102,7 @@ with Session(engine) as session:
     # Create a tumor for the patient
     tumor = Tumor(
         biobank_code="BB-2024-001",
-        classification="Adenocarcinoma",
+        diagnosis="Adenocarcinoma",
         organ="Lung",
         patient_nhc=patient.nhc
     )

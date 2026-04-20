@@ -155,7 +155,7 @@ export class PatientDetailPage {
   tumorColumns: ColumnDef[] = [
     { key: 'biobank_code', label: $localize`:@@biobankCodeLbl:Biobank Code`, sortable: true },
     { key: 'lab_code', label: $localize`:@@labCodeLbl:Lab Code`, sortable: true },
-    { key: 'classification', label: $localize`:@@classificationLbl:Classification`, sortable: true },
+    { key: 'diagnosis', label: $localize`:@@diagnosisLbl:Diagnosis`, sortable: true },
     { key: 'organ', label: $localize`:@@organLbl:Organ`, sortable: true },
     { key: 'status', label: $localize`:@@tumorStatusLbl:Status`, sortable: true },
     {

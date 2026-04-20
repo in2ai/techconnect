@@ -39,7 +39,7 @@ erDiagram
     TUMOR {
         string biobank_code PK
         string lab_code
-        string classification
+        string diagnosis
         string ap_observation
         string grade
         string organ

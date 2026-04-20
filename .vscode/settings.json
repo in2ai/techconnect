@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "aiosqlite",
+    "apos",
     "autoflush",
     "biobanco",
     "biobank",
@@ -18,6 +19,8 @@
     "Certbot",
     "cffi",
     "codegen",
+    "Criopreservación",
+    "criopreservaciones",
     "cryo",
     "cryopreservation",
     "cryopreservations",
@@ -47,6 +50,7 @@
     "oklch",
     "organoid",
     "Organoid",
+    "organoides",
     "organoids",
     "preclínicos",
     "privkey",

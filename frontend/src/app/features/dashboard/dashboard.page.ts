@@ -281,7 +281,7 @@ export class DashboardPage {
       route: '/tumors',
       endpoint: 'tumors',
       color: '#dc2626',
-      description: $localize`Track tumor samples, classifications, and biobank codes.`,
+      description: $localize`:@@dashboardTumorsDescription:Track tumor samples, diagnoses, and biobank codes.`,
     },
     {
       title: $localize`Samples`,

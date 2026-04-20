@@ -382,9 +382,9 @@
           <context context-type="linenumber">296</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5053112500132073496" datatype="html">
-        <source>Track tumor samples, classifications, and biobank codes.</source>
-        <target>Rastrear muestras de tumores, clasificaciones y códigos de biobanco.</target>
+      <trans-unit id="dashboardTumorsDescription" datatype="html">
+        <source>Track tumor samples, diagnoses, and biobank codes.</source>
+        <target>Rastrear muestras de tumores, diagnósticos y códigos de biobanco.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
           <context context-type="linenumber">284</context>
@@ -596,22 +596,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
           <context context-type="linenumber">51</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="8846151385804023521" datatype="html">
-        <source>Classification</source>
-        <target>Clasificación</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/patients/pages/patient-detail/patient-detail.page.ts</context>
-          <context context-type="linenumber">144</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/tumors/components/tumor-form/tumor-form.component.ts</context>
-          <context context-type="linenumber">69</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
-          <context context-type="linenumber">52</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2060021892500932246" datatype="html">
@@ -999,14 +983,14 @@
       <trans-unit id="noTumorsMsg"><source>No tumor samples linked to this patient.</source><target>No hay muestras de tumor vinculadas a este paciente.</target></trans-unit>
 
       <trans-unit id="tumorsTitle"><source>Tumors</source><target>Tumores</target></trans-unit>
-      <trans-unit id="tumorsSubtitle"><source>Track tumor samples, classifications, and biobank codes</source><target>Rastrear muestras de tumores, clasificaciones y códigos de biobanco</target></trans-unit>
+      <trans-unit id="tumorsSubtitle"><source>Track tumor samples, diagnoses, and biobank codes</source><target>Rastrear muestras de tumores, diagnósticos y códigos de biobanco</target></trans-unit>
       <trans-unit id="addTumor"><source>Add Tumor</source><target>Añadir Tumor</target></trans-unit>
       <trans-unit id="tumorDetailTitle"><source>Tumor <x id="code"/></source><target>Tumor <x id="code"/></target></trans-unit>
       <trans-unit id="failedToLoadTumor"><source>Failed to load tumor</source><target>Error al cargar el tumor</target></trans-unit>
       
       <trans-unit id="tumorBiobankCodeLbl"><source>Biobank Code</source><target>Código de Biobanco</target></trans-unit>
       <trans-unit id="tumorLabCodeLbl"><source>Lab Code</source><target>Código de Laboratorio</target></trans-unit>
-      <trans-unit id="tumorClassificationLbl"><source>Classification</source><target>Clasificación</target></trans-unit>
+      <trans-unit id="tumorDiagnosisLbl"><source>Diagnosis</source><target>Diagnóstico</target></trans-unit>
       <trans-unit id="tumorGradeLbl"><source>Grade</source><target>Grado</target></trans-unit>
       <trans-unit id="tumorOrganLbl"><source>Organ</source><target>Órgano</target></trans-unit>
       <trans-unit id="tumorStatusLbl"><source>Status</source><target>Estado</target></trans-unit>
@@ -1271,7 +1255,7 @@
       <trans-unit id="biobankCodeLbl" datatype="html"><source>Biobank Code</source><target>Código de Biobanco</target></trans-unit>
       <trans-unit id="tumorPatientLbl" datatype="html"><source>Patient</source><target>Paciente</target></trans-unit>
       <trans-unit id="labCodeLbl" datatype="html"><source>Lab Code</source><target>Código de Laboratorio</target></trans-unit>
-      <trans-unit id="classificationLbl" datatype="html"><source>Classification</source><target>Clasificación</target></trans-unit>
+      <trans-unit id="diagnosisLbl" datatype="html"><source>Diagnosis</source><target>Diagnóstico</target></trans-unit>
       <trans-unit id="organLbl" datatype="html"><source>Organ</source><target>Órgano</target></trans-unit>
 
       <trans-unit id="newSampleTitle" datatype="html"><source>New Sample</source><target>Nueva Muestra</target></trans-unit>

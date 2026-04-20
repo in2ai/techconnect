@@ -3,7 +3,6 @@ import {
   apiBaseUrl,
   createPatient,
   deletePatient,
-  createTumor,
   deleteTumor,
 } from './helpers/api-fixtures';
 import { clickFilteredRow, confirmDialogAction, goToList, selectMatOption, uniqueSuffix } from './helpers/ui-helpers';
@@ -26,19 +25,19 @@ test('tumors CRUD flow', async ({ page, request }) => {
     const createDialog = page.locator('mat-dialog-container');
     await createDialog.getByLabel('Biobank Code').fill(biobankCode);
     await selectMatOption(page, 'Patient', patientNHC);
-    await createDialog.getByLabel('Classification').fill('Initial Class');
+    await createDialog.getByLabel('Diagnosis').fill('Initial Diagnosis');
     await createDialog.getByRole('button', { name: 'Create' }).click();
     createdTumorCode = biobankCode;
 
     await clickFilteredRow(page, biobankCode);
     await expect(page).toHaveURL(new RegExp(`/tumors/${biobankCode}$`));
-    await expect(page.locator('.detail-item', { hasText: 'Classification' })).toContainText('Initial Class');
+    await expect(page.locator('.detail-item', { hasText: 'Diagnosis' })).toContainText('Initial Diagnosis');
 
     await page.getByRole('button', { name: 'Edit' }).click();
     const editDialog = page.locator('mat-dialog-container');
-    await editDialog.getByLabel('Classification').fill('Updated Class');
+    await editDialog.getByLabel('Diagnosis').fill('Updated Diagnosis');
     await editDialog.getByRole('button', { name: 'Save' }).click();
-    await expect(page.locator('.detail-item', { hasText: 'Classification' })).toContainText('Updated Class');
+    await expect(page.locator('.detail-item', { hasText: 'Diagnosis' })).toContainText('Updated Diagnosis');
 
     await page.getByRole('button', { name: 'Delete', exact: true }).first().click();
     await confirmDialogAction(page, 'Delete');

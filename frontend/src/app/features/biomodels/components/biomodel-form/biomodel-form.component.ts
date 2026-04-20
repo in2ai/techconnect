@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { API_URL } from '@core/tokens/api-url.token';
 import { Biomodel, Trial, Tumor } from '@generated/models';
 
-type TumorOption = Pick<Tumor, 'biobank_code' | 'classification'>;
+type TumorOption = Pick<Tumor, 'biobank_code' | 'diagnosis'>;
 type TrialOption = Pick<Trial, 'id' | 'description'>;
 
 export interface BiomodelFormData {

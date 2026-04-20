@@ -122,7 +122,7 @@ def seed_database() -> SeedStats:
             {
                 "biobank_code": tumor_1,
                 "lab_code": "LAB-TC-001",
-                "classification": "Adenocarcinoma",
+                "diagnosis": "Adenocarcinoma",
                 "ap_observation": "Moderately differentiated",
                 "grade": "G2",
                 "organ": "Lung",

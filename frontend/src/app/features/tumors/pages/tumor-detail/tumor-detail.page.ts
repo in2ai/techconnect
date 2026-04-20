@@ -75,8 +75,8 @@ import { TumorService } from '../../services/tumor.service';
               ><span class="detail-value">{{ tumorResource.value()!.lab_code || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label" i18n="@@tumorClassificationLbl">Classification</span
-              ><span class="detail-value">{{ tumorResource.value()!.classification || '—' }}</span>
+              <span class="detail-label" i18n="@@tumorDiagnosisLbl">Diagnosis</span
+              ><span class="detail-value">{{ tumorResource.value()!.diagnosis || '—' }}</span>
             </div>
             <div class="detail-item">
               <span class="detail-label" i18n="@@tumorGradeLbl">Grade</span

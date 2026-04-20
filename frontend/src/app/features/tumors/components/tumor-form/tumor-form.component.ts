@@ -69,8 +69,8 @@ export interface TumorFormData {
           <input matInput formControlName="lab_code" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n="@@classificationLbl">Classification</mat-label>
-          <input matInput formControlName="classification" />
+          <mat-label i18n="@@diagnosisLbl">Diagnosis</mat-label>
+          <input matInput formControlName="diagnosis" />
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label i18n="@@tumorGradeLbl">Grade</mat-label>
@@ -144,8 +144,8 @@ export class TumorFormComponent {
       validators: [Validators.required, Validators.pattern(/\S/)],
     }),
     lab_code: this.formBuilder.control<Tumor['lab_code']>(this.data.tumor?.lab_code ?? null),
-    classification: this.formBuilder.control<Tumor['classification']>(
-      this.data.tumor?.classification ?? null,
+    diagnosis: this.formBuilder.control<Tumor['diagnosis']>(
+      this.data.tumor?.diagnosis ?? null,
     ),
     ap_observation: this.formBuilder.control<Tumor['ap_observation']>(
       this.data.tumor?.ap_observation ?? null,

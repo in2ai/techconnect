@@ -30,7 +30,7 @@ export interface Patient {
 export interface Tumor {
   biobank_code: string;
   lab_code: string | null;
-  classification: string | null;
+  diagnosis: string | null;
   ap_observation: string | null;
   grade: string | null;
   organ: string | null;

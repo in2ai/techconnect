@@ -22,7 +22,7 @@ describe('BiomodelFormComponent', () => {
     const httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
 
-    httpMock.expectOne('/api/tumors').flush([{ biobank_code: 'TB-1', classification: null }]);
+    httpMock.expectOne('/api/tumors').flush([{ biobank_code: 'TB-1', diagnosis: null }]);
     httpMock.expectOne('/api/trials').flush([{ id: 'T-1', description: 'Trial 1' }]);
     fixture.detectChanges();
 

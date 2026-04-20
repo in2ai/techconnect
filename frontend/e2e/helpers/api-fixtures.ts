@@ -14,7 +14,7 @@ interface TumorPayload {
   biobank_code: string;
   patient_nhc: string;
   lab_code: string | null;
-  classification: string | null;
+  diagnosis: string | null;
   ap_observation: string | null;
   grade: string | null;
   organ: string | null;
@@ -138,7 +138,7 @@ export async function createTumor(
     biobank_code: biobankCode,
     patient_nhc: patientNhc,
     lab_code: null,
-    classification: null,
+    diagnosis: null,
     ap_observation: null,
     grade: null,
     organ: null,

@@ -19,7 +19,7 @@ class Tumor(SQLModel, table=True):
     Attributes:
         biobank_code: Unique biobank identifier (primary key)
         lab_code: Laboratory code
-        classification: Tumor classification
+        diagnosis: Tumor diagnosis
         ap_observation: Anatomical pathology observation
         grade: Tumor grade
         organ: Organ of origin
@@ -37,7 +37,7 @@ class Tumor(SQLModel, table=True):
     
     # Fields
     lab_code: Optional[str] = Field(default=None, max_length=100)
-    classification: Optional[str] = Field(default=None, max_length=100)
+    diagnosis: Optional[str] = Field(default=None, max_length=100)
     ap_observation: Optional[str] = Field(default=None)  # text field
     grade: Optional[str] = Field(default=None, max_length=50)
     organ: Optional[str] = Field(default=None, max_length=100)

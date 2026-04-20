@@ -49,7 +49,7 @@ describe('TumorFormComponent', () => {
         biobank_code: 'TB-9',
         patient_nhc: 'NHC-9',
         lab_code: 'LAB-9',
-        classification: 'Type A',
+        diagnosis: 'Type A',
         ap_observation: 'obs',
         grade: 'G2',
         organ: 'Lung',
@@ -62,7 +62,7 @@ describe('TumorFormComponent', () => {
 
     expect(component.form.getRawValue().biobank_code).toBe('TB-9');
     expect(component.form.getRawValue().patient_nhc).toBe('NHC-9');
-    expect(component.form.getRawValue().classification).toBe('Type A');
+    expect(component.form.getRawValue().diagnosis).toBe('Type A');
     httpMock.verify();
   });
 
@@ -72,7 +72,7 @@ describe('TumorFormComponent', () => {
     component.form.patchValue({
       biobank_code: 'TB-20',
       patient_nhc: 'NHC-1',
-      classification: 'Updated',
+      diagnosis: 'Updated',
     });
     fixture.detectChanges();
 
