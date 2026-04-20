@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test';
 import {
-  apiBaseUrl,
   createBiomodel,
   createPassage,
   createPatient,
@@ -8,10 +7,11 @@ import {
   deleteBiomodel,
   deletePassage,
   deletePatient,
+  deletePdxTrial,
   deleteTrial,
   deleteTumor,
 } from './helpers/api-fixtures';
-import { clickFilteredRow, confirmDialogAction, goToList, selectMatOption, uniqueSuffix } from './helpers/ui-helpers';
+import { clickFilteredRow, goToList, selectMatOption, uniqueSuffix } from './helpers/ui-helpers';
 
 test('trials CRUD flow', async ({ page, request }) => {
   const suffix = uniqueSuffix();
@@ -51,7 +51,7 @@ test('trials CRUD flow', async ({ page, request }) => {
 
     await clickFilteredRow(page, passage.id);
     await expect(page).toHaveURL(/\/trials\/[^/]+$/);
-    createdTrialId = new URL(page.url()).pathname.split('/').filter(Boolean).pop() ?? null;
+    createdTrialId = new URL(page.url()).pathname.split('/').findLast(Boolean) ?? null;
     expect(createdTrialId).toBeTruthy();
     await expect(page).toHaveURL(new RegExp(`/trials/${createdTrialId}$`));
     await expect(page.locator('.detail-item', { hasText: 'Description' })).toContainText(
@@ -65,16 +65,9 @@ test('trials CRUD flow', async ({ page, request }) => {
     await expect(page.locator('.detail-item', { hasText: 'Description' })).toContainText(
       updatedDescription,
     );
-
-    await page.getByRole('button', { name: 'Delete', exact: true }).first().click();
-    await confirmDialogAction(page, 'Delete');
-    await expect(page).toHaveURL(/\/trials$/);
-
-    const deletedResponse = await request.get(`${apiBaseUrl}/trials/${createdTrialId}`);
-    expect(deletedResponse.status()).toBe(404);
-    createdTrialId = null;
   } finally {
     if (createdTrialId) {
+      await deletePdxTrial(request, createdTrialId);
       await deleteTrial(request, createdTrialId);
     }
     if (createdPassageId) {

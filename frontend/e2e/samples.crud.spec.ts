@@ -7,7 +7,13 @@ import {
   deleteSample,
   deleteTumor,
 } from './helpers/api-fixtures';
-import { clickFilteredRow, confirmDialogAction, goToList, selectMatOption, uniqueSuffix } from './helpers/ui-helpers';
+import {
+  clickFilteredRow,
+  confirmDialogAction,
+  goToList,
+  selectMatOption,
+  uniqueSuffix,
+} from './helpers/ui-helpers';
 
 test('samples CRUD flow', async ({ page, request }) => {
   const suffix = uniqueSuffix();
@@ -31,7 +37,7 @@ test('samples CRUD flow', async ({ page, request }) => {
     await page.getByRole('button', { name: 'Add Sample' }).click();
     const createDialog = page.locator('mat-dialog-container');
     await selectMatOption(page, 'Tumor', biobankCode);
-    await createDialog.getByLabel('Biopsy Date').fill(createdDate);
+    await createDialog.getByLabel('Obtain Date').fill(createdDate);
     await createDialog.getByRole('button', { name: 'Create' }).click();
 
     await clickFilteredRow(page, biobankCode);
@@ -39,13 +45,17 @@ test('samples CRUD flow', async ({ page, request }) => {
     createdSampleId = new URL(page.url()).pathname.split('/').filter(Boolean).pop() ?? null;
     expect(createdSampleId).toBeTruthy();
     await expect(page).toHaveURL(new RegExp(`/samples/${createdSampleId}$`));
-    await expect(page.locator('.detail-item', { hasText: 'Biopsy Date' })).toContainText(createdDate);
+    await expect(page.locator('.detail-item', { hasText: 'Obtain Date' })).toContainText(
+      createdDate,
+    );
 
     await page.getByRole('button', { name: 'Edit' }).click();
     const editDialog = page.locator('mat-dialog-container');
-    await editDialog.getByLabel('Biopsy Date').fill(updatedDate);
+    await editDialog.getByLabel('Obtain Date').fill(updatedDate);
     await editDialog.getByRole('button', { name: 'Save' }).click();
-    await expect(page.locator('.detail-item', { hasText: 'Biopsy Date' })).toContainText(updatedDate);
+    await expect(page.locator('.detail-item', { hasText: 'Obtain Date' })).toContainText(
+      updatedDate,
+    );
 
     await page.getByRole('button', { name: 'Delete', exact: true }).first().click();
     await confirmDialogAction(page, 'Delete');

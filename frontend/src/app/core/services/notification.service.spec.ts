@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { NotificationService } from './notification.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { vi } from 'vitest';
+import { NotificationService } from './notification.service';
 
 describe('NotificationService', () => {
   let service: NotificationService;
@@ -10,10 +10,7 @@ describe('NotificationService', () => {
   beforeEach(() => {
     snackBarMock = { open: vi.fn() };
     TestBed.configureTestingModule({
-      providers: [
-        NotificationService,
-        { provide: MatSnackBar, useValue: snackBarMock },
-      ],
+      providers: [NotificationService, { provide: MatSnackBar, useValue: snackBarMock }],
     });
     service = TestBed.inject(NotificationService);
   });
@@ -38,5 +35,16 @@ describe('NotificationService', () => {
       'Close',
       expect.objectContaining({ duration: 6000 }),
     );
+  });
+
+  it('should show info notification without a success/error panel class', () => {
+    service.info('FYI');
+    expect(snackBarMock.open).toHaveBeenCalledWith(
+      'FYI',
+      'Close',
+      expect.objectContaining({ duration: 4000 }),
+    );
+    const config = snackBarMock.open.mock.calls.at(-1)?.[2];
+    expect(config?.panelClass).toBeUndefined();
   });
 });

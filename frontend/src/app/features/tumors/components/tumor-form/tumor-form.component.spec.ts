@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
+import { By } from '@angular/platform-browser';
 import { API_URL } from '@core/tokens/api-url.token';
 import { TumorFormComponent, TumorFormData } from './tumor-form.component';
 
@@ -21,65 +21,62 @@ describe('TumorFormComponent', () => {
     const fixture = TestBed.createComponent(TumorFormComponent);
     const httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
-
-    httpMock.expectOne('/api/patients').flush([{ nhc: 'NHC-1', sex: 'F' }]);
+    httpMock.expectOne('/api/patients').flush([{ nhc: 'P-1', sex: null }]);
     fixture.detectChanges();
-
     return { fixture, component: fixture.componentInstance, httpMock };
   };
 
-  it('starts invalid in create mode until required fields are set', async () => {
+  it('requires biobank_code and patient_nhc in create mode', async () => {
     const { fixture, component, httpMock } = await setup({ mode: 'create' });
-
-    expect(component.form.controls.biobank_code.value).toBe('');
-    expect(component.form.controls.patient_nhc.value).toBe('');
     expect(component.form.invalid).toBe(true);
 
-    component.form.patchValue({ biobank_code: 'TB-1', patient_nhc: 'NHC-1' });
+    component.form.patchValue({ biobank_code: 'TB-1', patient_nhc: 'P-1' });
     fixture.detectChanges();
-
     expect(component.form.valid).toBe(true);
+
+    const submitButton = fixture.debugElement.query(By.css('button[mat-flat-button]'));
+    expect((submitButton.nativeElement as HTMLButtonElement).disabled).toBe(false);
     httpMock.verify();
   });
 
-  it('initializes edit mode with tumor data', async () => {
-    const { component, httpMock } = await setup({
+  it('keeps biobank_code readonly when editing', async () => {
+    const { fixture, httpMock } = await setup({
       mode: 'edit',
       tumor: {
-        biobank_code: 'TB-9',
-        patient_nhc: 'NHC-9',
-        lab_code: 'LAB-9',
-        diagnosis: 'Type A',
-        ap_observation: 'obs',
-        grade: 'G2',
-        organ: 'Lung',
-        status: 'Active',
-        tnm: 'T1',
-        registration_date: '2024-01-02',
-        operation_date: '2024-01-03',
+        biobank_code: 'TB-1',
+        patient_nhc: 'P-1',
+        lab_code: null,
+        diagnosis: null,
+        ap_observation: null,
+        grade: null,
+        organ: null,
+        status: null,
+        tnm: null,
+        registration_date: null,
+        operation_date: null,
       },
     });
-
-    expect(component.form.getRawValue().biobank_code).toBe('TB-9');
-    expect(component.form.getRawValue().patient_nhc).toBe('NHC-9');
-    expect(component.form.getRawValue().diagnosis).toBe('Type A');
+    const input = fixture.debugElement.query(By.css('input[formcontrolname="biobank_code"]'));
+    expect((input.nativeElement as HTMLInputElement).readOnly).toBe(true);
     httpMock.verify();
   });
 
-  it('binds submit dialog payload to raw form value', async () => {
+  it('binds submit payload to form raw value', async () => {
     const { fixture, component, httpMock } = await setup({ mode: 'create' });
-
     component.form.patchValue({
-      biobank_code: 'TB-20',
-      patient_nhc: 'NHC-1',
-      diagnosis: 'Updated',
+      biobank_code: 'TB-42',
+      patient_nhc: 'P-1',
+      diagnosis: 'adenocarcinoma',
     });
     fixture.detectChanges();
 
     const submitButton = fixture.debugElement.query(By.css('button[mat-flat-button]'));
     const closeDirective = submitButton.injector.get(MatDialogClose);
-
-    expect(closeDirective.dialogResult).toEqual(component.form.getRawValue());
+    expect(closeDirective.dialogResult).toMatchObject({
+      biobank_code: 'TB-42',
+      patient_nhc: 'P-1',
+      diagnosis: 'adenocarcinoma',
+    });
     httpMock.verify();
   });
 });

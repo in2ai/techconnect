@@ -10,18 +10,27 @@ export function uniqueSuffix(): string {
 export async function goToList(page: Page, path: string, title: string): Promise<void> {
   await page.goto(path);
   await loginIfNeeded(page);
-  await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible();
+  await page.waitForURL((url) => !url.pathname.startsWith('/login'), { timeout: 15000 });
+  if (new URL(page.url()).pathname !== path) {
+    await page.goto(path);
+  }
+  await expect(page.getByRole('heading', { level: 1, name: title })).toBeVisible({
+    timeout: 15000,
+  });
 }
 
 export async function loginIfNeeded(page: Page): Promise<void> {
   const emailField = page.getByLabel('Email address');
-  if (!(await emailField.isVisible().catch(() => false))) {
+  try {
+    await emailField.waitFor({ state: 'visible', timeout: 5000 });
+  } catch {
     return;
   }
 
   await emailField.fill(authEmail);
-  await page.getByLabel('Password').fill(authPassword);
+  await page.getByRole('textbox', { name: 'Password' }).fill(authPassword);
   await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.waitForURL((url) => !url.pathname.startsWith('/login'), { timeout: 15000 });
 }
 
 export async function selectMatOption(
@@ -29,7 +38,9 @@ export async function selectMatOption(
   label: string,
   optionText: string | RegExp,
 ): Promise<void> {
-  await page.getByRole('combobox', { name: label }).click();
+  const dialog = page.locator('mat-dialog-container');
+  const scope = (await dialog.count()) > 0 ? dialog : page.locator('body');
+  await scope.getByRole('combobox', { name: label }).click();
   if (typeof optionText === 'string') {
     await page.getByRole('option', { name: optionText, exact: true }).click();
     return;

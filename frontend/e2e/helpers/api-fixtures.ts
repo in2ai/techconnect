@@ -78,7 +78,7 @@ async function ensureOk(response: APIResponse, action: string): Promise<void> {
   throw new Error(`${action} failed (${response.status()}): ${body}`);
 }
 
-async function ensureAuthenticated(request: APIRequestContext): Promise<void> {
+export async function ensureAuthenticated(request: APIRequestContext): Promise<void> {
   const response = await request.post(`${apiBaseUrl}/auth/login`, {
     data: {
       email: authEmail,
@@ -95,10 +95,7 @@ async function postJson<T>(request: APIRequestContext, path: string, payload: un
   return (await response.json()) as T;
 }
 
-async function deleteIgnoreNotFound(
-  request: APIRequestContext,
-  path: string,
-): Promise<void> {
+async function deleteIgnoreNotFound(request: APIRequestContext, path: string): Promise<void> {
   await ensureAuthenticated(request);
   const response = await request.delete(`${apiBaseUrl}${path}`);
   if (response.status() === 404) {
@@ -108,10 +105,7 @@ async function deleteIgnoreNotFound(
   await ensureOk(response, `DELETE ${path}`);
 }
 
-export async function listCollection<T>(
-  request: APIRequestContext,
-  path: string,
-): Promise<T[]> {
+export async function listCollection<T>(request: APIRequestContext, path: string): Promise<T[]> {
   await ensureAuthenticated(request);
   const response = await request.get(`${apiBaseUrl}${path}?offset=0&limit=1000`);
   await ensureOk(response, `GET ${path}`);
@@ -218,10 +212,7 @@ export async function deletePatient(request: APIRequestContext, nhc: string): Pr
   await deleteIgnoreNotFound(request, `/patients/${nhc}`);
 }
 
-export async function deleteTumor(
-  request: APIRequestContext,
-  biobankCode: string,
-): Promise<void> {
+export async function deleteTumor(request: APIRequestContext, biobankCode: string): Promise<void> {
   await deleteIgnoreNotFound(request, `/tumors/${biobankCode}`);
 }
 
@@ -239,4 +230,16 @@ export async function deletePassage(request: APIRequestContext, id: string): Pro
 
 export async function deleteTrial(request: APIRequestContext, id: string): Promise<void> {
   await deleteIgnoreNotFound(request, `/trials/${id}`);
+}
+
+export async function deletePdxTrial(request: APIRequestContext, id: string): Promise<void> {
+  await deleteIgnoreNotFound(request, `/pdx-trials/${id}`);
+}
+
+export async function deletePdoTrial(request: APIRequestContext, id: string): Promise<void> {
+  await deleteIgnoreNotFound(request, `/pdo-trials/${id}`);
+}
+
+export async function deleteLcTrial(request: APIRequestContext, id: string): Promise<void> {
+  await deleteIgnoreNotFound(request, `/lc-trials/${id}`);
 }

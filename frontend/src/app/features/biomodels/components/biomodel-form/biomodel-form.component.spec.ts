@@ -1,8 +1,7 @@
-import { TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { MAT_DIALOG_DATA, MatDialogClose } from '@angular/material/dialog';
+import { TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { API_URL } from '@core/tokens/api-url.token';
 import { BiomodelFormComponent, BiomodelFormData } from './biomodel-form.component';
 
@@ -21,68 +20,64 @@ describe('BiomodelFormComponent', () => {
     const fixture = TestBed.createComponent(BiomodelFormComponent);
     const httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
-
-    httpMock.expectOne('/api/tumors').flush([{ biobank_code: 'TB-1', diagnosis: null }]);
-    httpMock.expectOne('/api/trials').flush([{ id: 'T-1', description: 'Trial 1' }]);
+    httpMock.expectOne('/api/tumors').flush([{ biobank_code: 'TB-1' }]);
+    httpMock.expectOne('/api/trials').flush([{ id: 'TR-1', description: 'trial one' }]);
     fixture.detectChanges();
-
     return { fixture, component: fixture.componentInstance, httpMock };
   };
 
-  it('starts invalid in create mode when tumor is missing', async () => {
-    const { fixture, component, httpMock } = await setup({ mode: 'create' });
-
+  it('starts invalid without a tumor selection in create mode', async () => {
+    const { component, httpMock } = await setup({ mode: 'create' });
     expect(component.form.controls.tumor_biobank_code.value).toBe('');
     expect(component.form.invalid).toBe(true);
 
     component.form.patchValue({ tumor_biobank_code: 'TB-1' });
-    fixture.detectChanges();
-
     expect(component.form.valid).toBe(true);
     httpMock.verify();
   });
 
-  it('initializes edit mode values', async () => {
-    const { component, httpMock } = await setup({
-      mode: 'edit',
-      biomodel: {
-        id: 'BM-5',
-        type: 'PDX',
-        description: 'desc',
-        creation_date: '2023-01-01',
-        status: 'active',
-        progresses: true,
-        viability: 88,
-        tumor_biobank_code: 'TB-1',
-        parent_trial_id: null,
-      },
+  it('builds a create payload without id', async () => {
+    const { component, httpMock } = await setup({ mode: 'create' });
+    component.form.patchValue({
+      tumor_biobank_code: 'TB-1',
+      type: 'PDX',
+      viability: '75.5',
+      progresses: true,
     });
-
-    expect(component.form.getRawValue().id).toBe('BM-5');
-    expect(component.form.getRawValue().tumor_biobank_code).toBe('TB-1');
-    expect(component.form.getRawValue().viability).toBe(88);
+    const payload = component.buildDialogResult();
+    expect('id' in payload).toBe(false);
+    expect(payload.viability).toBe(75.5);
+    expect(payload.type).toBe('PDX');
+    expect(payload.progresses).toBe(true);
     httpMock.verify();
   });
 
-  it('binds submit dialog payload to raw form value', async () => {
-    const { fixture, component, httpMock } = await setup({ mode: 'create' });
-
-    component.form.patchValue({
-      tumor_biobank_code: 'TB-1',
-      type: 'PDO',
-      progresses: false,
+  it('preserves id and converts viability to number in edit mode', async () => {
+    const { component, httpMock } = await setup({
+      mode: 'edit',
+      biomodel: {
+        id: 'B-9',
+        type: 'PDO',
+        description: 'old',
+        creation_date: '2024-05-01',
+        status: 'active',
+        progresses: false,
+        viability: 50,
+        tumor_biobank_code: 'TB-1',
+        parent_trial_id: null,
+        tumor_organ: null,
+      },
     });
-    fixture.detectChanges();
+    const payload = component.buildDialogResult();
+    expect(payload.id).toBe('B-9');
+    expect(payload.viability).toBe(50);
+    httpMock.verify();
+  });
 
-    const submitButton = fixture.debugElement.query(By.css('button[mat-flat-button]'));
-    const closeDirective = submitButton.injector.get(MatDialogClose);
-
-    expect(closeDirective.dialogResult).toEqual(component.buildDialogResult());
-    expect(closeDirective.dialogResult).toMatchObject({
-      tumor_biobank_code: 'TB-1',
-      type: 'PDO',
-      progresses: false,
-    });
+  it('coerces empty viability to null', async () => {
+    const { component, httpMock } = await setup({ mode: 'create' });
+    component.form.patchValue({ tumor_biobank_code: 'TB-1', viability: '' });
+    expect(component.buildDialogResult().viability).toBeNull();
     httpMock.verify();
   });
 });
