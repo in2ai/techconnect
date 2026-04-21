@@ -161,7 +161,6 @@ function applyPayloadFieldTransforms(payload: Record<string, unknown>, fields: E
         display: flex;
         flex-direction: column;
         gap: 16px;
-        padding-top: 8px;
       }
       .full-width {
         width: 100%;

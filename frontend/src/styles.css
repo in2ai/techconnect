@@ -76,6 +76,12 @@ mat-card {
   border-radius: 4px;
 }
 
+/* ─── Dialog Form Layout ─────────────────────────────────────────── */
+
+mat-dialog-content > form {
+  padding-top: 0.5rem;
+}
+
 /* ─── Shared Detail View Styles ──────────────────────────────────── */
 /* Extracted from individual detail pages to eliminate duplication */
 
