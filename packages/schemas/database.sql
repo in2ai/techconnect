@@ -20,7 +20,7 @@ CREATE TABLE auth_user (
 CREATE TABLE patient (
 	nhc VARCHAR(50) NOT NULL, 
 	sex VARCHAR(50), 
-	birth_date DATE, 
+	age INTEGER, 
 	PRIMARY KEY (nhc)
 );
 
@@ -36,28 +36,26 @@ CREATE TABLE auth_session (
 
 CREATE TABLE tumor (
 	biobank_code VARCHAR NOT NULL, 
-	lab_code VARCHAR(100), 
-	diagnosis VARCHAR(100), 
-	ap_observation VARCHAR, 
+	tube_code VARCHAR(100), 
+	classification VARCHAR(100), 
+	ap_diagnosis VARCHAR, 
 	grade VARCHAR(50), 
 	organ VARCHAR(100), 
-	status VARCHAR(50), 
+	stage VARCHAR(50), 
 	tnm VARCHAR(50), 
-	registration_date DATE, 
-	operation_date DATE, 
+	intervention_date DATE, 
 	patient_nhc VARCHAR NOT NULL, 
 	PRIMARY KEY (biobank_code), 
 	FOREIGN KEY(patient_nhc) REFERENCES patient (nhc)
 );
 
 CREATE TABLE biomodel (
-	id UUID NOT NULL, 
+	id VARCHAR(100) NOT NULL, 
 	type VARCHAR(50), 
 	description VARCHAR, 
 	creation_date DATE, 
 	status VARCHAR(50), 
-	progresses BOOLEAN, 
-	viability FLOAT, 
+	success BOOLEAN, 
 	tumor_biobank_code VARCHAR NOT NULL, 
 	parent_trial_id UUID, 
 	PRIMARY KEY (id), 
@@ -65,15 +63,14 @@ CREATE TABLE biomodel (
 );
 
 CREATE TABLE sample (
-	id UUID NOT NULL, 
+	id VARCHAR(150) NOT NULL, 
 	has_serum BOOLEAN, 
 	has_buffy BOOLEAN, 
 	has_plasma BOOLEAN, 
-	has_tumor_tissue BOOLEAN, 
-	has_non_tumor_tissue BOOLEAN, 
+	has_tumor_tissue_oct BOOLEAN, 
+	has_non_tumor_tissue_oct BOOLEAN, 
 	obtain_date DATE, 
 	organ VARCHAR, 
-	is_metastasis BOOLEAN, 
 	tumor_biobank_code VARCHAR, 
 	PRIMARY KEY (id), 
 	FOREIGN KEY(tumor_biobank_code) REFERENCES tumor (biobank_code)
@@ -103,7 +100,7 @@ CREATE TABLE passage (
 	id UUID NOT NULL, 
 	number INTEGER, 
 	description VARCHAR, 
-	biomodel_id UUID NOT NULL, 
+	biomodel_id VARCHAR NOT NULL, 
 	parent_trial_id UUID, 
 	PRIMARY KEY (id), 
 	FOREIGN KEY(biomodel_id) REFERENCES biomodel (id)

@@ -7,21 +7,20 @@ const authPassword = process.env.E2E_AUTH_PASSWORD ?? 'techconnect-dev-password'
 interface PatientPayload {
   nhc: string;
   sex: string | null;
-  birth_date: string | null;
+  age: number | null;
 }
 
 interface TumorPayload {
   biobank_code: string;
   patient_nhc: string;
-  lab_code: string | null;
-  diagnosis: string | null;
-  ap_observation: string | null;
+  tube_code: string | null;
+  classification: string | null;
+  ap_diagnosis: string | null;
   grade: string | null;
   organ: string | null;
-  status: string | null;
+  stage: string | null;
   tnm: string | null;
-  registration_date: string | null;
-  operation_date: string | null;
+  intervention_date: string | null;
 }
 
 interface SamplePayload {
@@ -29,11 +28,10 @@ interface SamplePayload {
   has_serum: boolean | null;
   has_buffy: boolean | null;
   has_plasma: boolean | null;
-  has_tumor_tissue: boolean | null;
-  has_non_tumor_tissue: boolean | null;
+  has_tumor_tissue_oct: boolean | null;
+  has_non_tumor_tissue_oct: boolean | null;
   obtain_date: string | null;
   organ: string | null;
-  is_metastasis: boolean | null;
   tumor_biobank_code: string;
 }
 
@@ -43,8 +41,7 @@ interface BiomodelPayload {
   description: string | null;
   creation_date: string | null;
   status: string | null;
-  progresses: boolean | null;
-  viability: number | null;
+  success: boolean | null;
   tumor_biobank_code: string;
   parent_trial_id: string | null;
 }
@@ -119,7 +116,7 @@ export async function createPatient(
   return postJson<PatientPayload>(request, '/patients', {
     nhc,
     sex: 'F',
-    birth_date: '1990-01-01',
+    age: 36,
   });
 }
 
@@ -131,15 +128,14 @@ export async function createTumor(
   return postJson<TumorPayload>(request, '/tumors', {
     biobank_code: biobankCode,
     patient_nhc: patientNhc,
-    lab_code: null,
-    diagnosis: null,
-    ap_observation: null,
+    tube_code: null,
+    classification: null,
+    ap_diagnosis: null,
     grade: null,
     organ: null,
-    status: null,
+    stage: null,
     tnm: null,
-    registration_date: null,
-    operation_date: null,
+    intervention_date: null,
   });
 }
 
@@ -152,11 +148,10 @@ export async function createSample(
     has_serum: true,
     has_buffy: false,
     has_plasma: true,
-    has_tumor_tissue: false,
-    has_non_tumor_tissue: false,
+    has_tumor_tissue_oct: false,
+    has_non_tumor_tissue_oct: false,
     obtain_date: obtainDate,
     organ: 'Lung',
-    is_metastasis: false,
     tumor_biobank_code: tumorBiobankCode,
   });
 }
@@ -167,12 +162,12 @@ export async function createBiomodel(
   type: string,
 ): Promise<BiomodelPayload> {
   return postJson<BiomodelPayload>(request, '/biomodels', {
+    id: `${tumorBiobankCode}-${type}`,
     type,
     description: 'fixture',
     creation_date: '2024-01-01',
     status: 'active',
-    progresses: true,
-    viability: 75,
+    success: true,
     tumor_biobank_code: tumorBiobankCode,
     parent_trial_id: null,
   });

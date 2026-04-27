@@ -81,7 +81,7 @@ export class PatientListPage {
   columns: ColumnDef[] = [
     { key: 'nhc', label: $localize`:@@nhcLbl:NHC`, sortable: true },
     { key: 'sex', label: $localize`:@@sexLbl:Sex`, sortable: true },
-    { key: 'birth_date', label: $localize`:@@birthDateLbl:Birth Date`, sortable: true, type: 'date' },
+    { key: 'age', label: $localize`:@@ageLbl:Age`, sortable: true, type: 'number' },
   ];
 
   patientsResource = httpResource<Patient[]>(() => `${this.apiUrl}/patients`, {

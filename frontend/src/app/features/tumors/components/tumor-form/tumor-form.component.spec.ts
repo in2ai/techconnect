@@ -45,15 +45,14 @@ describe('TumorFormComponent', () => {
       tumor: {
         biobank_code: 'TB-1',
         patient_nhc: 'P-1',
-        lab_code: null,
-        diagnosis: null,
-        ap_observation: null,
+        tube_code: null,
+        classification: null,
+        ap_diagnosis: null,
         grade: null,
         organ: null,
-        status: null,
+        stage: null,
         tnm: null,
-        registration_date: null,
-        operation_date: null,
+        intervention_date: null,
       },
     });
     const input = fixture.debugElement.query(By.css('input[formcontrolname="biobank_code"]'));
@@ -66,7 +65,7 @@ describe('TumorFormComponent', () => {
     component.form.patchValue({
       biobank_code: 'TB-42',
       patient_nhc: 'P-1',
-      diagnosis: 'adenocarcinoma',
+      classification: 'adenocarcinoma',
     });
     fixture.detectChanges();
 
@@ -75,7 +74,7 @@ describe('TumorFormComponent', () => {
     expect(closeDirective.dialogResult).toMatchObject({
       biobank_code: 'TB-42',
       patient_nhc: 'P-1',
-      diagnosis: 'adenocarcinoma',
+      classification: 'adenocarcinoma',
     });
     httpMock.verify();
   });

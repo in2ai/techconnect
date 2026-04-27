@@ -84,8 +84,7 @@ export class BiomodelListPage {
     { key: 'type', label: $localize`Type`, sortable: true },
     { key: 'tumor_organ', label: $localize`Organ`, sortable: true },
     { key: 'status', label: $localize`Status`, sortable: true },
-    { key: 'viability', label: $localize`Viability`, sortable: true, type: 'number' },
-    { key: 'progresses', label: $localize`Progresses`, type: 'boolean' },
+    { key: 'success', label: $localize`:@@biomodelSuccessLbl:Success`, type: 'boolean' },
     { key: 'creation_date', label: $localize`Created`, sortable: true, type: 'date' },
     { key: 'tumor_biobank_code', label: $localize`Tumor`, sortable: true },
   ];

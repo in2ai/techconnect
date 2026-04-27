@@ -7,9 +7,7 @@ describe('PatientFormComponent', () => {
   const setup = async (data: PatientFormData) => {
     await TestBed.configureTestingModule({
       imports: [PatientFormComponent],
-      providers: [
-        { provide: MAT_DIALOG_DATA, useValue: data },
-      ],
+      providers: [{ provide: MAT_DIALOG_DATA, useValue: data }],
     }).compileComponents();
 
     const fixture = TestBed.createComponent(PatientFormComponent);
@@ -20,7 +18,7 @@ describe('PatientFormComponent', () => {
   it('initializes create mode with empty required nhc and disabled submit', async () => {
     const { fixture, component } = await setup({ mode: 'create' });
 
-    expect(component.form.getRawValue()).toEqual({ nhc: '', sex: null, birth_date: null });
+    expect(component.form.getRawValue()).toEqual({ nhc: '', sex: null, age: null });
     expect(component.form.invalid).toBe(true);
 
     const submitButton = fixture.debugElement.query(By.css('button[mat-flat-button]'));
@@ -30,23 +28,24 @@ describe('PatientFormComponent', () => {
   it('initializes edit mode values and keeps nhc readonly', async () => {
     const { fixture, component } = await setup({
       mode: 'edit',
-      patient: { nhc: 'NHC-100', sex: 'F', birth_date: '1990-01-01' },
+      patient: { nhc: 'NHC-100', sex: 'F', age: 36 },
     });
 
     expect(component.form.getRawValue()).toEqual({
       nhc: 'NHC-100',
       sex: 'F',
-      birth_date: '1990-01-01',
+      age: 36,
     });
 
-    const nhcInput = fixture.debugElement.query(By.css('input[formcontrolname="nhc"]')).nativeElement as HTMLInputElement;
+    const nhcInput = fixture.debugElement.query(By.css('input[formcontrolname="nhc"]'))
+      .nativeElement as HTMLInputElement;
     expect(nhcInput.readOnly).toBe(true);
   });
 
   it('binds submit dialog payload to form raw value', async () => {
     const { fixture, component } = await setup({ mode: 'create' });
 
-    component.form.patchValue({ nhc: 'NHC-201', sex: 'M', birth_date: '1982-11-20' });
+    component.form.patchValue({ nhc: 'NHC-201', sex: 'M', age: 43 });
     fixture.detectChanges();
 
     const submitButton = fixture.debugElement.query(By.css('button[mat-flat-button]'));
@@ -55,7 +54,7 @@ describe('PatientFormComponent', () => {
     expect(closeDirective.dialogResult).toEqual({
       nhc: 'NHC-201',
       sex: 'M',
-      birth_date: '1982-11-20',
+      age: 43,
     });
   });
 });

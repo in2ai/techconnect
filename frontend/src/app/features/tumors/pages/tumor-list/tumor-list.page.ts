@@ -35,7 +35,7 @@ import { TumorService } from '../../services/tumor.service';
       i18n-title="@@tumorsTitle"
       title="Tumors"
       i18n-subtitle="@@tumorsSubtitle"
-      subtitle="Track tumor samples, diagnoses, and biobank codes"
+      subtitle="Track tumor samples, classifications, and biobank codes"
     >
       @if (auth.isAdmin()) {
         <button mat-flat-button color="primary" (click)="openCreateDialog()">
@@ -81,11 +81,15 @@ export class TumorListPage {
 
   columns: ColumnDef[] = [
     { key: 'biobank_code', label: $localize`:@@biobankCodeLbl:Biobank Code`, sortable: true },
-    { key: 'lab_code', label: $localize`:@@labCodeLbl:Lab Code`, sortable: true },
-    { key: 'diagnosis', label: $localize`:@@diagnosisLbl:Diagnosis`, sortable: true },
+    { key: 'tube_code', label: $localize`:@@tubeCodeLbl:Tube Code`, sortable: true },
+    {
+      key: 'classification',
+      label: $localize`:@@classificationLbl:Classification`,
+      sortable: true,
+    },
     { key: 'organ', label: $localize`:@@organLbl:Organ`, sortable: true },
     { key: 'grade', label: $localize`:@@tumorGradeLbl:Grade`, sortable: true },
-    { key: 'status', label: $localize`:@@tumorStatusLbl:Status`, sortable: true },
+    { key: 'stage', label: $localize`:@@tumorStageLbl:Stage`, sortable: true },
     { key: 'patient_nhc', label: $localize`:@@tumorPatientNhcLbl:Patient NHC`, sortable: true },
   ];
 
@@ -96,8 +100,8 @@ export class TumorListPage {
     const organs = Array.from(
       new Set(data.map((t) => t.organ).filter((o): o is string => !!o)),
     ).sort((a, b) => a.localeCompare(b));
-    const diagnoses = Array.from(
-      new Set(data.map((t) => t.diagnosis).filter((d): d is string => !!d)),
+    const classifications = Array.from(
+      new Set(data.map((t) => t.classification).filter((d): d is string => !!d)),
     ).sort((a, b) => a.localeCompare(b));
 
     return [
@@ -107,9 +111,12 @@ export class TumorListPage {
         options: organs.map((o) => ({ label: o, value: o })),
       },
       {
-        key: 'diagnosis',
-        label: $localize`:@@diagnosisLbl:Diagnosis`,
-        options: diagnoses.map((diagnosis) => ({ label: diagnosis, value: diagnosis })),
+        key: 'classification',
+        label: $localize`:@@classificationLbl:Classification`,
+        options: classifications.map((classification) => ({
+          label: classification,
+          value: classification,
+        })),
       },
     ];
   });

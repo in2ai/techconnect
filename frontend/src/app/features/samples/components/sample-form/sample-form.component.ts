@@ -64,16 +64,23 @@ export interface SampleFormData {
           <input matInput formControlName="organ" />
         </mat-form-field>
         <div class="checkbox-group">
-          <mat-checkbox formControlName="has_serum" i18n="@@sampleHasSerumLbl">Has Serum</mat-checkbox>
+          <mat-checkbox formControlName="has_serum" i18n="@@sampleHasSerumLbl"
+            >Has Serum</mat-checkbox
+          >
           <mat-checkbox formControlName="has_buffy" i18n="@@sampleHasBuffyCoatLbl"
-            >Has Buffy Coat</mat-checkbox>
-          <mat-checkbox formControlName="has_plasma" i18n="@@sampleHasPlasmaLbl">Has Plasma</mat-checkbox>
-          <mat-checkbox formControlName="has_tumor_tissue" i18n="@@sampleHasTumorTissueLbl"
-            >Has Tumor Tissue</mat-checkbox>
-          <mat-checkbox formControlName="has_non_tumor_tissue" i18n="@@sampleHasNonTumorTissueLbl"
-            >Has Non-Tumor Tissue</mat-checkbox>
-          <mat-checkbox formControlName="is_metastasis" i18n="@@sampleIsMetastasisLbl"
-            >Is Metastasis</mat-checkbox>
+            >Has Buffy Coat</mat-checkbox
+          >
+          <mat-checkbox formControlName="has_plasma" i18n="@@sampleHasPlasmaLbl"
+            >Has Plasma</mat-checkbox
+          >
+          <mat-checkbox formControlName="has_tumor_tissue_oct" i18n="@@sampleHasTumorTissueOctLbl"
+            >Has Tumor Tissue OCT</mat-checkbox
+          >
+          <mat-checkbox
+            formControlName="has_non_tumor_tissue_oct"
+            i18n="@@sampleHasNonTumorTissueOctLbl"
+            >Has Non-Tumor Tissue OCT</mat-checkbox
+          >
         </div>
       </form>
     </mat-dialog-content>
@@ -120,19 +127,16 @@ export class SampleFormComponent {
     has_plasma: this.formBuilder.control<Sample['has_plasma']>(
       this.data.biopsy?.has_plasma ?? null,
     ),
-    has_tumor_tissue: this.formBuilder.control<Sample['has_tumor_tissue']>(
-      this.data.biopsy?.has_tumor_tissue ?? null,
+    has_tumor_tissue_oct: this.formBuilder.control<Sample['has_tumor_tissue_oct']>(
+      this.data.biopsy?.has_tumor_tissue_oct ?? null,
     ),
-    has_non_tumor_tissue: this.formBuilder.control<Sample['has_non_tumor_tissue']>(
-      this.data.biopsy?.has_non_tumor_tissue ?? null,
+    has_non_tumor_tissue_oct: this.formBuilder.control<Sample['has_non_tumor_tissue_oct']>(
+      this.data.biopsy?.has_non_tumor_tissue_oct ?? null,
     ),
     obtain_date: this.formBuilder.control<Sample['obtain_date']>(
       this.data.biopsy?.obtain_date ?? null,
     ),
     organ: this.formBuilder.control<Sample['organ']>(this.data.biopsy?.organ ?? null),
-    is_metastasis: this.formBuilder.control<Sample['is_metastasis']>(
-      this.data.biopsy?.is_metastasis ?? null,
-    ),
     tumor_biobank_code: this.formBuilder.nonNullable.control(
       this.data.biopsy?.tumor_biobank_code ?? '',
       { validators: [Validators.required] },

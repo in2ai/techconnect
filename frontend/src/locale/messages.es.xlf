@@ -983,22 +983,21 @@
       <trans-unit id="noTumorsMsg"><source>No tumor samples linked to this patient.</source><target>No hay muestras de tumor vinculadas a este paciente.</target></trans-unit>
 
       <trans-unit id="tumorsTitle"><source>Tumors</source><target>Tumores</target></trans-unit>
-      <trans-unit id="tumorsSubtitle"><source>Track tumor samples, diagnoses, and biobank codes</source><target>Rastrear muestras de tumores, diagnósticos y códigos de biobanco</target></trans-unit>
+      <trans-unit id="tumorsSubtitle"><source>Track tumor samples, classifications, and biobank codes</source><target>Rastrear muestras de tumores, clasificaciones y códigos de biobanco</target></trans-unit>
       <trans-unit id="addTumor"><source>Add Tumor</source><target>Añadir Tumor</target></trans-unit>
       <trans-unit id="tumorDetailTitle"><source>Tumor <x id="code"/></source><target>Tumor <x id="code"/></target></trans-unit>
       <trans-unit id="failedToLoadTumor"><source>Failed to load tumor</source><target>Error al cargar el tumor</target></trans-unit>
       
       <trans-unit id="tumorBiobankCodeLbl"><source>Biobank Code</source><target>Código de Biobanco</target></trans-unit>
-      <trans-unit id="tumorLabCodeLbl"><source>Lab Code</source><target>Código de Laboratorio</target></trans-unit>
-      <trans-unit id="tumorDiagnosisLbl"><source>Diagnosis</source><target>Diagnóstico</target></trans-unit>
+      <trans-unit id="tubeCodeLbl"><source>Tube Code</source><target>Código de tubo</target></trans-unit>
+      <trans-unit id="classificationLbl"><source>Classification</source><target>Clasificación</target></trans-unit>
       <trans-unit id="tumorGradeLbl"><source>Grade</source><target>Grado</target></trans-unit>
       <trans-unit id="tumorOrganLbl"><source>Organ</source><target>Órgano</target></trans-unit>
-      <trans-unit id="tumorStatusLbl"><source>Status</source><target>Estado</target></trans-unit>
+      <trans-unit id="tumorStageLbl"><source>Stage</source><target>Estadio</target></trans-unit>
       <trans-unit id="tumorTnmLbl"><source>TNM</source><target>TNM</target></trans-unit>
       <trans-unit id="tumorPatientNhcLbl"><source>Patient NHC</source><target>NHC del Paciente</target></trans-unit>
-      <trans-unit id="tumorRegistrationDateLbl"><source>Registration Date</source><target>Fecha de Registro</target></trans-unit>
-      <trans-unit id="tumorOperationDateLbl"><source>Operation Date</source><target>Fecha de Operación</target></trans-unit>
-      <trans-unit id="tumorApObservationLbl"><source>AP Observation</source><target>Observación AP</target></trans-unit>
+      <trans-unit id="interventionDateLbl"><source>Intervention Date</source><target>Fecha de intervención</target></trans-unit>
+      <trans-unit id="tumorApDiagnosisLbl"><source>AP Diagnosis</source><target>Diagnóstico AP</target></trans-unit>
 
       <trans-unit id="biomodelsTab"><source>Biomodels</source><target>Biomodelos</target></trans-unit>
       <trans-unit id="failedToLoadBiomodels"><source>Failed to load biomodels</source><target>Error al cargar biomodelos</target></trans-unit>
@@ -1009,6 +1008,10 @@
       <trans-unit id="failedToLoadSamples"><source>Failed to load samples</source><target>Error al cargar muestras</target></trans-unit>
       <trans-unit id="noSamplesEmpty"><source>No samples</source><target>No hay muestras</target></trans-unit>
       <trans-unit id="noSamplesMsg"><source>No samples linked to this tumor.</source><target>No hay muestras vinculadas a este tumor.</target></trans-unit>
+      <trans-unit id="noTumorGenomicDataMsg"><source>No genomic sequencing data linked to this tumor.</source><target>No hay datos de secuenciación genómica vinculados a este tumor.</target></trans-unit>
+      <trans-unit id="noTumorMolecularDataMsg"><source>No molecular data linked to this tumor.</source><target>No hay datos moleculares vinculados a este tumor.</target></trans-unit>
+      <trans-unit id="hasDataLbl"><source>Has Data</source><target>Tiene datos</target></trans-unit>
+      <trans-unit id="dataLbl"><source>Data</source><target>Datos</target></trans-unit>
 
       <trans-unit id="samplesTitle"><source>Samples</source><target>Muestras</target></trans-unit>
       <trans-unit id="samplesSubtitle"><source>Serum, buffy coat, and plasma samples from tumors</source><target>Muestras de suero, capa leucocitaria y plasma de tumores</target></trans-unit>
@@ -1022,6 +1025,8 @@
       <trans-unit id="sampleHasSerumLbl"><source>Has Serum</source><target>Tiene Suero</target></trans-unit>
       <trans-unit id="sampleHasBuffyCoatLbl"><source>Has Buffy Coat</source><target>Tiene Capa Leucocitaria</target></trans-unit>
       <trans-unit id="sampleHasPlasmaLbl"><source>Has Plasma</source><target>Tiene Plasma</target></trans-unit>
+      <trans-unit id="tumorTissueOctLbl"><source>Tumor Tissue OCT</source><target>Tejido tumoral OCT</target></trans-unit>
+      <trans-unit id="nonTumorTissueOctLbl"><source>Non-Tumor Tissue OCT</source><target>Tejido no tumoral OCT</target></trans-unit>
       <trans-unit id="yesOpt"><source>Yes</source><target>Sí</target></trans-unit>
       <trans-unit id="noOpt"><source>No</source><target>No</target></trans-unit>
 
@@ -1041,8 +1046,7 @@
       <trans-unit id="biomodelIdLbl"><source>ID</source><target>ID</target></trans-unit>
       <trans-unit id="biomodelTypeLbl"><source>Type</source><target>Tipo</target></trans-unit>
       <trans-unit id="biomodelStatusLbl"><source>Status</source><target>Estado</target></trans-unit>
-      <trans-unit id="biomodelViabilityLbl"><source>Viability</source><target>Viabilidad</target></trans-unit>
-      <trans-unit id="biomodelProgressesLbl"><source>Progresses</source><target>Progresiones</target></trans-unit>
+      <trans-unit id="biomodelSuccessLbl"><source>Success</source><target>Éxito</target></trans-unit>
       <trans-unit id="biomodelDescriptionLbl"><source>Description</source><target>Descripción</target></trans-unit>
       <trans-unit id="biomodelCreatedLbl"><source>Created</source><target>Creado</target></trans-unit>
       <trans-unit id="biomodelTumorLbl"><source>Tumor</source><target>Tumor</target></trans-unit>
@@ -1167,9 +1171,8 @@
 
       <trans-unit id="sampleObtainDateLbl" datatype="html"><source>Obtain Date</source><target>Fecha de Obtención</target></trans-unit>
       <trans-unit id="sampleOrganLbl" datatype="html"><source>Organ</source><target>Órgano</target></trans-unit>
-      <trans-unit id="sampleHasTumorTissueLbl" datatype="html"><source>Has Tumor Tissue</source><target>Tiene Tejido Tumoral</target></trans-unit>
-      <trans-unit id="sampleHasNonTumorTissueLbl" datatype="html"><source>Has Non-Tumor Tissue</source><target>Tiene Tejido No Tumoral</target></trans-unit>
-      <trans-unit id="sampleIsMetastasisLbl" datatype="html"><source>Is Metastasis</source><target>Es Metástasis</target></trans-unit>
+      <trans-unit id="sampleHasTumorTissueOctLbl" datatype="html"><source>Has Tumor Tissue OCT</source><target>Tiene tejido tumoral OCT</target></trans-unit>
+      <trans-unit id="sampleHasNonTumorTissueOctLbl" datatype="html"><source>Has Non-Tumor Tissue OCT</source><target>Tiene tejido no tumoral OCT</target></trans-unit>
       <trans-unit id="inVivoDataTabLbl" datatype="html"><source>In Vivo Data</source><target>Datos In Vivo</target></trans-unit>
       <trans-unit id="mouseSectionTitle" datatype="html"><source>Mouse Details</source><target>Detalles del Ratón</target></trans-unit>
       <trans-unit id="addMouseBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
@@ -1248,14 +1251,18 @@
       <trans-unit id="sexFemale" datatype="html"><source>Female</source><target>Femenino</target></trans-unit>
       <trans-unit id="nhcLbl" datatype="html"><source>NHC</source><target>NHC</target></trans-unit>
       <trans-unit id="sexLbl" datatype="html"><source>Sex</source><target>Sexo</target></trans-unit>
-      <trans-unit id="birthDateLbl" datatype="html"><source>Birth Date</source><target>Fecha de Nacimiento</target></trans-unit>
+      <trans-unit id="birthDateLbl" datatype="html"><source>Birth Date</source><target>Fecha de nacimiento</target></trans-unit>
+      <trans-unit id="ageLbl" datatype="html"><source>Age</source><target>Edad</target></trans-unit>
 
       <trans-unit id="newTumorTitle" datatype="html"><source>New Tumor</source><target>Nuevo Tumor</target></trans-unit>
       <trans-unit id="editTumorTitle" datatype="html"><source>Edit Tumor</source><target>Editar Tumor</target></trans-unit>
       <trans-unit id="biobankCodeLbl" datatype="html"><source>Biobank Code</source><target>Código de Biobanco</target></trans-unit>
       <trans-unit id="tumorPatientLbl" datatype="html"><source>Patient</source><target>Paciente</target></trans-unit>
-      <trans-unit id="labCodeLbl" datatype="html"><source>Lab Code</source><target>Código de Laboratorio</target></trans-unit>
-      <trans-unit id="diagnosisLbl" datatype="html"><source>Diagnosis</source><target>Diagnóstico</target></trans-unit>
+      <trans-unit id="tubeCodeLbl" datatype="html"><source>Tube Code</source><target>Código de tubo</target></trans-unit>
+      <trans-unit id="classificationLbl" datatype="html"><source>Classification</source><target>Clasificación</target></trans-unit>
+      <trans-unit id="tumorStageLbl" datatype="html"><source>Stage</source><target>Estadio</target></trans-unit>
+      <trans-unit id="interventionDateLbl" datatype="html"><source>Intervention Date</source><target>Fecha de intervención</target></trans-unit>
+      <trans-unit id="tumorApDiagnosisLbl" datatype="html"><source>AP Diagnosis</source><target>Diagnóstico AP</target></trans-unit>
       <trans-unit id="organLbl" datatype="html"><source>Organ</source><target>Órgano</target></trans-unit>
 
       <trans-unit id="newSampleTitle" datatype="html"><source>New Sample</source><target>Nueva Muestra</target></trans-unit>
@@ -1264,6 +1271,11 @@
       <trans-unit id="newBiomodelTitle" datatype="html"><source>New Biomodel</source><target>Nuevo Biomodelo</target></trans-unit>
       <trans-unit id="editBiomodelTitle" datatype="html"><source>Edit Biomodel</source><target>Editar Biomodelo</target></trans-unit>
       <trans-unit id="biomodelParentTrialOptionalLbl" datatype="html"><source>Parent Trial (Optional)</source><target>Ensayo Padre (Opcional)</target></trans-unit>
+      <trans-unit id="biomodelIdPlaceholder" datatype="html"><source>Enter biomodel ID</source><target>Introduzca el ID del biomodelo</target></trans-unit>
+      <trans-unit id="biomodelDuplicateIdError" datatype="html"><source>This biomodel ID already exists.</source><target>Este ID de biomodelo ya existe.</target></trans-unit>
+      <trans-unit id="parentTrialSearchPlaceholder" datatype="html"><source>Search trial ID</source><target>Buscar ID de ensayo</target></trans-unit>
+      <trans-unit id="activeStatusOpt" datatype="html"><source>Active</source><target>Activo</target></trans-unit>
+      <trans-unit id="inactiveStatusOpt" datatype="html"><source>Inactive</source><target>Inactivo</target></trans-unit>
       <trans-unit id="noneOptionLbl" datatype="html"><source>None</source><target>Ninguno</target></trans-unit>
 
       <trans-unit id="newPassageTitle" datatype="html"><source>New Passage</source><target>Nuevo Pase</target></trans-unit>

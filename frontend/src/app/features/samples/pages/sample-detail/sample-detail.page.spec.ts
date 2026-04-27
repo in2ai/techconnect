@@ -64,9 +64,8 @@ async function setup(opts: SetupOptions = {}) {
         has_serum: true,
         has_buffy: false,
         has_plasma: null,
-        has_tumor_tissue: true,
-        has_non_tumor_tissue: false,
-        is_metastasis: null,
+        has_tumor_tissue_oct: true,
+        has_non_tumor_tissue_oct: false,
       } as unknown as Sample),
   );
   await fixture.whenStable();

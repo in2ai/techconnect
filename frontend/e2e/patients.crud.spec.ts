@@ -20,24 +20,20 @@ test('patients CRUD flow', async ({ page, request }) => {
     const createDialog = page.locator('mat-dialog-container');
     await createDialog.getByLabel('NHC').fill(nhc);
     await selectMatOption(page, 'Sex', 'Female');
-    await createDialog.getByLabel('Birth Date').fill('1991-04-12');
+    await createDialog.getByLabel('Age').fill('34');
     await createDialog.getByRole('button', { name: 'Create' }).click();
 
     await clickFilteredRow(page, nhc);
     await expect(page).toHaveURL(new RegExp(`/patients/${nhc}$`));
-    await expect(page.locator('.detail-item', { hasText: 'Birth Date' })).toContainText(
-      '1991-04-12',
-    );
+    await expect(page.locator('.detail-item', { hasText: 'Age' })).toContainText('34');
 
     await page.getByRole('button', { name: 'Edit' }).click();
     const editDialog = page.locator('mat-dialog-container');
     await selectMatOption(page, 'Sex', 'Male');
-    await editDialog.getByLabel('Birth Date').fill('1992-05-13');
+    await editDialog.getByLabel('Age').fill('33');
     await editDialog.getByRole('button', { name: 'Save' }).click();
     await expect(page.locator('.detail-item', { hasText: 'Sex' })).toContainText('M');
-    await expect(page.locator('.detail-item', { hasText: 'Birth Date' })).toContainText(
-      '1992-05-13',
-    );
+    await expect(page.locator('.detail-item', { hasText: 'Age' })).toContainText('33');
 
     await page.getByRole('button', { name: 'Delete', exact: true }).first().click();
     await confirmDialogAction(page, 'Delete');

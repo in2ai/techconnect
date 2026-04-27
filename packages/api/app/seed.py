@@ -71,8 +71,8 @@ def seed_database() -> SeedStats:
     patient_2 = "SEED-PAT-002"
     tumor_1 = "SEED-TUMOR-001"
 
-    sample_id = UUID("10000000-0000-0000-0000-000000000001")
-    biomodel_id = UUID("20000000-0000-0000-0000-000000000001")
+    sample_id = f"{tumor_1}-M1"
+    biomodel_id = "SEED-BIOMODEL-001"
     passage_id = UUID("30000000-0000-0000-0000-000000000001")
     trial_pdx_id = UUID("40000000-0000-0000-0000-000000000001")
     trial_pdo_id = UUID("40000000-0000-0000-0000-000000000002")
@@ -99,8 +99,8 @@ def seed_database() -> SeedStats:
             patient_1,
             {
                 "nhc": patient_1,
-                "sex": "female",
-                "birth_date": date(1982, 4, 10),
+                "sex": "F",
+                "age": 44,
             },
             stats,
         )
@@ -110,8 +110,8 @@ def seed_database() -> SeedStats:
             patient_2,
             {
                 "nhc": patient_2,
-                "sex": "male",
-                "birth_date": date(1977, 9, 22),
+                "sex": "M",
+                "age": 48,
             },
             stats,
         )
@@ -121,15 +121,14 @@ def seed_database() -> SeedStats:
             tumor_1,
             {
                 "biobank_code": tumor_1,
-                "lab_code": "LAB-TC-001",
-                "diagnosis": "Adenocarcinoma",
-                "ap_observation": "Moderately differentiated",
+                "tube_code": "TUBE-TC-001",
+                "classification": "Adenocarcinoma",
+                "ap_diagnosis": "Moderately differentiated",
                 "grade": "G2",
                 "organ": "Lung",
-                "status": "Active",
+                "stage": "IIA",
                 "tnm": "T2N0M0",
-                "registration_date": date(2024, 1, 18),
-                "operation_date": date(2024, 1, 25),
+                "intervention_date": date(2024, 1, 25),
                 "patient_nhc": patient_1,
             },
             stats,
@@ -143,11 +142,10 @@ def seed_database() -> SeedStats:
                 "has_serum": True,
                 "has_buffy": True,
                 "has_plasma": True,
-                "has_tumor_tissue": True,
-                "has_non_tumor_tissue": False,
+                "has_tumor_tissue_oct": True,
+                "has_non_tumor_tissue_oct": False,
                 "obtain_date": date(2024, 2, 1),
                 "organ": "Lung",
-                "is_metastasis": False,
                 "tumor_biobank_code": tumor_1,
             },
             stats,
@@ -161,9 +159,8 @@ def seed_database() -> SeedStats:
                 "type": "PDX",
                 "description": "Primary xenograft line",
                 "creation_date": date(2024, 2, 10),
-                "status": "Active",
-                "progresses": True,
-                "viability": 92.4,
+                "status": "active",
+                "success": True,
                 "tumor_biobank_code": tumor_1,
                 "parent_trial_id": None,
             },

@@ -22,37 +22,40 @@ describe('BiomodelFormComponent', () => {
     fixture.detectChanges();
     httpMock.expectOne('/api/tumors').flush([{ biobank_code: 'TB-1' }]);
     httpMock.expectOne('/api/trials').flush([{ id: 'TR-1', description: 'trial one' }]);
+    httpMock.expectOne('/api/biomodels').flush([{ id: 'B-EXISTING' }]);
     fixture.detectChanges();
     return { fixture, component: fixture.componentInstance, httpMock };
   };
 
-  it('starts invalid without a tumor selection in create mode', async () => {
+  it('starts invalid without id and tumor selection in create mode', async () => {
     const { component, httpMock } = await setup({ mode: 'create' });
+    expect(component.form.controls.id.value).toBe('');
     expect(component.form.controls.tumor_biobank_code.value).toBe('');
     expect(component.form.invalid).toBe(true);
 
-    component.form.patchValue({ tumor_biobank_code: 'TB-1' });
+    component.form.patchValue({ id: 'B-1', tumor_biobank_code: 'TB-1' });
     expect(component.form.valid).toBe(true);
     httpMock.verify();
   });
 
-  it('builds a create payload without id', async () => {
+  it('builds a create payload with id and success', async () => {
     const { component, httpMock } = await setup({ mode: 'create' });
     component.form.patchValue({
+      id: 'B-1',
       tumor_biobank_code: 'TB-1',
       type: 'PDX',
-      viability: '75.5',
-      progresses: true,
+      status: 'active',
+      success: true,
     });
     const payload = component.buildDialogResult();
-    expect('id' in payload).toBe(false);
-    expect(payload.viability).toBe(75.5);
+    expect(payload.id).toBe('B-1');
     expect(payload.type).toBe('PDX');
-    expect(payload.progresses).toBe(true);
+    expect(payload.status).toBe('active');
+    expect(payload.success).toBe(true);
     httpMock.verify();
   });
 
-  it('preserves id and converts viability to number in edit mode', async () => {
+  it('preserves id and success in edit mode', async () => {
     const { component, httpMock } = await setup({
       mode: 'edit',
       biomodel: {
@@ -61,8 +64,7 @@ describe('BiomodelFormComponent', () => {
         description: 'old',
         creation_date: '2024-05-01',
         status: 'active',
-        progresses: false,
-        viability: 50,
+        success: false,
         tumor_biobank_code: 'TB-1',
         parent_trial_id: null,
         tumor_organ: null,
@@ -70,14 +72,24 @@ describe('BiomodelFormComponent', () => {
     });
     const payload = component.buildDialogResult();
     expect(payload.id).toBe('B-9');
-    expect(payload.viability).toBe(50);
+    expect(payload.success).toBe(false);
     httpMock.verify();
   });
 
-  it('coerces empty viability to null', async () => {
+  it('marks duplicate create ids as invalid for submission', async () => {
     const { component, httpMock } = await setup({ mode: 'create' });
-    component.form.patchValue({ tumor_biobank_code: 'TB-1', viability: '' });
-    expect(component.buildDialogResult().viability).toBeNull();
+    component.form.patchValue({ id: 'B-EXISTING', tumor_biobank_code: 'TB-1' });
+    expect(component.duplicateBiomodelId()).toBe(true);
+    httpMock.verify();
+  });
+
+  it('filters parent trials and stores only the selected id', async () => {
+    const { component, httpMock } = await setup({ mode: 'create' });
+    component.parentTrialSearch.setValue('TR');
+    expect(component.filteredParentTrials().map((trial) => trial.id)).toEqual(['TR-1']);
+    component.selectParentTrial('TR-1');
+    expect(component.form.controls.parent_trial_id.value).toBe('TR-1');
+    expect(component.parentTrialSearch.value).toBe('TR-1');
     httpMock.verify();
   });
 });

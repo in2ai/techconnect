@@ -24,20 +24,19 @@ export interface AuthUser {
 export interface Patient {
   nhc: string;
   sex: string | null;
-  birth_date: string | null;
+  age: number | null;
 }
 
 export interface Tumor {
   biobank_code: string;
-  lab_code: string | null;
-  diagnosis: string | null;
-  ap_observation: string | null;
+  tube_code: string | null;
+  classification: string | null;
+  ap_diagnosis: string | null;
   grade: string | null;
   organ: string | null;
-  status: string | null;
+  stage: string | null;
   tnm: string | null;
-  registration_date: string | null;
-  operation_date: string | null;
+  intervention_date: string | null;
   patient_nhc: string;
 }
 
@@ -46,11 +45,10 @@ export interface Sample {
   has_serum: boolean | null;
   has_buffy: boolean | null;
   has_plasma: boolean | null;
-  has_tumor_tissue: boolean | null;
-  has_non_tumor_tissue: boolean | null;
+  has_tumor_tissue_oct: boolean | null;
+  has_non_tumor_tissue_oct: boolean | null;
   obtain_date: string | null;
   organ: string | null;
-  is_metastasis: boolean | null;
   tumor_biobank_code: string | null;
 }
 
@@ -60,8 +58,7 @@ export interface Biomodel {
   description: string | null;
   creation_date: string | null;
   status: string | null;
-  progresses: boolean | null;
-  viability: number | null;
+  success: boolean | null;
   tumor_biobank_code: string;
   parent_trial_id: string | null;
   tumor_organ: string | null;

@@ -842,7 +842,7 @@ export class TrialDetailPage {
     { key: 'id', label: $localize`ID` },
     { key: 'type', label: $localize`Type` },
     { key: 'status', label: $localize`Status` },
-    { key: 'viability', label: $localize`Viability`, type: 'number' },
+    { key: 'success', label: $localize`:@@biomodelSuccessLbl:Success`, type: 'boolean' },
     { key: 'creation_date', label: $localize`Created`, type: 'date' },
   ];
 
@@ -873,7 +873,11 @@ export class TrialDetailPage {
         { name: 'birth_date', label: $localize`:@@birthDateLbl:Birth Date`, type: 'date' },
         { name: 'death_date', label: $localize`Death Date`, type: 'date' },
         { name: 'death_cause', label: $localize`Death Cause`, type: 'text' },
-        { name: 'animal_facility', label: $localize`:@@mouseFieldAnimalFacility:Animal Facility`, type: 'text' },
+        {
+          name: 'animal_facility',
+          label: $localize`:@@mouseFieldAnimalFacility:Animal Facility`,
+          type: 'text',
+        },
         { name: 'proex', label: $localize`:@@mouseFieldProex:Proex`, type: 'text' },
       ],
       this.mouseResource,
@@ -888,7 +892,13 @@ export class TrialDetailPage {
       $localize`:@@implantFormDialogTitle:Implant`,
       '/implants',
       [
-        { name: 'mouse_id', label: $localize`Mouse ID`, type: 'select', options: miceOpts, required: true },
+        {
+          name: 'mouse_id',
+          label: $localize`Mouse ID`,
+          type: 'select',
+          options: miceOpts,
+          required: true,
+        },
         { name: 'implant_location', label: $localize`Location`, type: 'text' },
         { name: 'type', label: $localize`Type`, type: 'text' },
       ],
@@ -939,7 +949,11 @@ export class TrialDetailPage {
       $localize`:@@usageRecordFormDialogTitle:Usage Record`,
       '/usage-records',
       [
-        { name: 'record_type', label: $localize`:@@usageRecordTypeField:Record Type`, type: 'text' },
+        {
+          name: 'record_type',
+          label: $localize`:@@usageRecordTypeField:Record Type`,
+          type: 'text',
+        },
         { name: 'description', label: $localize`Description`, type: 'text' },
         { name: 'record_date', label: $localize`Date`, type: 'date' },
       ],
@@ -1017,11 +1031,28 @@ export class TrialDetailPage {
       $localize`:@@biomodelFormDialogTitle:Biomodel`,
       '/biomodels',
       [
-        { name: 'type', label: $localize`Type`, type: 'text' },
+        { name: 'id', label: $localize`ID`, type: 'text', required: true },
+        {
+          name: 'type',
+          label: $localize`Type`,
+          type: 'select',
+          options: [
+            { value: 'PDX', label: 'PDX' },
+            { value: 'PDO', label: 'PDO' },
+            { value: 'LC', label: 'LC' },
+          ],
+        },
         { name: 'description', label: $localize`Description`, type: 'text' },
-        { name: 'status', label: $localize`Status`, type: 'text' },
-        { name: 'progresses', label: $localize`:@@biomodelProgressesLbl:Progresses`, type: 'boolean' },
-        { name: 'viability', label: $localize`Viability`, type: 'number' },
+        {
+          name: 'status',
+          label: $localize`Status`,
+          type: 'select',
+          options: [
+            { value: 'active', label: $localize`:@@activeStatusOpt:Active` },
+            { value: 'inactive', label: $localize`:@@inactiveStatusOpt:Inactive` },
+          ],
+        },
+        { name: 'success', label: $localize`:@@biomodelSuccessLbl:Success`, type: 'boolean' },
       ],
       this.biomodelsResource,
       entity,

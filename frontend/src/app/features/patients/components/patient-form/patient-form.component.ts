@@ -55,8 +55,8 @@ export interface PatientFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n="@@birthDateLbl">Birth Date</mat-label>
-          <input matInput formControlName="birth_date" type="date" />
+          <mat-label i18n="@@ageLbl">Age</mat-label>
+          <input matInput formControlName="age" type="number" min="0" />
         </mat-form-field>
       </form>
     </mat-dialog-content>
@@ -89,6 +89,6 @@ export class PatientFormComponent {
       validators: [Validators.required],
     }),
     sex: this.formBuilder.control<Patient['sex']>(this.data.patient?.sex ?? null),
-    birth_date: this.formBuilder.control<Patient['birth_date']>(this.data.patient?.birth_date ?? null),
+    age: this.formBuilder.control<Patient['age']>(this.data.patient?.age ?? null),
   });
 }

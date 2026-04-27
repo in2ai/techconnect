@@ -72,7 +72,7 @@ describe('PatientListPage', () => {
 
   it('renders the data table when patients are returned', async () => {
     const { fixture } = await setup({
-      patients: [{ nhc: 'P-1', sex: 'F', birth_date: '1990-01-01' } as Patient],
+      patients: [{ nhc: 'P-1', sex: 'F', age: 36 } as Patient],
     });
     expect(fixture.nativeElement.textContent).toContain('P-1');
   });

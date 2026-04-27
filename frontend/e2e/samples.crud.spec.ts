@@ -42,8 +42,9 @@ test('samples CRUD flow', async ({ page, request }) => {
 
     await clickFilteredRow(page, biobankCode);
     await expect(page).toHaveURL(/\/samples\/[^/]+$/);
-    createdSampleId = new URL(page.url()).pathname.split('/').filter(Boolean).pop() ?? null;
+    createdSampleId = new URL(page.url()).pathname.split('/').findLast(Boolean) ?? null;
     expect(createdSampleId).toBeTruthy();
+    expect(createdSampleId).toBe(`${biobankCode}-M1`);
     await expect(page).toHaveURL(new RegExp(`/samples/${createdSampleId}$`));
     await expect(page.locator('.detail-item', { hasText: 'Obtain Date' })).toContainText(
       createdDate,

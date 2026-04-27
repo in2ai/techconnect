@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test';
+import { apiBaseUrl, createPatient, deletePatient, deleteTumor } from './helpers/api-fixtures';
 import {
-  apiBaseUrl,
-  createPatient,
-  deletePatient,
-  deleteTumor,
-} from './helpers/api-fixtures';
-import { clickFilteredRow, confirmDialogAction, goToList, selectMatOption, uniqueSuffix } from './helpers/ui-helpers';
+  clickFilteredRow,
+  confirmDialogAction,
+  goToList,
+  selectMatOption,
+  uniqueSuffix,
+} from './helpers/ui-helpers';
 
 test('tumors CRUD flow', async ({ page, request }) => {
   const suffix = uniqueSuffix();
@@ -25,19 +26,23 @@ test('tumors CRUD flow', async ({ page, request }) => {
     const createDialog = page.locator('mat-dialog-container');
     await createDialog.getByLabel('Biobank Code').fill(biobankCode);
     await selectMatOption(page, 'Patient', patientNHC);
-    await createDialog.getByLabel('Diagnosis').fill('Initial Diagnosis');
+    await createDialog.getByLabel('Classification').fill('Initial Classification');
     await createDialog.getByRole('button', { name: 'Create' }).click();
     createdTumorCode = biobankCode;
 
     await clickFilteredRow(page, biobankCode);
     await expect(page).toHaveURL(new RegExp(`/tumors/${biobankCode}$`));
-    await expect(page.locator('.detail-item', { hasText: 'Diagnosis' })).toContainText('Initial Diagnosis');
+    await expect(page.locator('.detail-item', { hasText: 'Classification' })).toContainText(
+      'Initial Classification',
+    );
 
     await page.getByRole('button', { name: 'Edit' }).click();
     const editDialog = page.locator('mat-dialog-container');
-    await editDialog.getByLabel('Diagnosis').fill('Updated Diagnosis');
+    await editDialog.getByLabel('Classification').fill('Updated Classification');
     await editDialog.getByRole('button', { name: 'Save' }).click();
-    await expect(page.locator('.detail-item', { hasText: 'Diagnosis' })).toContainText('Updated Diagnosis');
+    await expect(page.locator('.detail-item', { hasText: 'Classification' })).toContainText(
+      'Updated Classification',
+    );
 
     await page.getByRole('button', { name: 'Delete', exact: true }).first().click();
     await confirmDialogAction(page, 'Delete');

@@ -5,7 +5,7 @@ from app.core.config import get_settings
 from app.core.database import get_engine
 from app.main import app
 from app.seed import seed_database
-from models import Implant, Mouse
+from models import Implant, Mouse, Patient, Sample, Tumor
 
 client = TestClient(app)
 
@@ -39,10 +39,20 @@ def test_seed_database_is_rerunnable(tmp_path, monkeypatch):
         with Session(get_engine()) as session:
             mouse = session.exec(select(Mouse)).first()
             implant = session.exec(select(Implant)).first()
+            patient = session.exec(select(Patient)).first()
+            tumor = session.exec(select(Tumor)).first()
+            sample = session.exec(select(Sample)).first()
 
         assert mouse is not None
         assert implant is not None
         assert implant.mouse_id == mouse.id
+        assert patient is not None
+        assert patient.sex in {"M", "F"}
+        assert patient.age is not None
+        assert tumor is not None
+        assert tumor.tube_code == "TUBE-TC-001"
+        assert sample is not None
+        assert sample.id == f"{tumor.biobank_code}-M1"
     finally:
         get_engine.cache_clear()
         get_settings.cache_clear()

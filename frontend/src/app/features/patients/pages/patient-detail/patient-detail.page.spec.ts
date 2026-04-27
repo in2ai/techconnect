@@ -71,7 +71,7 @@ async function setup(opts: SetupOptions = {}) {
   fixture.detectChanges();
 
   const patientReq = httpMock.expectOne(`/api/patients/${nhc}`);
-  patientReq.flush(opts.patient ?? ({ nhc, sex: 'F', birth_date: '1990-01-01' } as Patient));
+  patientReq.flush(opts.patient ?? ({ nhc, sex: 'F', age: 36 } as Patient));
 
   httpMock.expectOne('/api/tumors').flush(opts.tumors ?? []);
   await fixture.whenStable();

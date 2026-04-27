@@ -114,11 +114,12 @@ import { SampleService } from '../../services/sample.service';
               </span>
             </div>
             <div class="detail-item">
-              <span class="detail-label" i18n="@@sampleHasTumorTissueLbl">Has Tumor Tissue</span
+              <span class="detail-label" i18n="@@sampleHasTumorTissueOctLbl"
+                >Has Tumor Tissue OCT</span
               ><span class="detail-value">
-                @if (resource.value()!.has_tumor_tissue === true) {
+                @if (resource.value()!.has_tumor_tissue_oct === true) {
                   <ng-container i18n="@@yesOpt">Yes</ng-container>
-                } @else if (resource.value()!.has_tumor_tissue === false) {
+                } @else if (resource.value()!.has_tumor_tissue_oct === false) {
                   <ng-container i18n="@@noOpt">No</ng-container>
                 } @else {
                   —
@@ -126,24 +127,12 @@ import { SampleService } from '../../services/sample.service';
               </span>
             </div>
             <div class="detail-item">
-              <span class="detail-label" i18n="@@sampleHasNonTumorTissueLbl"
-                >Has Non-Tumor Tissue</span
+              <span class="detail-label" i18n="@@sampleHasNonTumorTissueOctLbl"
+                >Has Non-Tumor Tissue OCT</span
               ><span class="detail-value">
-                @if (resource.value()!.has_non_tumor_tissue === true) {
+                @if (resource.value()!.has_non_tumor_tissue_oct === true) {
                   <ng-container i18n="@@yesOpt">Yes</ng-container>
-                } @else if (resource.value()!.has_non_tumor_tissue === false) {
-                  <ng-container i18n="@@noOpt">No</ng-container>
-                } @else {
-                  —
-                }
-              </span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label" i18n="@@sampleIsMetastasisLbl">Is Metastasis</span
-              ><span class="detail-value">
-                @if (resource.value()!.is_metastasis === true) {
-                  <ng-container i18n="@@yesOpt">Yes</ng-container>
-                } @else if (resource.value()!.is_metastasis === false) {
+                } @else if (resource.value()!.has_non_tumor_tissue_oct === false) {
                   <ng-container i18n="@@noOpt">No</ng-container>
                 } @else {
                   —

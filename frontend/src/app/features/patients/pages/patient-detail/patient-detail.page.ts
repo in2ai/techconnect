@@ -75,8 +75,8 @@ import { PatientService } from '../../services/patient.service';
               <span class="detail-value">{{ patientResource.value()!.sex || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label" i18n="@@birthDateLbl">Birth Date</span>
-              <span class="detail-value">{{ patientResource.value()!.birth_date || '—' }}</span>
+              <span class="detail-label" i18n="@@ageLbl">Age</span>
+              <span class="detail-value">{{ patientResource.value()!.age ?? '—' }}</span>
             </div>
           </div>
         </mat-card-content>
@@ -85,7 +85,10 @@ import { PatientService } from '../../services/patient.service';
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
         <mat-tab i18n-label="@@tumorsTab" label="Tumors">
           <div class="tab-content">
-            <div class="tab-toolbar" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+            <div
+              class="tab-toolbar"
+              style="display: flex; justify-content: flex-end; margin-bottom: 16px;"
+            >
               @if (auth.isAdmin()) {
                 <button mat-button color="primary" (click)="openCreateTumorDialog()">
                   <mat-icon>add</mat-icon>
@@ -154,13 +157,17 @@ export class PatientDetailPage {
 
   tumorColumns: ColumnDef[] = [
     { key: 'biobank_code', label: $localize`:@@biobankCodeLbl:Biobank Code`, sortable: true },
-    { key: 'lab_code', label: $localize`:@@labCodeLbl:Lab Code`, sortable: true },
-    { key: 'diagnosis', label: $localize`:@@diagnosisLbl:Diagnosis`, sortable: true },
-    { key: 'organ', label: $localize`:@@organLbl:Organ`, sortable: true },
-    { key: 'status', label: $localize`:@@tumorStatusLbl:Status`, sortable: true },
+    { key: 'tube_code', label: $localize`:@@tubeCodeLbl:Tube Code`, sortable: true },
     {
-      key: 'registration_date',
-      label: $localize`:@@tumorRegistrationDateLbl:Registration Date`,
+      key: 'classification',
+      label: $localize`:@@classificationLbl:Classification`,
+      sortable: true,
+    },
+    { key: 'organ', label: $localize`:@@organLbl:Organ`, sortable: true },
+    { key: 'stage', label: $localize`:@@tumorStageLbl:Stage`, sortable: true },
+    {
+      key: 'intervention_date',
+      label: $localize`:@@interventionDateLbl:Intervention Date`,
       sortable: true,
       type: 'date',
     },

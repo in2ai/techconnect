@@ -32,7 +32,7 @@ class Passage(SQLModel, table=True):
     description: Optional[str] = Field(default=None)  # text field
     
     # Foreign keys (required - 1:0..2 relationship with Biomodel)
-    biomodel_id: UUID = Field(foreign_key="biomodel.id", description="FK to Biomodel")
+    biomodel_id: str = Field(foreign_key="biomodel.id", description="FK to Biomodel")
     
     parent_trial_id: Optional[UUID] = Field(
         default=None,

@@ -18,16 +18,15 @@ class Tumor(SQLModel, table=True):
     
     Attributes:
         biobank_code: Unique biobank identifier (primary key)
-        lab_code: Laboratory code
-        diagnosis: Tumor diagnosis
-        ap_observation: Anatomical pathology observation
+        tube_code: Tube code
+        classification: Tumor classification
+        ap_diagnosis: Anatomical pathology diagnosis
         grade: Tumor grade
         organ: Organ of origin
-        status: Current status
+        stage: Tumor stage
         tnm: TNM staging
         patient_nhc: FK to Patient
-        registration_date: Date registered in system
-        operation_date: Date of surgical operation
+        intervention_date: Date of intervention
     """
     
     __tablename__ = "tumor"
@@ -36,15 +35,14 @@ class Tumor(SQLModel, table=True):
     biobank_code: str = Field(primary_key=True, description="Biobank code identifier")
     
     # Fields
-    lab_code: Optional[str] = Field(default=None, max_length=100)
-    diagnosis: Optional[str] = Field(default=None, max_length=100)
-    ap_observation: Optional[str] = Field(default=None)  # text field
+    tube_code: Optional[str] = Field(default=None, max_length=100)
+    classification: Optional[str] = Field(default=None, max_length=100)
+    ap_diagnosis: Optional[str] = Field(default=None)  # text field
     grade: Optional[str] = Field(default=None, max_length=50)
     organ: Optional[str] = Field(default=None, max_length=100)
-    status: Optional[str] = Field(default=None, max_length=50)
+    stage: Optional[str] = Field(default=None, max_length=50)
     tnm: Optional[str] = Field(default=None, max_length=50)
-    registration_date: Union[date, None] = Field(default=None)
-    operation_date: Union[date, None] = Field(default=None)
+    intervention_date: Union[date, None] = Field(default=None)
     
     # Foreign keys
     patient_nhc: str = Field(foreign_key="patient.nhc", description="FK to Patient")

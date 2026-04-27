@@ -79,15 +79,11 @@ import { PassageService } from '../../../passages/services/passage.service';
               ><span class="detail-value">{{ biomodelResource.value()!.status }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label" i18n="@@biomodelViabilityLbl">Viability</span
-              ><span class="detail-value">{{ biomodelResource.value()!.viability ?? '—' }}</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label" i18n="@@biomodelProgressesLbl">Progresses</span
+              <span class="detail-label" i18n="@@biomodelSuccessLbl">Success</span
               ><span class="detail-value">
-                @if (biomodelResource.value()!.progresses === true) {
+                @if (biomodelResource.value()!.success === true) {
                   <ng-container i18n="@@yesOpt">Yes</ng-container>
-                } @else if (biomodelResource.value()!.progresses === false) {
+                } @else if (biomodelResource.value()!.success === false) {
                   <ng-container i18n="@@noOpt">No</ng-container>
                 } @else {
                   —
@@ -115,7 +111,10 @@ import { PassageService } from '../../../passages/services/passage.service';
       <mat-tab-group class="detail-tabs" animationDuration="200ms">
         <mat-tab i18n-label="@@passagesTabLbl" label="Passages">
           <div class="tab-content">
-            <div class="tab-toolbar" style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+            <div
+              class="tab-toolbar"
+              style="display: flex; justify-content: flex-end; margin-bottom: 16px;"
+            >
               @if (auth.isAdmin()) {
                 <button mat-button color="primary" (click)="openCreatePassageDialog()">
                   <mat-icon>add</mat-icon>

@@ -33,44 +33,41 @@ erDiagram
     PATIENT {
         string nhc PK
         string sex
-        date birth_date
+        integer age
     }
 
     TUMOR {
         string biobank_code PK
-        string lab_code
-        string diagnosis
-        string ap_observation
+        string tube_code
+        string classification
+        string ap_diagnosis
         string grade
         string organ
-        string status
+        string stage
         string tnm
-        date registration_date
-        date operation_date
+        date intervention_date
         string patient_nhc FK
     }
 
     SAMPLE {
-        uuid id PK
+        string id PK
         boolean has_serum
         boolean has_buffy
         boolean has_plasma
-        boolean has_tumor_tissue
-        boolean has_non_tumor_tissue
+        boolean has_tumor_tissue_oct
+        boolean has_non_tumor_tissue_oct
         date obtain_date
         string organ
-        boolean is_metastasis
         string tumor_biobank_code FK
     }
 
     BIOMODEL {
-        uuid id PK
+        string id PK
         string type
         string description
         date creation_date
         string status
-        boolean progresses
-        float viability
+        boolean success
         string tumor_biobank_code FK
         uuid parent_trial_id FK
     }

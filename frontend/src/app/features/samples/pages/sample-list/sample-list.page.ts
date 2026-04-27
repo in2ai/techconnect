@@ -82,6 +82,16 @@ export class SampleListPage {
     { key: 'has_serum', label: $localize`Serum`, type: 'boolean' },
     { key: 'has_buffy', label: $localize`Buffy Coat`, type: 'boolean' },
     { key: 'has_plasma', label: $localize`Plasma`, type: 'boolean' },
+    {
+      key: 'has_tumor_tissue_oct',
+      label: $localize`:@@tumorTissueOctLbl:Tumor Tissue OCT`,
+      type: 'boolean',
+    },
+    {
+      key: 'has_non_tumor_tissue_oct',
+      label: $localize`:@@nonTumorTissueOctLbl:Non-Tumor Tissue OCT`,
+      type: 'boolean',
+    },
     { key: 'obtain_date', label: $localize`Date`, sortable: true, type: 'date' },
     { key: 'tumor_biobank_code', label: $localize`Tumor`, sortable: true },
   ];

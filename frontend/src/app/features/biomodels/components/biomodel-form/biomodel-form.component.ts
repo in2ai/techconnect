@@ -1,10 +1,8 @@
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NumericInputDirective } from '@shared/directives/numeric-input.directive';
-import { numberFormatValidator } from '@shared/forms/numeric-input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -12,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { API_URL } from '@core/tokens/api-url.token';
 import { Biomodel, Trial, Tumor } from '@generated/models';
 
-type TumorOption = Pick<Tumor, 'biobank_code' | 'diagnosis'>;
+type TumorOption = Pick<Tumor, 'biobank_code' | 'classification'>;
 type TrialOption = Pick<Trial, 'id' | 'description'>;
 
 export interface BiomodelFormData {
@@ -29,9 +27,8 @@ export interface BiomodelFormData {
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatCheckboxModule,
+    MatAutocompleteModule,
     ReactiveFormsModule,
-    NumericInputDirective,
   ],
   template: `
     <h2 mat-dialog-title>
@@ -43,6 +40,23 @@ export interface BiomodelFormData {
     </h2>
     <mat-dialog-content>
       <form class="form-grid" [formGroup]="form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label i18n="@@biomodelIdLbl">ID</mat-label>
+          <input
+            matInput
+            formControlName="id"
+            required
+            [readonly]="data.mode === 'edit'"
+            i18n-placeholder="@@biomodelIdPlaceholder"
+            placeholder="Enter biomodel ID"
+          />
+          @if (duplicateBiomodelId()) {
+            <mat-error i18n="@@biomodelDuplicateIdError"
+              >This biomodel ID already exists.</mat-error
+            >
+          }
+        </mat-form-field>
+
         <mat-form-field appearance="outline">
           <mat-label i18n="@@biomodelTumorLbl">Tumor</mat-label>
           @if (tumorsResource.isLoading()) {
@@ -61,37 +75,49 @@ export interface BiomodelFormData {
         <mat-form-field appearance="outline">
           <mat-label i18n="@@biomodelParentTrialOptionalLbl">Parent Trial (Optional)</mat-label>
           @if (trialsResource.isLoading()) {
-            <mat-select disabled>
-              <mat-option i18n="@@loadingLbl">Loading…</mat-option>
-            </mat-select>
+            <input matInput disabled i18n-placeholder="@@loadingLbl" placeholder="Loading…" />
           } @else {
-            <mat-select formControlName="parent_trial_id">
+            <input
+              matInput
+              [formControl]="parentTrialSearch"
+              [matAutocomplete]="parentTrialAutocomplete"
+              i18n-placeholder="@@parentTrialSearchPlaceholder"
+              placeholder="Search trial ID"
+            />
+            <mat-autocomplete
+              #parentTrialAutocomplete="matAutocomplete"
+              (optionSelected)="selectParentTrial($event.option.value)"
+            >
               <mat-option [value]="null" i18n="@@noneOptionLbl">None</mat-option>
-              @for (trial of trialsResource.value(); track trial.id) {
-                <mat-option [value]="trial.id">{{ trial.description || trial.id }}</mat-option>
+              @for (trial of filteredParentTrials(); track trial.id) {
+                <mat-option [value]="trial.id">{{ trial.id }}</mat-option>
               }
-            </mat-select>
+            </mat-autocomplete>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label i18n="@@biomodelTypeLbl">Type</mat-label>
-          <input matInput formControlName="type" />
+          <mat-select formControlName="type">
+            <mat-option value="PDX">PDX</mat-option>
+            <mat-option value="PDO">PDO</mat-option>
+            <mat-option value="LC">LC</mat-option>
+          </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label i18n="@@biomodelStatusLbl">Status</mat-label>
-          <input matInput formControlName="status" />
+          <mat-select formControlName="status">
+            <mat-option value="active" i18n="@@activeStatusOpt">Active</mat-option>
+            <mat-option value="inactive" i18n="@@inactiveStatusOpt">Inactive</mat-option>
+          </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label i18n="@@biomodelViabilityLbl">Viability</mat-label>
-          <input
-            matInput
-            type="text"
-            inputmode="decimal"
-            formControlName="viability"
-            appNumericInput
-            autocomplete="off"
-          />
+          <mat-label i18n="@@biomodelSuccessLbl">Success</mat-label>
+          <mat-select formControlName="success">
+            <mat-option [value]="null" i18n="@@sexNotSpecified">Not specified</mat-option>
+            <mat-option [value]="true" i18n="@@yesOpt">Yes</mat-option>
+            <mat-option [value]="false" i18n="@@noOpt">No</mat-option>
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -102,12 +128,15 @@ export interface BiomodelFormData {
           <mat-label i18n="@@biomodelDescriptionLbl">Description</mat-label>
           <textarea matInput formControlName="description" rows="2"></textarea>
         </mat-form-field>
-        <mat-checkbox formControlName="progresses" i18n="@@biomodelProgressesLbl">Progresses</mat-checkbox>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close i18n="@@cancelBtn">Cancel</button>
-      <button mat-flat-button [mat-dialog-close]="buildDialogResult()" [disabled]="form.invalid">
+      <button
+        mat-flat-button
+        [mat-dialog-close]="buildDialogResult()"
+        [disabled]="form.invalid || duplicateBiomodelId()"
+      >
         @if (data.mode === 'create') {
           <ng-container i18n="@@createBtn">Create</ng-container>
         } @else {
@@ -139,9 +168,14 @@ export class BiomodelFormComponent {
   trialsResource = httpResource<TrialOption[]>(() => `${this.apiUrl}/trials`, {
     defaultValue: [],
   });
+  biomodelsResource = httpResource<Pick<Biomodel, 'id'>[]>(() => `${this.apiUrl}/biomodels`, {
+    defaultValue: [],
+  });
 
   readonly form = this.formBuilder.group({
-    id: this.formBuilder.nonNullable.control(this.data.biomodel?.id ?? ''),
+    id: this.formBuilder.nonNullable.control(this.data.biomodel?.id ?? '', {
+      validators: [Validators.required, Validators.pattern(/\S/)],
+    }),
     type: this.formBuilder.control<Biomodel['type']>(this.data.biomodel?.type ?? null),
     description: this.formBuilder.control<Biomodel['description']>(
       this.data.biomodel?.description ?? null,
@@ -150,12 +184,7 @@ export class BiomodelFormComponent {
       this.data.biomodel?.creation_date ?? null,
     ),
     status: this.formBuilder.control<Biomodel['status']>(this.data.biomodel?.status ?? null),
-    progresses: this.formBuilder.control<Biomodel['progresses']>(
-      this.data.biomodel?.progresses ?? null,
-    ),
-    viability: this.formBuilder.control<number | string | null>(this.data.biomodel?.viability ?? null, {
-      validators: [numberFormatValidator(false)],
-    }),
+    success: this.formBuilder.control<Biomodel['success']>(this.data.biomodel?.success ?? null),
     tumor_biobank_code: this.formBuilder.nonNullable.control(
       this.data.biomodel?.tumor_biobank_code ?? '',
       { validators: [Validators.required] },
@@ -164,18 +193,28 @@ export class BiomodelFormComponent {
       this.data.biomodel?.parent_trial_id ?? null,
     ),
   });
+  readonly parentTrialSearch = this.formBuilder.nonNullable.control(
+    this.data.biomodel?.parent_trial_id ?? '',
+  );
+
+  filteredParentTrials(): TrialOption[] {
+    const query = this.parentTrialSearch.value.trim().toLowerCase();
+    return this.trialsResource.value().filter((trial) => trial.id.toLowerCase().includes(query));
+  }
+
+  selectParentTrial(trialId: string | null): void {
+    this.form.controls.parent_trial_id.setValue(trialId);
+    this.parentTrialSearch.setValue(trialId ?? '');
+  }
+
+  duplicateBiomodelId(): boolean {
+    if (this.data.mode !== 'create') return false;
+    const id = this.form.controls.id.value.trim();
+    if (!id) return false;
+    return this.biomodelsResource.value().some((biomodel) => biomodel.id === id);
+  }
 
   buildDialogResult(): Partial<Biomodel> {
-    const value = this.form.getRawValue();
-    const viability =
-      value.viability === '' || value.viability == null
-        ? null
-        : Number(value.viability);
-    const withNumeric = { ...value, viability: Number.isFinite(viability) ? viability : null };
-    if (this.data.mode === 'create') {
-      const { id: _, ...createPayload } = withNumeric;
-      return createPayload;
-    }
-    return withNumeric;
+    return this.form.getRawValue();
   }
 }

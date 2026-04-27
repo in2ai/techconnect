@@ -1,5 +1,6 @@
 """Shared CRUD operations for SQLModel entities."""
 
+import re
 from typing import Any, TypeVar
 from uuid import UUID
 
@@ -23,6 +24,13 @@ def _coerce_pk(model: type[ModelType], item_id: str) -> Any:
 
 def _check_constraints(session: Session, model: type[ModelType], payload_data: dict, item_id: Any = None) -> None:
     if model.__name__ == "Biomodel":
+        if item_id is None:
+            biomodel_id = payload_data.get("id")
+            if not biomodel_id:
+                raise HTTPException(status_code=400, detail="Biomodel ID is required")
+            if session.get(model, biomodel_id) is not None:
+                raise HTTPException(status_code=400, detail="Biomodel ID already exists")
+
         tumor_code = payload_data.get("tumor_biobank_code")
         if tumor_code:
             stmt = select(func.count()).select_from(model).where(getattr(model, "tumor_biobank_code") == tumor_code)
@@ -47,6 +55,41 @@ def _check_constraints(session: Session, model: type[ModelType], payload_data: d
                 stmt = stmt.where(getattr(model, "id") != item_id)
             if (session.scalar(stmt) or 0) >= 2:
                 raise HTTPException(status_code=400, detail="A mouse can have 1 or 2 implants")
+
+
+def _next_sample_id(session: Session, model: type[ModelType], tumor_biobank_code: str) -> str:
+    """Generate sample IDs like {tumor_biobank_code}-M{x}."""
+    prefix = f"{tumor_biobank_code}-M"
+    statement = select(getattr(model, "id")).where(
+        getattr(model, "tumor_biobank_code") == tumor_biobank_code
+    )
+    existing_ids = session.exec(statement).all()
+    next_number = 1
+
+    for existing_id in existing_ids:
+        match = re.fullmatch(rf"{re.escape(prefix)}(\d+)", str(existing_id))
+        if match:
+            next_number = max(next_number, int(match.group(1)) + 1)
+
+    return f"{prefix}{next_number}"
+
+
+def _prepare_create_payload(
+    session: Session,
+    model: type[ModelType],
+    payload_data: dict[str, Any],
+) -> dict[str, Any]:
+    if model.__name__ != "Sample" or payload_data.get("id"):
+        return payload_data
+
+    tumor_biobank_code = payload_data.get("tumor_biobank_code")
+    if not tumor_biobank_code:
+        raise HTTPException(status_code=400, detail="Sample tumor_biobank_code is required")
+
+    return {
+        **payload_data,
+        "id": _next_sample_id(session, model, str(tumor_biobank_code)),
+    }
 
 
 
@@ -82,7 +125,7 @@ def get_item_or_404(session: Session, model: type[ModelType], item_id: str) -> M
 
 def create_item(session: Session, model: type[ModelType], payload: ModelType) -> ModelType:
     """Create and persist one entity."""
-    payload_dump = payload.model_dump()
+    payload_dump = _prepare_create_payload(session, model, payload.model_dump())
     _check_constraints(session, model, payload_dump)
     
     validated = model.model_validate(payload_dump)

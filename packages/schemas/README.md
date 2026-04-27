@@ -94,7 +94,7 @@ with Session(engine) as session:
     patient = Patient(
         nhc="12345",
         sex="F",
-        birth_date=date(1985, 3, 15)
+        age=39
     )
     session.add(patient)
     session.commit()
@@ -102,7 +102,7 @@ with Session(engine) as session:
     # Create a tumor for the patient
     tumor = Tumor(
         biobank_code="BB-2024-001",
-        diagnosis="Adenocarcinoma",
+        classification="Adenocarcinoma",
         organ="Lung",
         patient_nhc=patient.nhc
     )
@@ -111,9 +111,10 @@ with Session(engine) as session:
 
     # Create a biomodel from the tumor
     biomodel = Biomodel(
+        id="BM-2024-001",
         type="PDX",
-        status="Active",
-        viability=95.5,
+        status="active",
+        success=True,
         tumor_biobank_code=tumor.biobank_code
     )
     session.add(biomodel)

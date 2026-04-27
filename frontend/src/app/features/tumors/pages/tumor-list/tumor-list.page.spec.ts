@@ -70,13 +70,13 @@ describe('TumorListPage', () => {
   it('renders a row per tumor and computes filters', async () => {
     const { fixture } = await setup({
       tumors: [
-        { biobank_code: 'T-1', organ: 'Liver', diagnosis: 'Diag1' } as Tumor,
-        { biobank_code: 'T-2', organ: null, diagnosis: 'Diag2' } as unknown as Tumor,
+        { biobank_code: 'T-1', organ: 'Liver', classification: 'Class1' } as Tumor,
+        { biobank_code: 'T-2', organ: null, classification: 'Class2' } as unknown as Tumor,
       ],
     });
     const filters = fixture.componentInstance.tableFilters();
     expect(filters[0].options.map((o) => o.value)).toEqual(['Liver']);
-    expect(filters[1].options.map((o) => o.value)).toEqual(['Diag1', 'Diag2']);
+    expect(filters[1].options.map((o) => o.value)).toEqual(['Class1', 'Class2']);
   });
 
   it('navigates to the tumor detail on row click', async () => {

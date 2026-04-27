@@ -1,6 +1,5 @@
 """Patient model - Main entity representing a patient in the system."""
 
-from datetime import date
 from typing import TYPE_CHECKING, Optional, Union
 
 from sqlmodel import Field, Relationship, SQLModel
@@ -16,7 +15,7 @@ class Patient(SQLModel, table=True):
     Attributes:
         nhc: Clinical History Number (primary key)
         sex: Patient's biological sex
-        birth_date: Patient's date of birth
+        age: Patient's age in years
     """
     
     __tablename__ = "patient"
@@ -26,7 +25,7 @@ class Patient(SQLModel, table=True):
     
     # Fields
     sex: Optional[str] = Field(default=None, max_length=50)
-    birth_date: Union[date, None] = Field(default=None)
+    age: Union[int, None] = Field(default=None, ge=0)
     
     # Relationships (1:N with Tumor - Patient presents multiple tumors)
     tumors: list["Tumor"] = Relationship(back_populates="patient")

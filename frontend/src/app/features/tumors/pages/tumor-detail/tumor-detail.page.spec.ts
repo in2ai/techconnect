@@ -7,7 +7,13 @@ import { provideRouter, Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
-import { Biomodel, Sample, Tumor } from '@generated/models';
+import {
+  Biomodel,
+  Sample,
+  Tumor,
+  TumorGenomicSequencing,
+  TumorMolecularData,
+} from '@generated/models';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { BiomodelService } from '../../../biomodels/services/biomodel.service';
@@ -20,6 +26,8 @@ interface SetupOptions {
   tumor?: Tumor;
   biomodels?: Biomodel[];
   samples?: Sample[];
+  genomic?: TumorGenomicSequencing[];
+  molecular?: TumorMolecularData[];
   dialogResult?: unknown;
   updateResult?: 'ok' | 'error';
   deleteResult?: 'ok' | 'error';
@@ -83,6 +91,8 @@ async function setup(opts: SetupOptions = {}) {
     .flush(opts.tumor ?? ({ biobank_code: biobank, patient_nhc: 'P-1' } as Tumor));
   httpMock.expectOne('/api/biomodels').flush(opts.biomodels ?? []);
   httpMock.expectOne('/api/samples').flush(opts.samples ?? []);
+  httpMock.expectOne('/api/tumor-genomic-sequencings').flush(opts.genomic ?? []);
+  httpMock.expectOne('/api/tumor-molecular-data').flush(opts.molecular ?? []);
   await fixture.whenStable();
   fixture.detectChanges();
 
