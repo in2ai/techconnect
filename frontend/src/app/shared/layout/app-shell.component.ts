@@ -1,16 +1,15 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
-import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
-
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
+import { map } from 'rxjs';
 
 interface NavItem {
   label: string;
@@ -77,15 +76,20 @@ interface NavItem {
       <mat-sidenav-content class="main-content">
         <mat-toolbar class="app-toolbar">
           @if (isMobile()) {
-            <button mat-icon-button (click)="sidenav.toggle()" aria-label="Toggle navigation" i18n-aria-label>
+            <button
+              mat-icon-button
+              (click)="sidenav.toggle()"
+              aria-label="Toggle navigation"
+              i18n-aria-label
+            >
               <mat-icon>menu</mat-icon>
             </button>
           }
           <div style="flex: 1"></div>
-          
-          <button 
-            mat-button 
-            [matMenuTriggerFor]="langMenu" 
+
+          <button
+            mat-button
+            [matMenuTriggerFor]="langMenu"
             class="lang-selector-btn"
             aria-label="Select language"
             i18n-aria-label
@@ -110,7 +114,11 @@ interface NavItem {
           </button>
 
           <mat-menu #langMenu="matMenu" class="lang-dropdown-menu">
-            <button mat-menu-item (click)="switchLanguage('en')" [class.active-lang]="currentLang() === 'en'">
+            <button
+              mat-menu-item
+              (click)="switchLanguage('en')"
+              [class.active-lang]="currentLang() === 'en'"
+            >
               <span class="lang-item-content">
                 <span class="lang-code">EN</span>
                 <span class="lang-full" i18n="@@langEnglish">English</span>
@@ -119,7 +127,11 @@ interface NavItem {
                 }
               </span>
             </button>
-            <button mat-menu-item (click)="switchLanguage('es')" [class.active-lang]="currentLang() === 'es'">
+            <button
+              mat-menu-item
+              (click)="switchLanguage('es')"
+              [class.active-lang]="currentLang() === 'es'"
+            >
               <span class="lang-item-content">
                 <span class="lang-code">ES</span>
                 <span class="lang-full" i18n="@@langSpanish">Español</span>
@@ -301,7 +313,6 @@ interface NavItem {
       box-sizing: border-box;
     }
 
-
     .lang-selector-btn,
     .account-selector-btn {
       height: 40px;
@@ -394,7 +405,7 @@ interface NavItem {
 
     .active-lang {
       background-color: var(--mat-sys-surface-variant) !important;
-      
+
       .lang-full {
         font-weight: 600;
         color: var(--mat-sys-primary);
@@ -461,7 +472,9 @@ export class AppShellComponent {
   navGroups = [
     {
       title: $localize`:@@navOverview:Overview`,
-      items: [{ label: $localize`:@@navDashboard:Dashboard`, icon: 'dashboard', route: '/dashboard' }],
+      items: [
+        { label: $localize`:@@navDashboard:Dashboard`, icon: 'dashboard', route: '/dashboard' },
+      ],
     },
     {
       title: $localize`:@@navRegistry:Registry`,
@@ -476,7 +489,6 @@ export class AppShellComponent {
       items: [
         { label: $localize`:@@navBiomodels:Biomodels`, icon: 'science', route: '/biomodels' },
         { label: $localize`:@@navPassages:Passages`, icon: 'swap_horiz', route: '/passages' },
-        { label: $localize`:@@navTrials:Trials`, icon: 'assignment', route: '/trials' },
       ],
     },
   ];
@@ -486,13 +498,17 @@ export class AppShellComponent {
     // Replace current language code context (either starts with /en/ or /es/ or ends with /en or /es)
     let newPath = currentPath.replace(/^\/(en|es)(\/|$)/, `/${lang}/`);
     // If running in development serve it might not have the language base yet
-    if (newPath === currentPath && !currentPath.startsWith('/en/') && !currentPath.startsWith('/es/')) {
-       newPath = `/${lang}${currentPath.endsWith('/') ? currentPath.slice(0, -1) : currentPath}`;
+    if (
+      newPath === currentPath &&
+      !currentPath.startsWith('/en/') &&
+      !currentPath.startsWith('/es/')
+    ) {
+      newPath = `/${lang}${currentPath.endsWith('/') ? currentPath.slice(0, -1) : currentPath}`;
     }
-    
+
     // Redirect if different
     if (newPath !== currentPath) {
-       globalThis.location.href = newPath;
+      globalThis.location.href = newPath;
     }
   }
 

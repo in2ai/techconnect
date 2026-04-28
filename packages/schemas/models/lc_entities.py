@@ -30,7 +30,7 @@ class FACS(SQLModel, table=True):
     measure_value: Optional[float] = Field(default=None)
     
     # Foreign keys (optional - 1:0..1 relationship with LCTrial)
-    lc_trial_id: Optional[UUID] = Field(
+    lc_trial_id: Optional[str] = Field(
         default=None,
         foreign_key="lc_trial.id",
         description="FK to LCTrial",

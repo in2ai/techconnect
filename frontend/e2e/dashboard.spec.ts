@@ -9,7 +9,7 @@ test.describe('dashboard', () => {
     const grid = page.locator('section.dashboard-grid');
     await expect(grid).toBeVisible();
 
-    const expected = ['Patients', 'Tumors', 'Samples', 'Biomodels', 'Passages', 'Trials'];
+    const expected = ['Patients', 'Tumors', 'Samples', 'Biomodels', 'Passages'];
     for (const title of expected) {
       await expect(grid.getByRole('heading', { level: 3, name: title })).toBeVisible();
     }
@@ -24,7 +24,7 @@ test.describe('dashboard', () => {
     await loginIfNeeded(page);
 
     const cards = page.locator('.entity-card');
-    await expect(cards).toHaveCount(6);
+    await expect(cards).toHaveCount(5);
 
     for (const card of await cards.all()) {
       const count = card.locator('.card-count');

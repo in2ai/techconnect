@@ -10,19 +10,17 @@ erDiagram
     TUMOR ||--o| TUMOR_MOLECULAR_DATA : "has"
     TUMOR ||--o| TUMOR_GENOMIC_SEQUENCING : "has"
     BIOMODEL ||--o{ PASSAGE : "has"
-    PASSAGE ||--o{ TRIAL : "generates"
-    TRIAL ||--o{ BIOMODEL : "generates (max 2)"
-    TRIAL ||--o| PASSAGE : "generates"
+    PASSAGE ||--o{ BIOMODEL : "generates (max 2)"
 
-    TRIAL ||--o| PDX_TRIAL : "is_a"
-    TRIAL ||--o| PDO_TRIAL : "is_a"
-    TRIAL ||--o| LC_TRIAL : "is_a"
+    PASSAGE ||--o| PDX_TRIAL : "has details"
+    PASSAGE ||--o| PDO_TRIAL : "has details"
+    PASSAGE ||--o| LC_TRIAL : "has details"
 
-    TRIAL ||--o{ USAGE_RECORD : "has"
-    TRIAL ||--o{ IMAGE : "generates"
-    TRIAL ||--o{ CRYOPRESERVATION : "has"
-    TRIAL ||--o| TRIAL_GENOMIC_SEQUENCING : "has"
-    TRIAL ||--o| TRIAL_MOLECULAR_DATA : "has"
+    PASSAGE ||--o{ USAGE_RECORD : "has"
+    PASSAGE ||--o{ IMAGE : "generates"
+    PASSAGE ||--o{ CRYOPRESERVATION : "has"
+    PASSAGE ||--o| TRIAL_GENOMIC_SEQUENCING : "has"
+    PASSAGE ||--o| TRIAL_MOLECULAR_DATA : "has"
 
     PDX_TRIAL ||--o| MOUSE : "uses"
     MOUSE ||--|{ IMPLANT : "has (1 to 2)"
@@ -69,31 +67,24 @@ erDiagram
         string status
         boolean success
         string tumor_biobank_code FK
-        uuid parent_trial_id FK
+        string parent_passage_id FK
     }
 
     PASSAGE {
-        uuid id PK
+        string id PK
         integer number
         string description
-        uuid biomodel_id FK
-        uuid parent_trial_id FK
-    }
-
-    TRIAL {
-        uuid id PK
         boolean success
-        string description
         boolean status
-        date creation_date
         string preclinical_trials
+        date creation_date
         boolean biobank_shipment
         date biobank_arrival_date
-        uuid passage_id FK
+        string biomodel_id FK
     }
 
     PDX_TRIAL {
-        uuid id PK
+        string id PK
         boolean ffpe
         boolean he_slide
         string ihq_data
@@ -103,7 +94,7 @@ erDiagram
     }
 
     PDO_TRIAL {
-        uuid id PK
+        string id PK
         integer drop_count
         integer frozen_organoid_count
         integer organoid_count
@@ -112,7 +103,7 @@ erDiagram
     }
 
     LC_TRIAL {
-        uuid id PK
+        string id PK
         float confluence
         boolean spheroids
         date digestion_date
@@ -124,7 +115,7 @@ erDiagram
         string record_type
         string description
         date record_date
-        uuid trial_id FK
+        string passage_id FK
     }
 
     IMAGE {
@@ -133,7 +124,7 @@ erDiagram
         integer scanner_magnification
         string type
         boolean ap_review
-        uuid trial_id FK
+        string passage_id FK
     }
 
     CRYOPRESERVATION {
@@ -141,7 +132,7 @@ erDiagram
         string location
         date cryo_date
         integer vial_count
-        uuid trial_id FK
+        string passage_id FK
     }
 
     TUMOR_GENOMIC_SEQUENCING {
@@ -161,13 +152,13 @@ erDiagram
     TRIAL_GENOMIC_SEQUENCING {
         uuid id PK
         string annotations
-        uuid trial_id FK
+        string passage_id FK
     }
 
     TRIAL_MOLECULAR_DATA {
         uuid id PK
         string annotations
-        uuid trial_id FK
+        string passage_id FK
     }
 
     IMPLANT {
@@ -193,13 +184,13 @@ erDiagram
         string strain
         string sex
         date death_date
-        uuid pdx_trial_id FK
+        string pdx_trial_id FK
     }
 
     FACS {
         uuid id PK
         string measure
         float measure_value
-        uuid lc_trial_id FK
+        string lc_trial_id FK
     }
 ```

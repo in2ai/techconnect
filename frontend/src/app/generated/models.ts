@@ -60,7 +60,7 @@ export interface Biomodel {
   status: string | null;
   success: boolean | null;
   tumor_biobank_code: string;
-  parent_trial_id: string | null;
+  parent_passage_id: string | null;
   tumor_organ: string | null;
 }
 
@@ -68,20 +68,13 @@ export interface Passage {
   id: string;
   number: number | null;
   description: string | null;
-  biomodel_id: string;
-  parent_trial_id: string | null;
-}
-
-export interface Trial {
-  id: string;
   success: boolean | null;
-  description: string | null;
   status: boolean | null;
   preclinical_trials: string | null;
   creation_date: string | null;
   biobank_shipment: boolean | null;
   biobank_arrival_date: string | null;
-  passage_id: string;
+  biomodel_id: string;
 }
 
 export interface PDXTrial {
@@ -149,7 +142,7 @@ export interface UsageRecord {
   record_type: string | null;
   description: string | null;
   record_date: string | null;
-  trial_id: string;
+  passage_id: string;
 }
 
 export interface Image {
@@ -158,7 +151,7 @@ export interface Image {
   scanner_magnification: number | null;
   type: string | null;
   ap_review: boolean | null;
-  trial_id: string;
+  passage_id: string;
 }
 
 export interface Cryopreservation {
@@ -166,19 +159,19 @@ export interface Cryopreservation {
   location: string | null;
   cryo_date: string | null;
   vial_count: number | null;
-  trial_id: string;
+  passage_id: string;
 }
 
 export interface TrialGenomicSequencing {
   id: string;
   annotations: string | null;
-  trial_id: string | null;
+  passage_id: string | null;
 }
 
 export interface TrialMolecularData {
   id: string;
   annotations: string | null;
-  trial_id: string | null;
+  passage_id: string | null;
 }
 
 export interface TumorGenomicSequencing {

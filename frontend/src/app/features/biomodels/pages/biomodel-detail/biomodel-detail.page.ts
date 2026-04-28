@@ -20,10 +20,10 @@ import {
   Breadcrumb,
   PageHeaderComponent,
 } from '@shared/components/page-header/page-header.component';
-import { BiomodelFormComponent } from '../../components/biomodel-form/biomodel-form.component';
-import { BiomodelService } from '../../services/biomodel.service';
 import { PassageFormComponent } from '../../../passages/components/passage-form/passage-form.component';
 import { PassageService } from '../../../passages/services/passage.service';
+import { BiomodelFormComponent } from '../../components/biomodel-form/biomodel-form.component';
+import { BiomodelService } from '../../services/biomodel.service';
 
 @Component({
   selector: 'app-biomodel-detail',
@@ -181,8 +181,13 @@ export class BiomodelDetailPage {
     { key: 'id', label: $localize`ID`, sortable: true },
     { key: 'number', label: $localize`Number`, sortable: true, type: 'number' },
     { key: 'status', label: $localize`Status`, sortable: true },
-    { key: 'viability', label: $localize`Viability`, sortable: true, type: 'number' },
-    { key: 's_index', label: $localize`S-Index`, sortable: true, type: 'number' },
+    {
+      key: 'success',
+      label: $localize`:@@trialSuccessLbl:Success`,
+      sortable: true,
+      type: 'boolean',
+    },
+    { key: 'creation_date', label: $localize`Created`, sortable: true, type: 'date' },
   ];
 
   onPassageClick(passage: Passage): void {

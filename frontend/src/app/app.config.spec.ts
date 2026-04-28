@@ -45,8 +45,6 @@ describe('routes', () => {
         'biomodels/:id',
         'passages',
         'passages/:id',
-        'trials',
-        'trials/:id',
         'samples',
         'samples/:id',
       ]),

@@ -1,52 +1,71 @@
-"""Passage model - Entity representing a passage of a biomodel."""
+"""Passage model - Entity representing a biomodel passage and its trial data."""
 
-from typing import TYPE_CHECKING, Optional
-from uuid import UUID, uuid4
+from datetime import date
+from typing import TYPE_CHECKING, Optional, Union
 
 from sqlmodel import Field, Relationship, SQLModel
-from sqlalchemy import ForeignKey
 
 if TYPE_CHECKING:
     from .biomodel import Biomodel
-    from .trial import Trial
+    from .trial import PDXTrial, PDOTrial, LCTrial
+    from .trial_entities import (
+        UsageRecord,
+        Image,
+        Cryopreservation,
+        TrialGenomicSequencing,
+        TrialMolecularData,
+    )
 
 
 class Passage(SQLModel, table=True):
     """
-    Passage entity representing a passage (generation) of a biomodel.
+    Passage entity representing a passage (generation) of a biomodel and its experiment data.
     
     Attributes:
-        id: Unique identifier (UUID)
+        id: Unique identifier generated from biomodel id and passage number
         number: Passage number
         description: General description
+        success: Whether the passage experiment was successful
+        status: Status of the passage experiment
+        preclinical_trials: Preclinical trials information
+        creation_date: Date the passage was created
+        biobank_shipment: Whether there was a biobank shipment
+        biobank_arrival_date: Date of biobank arrival
         biomodel_id: FK to Biomodel
     """
     
     __tablename__ = "passage"
     
     # Primary key
-    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    id: str = Field(default="", primary_key=True, max_length=150)
     
     # Fields
     number: Optional[int] = Field(default=None)
     description: Optional[str] = Field(default=None)  # text field
+    success: Optional[bool] = Field(default=None)
+    status: Optional[bool] = Field(default=None)
+    preclinical_trials: Optional[str] = Field(default=None)
+    creation_date: Union[date, None] = Field(default=None)
+    biobank_shipment: Optional[bool] = Field(default=None)
+    biobank_arrival_date: Union[date, None] = Field(default=None)
     
-    # Foreign keys (required - 1:0..2 relationship with Biomodel)
+    # Foreign keys (required - N:1 relationship with Biomodel)
     biomodel_id: str = Field(foreign_key="biomodel.id", description="FK to Biomodel")
-    
-    parent_trial_id: Optional[UUID] = Field(
-        default=None,
-        sa_column_args=[ForeignKey("trial.id", name="fk_passage_parent_trial_id", use_alter=True)],
-        description="FK to parent Trial"
-    )
-    
+
     # Relationships
-    biomodel: Optional["Biomodel"] = Relationship(back_populates="passages")
-    trials: list["Trial"] = Relationship(
-        back_populates="passage",
-        sa_relationship_kwargs={"foreign_keys": "[Trial.passage_id]"}
+    biomodel: Optional["Biomodel"] = Relationship(
+        back_populates="passages",
+        sa_relationship_kwargs={"foreign_keys": "[Passage.biomodel_id]"},
     )
-    parent_trial: Optional["Trial"] = Relationship(
-        back_populates="child_passages",
-        sa_relationship_kwargs={"foreign_keys": "[Passage.parent_trial_id]"}
+    child_biomodels: list["Biomodel"] = Relationship(
+        back_populates="parent_passage",
+        sa_relationship_kwargs={"foreign_keys": "[Biomodel.parent_passage_id]"},
     )
+    usage_records: list["UsageRecord"] = Relationship(back_populates="passage")
+    images: list["Image"] = Relationship(back_populates="passage")
+    cryopreservations: list["Cryopreservation"] = Relationship(back_populates="passage")
+    genomic_sequencing: Optional["TrialGenomicSequencing"] = Relationship(back_populates="passage")
+    molecular_data: Optional["TrialMolecularData"] = Relationship(back_populates="passage")
+    pdx_trial: Optional["PDXTrial"] = Relationship(back_populates="passage")
+    pdo_trial: Optional["PDOTrial"] = Relationship(back_populates="passage")
+    lc_trial: Optional["LCTrial"] = Relationship(back_populates="passage")

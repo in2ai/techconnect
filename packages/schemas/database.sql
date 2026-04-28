@@ -57,7 +57,7 @@ CREATE TABLE biomodel (
 	status VARCHAR(50), 
 	success BOOLEAN, 
 	tumor_biobank_code VARCHAR NOT NULL, 
-	parent_trial_id UUID, 
+	parent_passage_id VARCHAR, 
 	PRIMARY KEY (id), 
 	FOREIGN KEY(tumor_biobank_code) REFERENCES tumor (biobank_code)
 );
@@ -97,27 +97,18 @@ CREATE TABLE tumor_molecular_data (
 );
 
 CREATE TABLE passage (
-	id UUID NOT NULL, 
+	id VARCHAR(150) NOT NULL, 
 	number INTEGER, 
 	description VARCHAR, 
-	biomodel_id VARCHAR NOT NULL, 
-	parent_trial_id UUID, 
-	PRIMARY KEY (id), 
-	FOREIGN KEY(biomodel_id) REFERENCES biomodel (id)
-);
-
-CREATE TABLE trial (
-	id UUID NOT NULL, 
 	success BOOLEAN, 
-	description VARCHAR, 
 	status BOOLEAN, 
 	preclinical_trials VARCHAR, 
 	creation_date DATE, 
 	biobank_shipment BOOLEAN, 
 	biobank_arrival_date DATE, 
-	passage_id UUID NOT NULL, 
+	biomodel_id VARCHAR NOT NULL, 
 	PRIMARY KEY (id), 
-	FOREIGN KEY(passage_id) REFERENCES passage (id)
+	FOREIGN KEY(biomodel_id) REFERENCES biomodel (id)
 );
 
 CREATE TABLE cryopreservation (
@@ -125,9 +116,9 @@ CREATE TABLE cryopreservation (
 	location VARCHAR(100), 
 	cryo_date DATE, 
 	vial_count INTEGER, 
-	trial_id UUID NOT NULL, 
+	passage_id VARCHAR NOT NULL, 
 	PRIMARY KEY (id), 
-	FOREIGN KEY(trial_id) REFERENCES trial (id)
+	FOREIGN KEY(passage_id) REFERENCES passage (id)
 );
 
 CREATE TABLE image (
@@ -136,34 +127,34 @@ CREATE TABLE image (
 	scanner_magnification INTEGER, 
 	type VARCHAR(50), 
 	ap_review BOOLEAN, 
-	trial_id UUID NOT NULL, 
+	passage_id VARCHAR NOT NULL, 
 	PRIMARY KEY (id), 
-	FOREIGN KEY(trial_id) REFERENCES trial (id)
+	FOREIGN KEY(passage_id) REFERENCES passage (id)
 );
 
 CREATE TABLE lc_trial (
-	id UUID NOT NULL, 
+	id VARCHAR NOT NULL, 
 	confluence FLOAT, 
 	spheroids BOOLEAN, 
 	digestion_date DATE, 
 	plate_type VARCHAR(50), 
 	PRIMARY KEY (id), 
-	FOREIGN KEY(id) REFERENCES trial (id)
+	FOREIGN KEY(id) REFERENCES passage (id)
 );
 
 CREATE TABLE pdo_trial (
-	id UUID NOT NULL, 
+	id VARCHAR NOT NULL, 
 	drop_count INTEGER, 
 	frozen_organoid_count INTEGER, 
 	organoid_count INTEGER, 
 	plate_type VARCHAR(50), 
 	assessment VARCHAR(100), 
 	PRIMARY KEY (id), 
-	FOREIGN KEY(id) REFERENCES trial (id)
+	FOREIGN KEY(id) REFERENCES passage (id)
 );
 
 CREATE TABLE pdx_trial (
-	id UUID NOT NULL, 
+	id VARCHAR NOT NULL, 
 	ffpe BOOLEAN, 
 	he_slide BOOLEAN, 
 	ihq_data VARCHAR, 
@@ -171,25 +162,25 @@ CREATE TABLE pdx_trial (
 	latency_weeks FLOAT, 
 	similarity FLOAT, 
 	PRIMARY KEY (id), 
-	FOREIGN KEY(id) REFERENCES trial (id)
+	FOREIGN KEY(id) REFERENCES passage (id)
 );
 
 CREATE TABLE trial_genomic_sequencing (
 	id UUID NOT NULL, 
 	annotations VARCHAR, 
-	trial_id UUID, 
+	passage_id VARCHAR, 
 	PRIMARY KEY (id), 
-	UNIQUE (trial_id), 
-	FOREIGN KEY(trial_id) REFERENCES trial (id)
+	UNIQUE (passage_id), 
+	FOREIGN KEY(passage_id) REFERENCES passage (id)
 );
 
 CREATE TABLE trial_molecular_data (
 	id UUID NOT NULL, 
 	annotations VARCHAR, 
-	trial_id UUID, 
+	passage_id VARCHAR, 
 	PRIMARY KEY (id), 
-	UNIQUE (trial_id), 
-	FOREIGN KEY(trial_id) REFERENCES trial (id)
+	UNIQUE (passage_id), 
+	FOREIGN KEY(passage_id) REFERENCES passage (id)
 );
 
 CREATE TABLE usage_record (
@@ -197,16 +188,16 @@ CREATE TABLE usage_record (
 	record_type VARCHAR(100), 
 	description VARCHAR, 
 	record_date DATE, 
-	trial_id UUID NOT NULL, 
+	passage_id VARCHAR NOT NULL, 
 	PRIMARY KEY (id), 
-	FOREIGN KEY(trial_id) REFERENCES trial (id)
+	FOREIGN KEY(passage_id) REFERENCES passage (id)
 );
 
 CREATE TABLE facs (
 	id UUID NOT NULL, 
 	measure VARCHAR(100), 
 	measure_value FLOAT, 
-	lc_trial_id UUID, 
+	lc_trial_id VARCHAR, 
 	PRIMARY KEY (id), 
 	UNIQUE (lc_trial_id), 
 	FOREIGN KEY(lc_trial_id) REFERENCES lc_trial (id)
@@ -221,7 +212,7 @@ CREATE TABLE mouse (
 	strain VARCHAR(50), 
 	sex VARCHAR(20), 
 	death_date DATE, 
-	pdx_trial_id UUID NOT NULL, 
+	pdx_trial_id VARCHAR NOT NULL, 
 	PRIMARY KEY (id), 
 	FOREIGN KEY(pdx_trial_id) REFERENCES pdx_trial (id)
 );

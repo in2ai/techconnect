@@ -21,7 +21,7 @@ describe('BiomodelFormComponent', () => {
     const httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
     httpMock.expectOne('/api/tumors').flush([{ biobank_code: 'TB-1' }]);
-    httpMock.expectOne('/api/trials').flush([{ id: 'TR-1', description: 'trial one' }]);
+    httpMock.expectOne('/api/passages').flush([{ id: 'BM-1-P1', description: 'passage one' }]);
     httpMock.expectOne('/api/biomodels').flush([{ id: 'B-EXISTING' }]);
     fixture.detectChanges();
     return { fixture, component: fixture.componentInstance, httpMock };
@@ -66,7 +66,7 @@ describe('BiomodelFormComponent', () => {
         status: 'active',
         success: false,
         tumor_biobank_code: 'TB-1',
-        parent_trial_id: null,
+        parent_passage_id: null,
         tumor_organ: null,
       },
     });
@@ -83,13 +83,13 @@ describe('BiomodelFormComponent', () => {
     httpMock.verify();
   });
 
-  it('filters parent trials and stores only the selected id', async () => {
+  it('filters parent passages and stores only the selected id', async () => {
     const { component, httpMock } = await setup({ mode: 'create' });
-    component.parentTrialSearch.setValue('TR');
-    expect(component.filteredParentTrials().map((trial) => trial.id)).toEqual(['TR-1']);
-    component.selectParentTrial('TR-1');
-    expect(component.form.controls.parent_trial_id.value).toBe('TR-1');
-    expect(component.parentTrialSearch.value).toBe('TR-1');
+    component.parentPassageSearch.setValue('P1');
+    expect(component.filteredParentPassages().map((passage) => passage.id)).toEqual(['BM-1-P1']);
+    component.selectParentPassage('BM-1-P1');
+    expect(component.form.controls.parent_passage_id.value).toBe('BM-1-P1');
+    expect(component.parentPassageSearch.value).toBe('BM-1-P1');
     httpMock.verify();
   });
 });

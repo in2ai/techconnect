@@ -67,6 +67,42 @@ export interface PassageFormData {
             autocomplete="off"
           />
         </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label i18n="@@trialSuccessLbl">Success</mat-label>
+          <mat-select formControlName="success">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option [value]="true" i18n="@@yesOpt">Yes</mat-option>
+            <mat-option [value]="false" i18n="@@noOpt">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label i18n="@@trialStatusLbl">Status</mat-label>
+          <mat-select formControlName="status">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option [value]="true" i18n="@@activeStatusOpt">Active</mat-option>
+            <mat-option [value]="false" i18n="@@inactiveStatusOpt">Inactive</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label i18n="@@trialCreatedLbl">Created</mat-label>
+          <input matInput type="date" formControlName="creation_date" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label i18n="@@trialBiobankShipmentLbl">Biobank Shipment</mat-label>
+          <mat-select formControlName="biobank_shipment">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option [value]="true" i18n="@@yesOpt">Yes</mat-option>
+            <mat-option [value]="false" i18n="@@noOpt">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label i18n="@@trialArrivalDateLbl">Arrival Date</mat-label>
+          <input matInput type="date" formControlName="biobank_arrival_date" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label i18n="@@preclinicalTrialsLbl">Preclinical Trials</mat-label>
+          <textarea matInput formControlName="preclinical_trials" rows="2"></textarea>
+        </mat-form-field>
         <mat-form-field appearance="outline" class="full-width">
           <mat-label i18n="@@passageDescLbl">Description</mat-label>
           <textarea matInput formControlName="description" rows="3"></textarea>
@@ -87,7 +123,7 @@ export interface PassageFormData {
   styles: `
     .form-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0.5rem;
       min-width: 400px;
     }
@@ -121,17 +157,26 @@ export class PassageFormComponent {
     biomodel_id: this.formBuilder.nonNullable.control(this.data.passage?.biomodel_id ?? '', {
       validators: [Validators.required],
     }),
-    parent_trial_id: this.formBuilder.control<Passage['parent_trial_id']>(
-      this.data.passage?.parent_trial_id ?? null,
+    success: this.formBuilder.control<Passage['success']>(this.data.passage?.success ?? null),
+    status: this.formBuilder.control<Passage['status']>(this.data.passage?.status ?? null),
+    preclinical_trials: this.formBuilder.control<Passage['preclinical_trials']>(
+      this.data.passage?.preclinical_trials ?? null,
+    ),
+    creation_date: this.formBuilder.control<Passage['creation_date']>(
+      this.data.passage?.creation_date ?? null,
+    ),
+    biobank_shipment: this.formBuilder.control<Passage['biobank_shipment']>(
+      this.data.passage?.biobank_shipment ?? null,
+    ),
+    biobank_arrival_date: this.formBuilder.control<Passage['biobank_arrival_date']>(
+      this.data.passage?.biobank_arrival_date ?? null,
     ),
   });
 
   buildDialogResult(): Partial<Passage> {
     const value = this.form.getRawValue();
     const number =
-      value.number === '' || value.number == null
-        ? null
-        : Math.trunc(Number(value.number));
+      value.number === '' || value.number == null ? null : Math.trunc(Number(value.number));
     const withNumeric = {
       ...value,
       number: Number.isFinite(number) ? number : null,

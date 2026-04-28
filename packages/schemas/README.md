@@ -85,7 +85,7 @@ engine = create_db_and_tables("mysql+pymysql://user:pass@localhost:3306/techconn
 
 ```python
 from sqlmodel import Session
-from models import Patient, Tumor, Biomodel
+from models import Patient, Tumor, Biomodel, Passage
 from datetime import date
 
 # Create a session
@@ -119,6 +119,17 @@ with Session(engine) as session:
     )
     session.add(biomodel)
     session.commit()
+
+    # Create a passage for the biomodel. The API generates IDs as {biomodel_id}-P{x};
+    # direct SQLModel usage can set the deterministic value explicitly.
+    passage = Passage(
+        id="BM-2024-001-P1",
+        number=1,
+        success=True,
+        biomodel_id=biomodel.id
+    )
+    session.add(passage)
+    session.commit()
 ```
 
 ### Querying with Relationships
@@ -148,14 +159,13 @@ with Session(engine) as session:
 - **Tumor** - Tumor sample in biobank
 - **LiquidBiopsy** - Liquid biopsy sample
 - **Biomodel** - Biological model (PDX, PDO, LC)
-- **Passage** - Passage/generation of a biomodel
+- **Passage** - Passage/generation of a biomodel and its experiment-level data
 
-### Trial Hierarchy (Inheritance)
+### Passage Detail Tables
 
-- **Trial** - Base trial entity
-  - **PDXTrial** - Patient-Derived Xenograft trial
-  - **PDOTrial** - Patient-Derived Organoid trial
-  - **LCTrial** - Liquid Culture trial
+- **PDXTrial** - Patient-Derived Xenograft details keyed by `passage.id`
+- **PDOTrial** - Patient-Derived Organoid details keyed by `passage.id`
+- **LCTrial** - Liquid Culture details keyed by `passage.id`
 
 ### PDX-Related Entities
 
@@ -167,10 +177,10 @@ with Session(engine) as session:
 
 - **FACS** - Flow cytometry data
 
-### Trial-Related Entities
+### Passage-Related Entities
 
 - **UsageRecord** - Usage tracking
-- **Image** - Trial images
+- **Image** - Passage images
 - **Cryopreservation** - Frozen samples
 - **GenomicSequencing** - Sequencing data
 - **MolecularData** - Molecular analysis data
@@ -178,11 +188,11 @@ with Session(engine) as session:
 ## Entity Relationship Diagram
 
 ```text
-Patient (1) ──────── (N) Tumor (1) ──────── (N) Biomodel (1) ──────── (0..2) Passage
+Patient (1) ──────── (N) Tumor (1) ──────── (N) Biomodel (1) ──────── (N) Passage
                            │                                                    │
                            └── (0..1) LiquidBiopsy                              │
                                                                                 │
-                                                              (1) ──────── (N) Trial
+                                                              (1) ──────── (0..2) Biomodel
                                                                                │
                                                     ┌──────────────────────────┼──────────────────────────┐
                                                     │                          │                          │

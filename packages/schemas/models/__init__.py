@@ -10,7 +10,7 @@ from .tumor import Tumor, TumorGenomicSequencing, TumorMolecularData
 from .sample import Sample
 from .biomodel import Biomodel
 from .passage import Passage
-from .trial import Trial, PDXTrial, PDOTrial, LCTrial
+from .trial import PDXTrial, PDOTrial, LCTrial
 from .pdx_entities import Implant, Measure, Mouse
 from .lc_entities import FACS
 from .trial_entities import UsageRecord, Image, Cryopreservation, TrialGenomicSequencing, TrialMolecularData
@@ -25,8 +25,7 @@ __all__ = [
     "Sample",
     "Biomodel",
     "Passage",
-    # Trial and subtypes
-    "Trial",
+    # Passage subtypes
     "PDXTrial",
     "PDOTrial",
     "LCTrial",

@@ -94,7 +94,7 @@ class Mouse(SQLModel, table=True):
     death_date: Union[date, None] = Field(default=None)
     
     # Foreign keys (required - 1:1 relationship with PDXTrial)
-    pdx_trial_id: UUID = Field(foreign_key="pdx_trial.id", description="FK to PDXTrial")
+    pdx_trial_id: str = Field(foreign_key="pdx_trial.id", description="FK to PDXTrial")
     
     # Relationships
     pdx_trial: Optional["PDXTrial"] = Relationship(back_populates="mouse")

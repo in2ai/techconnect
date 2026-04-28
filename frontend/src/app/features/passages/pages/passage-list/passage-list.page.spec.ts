@@ -13,12 +13,14 @@ import { vi } from 'vitest';
 import { PassageService } from '../../services/passage.service';
 import { PassageListPage } from './passage-list.page';
 
-async function setup(opts: {
-  passages?: Passage[];
-  dialogResult?: Partial<Passage> | null;
-  createResult?: 'ok' | 'error';
-  isAdmin?: boolean;
-} = {}) {
+async function setup(
+  opts: {
+    passages?: Passage[];
+    dialogResult?: Partial<Passage> | null;
+    createResult?: 'ok' | 'error';
+    isAdmin?: boolean;
+  } = {},
+) {
   const authStub = { isAdmin: () => opts.isAdmin ?? true } as unknown as AuthService;
   const notification = { success: vi.fn(), error: vi.fn(), info: vi.fn() };
   const service = {
@@ -54,6 +56,7 @@ async function setup(opts: {
   const fixture = TestBed.createComponent(PassageListPage);
   fixture.detectChanges();
   httpMock.expectOne('/api/passages').flush(opts.passages ?? []);
+  httpMock.expectOne('/api/biomodels').flush([{ id: 'B-1', type: 'PDX' }]);
   await fixture.whenStable();
   fixture.detectChanges();
   return { fixture, httpMock, navSpy, notification, service, dialog };
@@ -86,6 +89,7 @@ describe('PassageListPage', () => {
     expect(service.create).toHaveBeenCalled();
     expect(notification.success).toHaveBeenCalled();
     httpMock.match('/api/passages').forEach((r) => r.flush([]));
+    httpMock.match('/api/biomodels').forEach((r) => r.flush([]));
   });
 
   it('notifies an error when passage creation fails', async () => {

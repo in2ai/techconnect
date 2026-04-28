@@ -43,27 +43,20 @@ interface BiomodelPayload {
   status: string | null;
   success: boolean | null;
   tumor_biobank_code: string;
-  parent_trial_id: string | null;
+  parent_passage_id: string | null;
 }
 
 interface PassagePayload {
   id: string;
   number: number | null;
   description: string | null;
-  biomodel_id: string;
-  parent_trial_id: string | null;
-}
-
-interface TrialPayload {
-  id: string;
   success: boolean | null;
-  description: string | null;
   status: boolean | null;
   preclinical_trials: string | null;
   creation_date: string | null;
   biobank_shipment: boolean | null;
   biobank_arrival_date: string | null;
-  passage_id: string;
+  biomodel_id: string;
 }
 
 async function ensureOk(response: APIResponse, action: string): Promise<void> {
@@ -169,7 +162,7 @@ export async function createBiomodel(
     status: 'active',
     success: true,
     tumor_biobank_code: tumorBiobankCode,
-    parent_trial_id: null,
+    parent_passage_id: null,
   });
 }
 
@@ -181,25 +174,13 @@ export async function createPassage(
   return postJson<PassagePayload>(request, '/passages', {
     number,
     description: 'fixture',
-    biomodel_id: biomodelId,
-    parent_trial_id: null,
-  });
-}
-
-export async function createTrial(
-  request: APIRequestContext,
-  passageId: string,
-  description: string,
-): Promise<TrialPayload> {
-  return postJson<TrialPayload>(request, '/trials', {
     success: true,
-    description,
-    status: null,
+    status: true,
     preclinical_trials: null,
     creation_date: '2025-01-01',
     biobank_shipment: false,
     biobank_arrival_date: null,
-    passage_id: passageId,
+    biomodel_id: biomodelId,
   });
 }
 
@@ -221,10 +202,6 @@ export async function deleteBiomodel(request: APIRequestContext, id: string): Pr
 
 export async function deletePassage(request: APIRequestContext, id: string): Promise<void> {
   await deleteIgnoreNotFound(request, `/passages/${id}`);
-}
-
-export async function deleteTrial(request: APIRequestContext, id: string): Promise<void> {
-  await deleteIgnoreNotFound(request, `/trials/${id}`);
 }
 
 export async function deletePdxTrial(request: APIRequestContext, id: string): Promise<void> {

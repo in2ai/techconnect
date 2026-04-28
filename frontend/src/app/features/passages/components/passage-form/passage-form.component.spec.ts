@@ -51,7 +51,12 @@ describe('PassageFormComponent', () => {
         number: null,
         description: null,
         biomodel_id: 'BM-7',
-        parent_trial_id: null,
+        success: null,
+        status: null,
+        preclinical_trials: null,
+        creation_date: null,
+        biobank_shipment: null,
+        biobank_arrival_date: null,
       },
     });
     expect(component.showBiomodelPicker).toBe(false);
@@ -67,7 +72,12 @@ describe('PassageFormComponent', () => {
         number: 4,
         description: 'existing',
         biomodel_id: 'BM-1',
-        parent_trial_id: null,
+        success: null,
+        status: null,
+        preclinical_trials: null,
+        creation_date: null,
+        biobank_shipment: null,
+        biobank_arrival_date: null,
       },
     });
     const payload = component.buildDialogResult();

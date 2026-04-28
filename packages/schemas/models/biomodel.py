@@ -2,7 +2,6 @@
 
 from datetime import date
 from typing import TYPE_CHECKING, Optional, Union
-from uuid import UUID
 
 from sqlmodel import Field, Relationship, SQLModel
 from sqlalchemy import ForeignKey
@@ -10,7 +9,6 @@ from sqlalchemy import ForeignKey
 if TYPE_CHECKING:
     from .tumor import Tumor
     from .passage import Passage
-    from .trial import Trial
 
 
 from pydantic import computed_field
@@ -48,16 +46,24 @@ class Biomodel(SQLModel, table=True):
         description="FK to Tumor"
     )
     
-    parent_trial_id: Optional[UUID] = Field(
+    parent_passage_id: Optional[str] = Field(
         default=None,
-        sa_column_args=[ForeignKey("trial.id", name="fk_biomodel_parent_trial_id", use_alter=True)],
-        description="FK to parent Trial"
+        sa_column_args=[
+            ForeignKey("passage.id", name="fk_biomodel_parent_passage_id", use_alter=True)
+        ],
+        description="FK to parent Passage"
     )
     
     # Relationships
     tumor: Optional["Tumor"] = Relationship(back_populates="biomodels")
-    passages: list["Passage"] = Relationship(back_populates="biomodel")
-    parent_trial: Optional["Trial"] = Relationship(back_populates="child_biomodels")
+    passages: list["Passage"] = Relationship(
+        back_populates="biomodel",
+        sa_relationship_kwargs={"foreign_keys": "[Passage.biomodel_id]"},
+    )
+    parent_passage: Optional["Passage"] = Relationship(
+        back_populates="child_biomodels",
+        sa_relationship_kwargs={"foreign_keys": "[Biomodel.parent_passage_id]"},
+    )
 
     @computed_field
     @property

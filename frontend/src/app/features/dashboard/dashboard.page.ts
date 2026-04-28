@@ -1,10 +1,10 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { httpResource } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { httpResource } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
 import { API_URL } from '@core/tokens/api-url.token';
 
 interface DashboardCard {
@@ -27,7 +27,7 @@ interface DashboardCard {
         <h1 class="hero-title" i18n>Welcome to TechConnect</h1>
         <p class="hero-subtitle" i18n>
           Biomedical research data management platform. Navigate through your registry, biomodels,
-          and clinical trial data.
+          and passage data.
         </p>
       </div>
       <div class="hero-decoration" aria-hidden="true">
@@ -305,15 +305,7 @@ export class DashboardPage {
       route: '/passages',
       endpoint: 'passages',
       color: '#059669',
-      description: $localize`Track biomodel passages, viability, and growth indices.`,
-    },
-    {
-      title: $localize`Trials`,
-      icon: 'assignment',
-      route: '/trials',
-      endpoint: 'trials',
-      color: '#d97706',
-      description: $localize`PDX, PDO, and LC trial data with detailed outcomes.`,
+      description: $localize`Track biomodel passages and detailed outcomes.`,
     },
   ];
 

@@ -1271,9 +1271,11 @@
       <trans-unit id="newBiomodelTitle" datatype="html"><source>New Biomodel</source><target>Nuevo Biomodelo</target></trans-unit>
       <trans-unit id="editBiomodelTitle" datatype="html"><source>Edit Biomodel</source><target>Editar Biomodelo</target></trans-unit>
       <trans-unit id="biomodelParentTrialOptionalLbl" datatype="html"><source>Parent Trial (Optional)</source><target>Ensayo Padre (Opcional)</target></trans-unit>
+      <trans-unit id="biomodelParentPassageOptionalLbl" datatype="html"><source>Parent Passage (Optional)</source><target>Pase Padre (Opcional)</target></trans-unit>
       <trans-unit id="biomodelIdPlaceholder" datatype="html"><source>Enter biomodel ID</source><target>Introduzca el ID del biomodelo</target></trans-unit>
       <trans-unit id="biomodelDuplicateIdError" datatype="html"><source>This biomodel ID already exists.</source><target>Este ID de biomodelo ya existe.</target></trans-unit>
       <trans-unit id="parentTrialSearchPlaceholder" datatype="html"><source>Search trial ID</source><target>Buscar ID de ensayo</target></trans-unit>
+      <trans-unit id="parentPassageSearchPlaceholder" datatype="html"><source>Search passage ID</source><target>Buscar ID de pase</target></trans-unit>
       <trans-unit id="activeStatusOpt" datatype="html"><source>Active</source><target>Activo</target></trans-unit>
       <trans-unit id="inactiveStatusOpt" datatype="html"><source>Inactive</source><target>Inactivo</target></trans-unit>
       <trans-unit id="noneOptionLbl" datatype="html"><source>None</source><target>Ninguno</target></trans-unit>
@@ -1282,6 +1284,15 @@
       <trans-unit id="editPassageTitle" datatype="html"><source>Edit Passage</source><target>Editar Pase</target></trans-unit>
       <trans-unit id="passageCreatedToast" datatype="html"><source>Passage created</source><target>Pase creado</target></trans-unit>
       <trans-unit id="passageCreateFailedToast" datatype="html"><source>Failed to create passage</source><target>Error al crear el pase</target></trans-unit>
+      <trans-unit id="passageUpdatedToast" datatype="html"><source>Passage updated</source><target>Pase actualizado</target></trans-unit>
+      <trans-unit id="passageUpdateFailedToast" datatype="html"><source>Failed to update passage</source><target>Error al actualizar el pase</target></trans-unit>
+      <trans-unit id="passageDeletedToast" datatype="html"><source>Passage deleted</source><target>Pase eliminado</target></trans-unit>
+      <trans-unit id="passageDeleteFailedToast" datatype="html"><source>Failed to delete passage</source><target>Error al eliminar el pase</target></trans-unit>
+      <trans-unit id="typeLbl" datatype="html"><source>Type</source><target>Tipo</target></trans-unit>
+      <trans-unit id="trialStatusLbl" datatype="html"><source>Status</source><target>Estado</target></trans-unit>
+      <trans-unit id="preclinicalTrialsLbl" datatype="html"><source>Preclinical Trials</source><target>Ensayos preclínicos</target></trans-unit>
+      <trans-unit id="7610193920778630976" datatype="html"><source>Track biomodel passages and detailed outcomes.</source><target>Seguimiento de pases de biomodelos y resultados detallados.</target></trans-unit>
+      <trans-unit id="7219355796144107567" datatype="html"><source> Biomedical research data management platform. Navigate through your registry, biomodels, and passage data. </source><target> Plataforma de gestión de datos de investigación biomédica. Navega por tu registro, biomodelos y datos de pases. </target></trans-unit>
     </body>
   </file>
 </xliff>

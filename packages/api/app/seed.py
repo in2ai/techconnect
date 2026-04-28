@@ -24,7 +24,6 @@ from models import (
     PDOTrial,
     PDXTrial,
     Sample,
-    Trial,
     Tumor,
     UsageRecord,
     Measure,
@@ -73,10 +72,11 @@ def seed_database() -> SeedStats:
 
     sample_id = f"{tumor_1}-M1"
     biomodel_id = "SEED-BIOMODEL-001"
-    passage_id = UUID("30000000-0000-0000-0000-000000000001")
-    trial_pdx_id = UUID("40000000-0000-0000-0000-000000000001")
-    trial_pdo_id = UUID("40000000-0000-0000-0000-000000000002")
-    trial_lc_id = UUID("40000000-0000-0000-0000-000000000003")
+    biomodel_pdo_id = "SEED-BIOMODEL-002"
+    biomodel_lc_id = "SEED-BIOMODEL-003"
+    passage_pdx_id = f"{biomodel_id}-P1"
+    passage_pdo_id = f"{biomodel_pdo_id}-P1"
+    passage_lc_id = f"{biomodel_lc_id}-P1"
 
     implant_id = UUID("50000000-0000-0000-0000-000000000001")
     size_record_id = UUID("50000000-0000-0000-0000-000000000002")
@@ -162,30 +162,49 @@ def seed_database() -> SeedStats:
                 "status": "active",
                 "success": True,
                 "tumor_biobank_code": tumor_1,
-                "parent_trial_id": None,
+                "parent_passage_id": None,
+            },
+            stats,
+        )
+        _upsert(
+            session,
+            Biomodel,
+            biomodel_pdo_id,
+            {
+                "id": biomodel_pdo_id,
+                "type": "PDO",
+                "description": "Primary organoid line",
+                "creation_date": date(2024, 2, 12),
+                "status": "active",
+                "success": True,
+                "tumor_biobank_code": tumor_1,
+                "parent_passage_id": None,
+            },
+            stats,
+        )
+        _upsert(
+            session,
+            Biomodel,
+            biomodel_lc_id,
+            {
+                "id": biomodel_lc_id,
+                "type": "LC",
+                "description": "Primary liquid culture line",
+                "creation_date": date(2024, 2, 14),
+                "status": "inactive",
+                "success": False,
+                "tumor_biobank_code": tumor_1,
+                "parent_passage_id": None,
             },
             stats,
         )
         _upsert(
             session,
             Passage,
-            passage_id,
+            passage_pdx_id,
             {
-                "id": passage_id,
+                "id": passage_pdx_id,
                 "number": 1,
-                "description": "Initial expansion passage",
-                "biomodel_id": biomodel_id,
-                "parent_trial_id": None,
-            },
-            stats,
-        )
-
-        _upsert(
-            session,
-            Trial,
-            trial_pdx_id,
-            {
-                "id": trial_pdx_id,
                 "success": True,
                 "status": True,
                 "preclinical_trials": "Pilot oncology panel",
@@ -193,37 +212,39 @@ def seed_database() -> SeedStats:
                 "creation_date": date(2024, 3, 5),
                 "biobank_shipment": True,
                 "biobank_arrival_date": date(2024, 3, 1),
-                "passage_id": passage_id,
+                "biomodel_id": biomodel_id,
             },
             stats,
         )
         _upsert(
             session,
-            Trial,
-            trial_pdo_id,
+            Passage,
+            passage_pdo_id,
             {
-                "id": trial_pdo_id,
+                "id": passage_pdo_id,
+                "number": 1,
                 "success": True,
                 "description": "PDO drug screen",
                 "creation_date": date(2024, 3, 12),
                 "biobank_shipment": False,
                 "biobank_arrival_date": None,
-                "passage_id": passage_id,
+                "biomodel_id": biomodel_pdo_id,
             },
             stats,
         )
         _upsert(
             session,
-            Trial,
-            trial_lc_id,
+            Passage,
+            passage_lc_id,
             {
-                "id": trial_lc_id,
+                "id": passage_lc_id,
+                "number": 1,
                 "success": False,
                 "description": "LC confluence optimization",
                 "creation_date": date(2024, 3, 20),
                 "biobank_shipment": False,
                 "biobank_arrival_date": None,
-                "passage_id": passage_id,
+                "biomodel_id": biomodel_lc_id,
             },
             stats,
         )
@@ -231,9 +252,9 @@ def seed_database() -> SeedStats:
         _upsert(
             session,
             PDXTrial,
-            trial_pdx_id,
+            passage_pdx_id,
             {
-                "id": trial_pdx_id,
+                "id": passage_pdx_id,
                 "ffpe": True,
                 "he_slide": True,
                 "ihq_data": "Ki67 and p53 available",
@@ -246,9 +267,9 @@ def seed_database() -> SeedStats:
         _upsert(
             session,
             PDOTrial,
-            trial_pdo_id,
+            passage_pdo_id,
             {
-                "id": trial_pdo_id,
+                "id": passage_pdo_id,
                 "drop_count": 8,
                 "frozen_organoid_count": 40,
                 "organoid_count": 126,
@@ -260,9 +281,9 @@ def seed_database() -> SeedStats:
         _upsert(
             session,
             LCTrial,
-            trial_lc_id,
+            passage_lc_id,
             {
-                "id": trial_lc_id,
+                "id": passage_lc_id,
                 "confluence": 73.5,
                 "spheroids": False,
                 "digestion_date": date(2024, 4, 2),
@@ -284,7 +305,7 @@ def seed_database() -> SeedStats:
                 "strain": "NSG",
                 "sex": "female",
                 "death_date": None,
-                "pdx_trial_id": trial_pdx_id,
+                "pdx_trial_id": passage_pdx_id,
             },
             stats,
         )
@@ -320,7 +341,7 @@ def seed_database() -> SeedStats:
                 "id": facs_id,
                 "measure": "FITC",
                 "measure_value": 4.5,
-                "lc_trial_id": trial_lc_id,
+                "lc_trial_id": passage_lc_id,
             },
             stats,
         )
@@ -334,7 +355,7 @@ def seed_database() -> SeedStats:
                 "record_type": "Drug treatment",
                 "description": "Cohort A dosing",
                 "record_date": date(2024, 4, 10),
-                "trial_id": trial_pdx_id,
+                "passage_id": passage_pdx_id,
             },
             stats,
         )
@@ -347,7 +368,7 @@ def seed_database() -> SeedStats:
                 "record_type": "Organoid assay",
                 "description": "Growth curve acquisition",
                 "record_date": date(2024, 4, 15),
-                "trial_id": trial_pdo_id,
+                "passage_id": passage_pdo_id,
             },
             stats,
         )
@@ -360,7 +381,7 @@ def seed_database() -> SeedStats:
                 "record_type": "Media optimization",
                 "description": "Serum concentration test",
                 "record_date": date(2024, 4, 18),
-                "trial_id": trial_lc_id,
+                "passage_id": passage_lc_id,
             },
             stats,
         )
@@ -374,7 +395,7 @@ def seed_database() -> SeedStats:
                 "scanner_magnification": 20,
                 "type": "Histology",
                 "ap_review": True,
-                "trial_id": trial_pdx_id,
+                "passage_id": passage_pdx_id,
             },
             stats,
         )
@@ -387,7 +408,7 @@ def seed_database() -> SeedStats:
                 "location": "LN2-Tank-07",
                 "cryo_date": date(2024, 4, 19),
                 "vial_count": 12,
-                "trial_id": trial_pdo_id,
+                "passage_id": passage_pdo_id,
             },
             stats,
         )
@@ -398,7 +419,7 @@ def seed_database() -> SeedStats:
             {
                 "id": genomic_id,
                 "annotations": "Some annotations",
-                "trial_id": trial_pdx_id,
+                "passage_id": passage_pdx_id,
             },
             stats,
         )
@@ -409,7 +430,7 @@ def seed_database() -> SeedStats:
             {
                 "id": molecular_id,
                 "annotations": "Some annotations",
-                "trial_id": trial_lc_id,
+                "passage_id": passage_lc_id,
             },
             stats,
         )

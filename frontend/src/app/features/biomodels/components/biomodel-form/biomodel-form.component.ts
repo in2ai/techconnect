@@ -1,17 +1,17 @@
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { API_URL } from '@core/tokens/api-url.token';
-import { Biomodel, Trial, Tumor } from '@generated/models';
+import { Biomodel, Passage, Tumor } from '@generated/models';
 
 type TumorOption = Pick<Tumor, 'biobank_code' | 'classification'>;
-type TrialOption = Pick<Trial, 'id' | 'description'>;
+type PassageOption = Pick<Passage, 'id' | 'description'>;
 
 export interface BiomodelFormData {
   mode: 'create' | 'edit';
@@ -73,24 +73,24 @@ export interface BiomodelFormData {
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label i18n="@@biomodelParentTrialOptionalLbl">Parent Trial (Optional)</mat-label>
-          @if (trialsResource.isLoading()) {
+          <mat-label i18n="@@biomodelParentPassageOptionalLbl">Parent Passage (Optional)</mat-label>
+          @if (passagesResource.isLoading()) {
             <input matInput disabled i18n-placeholder="@@loadingLbl" placeholder="Loading…" />
           } @else {
             <input
               matInput
-              [formControl]="parentTrialSearch"
-              [matAutocomplete]="parentTrialAutocomplete"
-              i18n-placeholder="@@parentTrialSearchPlaceholder"
-              placeholder="Search trial ID"
+              [formControl]="parentPassageSearch"
+              [matAutocomplete]="parentPassageAutocomplete"
+              i18n-placeholder="@@parentPassageSearchPlaceholder"
+              placeholder="Search passage ID"
             />
             <mat-autocomplete
-              #parentTrialAutocomplete="matAutocomplete"
-              (optionSelected)="selectParentTrial($event.option.value)"
+              #parentPassageAutocomplete="matAutocomplete"
+              (optionSelected)="selectParentPassage($event.option.value)"
             >
               <mat-option [value]="null" i18n="@@noneOptionLbl">None</mat-option>
-              @for (trial of filteredParentTrials(); track trial.id) {
-                <mat-option [value]="trial.id">{{ trial.id }}</mat-option>
+              @for (passage of filteredParentPassages(); track passage.id) {
+                <mat-option [value]="passage.id">{{ passage.id }}</mat-option>
               }
             </mat-autocomplete>
           }
@@ -165,7 +165,7 @@ export class BiomodelFormComponent {
   tumorsResource = httpResource<TumorOption[]>(() => `${this.apiUrl}/tumors`, {
     defaultValue: [],
   });
-  trialsResource = httpResource<TrialOption[]>(() => `${this.apiUrl}/trials`, {
+  passagesResource = httpResource<PassageOption[]>(() => `${this.apiUrl}/passages`, {
     defaultValue: [],
   });
   biomodelsResource = httpResource<Pick<Biomodel, 'id'>[]>(() => `${this.apiUrl}/biomodels`, {
@@ -189,22 +189,24 @@ export class BiomodelFormComponent {
       this.data.biomodel?.tumor_biobank_code ?? '',
       { validators: [Validators.required] },
     ),
-    parent_trial_id: this.formBuilder.control<Biomodel['parent_trial_id']>(
-      this.data.biomodel?.parent_trial_id ?? null,
+    parent_passage_id: this.formBuilder.control<Biomodel['parent_passage_id']>(
+      this.data.biomodel?.parent_passage_id ?? null,
     ),
   });
-  readonly parentTrialSearch = this.formBuilder.nonNullable.control(
-    this.data.biomodel?.parent_trial_id ?? '',
+  readonly parentPassageSearch = this.formBuilder.nonNullable.control(
+    this.data.biomodel?.parent_passage_id ?? '',
   );
 
-  filteredParentTrials(): TrialOption[] {
-    const query = this.parentTrialSearch.value.trim().toLowerCase();
-    return this.trialsResource.value().filter((trial) => trial.id.toLowerCase().includes(query));
+  filteredParentPassages(): PassageOption[] {
+    const query = this.parentPassageSearch.value.trim().toLowerCase();
+    return this.passagesResource
+      .value()
+      .filter((passage) => passage.id.toLowerCase().includes(query));
   }
 
-  selectParentTrial(trialId: string | null): void {
-    this.form.controls.parent_trial_id.setValue(trialId);
-    this.parentTrialSearch.setValue(trialId ?? '');
+  selectParentPassage(passageId: string | null): void {
+    this.form.controls.parent_passage_id.setValue(passageId);
+    this.parentPassageSearch.setValue(passageId ?? '');
   }
 
   duplicateBiomodelId(): boolean {

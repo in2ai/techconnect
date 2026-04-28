@@ -26,7 +26,7 @@ describe('DashboardPage', () => {
   it('creates a card for every registered endpoint', () => {
     const fixture = TestBed.createComponent(DashboardPage);
     const endpoints = fixture.componentInstance.cards.map((c) => c.endpoint);
-    expect(endpoints).toEqual(['patients', 'tumors', 'samples', 'biomodels', 'passages', 'trials']);
+    expect(endpoints).toEqual(['patients', 'tumors', 'samples', 'biomodels', 'passages']);
   });
 
   it('throws when requesting an unknown resource', () => {

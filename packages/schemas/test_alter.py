@@ -4,12 +4,12 @@ import uuid
 
 class BiomodelTest(SQLModel, table=True):
     id: uuid.UUID = Field(primary_key=True)
-    parent_trial_id: uuid.UUID | None = Field(
+    parent_passage_id: uuid.UUID | None = Field(
         default=None,
-        sa_column_args=[ForeignKey("trialtest.id", use_alter=True, name="fk_biomodel_trial")]
+        sa_column_args=[ForeignKey("passagetest.id", use_alter=True, name="fk_biomodel_passage")]
     )
 
-class TrialTest(SQLModel, table=True):
+class PassageTest(SQLModel, table=True):
     id: uuid.UUID = Field(primary_key=True)
     biomodel_id: uuid.UUID = Field(foreign_key="biomodeltest.id")
 

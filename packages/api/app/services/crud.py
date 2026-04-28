@@ -39,13 +39,15 @@ def _check_constraints(session: Session, model: type[ModelType], payload_data: d
             if (session.scalar(stmt) or 0) >= 3:
                 raise HTTPException(status_code=400, detail="A tumor can generate max 3 biomodels")
 
-        trial_id = payload_data.get("parent_trial_id")
-        if trial_id:
-            stmt = select(func.count()).select_from(model).where(getattr(model, "parent_trial_id") == trial_id)
+        parent_passage_id = payload_data.get("parent_passage_id")
+        if parent_passage_id:
+            stmt = select(func.count()).select_from(model).where(
+                getattr(model, "parent_passage_id") == parent_passage_id
+            )
             if item_id:
                 stmt = stmt.where(getattr(model, "id") != item_id)
             if (session.scalar(stmt) or 0) >= 2:
-                raise HTTPException(status_code=400, detail="A trial generates max 2 biomodel")
+                raise HTTPException(status_code=400, detail="A passage generates max 2 biomodels")
 
     elif model.__name__ == "Implant":
         mouse_id = payload_data.get("mouse_id")
@@ -74,22 +76,49 @@ def _next_sample_id(session: Session, model: type[ModelType], tumor_biobank_code
     return f"{prefix}{next_number}"
 
 
+def _next_passage_id(session: Session, model: type[ModelType], biomodel_id: str) -> tuple[str, int]:
+    """Generate passage IDs like {biomodel_id}-P{x}."""
+    prefix = f"{biomodel_id}-P"
+    statement = select(getattr(model, "id")).where(getattr(model, "biomodel_id") == biomodel_id)
+    existing_ids = session.exec(statement).all()
+    next_number = 1
+
+    for existing_id in existing_ids:
+        match = re.fullmatch(rf"{re.escape(prefix)}(\d+)", str(existing_id))
+        if match:
+            next_number = max(next_number, int(match.group(1)) + 1)
+
+    return f"{prefix}{next_number}", next_number
+
+
 def _prepare_create_payload(
     session: Session,
     model: type[ModelType],
     payload_data: dict[str, Any],
 ) -> dict[str, Any]:
-    if model.__name__ != "Sample" or payload_data.get("id"):
-        return payload_data
+    if model.__name__ == "Sample" and not payload_data.get("id"):
+        tumor_biobank_code = payload_data.get("tumor_biobank_code")
+        if not tumor_biobank_code:
+            raise HTTPException(status_code=400, detail="Sample tumor_biobank_code is required")
 
-    tumor_biobank_code = payload_data.get("tumor_biobank_code")
-    if not tumor_biobank_code:
-        raise HTTPException(status_code=400, detail="Sample tumor_biobank_code is required")
+        return {
+            **payload_data,
+            "id": _next_sample_id(session, model, str(tumor_biobank_code)),
+        }
 
-    return {
-        **payload_data,
-        "id": _next_sample_id(session, model, str(tumor_biobank_code)),
-    }
+    if model.__name__ == "Passage" and not payload_data.get("id"):
+        biomodel_id = payload_data.get("biomodel_id")
+        if not biomodel_id:
+            raise HTTPException(status_code=400, detail="Passage biomodel_id is required")
+
+        passage_id, passage_number = _next_passage_id(session, model, str(biomodel_id))
+        return {
+            **payload_data,
+            "id": passage_id,
+            "number": payload_data.get("number") or passage_number,
+        }
+
+    return payload_data
 
 
 

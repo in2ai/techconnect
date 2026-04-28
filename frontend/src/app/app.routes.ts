@@ -6,8 +6,7 @@ export const routes: Routes = [
   {
     path: 'login',
     canActivate: [anonymousOnlyGuard],
-    loadComponent: () =>
-      import('./features/auth/pages/login/login.page').then((m) => m.LoginPage),
+    loadComponent: () => import('./features/auth/pages/login/login.page').then((m) => m.LoginPage),
   },
   {
     path: '',
@@ -28,12 +27,16 @@ export const routes: Routes = [
       {
         path: 'patients',
         loadComponent: () =>
-          import('./features/patients/pages/patient-list/patient-list.page').then((m) => m.PatientListPage),
+          import('./features/patients/pages/patient-list/patient-list.page').then(
+            (m) => m.PatientListPage,
+          ),
       },
       {
         path: 'patients/:nhc',
         loadComponent: () =>
-          import('./features/patients/pages/patient-detail/patient-detail.page').then((m) => m.PatientDetailPage),
+          import('./features/patients/pages/patient-detail/patient-detail.page').then(
+            (m) => m.PatientDetailPage,
+          ),
       },
       {
         path: 'tumors',
@@ -43,47 +46,51 @@ export const routes: Routes = [
       {
         path: 'tumors/:biobank_code',
         loadComponent: () =>
-          import('./features/tumors/pages/tumor-detail/tumor-detail.page').then((m) => m.TumorDetailPage),
+          import('./features/tumors/pages/tumor-detail/tumor-detail.page').then(
+            (m) => m.TumorDetailPage,
+          ),
       },
       {
         path: 'biomodels',
         loadComponent: () =>
-          import('./features/biomodels/pages/biomodel-list/biomodel-list.page').then((m) => m.BiomodelListPage),
+          import('./features/biomodels/pages/biomodel-list/biomodel-list.page').then(
+            (m) => m.BiomodelListPage,
+          ),
       },
       {
         path: 'biomodels/:id',
         loadComponent: () =>
-          import('./features/biomodels/pages/biomodel-detail/biomodel-detail.page').then((m) => m.BiomodelDetailPage),
+          import('./features/biomodels/pages/biomodel-detail/biomodel-detail.page').then(
+            (m) => m.BiomodelDetailPage,
+          ),
       },
       {
         path: 'passages',
         loadComponent: () =>
-          import('./features/passages/pages/passage-list/passage-list.page').then((m) => m.PassageListPage),
+          import('./features/passages/pages/passage-list/passage-list.page').then(
+            (m) => m.PassageListPage,
+          ),
       },
       {
         path: 'passages/:id',
         loadComponent: () =>
-          import('./features/passages/pages/passage-detail/passage-detail.page').then((m) => m.PassageDetailPage),
-      },
-      {
-        path: 'trials',
-        loadComponent: () =>
-          import('./features/trials/pages/trial-list/trial-list.page').then((m) => m.TrialListPage),
-      },
-      {
-        path: 'trials/:id',
-        loadComponent: () =>
-          import('./features/trials/pages/trial-detail/trial-detail.page').then((m) => m.TrialDetailPage),
+          import('./features/passages/pages/passage-detail/passage-detail.page').then(
+            (m) => m.PassageDetailPage,
+          ),
       },
       {
         path: 'samples',
         loadComponent: () =>
-          import('./features/samples/pages/sample-list/sample-list.page').then((m) => m.SampleListPage),
+          import('./features/samples/pages/sample-list/sample-list.page').then(
+            (m) => m.SampleListPage,
+          ),
       },
       {
         path: 'samples/:id',
         loadComponent: () =>
-          import('./features/samples/pages/sample-detail/sample-detail.page').then((m) => m.SampleDetailPage),
+          import('./features/samples/pages/sample-detail/sample-detail.page').then(
+            (m) => m.SampleDetailPage,
+          ),
       },
     ],
   },
