@@ -77,7 +77,6 @@ export class PassageListPage {
   columns: ColumnDef[] = [
     { key: 'id', label: $localize`ID`, sortable: true },
     { key: 'type', label: $localize`Type`, sortable: true },
-    { key: 'number', label: $localize`Number`, sortable: true, type: 'number' },
     { key: 'status', label: $localize`Status`, sortable: true },
     {
       key: 'success',

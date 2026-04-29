@@ -98,7 +98,6 @@ CREATE TABLE tumor_molecular_data (
 
 CREATE TABLE passage (
 	id VARCHAR(150) NOT NULL, 
-	number INTEGER, 
 	description VARCHAR, 
 	success BOOLEAN, 
 	status BOOLEAN, 

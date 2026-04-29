@@ -1061,7 +1061,6 @@
       <trans-unit id="passageTitleLbl"><source>Passage</source><target>Pase</target></trans-unit>
       <trans-unit id="failedToLoadPassage"><source>Failed to load passage</source><target>Error al cargar pase</target></trans-unit>
       <trans-unit id="passageIdLbl"><source>ID</source><target>ID</target></trans-unit>
-      <trans-unit id="passageNumberLbl"><source>Number</source><target>Número</target></trans-unit>
       <trans-unit id="passageDescLbl"><source>Description</source><target>Descripción</target></trans-unit>
       <trans-unit id="passageBiomodelLbl"><source>Biomodel</source><target>Biomodelo</target></trans-unit>
       <trans-unit id="noPassagesYet"><source>No passages yet</source><target>Aún no hay pases</target></trans-unit>

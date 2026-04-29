@@ -22,8 +22,7 @@ class Passage(SQLModel, table=True):
     Passage entity representing a passage (generation) of a biomodel and its experiment data.
     
     Attributes:
-        id: Unique identifier generated from biomodel id and passage number
-        number: Passage number
+        id: Unique identifier generated from biomodel id and next passage suffix
         description: General description
         success: Whether the passage experiment was successful
         status: Status of the passage experiment
@@ -40,7 +39,6 @@ class Passage(SQLModel, table=True):
     id: str = Field(default="", primary_key=True, max_length=150)
     
     # Fields
-    number: Optional[int] = Field(default=None)
     description: Optional[str] = Field(default=None)  # text field
     success: Optional[bool] = Field(default=None)
     status: Optional[bool] = Field(default=None)

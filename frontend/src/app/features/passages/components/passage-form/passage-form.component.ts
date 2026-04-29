@@ -8,8 +8,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { API_URL } from '@core/tokens/api-url.token';
 import { Biomodel, Passage } from '@generated/models';
-import { NumericInputDirective } from '@shared/directives/numeric-input.directive';
-import { numberFormatValidator } from '@shared/forms/numeric-input';
 
 export interface PassageFormData {
   mode: 'create' | 'edit';
@@ -26,7 +24,6 @@ export interface PassageFormData {
     MatFormFieldModule,
     MatSelectModule,
     ReactiveFormsModule,
-    NumericInputDirective,
   ],
   template: `
     <h2 mat-dialog-title>
@@ -55,18 +52,6 @@ export interface PassageFormData {
           </mat-form-field>
         }
 
-        <mat-form-field appearance="outline">
-          <mat-label i18n="@@passageNumberLbl">Number</mat-label>
-          <input
-            matInput
-            type="text"
-            inputmode="numeric"
-            formControlName="number"
-            appNumericInput
-            [integerOnly]="true"
-            autocomplete="off"
-          />
-        </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label i18n="@@trialSuccessLbl">Success</mat-label>
           <mat-select formControlName="success">
@@ -148,9 +133,6 @@ export class PassageFormComponent {
 
   readonly form = this.formBuilder.group({
     id: this.formBuilder.nonNullable.control(this.data.passage?.id ?? ''),
-    number: this.formBuilder.control<number | string | null>(this.data.passage?.number ?? null, {
-      validators: [numberFormatValidator(true)],
-    }),
     description: this.formBuilder.control<Passage['description']>(
       this.data.passage?.description ?? null,
     ),
@@ -175,16 +157,10 @@ export class PassageFormComponent {
 
   buildDialogResult(): Partial<Passage> {
     const value = this.form.getRawValue();
-    const number =
-      value.number === '' || value.number == null ? null : Math.trunc(Number(value.number));
-    const withNumeric = {
-      ...value,
-      number: Number.isFinite(number) ? number : null,
-    };
     if (this.data.mode === 'create') {
-      const { id: _, ...createPayload } = withNumeric;
+      const { id: _, ...createPayload } = value;
       return createPayload;
     }
-    return withNumeric;
+    return value;
   }
 }

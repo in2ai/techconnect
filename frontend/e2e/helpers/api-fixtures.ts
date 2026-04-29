@@ -48,7 +48,6 @@ interface BiomodelPayload {
 
 interface PassagePayload {
   id: string;
-  number: number | null;
   description: string | null;
   success: boolean | null;
   status: boolean | null;
@@ -169,10 +168,8 @@ export async function createBiomodel(
 export async function createPassage(
   request: APIRequestContext,
   biomodelId: string,
-  number: number,
 ): Promise<PassagePayload> {
   return postJson<PassagePayload>(request, '/passages', {
-    number,
     description: 'fixture',
     success: true,
     status: true,

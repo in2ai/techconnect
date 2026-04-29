@@ -66,7 +66,6 @@ export interface Biomodel {
 
 export interface Passage {
   id: string;
-  number: number | null;
   description: string | null;
   success: boolean | null;
   status: boolean | null;

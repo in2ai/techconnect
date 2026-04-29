@@ -124,7 +124,6 @@ with Session(engine) as session:
     # direct SQLModel usage can set the deterministic value explicitly.
     passage = Passage(
         id="BM-2024-001-P1",
-        number=1,
         success=True,
         biomodel_id=biomodel.id
     )

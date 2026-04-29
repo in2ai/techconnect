@@ -76,7 +76,7 @@ def _next_sample_id(session: Session, model: type[ModelType], tumor_biobank_code
     return f"{prefix}{next_number}"
 
 
-def _next_passage_id(session: Session, model: type[ModelType], biomodel_id: str) -> tuple[str, int]:
+def _next_passage_id(session: Session, model: type[ModelType], biomodel_id: str) -> str:
     """Generate passage IDs like {biomodel_id}-P{x}."""
     prefix = f"{biomodel_id}-P"
     statement = select(getattr(model, "id")).where(getattr(model, "biomodel_id") == biomodel_id)
@@ -88,7 +88,7 @@ def _next_passage_id(session: Session, model: type[ModelType], biomodel_id: str)
         if match:
             next_number = max(next_number, int(match.group(1)) + 1)
 
-    return f"{prefix}{next_number}", next_number
+    return f"{prefix}{next_number}"
 
 
 def _prepare_create_payload(
@@ -111,11 +111,9 @@ def _prepare_create_payload(
         if not biomodel_id:
             raise HTTPException(status_code=400, detail="Passage biomodel_id is required")
 
-        passage_id, passage_number = _next_passage_id(session, model, str(biomodel_id))
         return {
             **payload_data,
-            "id": passage_id,
-            "number": payload_data.get("number") or passage_number,
+            "id": _next_passage_id(session, model, str(biomodel_id)),
         }
 
     return payload_data

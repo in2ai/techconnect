@@ -72,7 +72,6 @@ erDiagram
 
     PASSAGE {
         string id PK
-        integer number
         string description
         boolean success
         boolean status

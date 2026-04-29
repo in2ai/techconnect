@@ -34,12 +34,12 @@ describe('PassageFormComponent', () => {
     httpMock.verify();
   });
 
-  it('omits id from create payload and truncates number to integer', async () => {
+  it('omits id from create payload', async () => {
     const { component, httpMock } = await setup({ mode: 'create' });
-    component.form.patchValue({ biomodel_id: 'BM-1', number: '3' });
+    component.form.patchValue({ biomodel_id: 'BM-1' });
     const payload = component.buildDialogResult();
     expect('id' in payload).toBe(false);
-    expect(payload.number).toBe(3);
+    expect('number' in payload).toBe(false);
     httpMock.verify();
   });
 
@@ -48,7 +48,6 @@ describe('PassageFormComponent', () => {
       mode: 'create',
       passage: {
         id: '',
-        number: null,
         description: null,
         biomodel_id: 'BM-7',
         success: null,
@@ -69,7 +68,6 @@ describe('PassageFormComponent', () => {
       mode: 'edit',
       passage: {
         id: 'PS-1',
-        number: 4,
         description: 'existing',
         biomodel_id: 'BM-1',
         success: null,
@@ -82,7 +80,7 @@ describe('PassageFormComponent', () => {
     });
     const payload = component.buildDialogResult();
     expect(payload.id).toBe('PS-1');
-    expect(payload.number).toBe(4);
+    expect('number' in payload).toBe(false);
     httpMock.verify();
   });
 
@@ -106,13 +104,6 @@ describe('PassageFormComponent', () => {
 
     httpMock.expectOne('/api/biomodels').flush([]);
     fixture.detectChanges();
-    httpMock.verify();
-  });
-
-  it('coerces empty number input to null in the payload', async () => {
-    const { component, httpMock } = await setup({ mode: 'create' });
-    component.form.patchValue({ biomodel_id: 'BM-1', number: '' });
-    expect(component.buildDialogResult().number).toBeNull();
     httpMock.verify();
   });
 });

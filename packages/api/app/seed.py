@@ -204,7 +204,6 @@ def seed_database() -> SeedStats:
             passage_pdx_id,
             {
                 "id": passage_pdx_id,
-                "number": 1,
                 "success": True,
                 "status": True,
                 "preclinical_trials": "Pilot oncology panel",
@@ -222,7 +221,6 @@ def seed_database() -> SeedStats:
             passage_pdo_id,
             {
                 "id": passage_pdo_id,
-                "number": 1,
                 "success": True,
                 "description": "PDO drug screen",
                 "creation_date": date(2024, 3, 12),
@@ -238,7 +236,6 @@ def seed_database() -> SeedStats:
             passage_lc_id,
             {
                 "id": passage_lc_id,
-                "number": 1,
                 "success": False,
                 "description": "LC confluence optimization",
                 "creation_date": date(2024, 3, 20),

@@ -97,10 +97,6 @@ import { PassageService } from '../../services/passage.service';
               ><span class="detail-value">{{ currentBiomodel()?.type || '—' }}</span>
             </div>
             <div class="detail-item">
-              <span class="detail-label" i18n="@@passageNumberLbl">Number</span
-              ><span class="detail-value">{{ passageResource.value()!.number ?? '—' }}</span>
-            </div>
-            <div class="detail-item">
               <span class="detail-label" i18n="@@trialSuccessLbl">Success</span
               ><span class="detail-value">
                 @if (passageResource.value()!.success === true) {

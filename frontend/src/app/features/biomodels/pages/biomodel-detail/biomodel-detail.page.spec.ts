@@ -125,7 +125,7 @@ describe('BiomodelDetailPage', () => {
 
   it('creates a passage seeded with the biomodel id', async () => {
     const { fixture, passageService, notification } = await setup({
-      dialogResult: { number: 1 },
+      dialogResult: { description: 'new passage' },
     });
     fixture.componentInstance.openCreatePassageDialog();
     expect(passageService.create).toHaveBeenCalled();
@@ -134,7 +134,7 @@ describe('BiomodelDetailPage', () => {
 
   it('notifies an error when passage creation fails', async () => {
     const { fixture, notification } = await setup({
-      dialogResult: { number: 1 },
+      dialogResult: { description: 'new passage' },
       createPassageResult: 'error',
     });
     fixture.componentInstance.openCreatePassageDialog();

@@ -68,7 +68,6 @@ async function setup(opts: SetupOptions = {}) {
 
   httpMock.expectOne(`/api/passages/${id}`).flush({
     id,
-    number: 1,
     biomodel_id: 'BM-1',
     success: true,
   } as Passage);

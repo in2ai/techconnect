@@ -42,7 +42,6 @@ test('passages CRUD flow', async ({ page, request }) => {
     await page.getByRole('button', { name: 'Add Passage' }).click();
     const createDialog = page.locator('mat-dialog-container');
     await selectMatOption(page, 'Biomodel', biomodel.id);
-    await createDialog.getByLabel('Number').fill('3');
     await createDialog.getByLabel('Description').fill(description);
     await createDialog.getByRole('button', { name: 'Create' }).click();
 
@@ -53,7 +52,7 @@ test('passages CRUD flow', async ({ page, request }) => {
     await expect(page.locator('.detail-item', { hasText: 'Description' })).toContainText(
       description,
     );
-    await expect(page.locator('.detail-item', { hasText: 'Number' })).toContainText('3');
+    expect(createdPassageId).toBe(`${biomodel.id}-P1`);
 
     const deleteRequestPromise = page.waitForResponse(
       (res) =>

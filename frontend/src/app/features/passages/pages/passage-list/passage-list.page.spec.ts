@@ -70,7 +70,7 @@ describe('PassageListPage', () => {
 
   it('renders the data table when passages are returned', async () => {
     const { fixture } = await setup({
-      passages: [{ id: 'P-1', number: 1, biomodel_id: 'B-1' } as Passage],
+      passages: [{ id: 'P-1', biomodel_id: 'B-1' } as Passage],
     });
     expect(fixture.nativeElement.textContent).toContain('P-1');
   });
