@@ -554,7 +554,7 @@ export class PassageDetailPage {
   usageColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID` },
     { key: 'record_type', label: $localize`Type` },
-    { key: 'description', label: $localize`Description` },
+    { key: 'description', label: $localize`:@@usageRecordDescriptionField:Preclinical project/trial title` },
     { key: 'record_date', label: $localize`Date`, type: 'date' },
   ];
   imageColumns: ColumnDef[] = [
@@ -708,7 +708,11 @@ export class PassageDetailPage {
           label: $localize`:@@usageRecordTypeField:Type`,
           type: 'text',
         },
-        { name: 'description', label: $localize`Description`, type: 'text' },
+        {
+          name: 'description',
+          label: $localize`:@@usageRecordDescriptionField:Preclinical project/trial title`,
+          type: 'text',
+        },
         { name: 'record_date', label: $localize`Date`, type: 'date' },
       ],
       this.usageResource,

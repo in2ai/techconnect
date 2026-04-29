@@ -1128,6 +1128,7 @@
       <trans-unit id="measureFormDialogTitle" datatype="html"><source>Measure</source><target>Medida</target></trans-unit>
       <trans-unit id="usageRecordFormDialogTitle" datatype="html"><source>Usage Record</source><target>Registro de uso</target></trans-unit>
       <trans-unit id="usageRecordTypeField" datatype="html"><source>Type</source><target>Tipo</target></trans-unit>
+      <trans-unit id="usageRecordDescriptionField" datatype="html"><source>Preclinical project/trial title</source><target>Título del proyecto/ensayo preclínico</target></trans-unit>
       <trans-unit id="imageFormDialogTitle" datatype="html"><source>Image</source><target>Imagen</target></trans-unit>
       <trans-unit id="trialImageMagnification" datatype="html"><source>Magnification</source><target>Magnificación</target></trans-unit>
       <trans-unit id="cryoVialCountField" datatype="html"><source>Vial Count</source><target>Número de viales</target></trans-unit>

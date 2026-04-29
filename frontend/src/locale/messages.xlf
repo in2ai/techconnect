@@ -1696,6 +1696,13 @@
           <context context-type="linenumber">698</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="usageRecordDescriptionField" datatype="html">
+        <source>Preclinical project/trial title</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">711</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="imageFormDialogTitle" datatype="html">
         <source>Image</source>
         <context-group purpose="location">
