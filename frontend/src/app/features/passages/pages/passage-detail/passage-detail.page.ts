@@ -558,7 +558,7 @@ export class PassageDetailPage {
     { key: 'record_date', label: $localize`Date`, type: 'date' },
   ];
   imageColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID` },
+    { key: 'scanner_magnification', label: $localize`:@@trialImageEnlargement:Enlargement`, suffix: 'x' },
     { key: 'type', label: $localize`Type` },
     { key: 'image_date', label: $localize`Date`, type: 'date' },
     { key: 'ap_review', label: $localize`AP Review` },
@@ -729,9 +729,10 @@ export class PassageDetailPage {
         { name: 'image_date', label: $localize`Date`, type: 'date' },
         {
           name: 'scanner_magnification',
-          label: $localize`:@@trialImageMagnification:Magnification`,
+          label: $localize`:@@trialImageEnlargement:Enlargement`,
           type: 'number',
           integerOnly: true,
+          min: 2,
         },
         { name: 'type', label: $localize`Type`, type: 'text' },
         { name: 'ap_review', label: $localize`AP Review`, type: 'boolean' },

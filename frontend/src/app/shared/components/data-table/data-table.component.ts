@@ -50,6 +50,7 @@ export interface ColumnDef {
   label: string;
   sortable?: boolean;
   type?: 'text' | 'date' | 'boolean' | 'number';
+  suffix?: string;
 }
 
 @Component({
@@ -142,10 +143,10 @@ export interface ColumnDef {
                     {{ row[col.key] !== null && row[col.key] !== undefined ? row[col.key] : '—' }}
                   }
                   @case ('number') {
-                    {{ row[col.key] !== null && row[col.key] !== undefined ? row[col.key] : '—' }}
+                    {{ row[col.key] !== null && row[col.key] !== undefined ? row[col.key] + (col.suffix || '') : '—' }}
                   }
                   @default {
-                    {{ row[col.key] !== null && row[col.key] !== undefined ? row[col.key] : '—' }}
+                    {{ row[col.key] !== null && row[col.key] !== undefined ? row[col.key] + (col.suffix || '') : '—' }}
                   }
                 }
               </td>

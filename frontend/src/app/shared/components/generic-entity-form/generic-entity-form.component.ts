@@ -22,6 +22,8 @@ export interface EntityField {
   integerOnly?: boolean;
   required?: boolean;
   options?: { value: any; label: string }[];
+  min?: number;
+  max?: number;
 }
 
 export interface GenericEntityDialogData {
@@ -195,6 +197,8 @@ export class GenericEntityFormComponent implements OnInit {
       const validators = [...(field.required ? [Validators.required] : [])];
       if (field.type === 'number') {
         validators.push(numberFormatValidator(field.integerOnly ?? false));
+        if (field.min !== undefined) validators.push(Validators.min(field.min));
+        if (field.max !== undefined) validators.push(Validators.max(field.max));
       }
 
       let initValue = null;

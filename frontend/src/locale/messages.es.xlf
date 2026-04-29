@@ -1130,7 +1130,7 @@
       <trans-unit id="usageRecordTypeField" datatype="html"><source>Type</source><target>Tipo</target></trans-unit>
       <trans-unit id="usageRecordDescriptionField" datatype="html"><source>Preclinical project/trial title</source><target>Título del proyecto/ensayo preclínico</target></trans-unit>
       <trans-unit id="imageFormDialogTitle" datatype="html"><source>Image</source><target>Imagen</target></trans-unit>
-      <trans-unit id="trialImageMagnification" datatype="html"><source>Magnification</source><target>Magnificación</target></trans-unit>
+      <trans-unit id="trialImageEnlargement" datatype="html"><source>Enlargement</source><target>Aumento</target></trans-unit>
       <trans-unit id="cryoVialCountField" datatype="html"><source>Vial Count</source><target>Número de viales</target></trans-unit>
       <trans-unit id="genomicSequenceFormTitle" datatype="html"><source>Genomic Sequence</source><target>Secuencia genómica</target></trans-unit>
       <trans-unit id="biomodelFormDialogTitle" datatype="html"><source>Biomodel</source><target>Biomodelo</target></trans-unit>
