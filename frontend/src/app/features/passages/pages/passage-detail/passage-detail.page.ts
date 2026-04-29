@@ -138,98 +138,137 @@ import { PassageService } from '../../services/passage.service';
         </mat-card-content>
       </mat-card>
 
-      @if (currentPdxTrial()) {
+      @if (currentPdxTrial() || currentBiomodel()?.type === 'PDX') {
         <mat-card appearance="outlined" class="section-card">
-          <mat-card-header
-            ><mat-card-title i18n="@@pdxTrialDetailsTitle"
-              >PDX Trial Details</mat-card-title
-            ></mat-card-header
-          >
+          <mat-card-header class="section-header">
+            <mat-card-title i18n="@@pdxTrialDetailsTitle">PDX Trial Details</mat-card-title>
+            @if (auth.isAdmin()) {
+              @if (currentPdxTrial()) {
+                <button mat-icon-button (click)="openPdxTrialForm(currentPdxTrial()!)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              } @else {
+                <button mat-flat-button color="primary" (click)="openPdxTrialForm()">
+                  <mat-icon>add</mat-icon> <ng-container i18n="@@addPdxTrialBtn">Add</ng-container>
+                </button>
+              }
+            }
+          </mat-card-header>
           <mat-card-content>
-            <div class="detail-grid">
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@pdxFfpeLbl">FFPE</span
-                ><span class="detail-value">{{ yesNo(currentPdxTrial()!.ffpe) }}</span>
+            @if (currentPdxTrial()) {
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@pdxFfpeLbl">FFPE</span
+                  ><span class="detail-value">{{ yesNo(currentPdxTrial()!.ffpe) }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@pdxHeSlideLbl">HE Slide</span
+                  ><span class="detail-value">{{ yesNo(currentPdxTrial()!.he_slide) }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@pdxIhqDataLbl">IHQ Data</span
+                  ><span class="detail-value">{{ currentPdxTrial()!.ihq_data || '—' }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@pdxLatencyLbl">Latency (weeks)</span
+                  ><span class="detail-value">{{ currentPdxTrial()!.latency_weeks ?? '—' }}</span>
+                </div>
               </div>
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@pdxHeSlideLbl">HE Slide</span
-                ><span class="detail-value">{{ yesNo(currentPdxTrial()!.he_slide) }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@pdxIhqDataLbl">IHQ Data</span
-                ><span class="detail-value">{{ currentPdxTrial()!.ihq_data || '—' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@pdxLatencyLbl">Latency (weeks)</span
-                ><span class="detail-value">{{ currentPdxTrial()!.latency_weeks ?? '—' }}</span>
-              </div>
-            </div>
+            } @else {
+              <div i18n="@@noDataMsg">No data</div>
+            }
           </mat-card-content>
         </mat-card>
       }
 
-      @if (currentPdoTrial()) {
+      @if (currentPdoTrial() || currentBiomodel()?.type === 'PDO') {
         <mat-card appearance="outlined" class="section-card">
-          <mat-card-header
-            ><mat-card-title i18n="@@pdoTrialDetailsTitle"
-              >PDO Trial Details</mat-card-title
-            ></mat-card-header
-          >
+          <mat-card-header class="section-header">
+            <mat-card-title i18n="@@pdoTrialDetailsTitle">PDO Trial Details</mat-card-title>
+            @if (auth.isAdmin()) {
+              @if (currentPdoTrial()) {
+                <button mat-icon-button (click)="openPdoTrialForm(currentPdoTrial()!)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              } @else {
+                <button mat-flat-button color="primary" (click)="openPdoTrialForm()">
+                  <mat-icon>add</mat-icon> <ng-container i18n="@@addPdoTrialBtn">Add</ng-container>
+                </button>
+              }
+            }
+          </mat-card-header>
           <mat-card-content>
-            <div class="detail-grid">
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@pdoDropCountLbl">Drop Count</span
-                ><span class="detail-value">{{ currentPdoTrial()!.drop_count ?? '—' }}</span>
+            @if (currentPdoTrial()) {
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@pdoDropCountLbl">Drop Count</span
+                  ><span class="detail-value">{{ currentPdoTrial()!.drop_count ?? '—' }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@pdoOrganoidCountLbl">Organoid Count</span
+                  ><span class="detail-value">{{ currentPdoTrial()!.organoid_count ?? '—' }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@pdoFrozenOrganoidsLbl">Frozen Organoids</span
+                  ><span class="detail-value">{{
+                    currentPdoTrial()!.frozen_organoid_count ?? '—'
+                  }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@pdoPlateTypeLbl">Plate Type</span
+                  ><span class="detail-value">{{ currentPdoTrial()!.plate_type || '—' }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@pdoAssessmentLbl">Assessment</span
+                  ><span class="detail-value">{{ currentPdoTrial()!.assessment || '—' }}</span>
+                </div>
               </div>
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@pdoOrganoidCountLbl">Organoid Count</span
-                ><span class="detail-value">{{ currentPdoTrial()!.organoid_count ?? '—' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@pdoFrozenOrganoidsLbl">Frozen Organoids</span
-                ><span class="detail-value">{{
-                  currentPdoTrial()!.frozen_organoid_count ?? '—'
-                }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@pdoPlateTypeLbl">Plate Type</span
-                ><span class="detail-value">{{ currentPdoTrial()!.plate_type || '—' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@pdoAssessmentLbl">Assessment</span
-                ><span class="detail-value">{{ currentPdoTrial()!.assessment || '—' }}</span>
-              </div>
-            </div>
+            } @else {
+              <div i18n="@@noDataMsg">No data</div>
+            }
           </mat-card-content>
         </mat-card>
       }
 
-      @if (currentLcTrial()) {
+      @if (currentLcTrial() || currentBiomodel()?.type === 'LC') {
         <mat-card appearance="outlined" class="section-card">
-          <mat-card-header
-            ><mat-card-title i18n="@@lcTrialDetailsTitle"
-              >LC Trial Details</mat-card-title
-            ></mat-card-header
-          >
+          <mat-card-header class="section-header">
+            <mat-card-title i18n="@@lcTrialDetailsTitle">LC Trial Details</mat-card-title>
+            @if (auth.isAdmin()) {
+              @if (currentLcTrial()) {
+                <button mat-icon-button (click)="openLcTrialForm(currentLcTrial()!)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              } @else {
+                <button mat-flat-button color="primary" (click)="openLcTrialForm()">
+                  <mat-icon>add</mat-icon> <ng-container i18n="@@addLcTrialBtn">Add</ng-container>
+                </button>
+              }
+            }
+          </mat-card-header>
           <mat-card-content>
-            <div class="detail-grid">
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@lcConfluenceLbl">Confluence</span
-                ><span class="detail-value">{{ currentLcTrial()!.confluence ?? '—' }}</span>
+            @if (currentLcTrial()) {
+              <div class="detail-grid">
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@lcConfluenceLbl">Confluence</span
+                  ><span class="detail-value">{{ currentLcTrial()!.confluence ?? '—' }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@lcSpheroidsLbl">Spheroids</span
+                  ><span class="detail-value">{{ yesNo(currentLcTrial()!.spheroids) }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@lcDigestionDateLbl">Digestion Date</span
+                  ><span class="detail-value">{{ currentLcTrial()!.digestion_date || '—' }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@lcPlateTypeLbl">Plate Type</span
+                  ><span class="detail-value">{{ currentLcTrial()!.plate_type || '—' }}</span>
+                </div>
               </div>
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@lcSpheroidsLbl">Spheroids</span
-                ><span class="detail-value">{{ yesNo(currentLcTrial()!.spheroids) }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@lcDigestionDateLbl">Digestion Date</span
-                ><span class="detail-value">{{ currentLcTrial()!.digestion_date || '—' }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label" i18n="@@lcPlateTypeLbl">Plate Type</span
-                ><span class="detail-value">{{ currentLcTrial()!.plate_type || '—' }}</span>
-              </div>
-            </div>
+            } @else {
+              <div i18n="@@noDataMsg">No data</div>
+            }
           </mat-card-content>
         </mat-card>
       }
@@ -533,11 +572,18 @@ export class PassageDetailPage {
   usageColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID` },
     { key: 'record_type', label: $localize`Type` },
-    { key: 'description', label: $localize`:@@usageRecordDescriptionField:Preclinical project/trial title` },
+    {
+      key: 'description',
+      label: $localize`:@@usageRecordDescriptionField:Preclinical project/trial title`,
+    },
     { key: 'record_date', label: $localize`Date`, type: 'date' },
   ];
   imageColumns: ColumnDef[] = [
-    { key: 'scanner_magnification', label: $localize`:@@trialImageEnlargement:Enlargement`, suffix: 'x' },
+    {
+      key: 'scanner_magnification',
+      label: $localize`:@@trialImageEnlargement:Enlargement`,
+      suffix: 'x',
+    },
     { key: 'type', label: $localize`Type` },
     { key: 'image_date', label: $localize`Date`, type: 'date' },
     { key: 'ap_review', label: $localize`AP Review` },
@@ -589,6 +635,78 @@ export class PassageDetailPage {
     dialogRef.afterClosed().subscribe((res) => {
       if (res) resource.reload();
     });
+  }
+
+  openPdxTrialForm(entity: PDXTrial | null = null) {
+    this.openEntityForm(
+      $localize`:@@pdxTrialDetailsTitle:PDX Trial Details`,
+      '/pdx-trials',
+      [
+        { name: 'ffpe', label: $localize`:@@pdxFfpeLbl:FFPE`, type: 'boolean' },
+        { name: 'he_slide', label: $localize`:@@pdxHeSlideLbl:HE Slide`, type: 'boolean' },
+        { name: 'ihq_data', label: $localize`:@@pdxIhqDataLbl:IHQ Data`, type: 'text' },
+        {
+          name: 'latency_weeks',
+          label: $localize`:@@pdxLatencyLbl:Latency (weeks)`,
+          type: 'number',
+        },
+      ],
+      this.pdxTrialsResource,
+      entity,
+      { id: this.id() },
+    );
+  }
+
+  openPdoTrialForm(entity: PDOTrial | null = null) {
+    this.openEntityForm(
+      $localize`:@@pdoTrialDetailsTitle:PDO Trial Details`,
+      '/pdo-trials',
+      [
+        {
+          name: 'drop_count',
+          label: $localize`:@@pdoDropCountLbl:Drop Count`,
+          type: 'number',
+          integerOnly: true,
+        },
+        {
+          name: 'organoid_count',
+          label: $localize`:@@pdoOrganoidCountLbl:Organoid Count`,
+          type: 'number',
+          integerOnly: true,
+        },
+        {
+          name: 'frozen_organoid_count',
+          label: $localize`:@@pdoFrozenOrganoidsLbl:Frozen Organoids`,
+          type: 'number',
+          integerOnly: true,
+        },
+        { name: 'plate_type', label: $localize`:@@pdoPlateTypeLbl:Plate Type`, type: 'text' },
+        { name: 'assessment', label: $localize`:@@pdoAssessmentLbl:Assessment`, type: 'text' },
+      ],
+      this.pdoTrialsResource,
+      entity,
+      { id: this.id() },
+    );
+  }
+
+  openLcTrialForm(entity: LCTrial | null = null) {
+    this.openEntityForm(
+      $localize`:@@lcTrialDetailsTitle:LC Trial Details`,
+      '/lc-trials',
+      [
+        { name: 'confluence', label: $localize`:@@lcConfluenceLbl:Confluence`, type: 'number' },
+        { name: 'spheroids', label: $localize`:@@lcSpheroidsLbl:Spheroids`, type: 'boolean' },
+        {
+          name: 'digestion_date',
+          label: $localize`:@@lcDigestionDateLbl:Digestion Date`,
+          type: 'date',
+        },
+        { name: 'plate_type', label: $localize`:@@lcPlateTypeLbl:Plate Type`, type: 'text' },
+      ],
+      this.lcTrialsResource,
+      entity,
+      { id: this.id() },
+    );
   }
 
   openMouseForm(entity: Mouse | null = null) {
@@ -756,7 +874,6 @@ export class PassageDetailPage {
       { passage_id: this.id() },
     );
   }
-
 
   openEditDialog(): void {
     const passage = this.passageResource.value();

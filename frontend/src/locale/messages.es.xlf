@@ -1187,6 +1187,9 @@
       <trans-unit id="addUsageBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
       <trans-unit id="imagesTitle" datatype="html"><source>Images</source><target>Imágenes</target></trans-unit>
       <trans-unit id="addImageBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="addPdxTrialBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="addPdoTrialBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="addLcTrialBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
       <trans-unit id="cryoTitle" datatype="html"><source>Cryopreservation</source><target>Criopreservación</target></trans-unit>
       <trans-unit id="addCryoBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
       <trans-unit id="biomodelsTabLbl" datatype="html"><source>Biomodels</source><target>Biomodelos</target></trans-unit>
@@ -1305,6 +1308,20 @@
       <trans-unit id="molecularDataInfoLbl" datatype="html"><source>Molecular Data Information</source><target>Información de Datos Moleculares</target></trans-unit>
       <trans-unit id="createGenomicDataTitle" datatype="html"><source>Add Genomic Sequence</source><target>Añadir Secuencia Genómica</target></trans-unit>
       <trans-unit id="createMolecularDataTitle" datatype="html"><source>Add Molecular Data</source><target>Añadir Datos Moleculares</target></trans-unit>
+      <trans-unit id="noDataMsg" datatype="html"><source>No data</source><target>Sin datos</target></trans-unit>
+      <trans-unit id="pdxFfpeLbl" datatype="html"><source>FFPE</source><target>FFPE</target></trans-unit>
+      <trans-unit id="pdxHeSlideLbl" datatype="html"><source>HE Slide</source><target>Slide HE</target></trans-unit>
+      <trans-unit id="pdxIhqDataLbl" datatype="html"><source>IHQ Data</source><target>Datos IHQ</target></trans-unit>
+      <trans-unit id="pdxLatencyLbl" datatype="html"><source>Latency (weeks)</source><target>Latencia (semanas)</target></trans-unit>
+      <trans-unit id="pdoDropCountLbl" datatype="html"><source>Drop Count</source><target>Recuento de gotas</target></trans-unit>
+      <trans-unit id="pdoOrganoidCountLbl" datatype="html"><source>Organoid Count</source><target>Recuento de organoides</target></trans-unit>
+      <trans-unit id="pdoFrozenOrganoidsLbl" datatype="html"><source>Frozen Organoids</source><target>Organoides congelados</target></trans-unit>
+      <trans-unit id="pdoPlateTypeLbl" datatype="html"><source>Plate Type</source><target>Tipo de placa</target></trans-unit>
+      <trans-unit id="pdoAssessmentLbl" datatype="html"><source>Assessment</source><target>Evaluación</target></trans-unit>
+      <trans-unit id="lcConfluenceLbl" datatype="html"><source>Confluence</source><target>Confluencia</target></trans-unit>
+      <trans-unit id="lcSpheroidsLbl" datatype="html"><source>Spheroids</source><target>Esferoides</target></trans-unit>
+      <trans-unit id="lcDigestionDateLbl" datatype="html"><source>Digestion Date</source><target>Fecha de digestión</target></trans-unit>
+      <trans-unit id="lcPlateTypeLbl" datatype="html"><source>Plate Type</source><target>Tipo de placa</target></trans-unit>
     </body>
   </file>
 </xliff>
