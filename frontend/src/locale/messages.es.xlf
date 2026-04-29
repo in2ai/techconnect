@@ -1175,11 +1175,38 @@
       <trans-unit id="sampleHasNonTumorTissueOctLbl" datatype="html"><source>Has Non-Tumor Tissue OCT</source><target>Tiene tejido no tumoral OCT</target></trans-unit>
       <trans-unit id="inVivoDataTabLbl" datatype="html"><source>In Vivo Data</source><target>Datos In Vivo</target></trans-unit>
       <trans-unit id="mouseSectionTitle" datatype="html"><source>Mouse Details</source><target>Detalles del Ratón</target></trans-unit>
-      <trans-unit id="addMouseBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="addMouseBtn" datatype="html"><source>Add Mouse</source><target>Añadir ratón</target></trans-unit>
       <trans-unit id="implantsSectionTitle" datatype="html"><source>Implants</source><target>Implantes</target></trans-unit>
       <trans-unit id="addImplantBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
       <trans-unit id="measuresSectionTitle" datatype="html"><source>Measures</source><target>Medidas</target></trans-unit>
       <trans-unit id="addMeasureBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
+      <trans-unit id="inVivoHierarchyHint" datatype="html"><source>Each passage links mice to implants and tumor measurements. Expand a mouse to see its implants; measures are listed under the implant they belong to.</source><target>Cada pase vincula ratones a implantes y mediciones tumorales. Expanda un ratón para ver sus implantes; las medidas aparecen bajo el implante al que pertenecen.</target></trans-unit>
+      <trans-unit id="inVivoFilterPlaceholder" datatype="html"><source>Filter mice, implants, or measures…</source><target>Filtrar ratones, implantes o medidas…</target></trans-unit>
+      <trans-unit id="inVivoFilterLabel" datatype="html"><source>Filter in vivo records</source><target>Filtrar registros in vivo</target></trans-unit>
+      <trans-unit id="clearFilterAria" datatype="html"><source>Clear filter</source><target>Borrar filtro</target></trans-unit>
+      <trans-unit id="inVivoNoMice" datatype="html"><source>No mice recorded for this passage yet.</source><target>Aún no hay ratones registrados para este pase.</target></trans-unit>
+      <trans-unit id="addFirstMouseBtn" datatype="html"><source>Add the first mouse</source><target>Añadir el primer ratón</target></trans-unit>
+      <trans-unit id="inVivoNoMatches" datatype="html"><source>No mice or related records match your filter.</source><target>Ningún ratón ni registro relacionado coincide con el filtro.</target></trans-unit>
+      <trans-unit id="clearFilterBtn" datatype="html"><source>Clear filter</source><target>Borrar filtro</target></trans-unit>
+      <trans-unit id="mouseOrdinalPrefix" datatype="html"><source>Mouse</source><target>Ratón</target></trans-unit>
+      <trans-unit id="implantCountSingular" datatype="html"><source>implant</source><target>implante</target></trans-unit>
+      <trans-unit id="implantCountPlural" datatype="html"><source>implants</source><target>implantes</target></trans-unit>
+      <trans-unit id="birthShortLbl" datatype="html"><source>b.</source><target>n.</target></trans-unit>
+      <trans-unit id="mouseShortIdLbl" datatype="html"><source>Reference</source><target>Referencia</target></trans-unit>
+      <trans-unit id="deathDateLbl" datatype="html"><source>Death Date</source><target>Fecha de muerte</target></trans-unit>
+      <trans-unit id="deathCauseLbl" datatype="html"><source>Death Cause</source><target>Causa de muerte</target></trans-unit>
+      <trans-unit id="editMouseBtn" datatype="html"><source>Edit mouse</source><target>Editar ratón</target></trans-unit>
+      <trans-unit id="addImplantForMouseBtn" datatype="html"><source>Add implant</source><target>Añadir implante</target></trans-unit>
+      <trans-unit id="noImplantsForMouse" datatype="html"><source>No implants for this mouse yet.</source><target>Aún no hay implantes para este ratón.</target></trans-unit>
+      <trans-unit id="implantOrdinalPrefix" datatype="html"><source>Implant</source><target>Implante</target></trans-unit>
+      <trans-unit id="editImplantBtn" datatype="html"><source>Edit</source><target>Editar</target></trans-unit>
+      <trans-unit id="implantNoLocationType" datatype="html"><source>No location or type</source><target>Sin ubicación ni tipo</target></trans-unit>
+      <trans-unit id="addMeasureForImplantBtn" datatype="html"><source>Measure</source><target>Medida</target></trans-unit>
+      <trans-unit id="noMeasuresForImplant" datatype="html"><source>No measures for this implant yet.</source><target>Aún no hay medidas para este implante.</target></trans-unit>
+      <trans-unit id="measureDateCol" datatype="html"><source>Date</source><target>Fecha</target></trans-unit>
+      <trans-unit id="measureValueCol" datatype="html"><source>Value</source><target>Valor</target></trans-unit>
+      <trans-unit id="measureRefCol" datatype="html"><source>Reference</source><target>Referencia</target></trans-unit>
+      <trans-unit id="measuresAriaLabel" datatype="html"><source>Measures for mouse <x id="mouseOrd" equiv-text="mouseOrdinal"/> and implant <x id="implOrd" equiv-text="implantOrdinal"/></source><target>Medidas del ratón <x id="mouseOrd" equiv-text="mouseOrdinal"/> e implante <x id="implOrd" equiv-text="implantOrdinal"/></target></trans-unit>
       <trans-unit id="facsTabLbl" datatype="html"><source>FACS</source><target>FACS</target></trans-unit>
       <trans-unit id="facsSectionTitle" datatype="html"><source>FACS Data</source><target>Datos de FACS</target></trans-unit>
       <trans-unit id="addFacsBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>

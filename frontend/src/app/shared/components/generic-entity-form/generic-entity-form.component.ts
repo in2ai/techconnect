@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NumericInputDirective } from '@shared/directives/numeric-input.directive';
-import { numberFormatValidator } from '@shared/forms/numeric-input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -13,6 +11,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
+import { NumericInputDirective } from '@shared/directives/numeric-input.directive';
+import { numberFormatValidator } from '@shared/forms/numeric-input';
 
 export interface EntityField {
   name: string;
@@ -21,6 +21,8 @@ export interface EntityField {
   /** For numeric fields: allow only integers (no decimal separator). */
   integerOnly?: boolean;
   required?: boolean;
+  /** When true, control is disabled after init (e.g. preset FK from context). Use with defaultValues. */
+  disabled?: boolean;
   options?: { value: any; label: string }[];
   min?: number;
   max?: number;
@@ -59,7 +61,10 @@ function toApiNumber(value: unknown, integerOnly: boolean): number | null {
   return integerOnly ? Math.trunc(n) : n;
 }
 
-function applyPayloadFieldTransforms(payload: Record<string, unknown>, fields: EntityField[]): void {
+function applyPayloadFieldTransforms(
+  payload: Record<string, unknown>,
+  fields: EntityField[],
+): void {
   for (const field of fields) {
     if (field.type === 'date') {
       payload[field.name] = toApiDateString(payload[field.name]);
@@ -140,7 +145,9 @@ function applyPayloadFieldTransforms(payload: Record<string, unknown>, fields: E
     <mat-dialog-actions align="end">
       @if (auth.isAdmin()) {
         @if (isEdit) {
-          <button mat-button color="warn" (click)="deleteEntity()" i18n="@@deleteBtn">Delete</button>
+          <button mat-button color="warn" (click)="deleteEntity()" i18n="@@deleteBtn">
+            Delete
+          </button>
         }
         <span class="spacer"></span>
         <button mat-button mat-dialog-close i18n="@@cancelBtn">Cancel</button>
@@ -150,7 +157,9 @@ function applyPayloadFieldTransforms(payload: Record<string, unknown>, fields: E
           [disabled]="form.invalid || submitting"
           (click)="save()"
           i18n="@@saveBtn"
-        >Save</button>
+        >
+          Save
+        </button>
       } @else {
         <span class="spacer"></span>
         <button mat-button mat-dialog-close i18n="@@closeAction">Close</button>
@@ -216,6 +225,12 @@ export class GenericEntityFormComponent implements OnInit {
     }
     this.form = this.fb.group(group);
 
+    for (const field of this.data.fields) {
+      if (field.disabled) {
+        this.form.get(field.name)?.disable({ emitEvent: false });
+      }
+    }
+
     if (!this.auth.isAdmin()) {
       this.form.disable();
     }
@@ -225,7 +240,7 @@ export class GenericEntityFormComponent implements OnInit {
     if (this.form.invalid) return;
 
     this.submitting = true;
-    const payload = { ...this.form.value };
+    const payload = { ...this.form.getRawValue() };
 
     // Restore any hidden defaultValues like IDs that aren't form fields
     if (!this.isEdit && this.data.defaultValues) {

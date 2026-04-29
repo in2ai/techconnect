@@ -11,6 +11,20 @@ from sqlmodel import SQLModel, Session, select, func
 ModelType = TypeVar("ModelType", bound=SQLModel)
 
 
+def _as_uuid(value: Any) -> UUID | None:
+    """Normalize FK values from JSON/model_dump (often str) for UUID SQL columns."""
+    if value is None:
+        return None
+    if isinstance(value, UUID):
+        return value
+    if isinstance(value, str):
+        try:
+            return UUID(value)
+        except ValueError:
+            return None
+    return None
+
+
 def _coerce_pk(model: type[ModelType], item_id: str) -> Any:
     """Convert item_id to the expected primary key type (e.g. UUID)."""
     pk_fields = [f for f in model.model_fields.values() if getattr(f, "primary_key", False)]
@@ -50,9 +64,9 @@ def _check_constraints(session: Session, model: type[ModelType], payload_data: d
                 raise HTTPException(status_code=400, detail="A passage generates max 2 biomodels")
 
     elif model.__name__ == "Implant":
-        mouse_id = payload_data.get("mouse_id")
-        if mouse_id:
-            stmt = select(func.count()).select_from(model).where(getattr(model, "mouse_id") == mouse_id)
+        mouse_uuid = _as_uuid(payload_data.get("mouse_id"))
+        if mouse_uuid is not None:
+            stmt = select(func.count()).select_from(model).where(getattr(model, "mouse_id") == mouse_uuid)
             if item_id:
                 stmt = stmt.where(getattr(model, "id") != item_id)
             if (session.scalar(stmt) or 0) >= 2:

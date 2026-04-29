@@ -1,10 +1,15 @@
 import { httpResource } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
@@ -43,6 +48,16 @@ import {
 import { PassageFormComponent } from '../../components/passage-form/passage-form.component';
 import { PassageService } from '../../services/passage.service';
 
+interface ImplantWithMeasures {
+  implant: Implant;
+  measures: Measure[];
+}
+
+interface MouseInVivoNode {
+  mouse: Mouse;
+  implants: ImplantWithMeasures[];
+}
+
 @Component({
   selector: 'app-passage-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,6 +66,11 @@ import { PassageService } from '../../services/passage.service';
     MatTabsModule,
     MatButtonModule,
     MatIconModule,
+    MatDividerModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTooltipModule,
     PageHeaderComponent,
     DataTableComponent,
     LoadingStateComponent,
@@ -277,53 +297,295 @@ import { PassageService } from '../../services/passage.service';
         @if (currentPdxTrial()) {
           <mat-tab i18n-label="@@inVivoDataTabLbl" label="In Vivo Data">
             <div class="tab-content in-vivo-content">
-              <div class="section-container">
-                <div class="section-header">
-                  <h3 i18n="@@mouseSectionTitle">Mouse Details</h3>
-                  @if (auth.isAdmin()) {
-                    <button mat-flat-button color="primary" (click)="openMouseForm()">
-                      <mat-icon>add</mat-icon> <ng-container i18n="@@addMouseBtn">Add</ng-container>
+              <div class="in-vivo-intro">
+                <mat-icon class="in-vivo-intro-icon" aria-hidden="true">account_tree</mat-icon>
+                <p class="in-vivo-intro-text" i18n="@@inVivoHierarchyHint">
+                  Each passage links mice to implants and tumor measurements. Expand a mouse to see
+                  its implants; measures are listed under the implant they belong to.
+                </p>
+              </div>
+
+              <div class="in-vivo-toolbar">
+                <mat-form-field
+                  appearance="outline"
+                  class="in-vivo-search"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+                  <input
+                    id="in-vivo-filter"
+                    matInput
+                    type="search"
+                    i18n-placeholder="@@inVivoFilterPlaceholder"
+                    i18n-aria-label="@@inVivoFilterLabel"
+                    placeholder="Filter mice, implants, or measures…"
+                    [value]="inVivoFilterQuery()"
+                    (input)="inVivoFilterQuery.set($any($event.target).value)"
+                  />
+                  @if (inVivoFilterQuery()) {
+                    <button
+                      matSuffix
+                      mat-icon-button
+                      type="button"
+                      (click)="inVivoFilterQuery.set('')"
+                      i18n-aria-label="@@clearFilterAria"
+                    >
+                      <mat-icon>close</mat-icon>
                     </button>
                   }
-                </div>
-                <app-data-table
-                  [columns]="mouseColumns"
-                  [data]="filteredMice()"
-                  (rowClicked)="openMouseForm($event)"
-                />
+                </mat-form-field>
+                @if (auth.isAdmin()) {
+                  <button mat-flat-button color="primary" type="button" (click)="openMouseForm()">
+                    <mat-icon>add</mat-icon>
+                    <ng-container i18n="@@addMouseBtn">Add Mouse</ng-container>
+                  </button>
+                }
               </div>
-              <div class="section-container">
-                <div class="section-header">
-                  <h3 i18n="@@implantsSectionTitle">Implants</h3>
+
+              @if (inVivoHierarchy().length === 0) {
+                <div class="in-vivo-empty" role="status">
+                  <mat-icon aria-hidden="true">pets</mat-icon>
+                  <p i18n="@@inVivoNoMice">No mice recorded for this passage yet.</p>
                   @if (auth.isAdmin()) {
-                    <button mat-flat-button color="primary" (click)="openImplantForm()">
+                    <button
+                      mat-stroked-button
+                      color="primary"
+                      type="button"
+                      (click)="openMouseForm()"
+                    >
                       <mat-icon>add</mat-icon>
-                      <ng-container i18n="@@addImplantBtn">Add</ng-container>
+                      <ng-container i18n="@@addFirstMouseBtn">Add the first mouse</ng-container>
                     </button>
                   }
                 </div>
-                <app-data-table
-                  [columns]="implantColumns"
-                  [data]="filteredImplants()"
-                  (rowClicked)="openImplantForm($event)"
-                />
-              </div>
-              <div class="section-container">
-                <div class="section-header">
-                  <h3 i18n="@@measuresSectionTitle">Measures</h3>
-                  @if (auth.isAdmin()) {
-                    <button mat-flat-button color="primary" (click)="openMeasureForm()">
-                      <mat-icon>add</mat-icon>
-                      <ng-container i18n="@@addMeasureBtn">Add</ng-container>
-                    </button>
-                  }
+              } @else if (inVivoHierarchyFiltered().length === 0) {
+                <div class="in-vivo-empty" role="status">
+                  <mat-icon aria-hidden="true">search_off</mat-icon>
+                  <p i18n="@@inVivoNoMatches">No mice or related records match your filter.</p>
+                  <button mat-stroked-button type="button" (click)="inVivoFilterQuery.set('')">
+                    <ng-container i18n="@@clearFilterBtn">Clear filter</ng-container>
+                  </button>
                 </div>
-                <app-data-table
-                  [columns]="measureColumns"
-                  [data]="filteredMeasures()"
-                  (rowClicked)="openMeasureForm($event)"
-                />
-              </div>
+              } @else {
+                <mat-accordion class="in-vivo-accordion" multi displayMode="flat">
+                  @for (node of inVivoHierarchyFiltered(); track node.mouse.id; let mi = $index) {
+                    <mat-expansion-panel class="mouse-panel" [expanded]="true">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title>
+                          <span class="mouse-panel-title">
+                            <span i18n="@@mouseOrdinalPrefix">Mouse</span>
+                            {{ mi + 1 }}
+                            @if (node.mouse.strain || node.mouse.sex) {
+                              <span class="mouse-panel-subtitle">
+                                @if (node.mouse.strain) {
+                                  <span>{{ node.mouse.strain }}</span>
+                                }
+                                @if (node.mouse.strain && node.mouse.sex) {
+                                  <span aria-hidden="true"> · </span>
+                                }
+                                @if (node.mouse.sex) {
+                                  <span>{{ node.mouse.sex }}</span>
+                                }
+                              </span>
+                            }
+                          </span>
+                        </mat-panel-title>
+                        <mat-panel-description class="mouse-panel-desc">
+                          {{ node.implants.length }}
+                          @if (node.implants.length === 1) {
+                            <ng-container i18n="@@implantCountSingular">implant</ng-container>
+                          } @else {
+                            <ng-container i18n="@@implantCountPlural">implants</ng-container>
+                          }
+                          @if (node.mouse.birth_date) {
+                            <span class="mouse-birth">
+                              ·
+                              <ng-container i18n="@@birthShortLbl">b.</ng-container>
+                              {{ node.mouse.birth_date }}
+                            </span>
+                          }
+                        </mat-panel-description>
+                      </mat-expansion-panel-header>
+
+                      <div class="mouse-detail-grid">
+                        <div class="mouse-detail-item">
+                          <span class="detail-label" i18n="@@mouseShortIdLbl">Reference</span>
+                          <code
+                            class="id-chip"
+                            [matTooltip]="node.mouse.id"
+                            matTooltipShowDelay="200"
+                            >{{ formatShortId(node.mouse.id) }}</code
+                          >
+                        </div>
+                        <div class="mouse-detail-item">
+                          <span class="detail-label" i18n="@@deathDateLbl">Death Date</span>
+                          <span>{{ node.mouse.death_date || '—' }}</span>
+                        </div>
+                        <div class="mouse-detail-item">
+                          <span class="detail-label" i18n="@@deathCauseLbl">Death Cause</span>
+                          <span>{{ node.mouse.death_cause || '—' }}</span>
+                        </div>
+                        <div class="mouse-detail-item">
+                          <span class="detail-label" i18n="@@mouseFieldAnimalFacility"
+                            >Animal Facility</span
+                          >
+                          <span>{{ node.mouse.animal_facility || '—' }}</span>
+                        </div>
+                      </div>
+
+                      <div class="mouse-actions">
+                        <button mat-button type="button" (click)="openMouseForm(node.mouse)">
+                          <mat-icon>edit</mat-icon>
+                          <ng-container i18n="@@editMouseBtn">Edit mouse</ng-container>
+                        </button>
+                        @if (auth.isAdmin()) {
+                          <button
+                            mat-flat-button
+                            color="primary"
+                            type="button"
+                            (click)="openImplantForm(null, { mouse_id: node.mouse.id })"
+                          >
+                            <mat-icon>add</mat-icon>
+                            <ng-container i18n="@@addImplantForMouseBtn">Add implant</ng-container>
+                          </button>
+                        }
+                      </div>
+
+                      @if (node.implants.length === 0) {
+                        <p class="implant-empty" i18n="@@noImplantsForMouse">
+                          No implants for this mouse yet.
+                        </p>
+                      } @else {
+                        @for (
+                          iw of node.implants;
+                          track iw.implant.id;
+                          let ii = $index;
+                          let lastImplant = $last
+                        ) {
+                          <div class="implant-card">
+                            <div class="implant-card-header">
+                              <div class="implant-card-title-block">
+                                <h4 class="implant-heading">
+                                  <span i18n="@@implantOrdinalPrefix">Implant</span>
+                                  {{ ii + 1 }}
+                                  <code
+                                    class="id-chip"
+                                    [matTooltip]="iw.implant.id"
+                                    matTooltipShowDelay="200"
+                                    >{{ formatShortId(iw.implant.id) }}</code
+                                  >
+                                </h4>
+                                <p class="implant-meta">
+                                  @if (iw.implant.implant_location) {
+                                    <span>{{ iw.implant.implant_location }}</span>
+                                  }
+                                  @if (iw.implant.implant_location && iw.implant.type) {
+                                    <span aria-hidden="true"> · </span>
+                                  }
+                                  @if (iw.implant.type) {
+                                    <span>{{ iw.implant.type }}</span>
+                                  }
+                                  @if (!iw.implant.implant_location && !iw.implant.type) {
+                                    <span class="muted" i18n="@@implantNoLocationType"
+                                      >No location or type</span
+                                    >
+                                  }
+                                </p>
+                              </div>
+                              <div class="implant-card-actions">
+                                <button
+                                  mat-button
+                                  type="button"
+                                  (click)="openImplantForm(iw.implant)"
+                                >
+                                  <mat-icon>edit</mat-icon>
+                                  <ng-container i18n="@@editImplantBtn">Edit</ng-container>
+                                </button>
+                                @if (auth.isAdmin()) {
+                                  <button
+                                    mat-stroked-button
+                                    color="primary"
+                                    type="button"
+                                    (click)="openMeasureForm(null, { implant_id: iw.implant.id })"
+                                  >
+                                    <mat-icon>add</mat-icon>
+                                    <ng-container i18n="@@addMeasureForImplantBtn"
+                                      >Measure</ng-container
+                                    >
+                                  </button>
+                                }
+                              </div>
+                            </div>
+
+                            @if (iw.measures.length === 0) {
+                              <p class="measures-empty" i18n="@@noMeasuresForImplant">
+                                No measures for this implant yet.
+                              </p>
+                            } @else {
+                              <div
+                                class="measures-table-wrap"
+                                role="region"
+                                [attr.aria-label]="measuresRegionLabel(mi + 1, ii + 1)"
+                              >
+                                <table class="measures-table">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col" i18n="@@measureDateCol">Date</th>
+                                      <th scope="col" i18n="@@measureValueCol">Value</th>
+                                      <th
+                                        scope="col"
+                                        class="measures-col-ref"
+                                        i18n="@@measureRefCol"
+                                      >
+                                        Reference
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    @for (mv of iw.measures; track mv.id) {
+                                      <tr
+                                        class="measure-row"
+                                        tabindex="0"
+                                        role="button"
+                                        (click)="openMeasureForm(mv)"
+                                        (keydown.enter)="openMeasureForm(mv)"
+                                        (keydown.space)="
+                                          openMeasureForm(mv); $event.preventDefault()
+                                        "
+                                      >
+                                        <td>{{ mv.measure_date || '—' }}</td>
+                                        <td>
+                                          {{
+                                            mv.measure_value !== null &&
+                                            mv.measure_value !== undefined
+                                              ? mv.measure_value
+                                              : '—'
+                                          }}
+                                        </td>
+                                        <td class="measures-col-ref">
+                                          <code
+                                            class="id-chip id-chip-sm"
+                                            [matTooltip]="mv.id"
+                                            matTooltipShowDelay="200"
+                                            >{{ formatShortId(mv.id) }}</code
+                                          >
+                                        </td>
+                                      </tr>
+                                    }
+                                  </tbody>
+                                </table>
+                              </div>
+                            }
+                            @if (!lastImplant) {
+                              <mat-divider />
+                            }
+                          </div>
+                        }
+                      }
+                    </mat-expansion-panel>
+                  }
+                </mat-accordion>
+              }
             </div>
           </mat-tab>
         }
@@ -448,6 +710,220 @@ import { PassageService } from '../../services/passage.service';
       .tab-content h3 {
         margin: 0;
       }
+
+      .in-vivo-intro {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+        border: 1px solid color-mix(in srgb, var(--mat-sys-primary) 18%, transparent);
+      }
+
+      .in-vivo-intro-icon {
+        flex-shrink: 0;
+        margin-top: 2px;
+        color: var(--mat-sys-primary);
+      }
+
+      .in-vivo-intro-text {
+        margin: 0;
+        font: var(--mat-sys-body-medium);
+        color: var(--mat-sys-on-surface-variant);
+      }
+
+      .in-vivo-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .in-vivo-search {
+        flex: 1 1 280px;
+        min-width: 220px;
+      }
+
+      .in-vivo-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 32px 16px;
+        text-align: center;
+        color: var(--mat-sys-on-surface-variant);
+      }
+
+      .in-vivo-empty mat-icon {
+        font-size: 40px;
+        width: 40px;
+        height: 40px;
+        opacity: 0.55;
+      }
+
+      .in-vivo-accordion {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .mouse-panel {
+        border-radius: 12px !important;
+        border: 1px solid var(--mat-sys-outline-variant);
+      }
+
+      .mouse-panel-title {
+        font: var(--mat-sys-title-medium);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 6px;
+      }
+
+      .mouse-panel-subtitle {
+        font: var(--mat-sys-body-medium);
+        color: var(--mat-sys-on-surface-variant);
+        font-weight: 400;
+      }
+
+      .mouse-panel-desc {
+        justify-content: flex-end;
+        color: var(--mat-sys-on-surface-variant);
+      }
+
+      .mouse-birth {
+        white-space: nowrap;
+      }
+
+      .mouse-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 12px 20px;
+        margin-bottom: 8px;
+      }
+
+      .mouse-detail-item .detail-label {
+        display: block;
+        font: var(--mat-sys-label-medium);
+        color: var(--mat-sys-on-surface-variant);
+        margin-bottom: 4px;
+      }
+
+      .mouse-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .id-chip {
+        font-size: 12px;
+        padding: 2px 8px;
+        border-radius: 6px;
+        background: var(--mat-sys-surface-container-high);
+        border: 1px solid var(--mat-sys-outline-variant);
+        cursor: help;
+      }
+
+      .id-chip-sm {
+        font-size: 11px;
+      }
+
+      .implant-card {
+        margin-left: 8px;
+        padding-left: 16px;
+        border-left: 3px solid var(--mat-sys-primary);
+      }
+
+      .implant-card-header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+
+      .implant-heading {
+        margin: 0 0 4px;
+        font: var(--mat-sys-title-small);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .implant-meta {
+        margin: 0;
+        font: var(--mat-sys-body-medium);
+        color: var(--mat-sys-on-surface-variant);
+      }
+
+      .implant-meta .muted {
+        font-style: italic;
+      }
+
+      .implant-card-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: flex-end;
+      }
+
+      .implant-empty,
+      .measures-empty {
+        margin: 8px 0 12px 8px;
+        padding-left: 16px;
+        border-left: 3px solid var(--mat-sys-outline-variant);
+        font: var(--mat-sys-body-medium);
+        color: var(--mat-sys-outline);
+      }
+
+      .measures-table-wrap {
+        overflow-x: auto;
+        margin: 8px 0 12px;
+        border-radius: 8px;
+        border: 1px solid var(--mat-sys-outline-variant);
+      }
+
+      .measures-table {
+        width: 100%;
+        border-collapse: collapse;
+        font: var(--mat-sys-body-medium);
+      }
+
+      .measures-table th {
+        text-align: left;
+        padding: 10px 12px;
+        font: var(--mat-sys-label-medium);
+        color: var(--mat-sys-on-surface-variant);
+        background: var(--mat-sys-surface-container-low);
+      }
+
+      .measures-table td {
+        padding: 10px 12px;
+        border-top: 1px solid var(--mat-sys-outline-variant);
+      }
+
+      .measures-col-ref {
+        width: 1%;
+        white-space: nowrap;
+      }
+
+      .measure-row {
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+      }
+
+      .measure-row:hover {
+        background-color: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+      }
+
+      .measure-row:focus-visible {
+        outline: 2px solid var(--mat-sys-primary);
+        outline-offset: -2px;
+      }
     `,
   ],
 })
@@ -520,15 +996,7 @@ export class PassageDetailPage {
   );
   filteredImplants = computed(() => {
     const miceIds = new Set(this.filteredMice().map((m) => m.id));
-    return (
-      this.implantsResource
-        .value()
-        ?.filter((i) => miceIds.has(i.mouse_id))
-        .map((i) => ({
-          ...i,
-          pdx_trial_id: this.id(),
-        })) ?? []
-    );
+    return this.implantsResource.value()?.filter((i) => miceIds.has(i.mouse_id)) ?? [];
   });
   filteredUsage = computed(
     () => this.usageResource.value()?.filter((u) => u.passage_id === this.id()) ?? [],
@@ -553,22 +1021,66 @@ export class PassageDetailPage {
     () => this.molecularResource.value()?.filter((m) => m.passage_id === this.id()) ?? [],
   );
 
-  implantColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID` },
-    { key: 'pdx_trial_id', label: $localize`Passage ID` },
-    { key: 'mouse_id', label: $localize`Mouse ID` },
-    { key: 'implant_location', label: $localize`Location` },
-    { key: 'type', label: $localize`Type` },
-  ];
-  mouseColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID` },
-    { key: 'pdx_trial_id', label: $localize`Passage ID` },
-    { key: 'strain', label: $localize`Strain` },
-    { key: 'sex', label: $localize`:@@sexLbl:Sex` },
-    { key: 'birth_date', label: $localize`:@@birthDateLbl:Birth Date`, type: 'date' },
-    { key: 'death_date', label: $localize`Death Date`, type: 'date' },
-    { key: 'death_cause', label: $localize`Death Cause` },
-  ];
+  /** Single filter box for the nested In Vivo view (persists while on this tab). */
+  inVivoFilterQuery = signal('');
+
+  inVivoHierarchy = computed<MouseInVivoNode[]>(() => {
+    const mice = [...this.filteredMice()].sort((a, b) => {
+      const da = a.birth_date ?? '';
+      const db = b.birth_date ?? '';
+      if (da !== db) return da.localeCompare(db);
+      return a.id.localeCompare(b.id);
+    });
+    const implantsByMouse = new Map<string, Implant[]>();
+    for (const imp of this.filteredImplants()) {
+      const list = implantsByMouse.get(imp.mouse_id) ?? [];
+      list.push(imp);
+      implantsByMouse.set(imp.mouse_id, list);
+    }
+    for (const list of implantsByMouse.values()) {
+      list.sort((a, b) => a.id.localeCompare(b.id));
+    }
+    const measuresByImplant = new Map<string, Measure[]>();
+    for (const m of this.filteredMeasures()) {
+      const list = measuresByImplant.get(m.implant_id) ?? [];
+      list.push(m);
+      measuresByImplant.set(m.implant_id, list);
+    }
+    for (const list of measuresByImplant.values()) {
+      list.sort((a, b) => {
+        const da = a.measure_date ?? '';
+        const db = b.measure_date ?? '';
+        if (da !== db) return da.localeCompare(db);
+        return a.id.localeCompare(b.id);
+      });
+    }
+
+    return mice.map((mouse) => ({
+      mouse,
+      implants: (implantsByMouse.get(mouse.id) ?? []).map((implant) => ({
+        implant,
+        measures: [...(measuresByImplant.get(implant.id) ?? [])],
+      })),
+    }));
+  });
+
+  inVivoHierarchyFiltered = computed(() => {
+    const q = this.inVivoFilterQuery().trim().toLowerCase();
+    const tree = this.inVivoHierarchy();
+    if (!q) return tree;
+
+    const matches = (obj: object) =>
+      Object.values(obj).some((v) => v != null && String(v).toLowerCase().includes(q));
+
+    return tree.filter((node) => {
+      if (matches(node.mouse)) return true;
+      return node.implants.some((iw) => {
+        if (matches(iw.implant)) return true;
+        return iw.measures.some((m) => matches(m));
+      });
+    });
+  });
+
   usageColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID` },
     { key: 'record_type', label: $localize`Type` },
@@ -594,12 +1106,6 @@ export class PassageDetailPage {
     { key: 'cryo_date', label: $localize`Date`, type: 'date' },
     { key: 'vial_count', label: $localize`Vials`, type: 'number' },
   ];
-  measureColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID` },
-    { key: 'implant_id', label: $localize`Implant ID` },
-    { key: 'measure_date', label: $localize`Date`, type: 'date' },
-    { key: 'measure_value', label: $localize`Value`, type: 'number' },
-  ];
   facsColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID` },
     { key: 'measure', label: $localize`Measure` },
@@ -618,6 +1124,16 @@ export class PassageDetailPage {
     if (value === true) return $localize`:@@yesOpt:Yes`;
     if (value === false) return $localize`:@@noOpt:No`;
     return '—';
+  }
+
+  /** Short suffix of a UUID for scanning; full value available via tooltip. */
+  formatShortId(id: string): string {
+    if (!id) return '—';
+    return id.length <= 10 ? id : `\u2026${id.slice(-8)}`;
+  }
+
+  measuresRegionLabel(mouseOrdinal: number, implantOrdinal: number): string {
+    return $localize`:@@measuresAriaLabel:Measures for mouse ${mouseOrdinal}:mouseOrd: and implant ${implantOrdinal}:implOrd:`;
   }
 
   openEntityForm(
@@ -732,45 +1248,63 @@ export class PassageDetailPage {
     );
   }
 
-  openImplantForm(entity: Implant | null = null) {
-    const miceOpts = this.filteredMice().map((m) => ({ value: m.id, label: m.id }));
+  openImplantForm(entity: Implant | null = null, presetDefaults: Record<string, unknown> = {}) {
+    const miceOpts = this.filteredMice().map((m) => ({
+      value: m.id,
+      label: `${this.formatShortId(m.id)} · ${m.strain ?? '—'} · ${m.sex ?? '—'}`,
+    }));
+    const lockMouse = !entity && presetDefaults['mouse_id'] != null;
     this.openEntityForm(
       $localize`:@@implantFormDialogTitle:Implant`,
       '/implants',
       [
         {
           name: 'mouse_id',
-          label: $localize`Mouse ID`,
+          label: $localize`:@@mouseOrdinalPrefix:Mouse`,
           type: 'select',
           options: miceOpts,
           required: true,
+          disabled: lockMouse,
         },
         { name: 'implant_location', label: $localize`Location`, type: 'text' },
         { name: 'type', label: $localize`Type`, type: 'text' },
       ],
       this.implantsResource,
       entity,
+      entity ? {} : presetDefaults,
     );
   }
 
-  openMeasureForm(entity: Measure | null = null) {
-    const implantOpts = this.filteredImplants().map((i) => ({ value: i.id, label: i.id }));
+  openMeasureForm(entity: Measure | null = null, presetDefaults: Record<string, unknown> = {}) {
+    const implantOpts = this.filteredImplants().map((i) => {
+      const mouse = this.filteredMice().find((m) => m.id === i.mouse_id);
+      const mouseBit = mouse
+        ? `${mouse.strain ?? '—'} · ${mouse.sex ?? '—'}`
+        : this.formatShortId(i.mouse_id);
+      return {
+        value: i.id,
+        label: `${this.formatShortId(i.id)} · ${i.implant_location ?? '—'} · ${i.type ?? '—'} (${mouseBit})`,
+      };
+    });
+    const lockImplant = !entity && presetDefaults['implant_id'] != null;
     this.openEntityForm(
       $localize`:@@measureFormDialogTitle:Measure`,
       '/measures',
       [
         {
           name: 'implant_id',
-          label: $localize`Implant ID`,
+          label: $localize`:@@implantOrdinalPrefix:Implant`,
           type: 'select',
           options: implantOpts,
           required: true,
+          disabled: lockImplant,
         },
-        { name: 'measure_date', label: $localize`Date`, type: 'date' },
-        { name: 'measure_value', label: $localize`Value`, type: 'number' },
+        { name: 'measure_date', label: $localize`:@@measureDateCol:Date`, type: 'date' },
+        { name: 'measure_value', label: $localize`:@@measureValueCol:Value`, type: 'number' },
       ],
       this.measuresResource,
       entity,
+      entity ? {} : presetDefaults,
     );
   }
 
