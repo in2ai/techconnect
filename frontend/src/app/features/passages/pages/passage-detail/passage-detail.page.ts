@@ -705,7 +705,7 @@ export class PassageDetailPage {
       [
         {
           name: 'record_type',
-          label: $localize`:@@usageRecordTypeField:Record Type`,
+          label: $localize`:@@usageRecordTypeField:Type`,
           type: 'text',
         },
         { name: 'description', label: $localize`Description`, type: 'text' },

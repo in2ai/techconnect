@@ -1127,7 +1127,7 @@
       <trans-unit id="implantFormDialogTitle" datatype="html"><source>Implant</source><target>Implante</target></trans-unit>
       <trans-unit id="measureFormDialogTitle" datatype="html"><source>Measure</source><target>Medida</target></trans-unit>
       <trans-unit id="usageRecordFormDialogTitle" datatype="html"><source>Usage Record</source><target>Registro de uso</target></trans-unit>
-      <trans-unit id="usageRecordTypeField" datatype="html"><source>Record Type</source><target>Tipo de registro</target></trans-unit>
+      <trans-unit id="usageRecordTypeField" datatype="html"><source>Type</source><target>Tipo</target></trans-unit>
       <trans-unit id="imageFormDialogTitle" datatype="html"><source>Image</source><target>Imagen</target></trans-unit>
       <trans-unit id="trialImageMagnification" datatype="html"><source>Magnification</source><target>Magnificación</target></trans-unit>
       <trans-unit id="cryoVialCountField" datatype="html"><source>Vial Count</source><target>Número de viales</target></trans-unit>
@@ -1292,6 +1292,10 @@
       <trans-unit id="preclinicalTrialsLbl" datatype="html"><source>Preclinical Trials</source><target>Ensayos preclínicos</target></trans-unit>
       <trans-unit id="7610193920778630976" datatype="html"><source>Track biomodel passages and detailed outcomes.</source><target>Seguimiento de pases de biomodelos y resultados detallados.</target></trans-unit>
       <trans-unit id="7219355796144107567" datatype="html"><source> Biomedical research data management platform. Navigate through your registry, biomodels, and passage data. </source><target> Plataforma de gestión de datos de investigación biomédica. Navega por tu registro, biomodelos y datos de pases. </target></trans-unit>
+      <trans-unit id="7255211079421549257" datatype="html">
+        <source>Passage ID</source>
+        <target>ID del Pase</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
