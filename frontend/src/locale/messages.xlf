@@ -266,7 +266,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">400</context>
+          <context context-type="linenumber">434</context>
         </context-group>
       </trans-unit>
       <trans-unit id="sexNotSpecified" datatype="html">
@@ -647,11 +647,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">397</context>
+          <context context-type="linenumber">431</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">405</context>
+          <context context-type="linenumber">439</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5611592591303869712" datatype="html">
@@ -670,7 +670,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">399</context>
+          <context context-type="linenumber">433</context>
         </context-group>
       </trans-unit>
       <trans-unit id="trialSuccessLbl" datatype="html">
@@ -704,7 +704,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">401</context>
+          <context context-type="linenumber">435</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2912790887397720753" datatype="html">
@@ -792,7 +792,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">398</context>
+          <context context-type="linenumber">432</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2060021892500932246" datatype="html">
@@ -871,7 +871,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">354</context>
+          <context context-type="linenumber">388</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dashboardTumorsDescription" datatype="html">
@@ -1318,7 +1318,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">271,272</context>
+          <context context-type="linenumber">286,287</context>
         </context-group>
       </trans-unit>
       <trans-unit id="molecularTitle" datatype="html">
@@ -1333,7 +1333,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">556</context>
+          <context context-type="linenumber">588</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7255211079421549257" datatype="html">
@@ -1499,7 +1499,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">419</context>
+          <context context-type="linenumber">453</context>
         </context-group>
       </trans-unit>
       <trans-unit id="trialImageEnlargement" datatype="html">
@@ -1662,7 +1662,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">543</context>
+          <context context-type="linenumber">575</context>
         </context-group>
       </trans-unit>
       <trans-unit id="passageUpdatedToast" datatype="html">
@@ -2171,7 +2171,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">406</context>
+          <context context-type="linenumber">440</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3393571693845224543" datatype="html">
@@ -2186,7 +2186,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">407</context>
+          <context context-type="linenumber">441</context>
         </context-group>
       </trans-unit>
       <trans-unit id="770748809189248828" datatype="html">
@@ -2201,7 +2201,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">408</context>
+          <context context-type="linenumber">442</context>
         </context-group>
       </trans-unit>
       <trans-unit id="tumorTissueOctLbl" datatype="html">
@@ -2212,7 +2212,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">411</context>
+          <context context-type="linenumber">445</context>
         </context-group>
       </trans-unit>
       <trans-unit id="nonTumorTissueOctLbl" datatype="html">
@@ -2223,7 +2223,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">416</context>
+          <context context-type="linenumber">450</context>
         </context-group>
       </trans-unit>
       <trans-unit id="yesLabel" datatype="html">
@@ -2434,153 +2434,153 @@
         <source>Add Genomic Data</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">232,233</context>
+          <context context-type="linenumber">234,235</context>
         </context-group>
       </trans-unit>
       <trans-unit id="genomicDataInfoLbl" datatype="html">
         <source>Genomic Data Information</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">241,242</context>
+          <context context-type="linenumber">244,245</context>
         </context-group>
       </trans-unit>
       <trans-unit id="hasDataLbl" datatype="html">
         <source>Has Data</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">252,253</context>
+          <context context-type="linenumber">256,257</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">316,317</context>
+          <context context-type="linenumber">339,340</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">518</context>
+          <context context-type="linenumber">550</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">532</context>
+          <context context-type="linenumber">564</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">546</context>
+          <context context-type="linenumber">578</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">559</context>
+          <context context-type="linenumber">591</context>
         </context-group>
       </trans-unit>
       <trans-unit id="yesLbl" datatype="html">
         <source>Yes</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">255,256</context>
+          <context context-type="linenumber">267,268</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">319,320</context>
+          <context context-type="linenumber">350,351</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noLbl" datatype="html">
         <source>No</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">257,258</context>
+          <context context-type="linenumber">272,273</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">321,322</context>
+          <context context-type="linenumber">355,356</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dataLbl" datatype="html">
         <source>Data</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">262,263</context>
+          <context context-type="linenumber">277,278</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">326,327</context>
+          <context context-type="linenumber">360,361</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">519</context>
+          <context context-type="linenumber">551</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">533</context>
+          <context context-type="linenumber">565</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">547</context>
+          <context context-type="linenumber">579</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">560</context>
+          <context context-type="linenumber">592</context>
         </context-group>
       </trans-unit>
       <trans-unit id="failedToLoadMolecularData" datatype="html">
         <source>Failed to load molecular data</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">279,280</context>
+          <context context-type="linenumber">294,295</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noMolecularDataTitle" datatype="html">
         <source>No molecular data</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">288,289</context>
+          <context context-type="linenumber">303,304</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noTumorMolecularDataMsg" datatype="html">
         <source>No molecular data linked to this tumor.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">290,292</context>
+          <context context-type="linenumber">305,307</context>
         </context-group>
       </trans-unit>
       <trans-unit id="addMolecularDataBtn" datatype="html">
         <source>Add Molecular Data</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">296,297</context>
+          <context context-type="linenumber">313,314</context>
         </context-group>
       </trans-unit>
       <trans-unit id="molecularDataInfoLbl" datatype="html">
         <source>Molecular Data Information</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">305,306</context>
+          <context context-type="linenumber">323,324</context>
         </context-group>
       </trans-unit>
       <trans-unit id="tumorDetailTitle" datatype="html">
         <source>Tumor <x id="code" equiv-text="this.biobank_code()"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">342</context>
+          <context context-type="linenumber">376</context>
         </context-group>
       </trans-unit>
       <trans-unit id="createGenomicDataTitle" datatype="html">
         <source>Add Genomic Sequence</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">515</context>
+          <context context-type="linenumber">547</context>
         </context-group>
       </trans-unit>
       <trans-unit id="createMolecularDataTitle" datatype="html">
         <source>Add Molecular Data</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">529</context>
+          <context context-type="linenumber">561</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2130228186826233628" datatype="html">
         <source>Delete Tumor</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">571</context>
+          <context context-type="linenumber">603</context>
         </context-group>
       </trans-unit>
       <trans-unit id="tumorsTitle" datatype="html">
