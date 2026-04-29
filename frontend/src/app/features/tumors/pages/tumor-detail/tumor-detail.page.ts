@@ -216,20 +216,70 @@ import { TumorService } from '../../services/tumor.service';
                 (retry)="genomicResource.reload()"
               />
             } @else if (filteredGenomic().length === 0) {
-              <app-loading-state
-                status="empty"
-                emptyIcon="science"
-                i18n-emptyTitle="@@noGenomicDataTitle"
-                emptyTitle="No genomic data"
-                i18n-emptyMessage="@@noTumorGenomicDataMsg"
-                emptyMessage="No genomic sequencing data linked to this tumor."
-              />
+              <div class="empty-state-with-action">
+                <app-loading-state
+                  status="empty"
+                  emptyIcon="science"
+                  i18n-emptyTitle="@@noGenomicDataTitle"
+                  emptyTitle="No genomic data"
+                  i18n-emptyMessage="@@noTumorGenomicDataMsg"
+                  emptyMessage="No genomic sequencing data linked to this tumor."
+                />
+                @if (auth.isAdmin()) {
+                  <div
+                    style="display: flex; justify-content: center; margin-top: -24px; padding-bottom: 32px;"
+                  >
+                    <button mat-flat-button color="primary" (click)="openCreateGenomicForm()">
+                      <mat-icon>add</mat-icon>
+                      <ng-container i18n="@@addGenomicDataBtn">Add Genomic Data</ng-container>
+                    </button>
+                  </div>
+                }
+              </div>
             } @else {
-              <app-data-table
-                [columns]="genomicColumns"
-                [data]="filteredGenomic()"
-                (rowClicked)="openGenomicForm($event)"
-              />
+              @let genomic = filteredGenomic()[0];
+              <mat-card appearance="outlined" class="detail-card" style="margin-top: 16px;">
+                <mat-card-header>
+                  <mat-card-title i18n="@@genomicDataInfoLbl"
+                    >Genomic Data Information</mat-card-title
+                  >
+                  <span class="spacer" style="flex: 1 1 auto;"></span>
+                  @if (auth.isAdmin()) {
+                    <button mat-icon-button (click)="openGenomicForm(genomic)" aria-label="Edit">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  }
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="detail-grid" style="margin-top: 16px;">
+                    <div class="detail-item">
+                      <span class="detail-label" i18n="@@hasDataLbl">Has Data</span>
+                      <span
+                        class="detail-value"
+                        style="display: flex; align-items: center; gap: 4px;"
+                      >
+                        @if (genomic.has_data) {
+                          <mat-icon
+                            color="primary"
+                            style="font-size: 20px; width: 20px; height: 20px;"
+                            >check_circle</mat-icon
+                          >
+                          <span i18n="@@yesLbl">Yes</span>
+                        } @else {
+                          <mat-icon color="warn" style="font-size: 20px; width: 20px; height: 20px;"
+                            >cancel</mat-icon
+                          >
+                          <span i18n="@@noLbl">No</span>
+                        }
+                      </span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label" i18n="@@dataLbl">Data</span>
+                      <span class="detail-value">{{ genomic.data || '—' }}</span>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
             }
           </div>
         </mat-tab>
@@ -245,20 +295,74 @@ import { TumorService } from '../../services/tumor.service';
                 (retry)="molecularResource.reload()"
               />
             } @else if (filteredMolecular().length === 0) {
-              <app-loading-state
-                status="empty"
-                emptyIcon="biotech"
-                i18n-emptyTitle="@@noMolecularDataTitle"
-                emptyTitle="No molecular data"
-                i18n-emptyMessage="@@noTumorMolecularDataMsg"
-                emptyMessage="No molecular data linked to this tumor."
-              />
+              <div class="empty-state-with-action">
+                <app-loading-state
+                  status="empty"
+                  emptyIcon="biotech"
+                  i18n-emptyTitle="@@noMolecularDataTitle"
+                  emptyTitle="No molecular data"
+                  i18n-emptyMessage="@@noTumorMolecularDataMsg"
+                  emptyMessage="No molecular data linked to this tumor."
+                />
+                @if (auth.isAdmin()) {
+                  <div
+                    style="display: flex; justify-content: center; margin-top: -24px; padding-bottom: 32px;"
+                  >
+                    <button mat-flat-button color="primary" (click)="openCreateMolecularForm()">
+                      <mat-icon>add</mat-icon>
+                      <ng-container i18n="@@addMolecularDataBtn">Add Molecular Data</ng-container>
+                    </button>
+                  </div>
+                }
+              </div>
             } @else {
-              <app-data-table
-                [columns]="molecularColumns"
-                [data]="filteredMolecular()"
-                (rowClicked)="openMolecularForm($event)"
-              />
+              @let molecular = filteredMolecular()[0];
+              <mat-card appearance="outlined" class="detail-card" style="margin-top: 16px;">
+                <mat-card-header>
+                  <mat-card-title i18n="@@molecularDataInfoLbl"
+                    >Molecular Data Information</mat-card-title
+                  >
+                  <span class="spacer" style="flex: 1 1 auto;"></span>
+                  @if (auth.isAdmin()) {
+                    <button
+                      mat-icon-button
+                      (click)="openMolecularForm(molecular)"
+                      aria-label="Edit"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  }
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="detail-grid" style="margin-top: 16px;">
+                    <div class="detail-item">
+                      <span class="detail-label" i18n="@@hasDataLbl">Has Data</span>
+                      <span
+                        class="detail-value"
+                        style="display: flex; align-items: center; gap: 4px;"
+                      >
+                        @if (molecular.has_data) {
+                          <mat-icon
+                            color="primary"
+                            style="font-size: 20px; width: 20px; height: 20px;"
+                            >check_circle</mat-icon
+                          >
+                          <span i18n="@@yesLbl">Yes</span>
+                        } @else {
+                          <mat-icon color="warn" style="font-size: 20px; width: 20px; height: 20px;"
+                            >cancel</mat-icon
+                          >
+                          <span i18n="@@noLbl">No</span>
+                        }
+                      </span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label" i18n="@@dataLbl">Data</span>
+                      <span class="detail-value">{{ molecular.data || '—' }}</span>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
             }
           </div>
         </mat-tab>
@@ -349,18 +453,6 @@ export class TumorDetailPage {
     { key: 'obtain_date', label: $localize`Date`, sortable: true, type: 'date' },
   ];
 
-  genomicColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID`, sortable: true },
-    { key: 'has_data', label: $localize`:@@hasDataLbl:Has Data`, type: 'boolean' },
-    { key: 'data', label: $localize`:@@dataLbl:Data` },
-  ];
-
-  molecularColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID`, sortable: true },
-    { key: 'has_data', label: $localize`:@@hasDataLbl:Has Data`, type: 'boolean' },
-    { key: 'data', label: $localize`:@@dataLbl:Data` },
-  ];
-
   onBiomodelClick(biomodel: Biomodel): void {
     this.router.navigate(['/biomodels', biomodel.id]);
   }
@@ -448,6 +540,34 @@ export class TumorDetailPage {
     dialogRef.afterClosed().subscribe((res) => {
       if (res) resource.reload();
     });
+  }
+
+  openCreateGenomicForm(): void {
+    this.openEntityForm(
+      $localize`:@@createGenomicDataTitle:Add Genomic Sequence`,
+      '/tumor-genomic-sequencings',
+      [
+        { name: 'has_data', label: $localize`:@@hasDataLbl:Has Data`, type: 'boolean' },
+        { name: 'data', label: $localize`:@@dataLbl:Data`, type: 'text' },
+      ],
+      this.genomicResource,
+      null,
+      { tumor_biobank_code: this.biobank_code() },
+    );
+  }
+
+  openCreateMolecularForm(): void {
+    this.openEntityForm(
+      $localize`:@@createMolecularDataTitle:Add Molecular Data`,
+      '/tumor-molecular-data',
+      [
+        { name: 'has_data', label: $localize`:@@hasDataLbl:Has Data`, type: 'boolean' },
+        { name: 'data', label: $localize`:@@dataLbl:Data`, type: 'text' },
+      ],
+      this.molecularResource,
+      null,
+      { tumor_biobank_code: this.biobank_code() },
+    );
   }
 
   openGenomicForm(entity: TumorGenomicSequencing): void {

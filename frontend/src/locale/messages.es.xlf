@@ -1297,6 +1297,14 @@
         <source>Passage ID</source>
         <target>ID del Pase</target>
       </trans-unit>
+      <trans-unit id="addGenomicDataBtn" datatype="html"><source>Add Genomic Data</source><target>Añadir Datos Genómicos</target></trans-unit>
+      <trans-unit id="genomicDataInfoLbl" datatype="html"><source>Genomic Data Information</source><target>Información de Datos Genómicos</target></trans-unit>
+      <trans-unit id="yesLbl" datatype="html"><source>Yes</source><target>Sí</target></trans-unit>
+      <trans-unit id="noLbl" datatype="html"><source>No</source><target>No</target></trans-unit>
+      <trans-unit id="addMolecularDataBtn" datatype="html"><source>Add Molecular Data</source><target>Añadir Datos Moleculares</target></trans-unit>
+      <trans-unit id="molecularDataInfoLbl" datatype="html"><source>Molecular Data Information</source><target>Información de Datos Moleculares</target></trans-unit>
+      <trans-unit id="createGenomicDataTitle" datatype="html"><source>Add Genomic Sequence</source><target>Añadir Secuencia Genómica</target></trans-unit>
+      <trans-unit id="createMolecularDataTitle" datatype="html"><source>Add Molecular Data</source><target>Añadir Datos Moleculares</target></trans-unit>
     </body>
   </file>
 </xliff>
