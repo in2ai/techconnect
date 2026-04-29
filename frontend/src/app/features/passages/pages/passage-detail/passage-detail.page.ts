@@ -362,24 +362,6 @@ import { PassageService } from '../../services/passage.service';
             />
           </div>
         </mat-tab>
-        <mat-tab i18n-label="@@biomodelsTabLbl" label="Biomodels">
-          <div class="tab-content">
-            <div class="section-header">
-              <h3 i18n="@@biomodelsTitle">Biomodels</h3>
-              @if (auth.isAdmin()) {
-                <button mat-flat-button color="primary" (click)="openBiomodelForm()">
-                  <mat-icon>add</mat-icon>
-                  <ng-container i18n="@@addBiomodelBtn">Add</ng-container>
-                </button>
-              }
-            </div>
-            <app-data-table
-              [columns]="biomodelColumns"
-              [data]="filteredBiomodels()"
-              (rowClicked)="openBiomodelForm($event)"
-            />
-          </div>
-        </mat-tab>
         <mat-tab i18n-label="@@genomicTabLbl" label="Genomic Sequencing">
           <div class="tab-content">
             <h3 i18n="@@genomicsTitle">Genomic Sequencing</h3>
@@ -531,9 +513,6 @@ export class PassageDetailPage {
   filteredMolecular = computed(
     () => this.molecularResource.value()?.filter((m) => m.passage_id === this.id()) ?? [],
   );
-  filteredBiomodels = computed(
-    () => this.biomodelsResource.value()?.filter((b) => b.parent_passage_id === this.id()) ?? [],
-  );
 
   implantColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID` },
@@ -587,13 +566,6 @@ export class PassageDetailPage {
   molecularColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID` },
     { key: 'annotations', label: $localize`Annotations` },
-  ];
-  biomodelColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID` },
-    { key: 'type', label: $localize`Type` },
-    { key: 'status', label: $localize`Status` },
-    { key: 'success', label: $localize`:@@biomodelSuccessLbl:Success`, type: 'boolean' },
-    { key: 'creation_date', label: $localize`Created`, type: 'date' },
   ];
 
   yesNo(value: boolean | null): string {
@@ -785,39 +757,6 @@ export class PassageDetailPage {
     );
   }
 
-  openBiomodelForm(entity: Biomodel | null = null) {
-    this.openEntityForm(
-      $localize`:@@biomodelFormDialogTitle:Biomodel`,
-      '/biomodels',
-      [
-        { name: 'id', label: $localize`ID`, type: 'text', required: true },
-        {
-          name: 'type',
-          label: $localize`Type`,
-          type: 'select',
-          options: [
-            { value: 'PDX', label: 'PDX' },
-            { value: 'PDO', label: 'PDO' },
-            { value: 'LC', label: 'LC' },
-          ],
-        },
-        { name: 'description', label: $localize`Description`, type: 'text' },
-        {
-          name: 'status',
-          label: $localize`Status`,
-          type: 'select',
-          options: [
-            { value: 'active', label: $localize`:@@activeStatusOpt:Active` },
-            { value: 'inactive', label: $localize`:@@inactiveStatusOpt:Inactive` },
-          ],
-        },
-        { name: 'success', label: $localize`:@@biomodelSuccessLbl:Success`, type: 'boolean' },
-      ],
-      this.biomodelsResource,
-      entity,
-      { parent_passage_id: this.id() },
-    );
-  }
 
   openEditDialog(): void {
     const passage = this.passageResource.value();
