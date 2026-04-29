@@ -499,7 +499,15 @@ export class PassageDetailPage {
   );
   filteredImplants = computed(() => {
     const miceIds = new Set(this.filteredMice().map((m) => m.id));
-    return this.implantsResource.value()?.filter((i) => miceIds.has(i.mouse_id)) ?? [];
+    return (
+      this.implantsResource
+        .value()
+        ?.filter((i) => miceIds.has(i.mouse_id))
+        .map((i) => ({
+          ...i,
+          pdx_trial_id: this.id(),
+        })) ?? []
+    );
   });
   filteredUsage = computed(
     () => this.usageResource.value()?.filter((u) => u.passage_id === this.id()) ?? [],
@@ -529,12 +537,14 @@ export class PassageDetailPage {
 
   implantColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID` },
+    { key: 'pdx_trial_id', label: $localize`Passage ID` },
     { key: 'mouse_id', label: $localize`Mouse ID` },
     { key: 'implant_location', label: $localize`Location` },
     { key: 'type', label: $localize`Type` },
   ];
   mouseColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID` },
+    { key: 'pdx_trial_id', label: $localize`Passage ID` },
     { key: 'strain', label: $localize`Strain` },
     { key: 'sex', label: $localize`:@@sexLbl:Sex` },
     { key: 'birth_date', label: $localize`:@@birthDateLbl:Birth Date`, type: 'date' },
