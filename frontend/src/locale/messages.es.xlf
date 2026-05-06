@@ -1265,6 +1265,33 @@
       <trans-unit id="navResearch" datatype="html"><source>Research</source><target>Investigación</target></trans-unit>
       <trans-unit id="navBiomodels" datatype="html"><source>Biomodels</source><target>Biomodelos</target></trans-unit>
       <trans-unit id="navPassages" datatype="html"><source>Passages</source><target>Pases</target></trans-unit>
+      <trans-unit id="biomodelImportTitle" datatype="html"><source>Import PDX Workbook</source><target>Importar excel PDX</target></trans-unit>
+      <trans-unit id="importCompletedWithIssues" datatype="html"><source>Completed with issues</source><target>Importación completada con incidencias</target></trans-unit>
+      <trans-unit id="importCompleted" datatype="html"><source>Import completed</source><target>Importación completada</target></trans-unit>
+      <trans-unit id="importPartialSuccess" datatype="html"><source><x id="rowCount" equiv-text="{{ response.rows_imported }}"/> rows imported with <x id="errorCount" equiv-text="{{ response.rows_failed }}"/> issues.</source><target>Se importaron <x id="rowCount" equiv-text="{{ response.rows_imported }}"/> filas con <x id="errorCount" equiv-text="{{ response.rows_failed }}"/> incidencias.</target></trans-unit>
+      <trans-unit id="importSuccessMessage" datatype="html"><source><x id="rowCount" equiv-text="{{ response.rows_imported }}"/> rows imported successfully.</source><target>Se importaron correctamente <x id="rowCount" equiv-text="{{ response.rows_imported }}"/> filas.</target></trans-unit>
+      <trans-unit id="importRequestFailed" datatype="html"><source>Import request failed. Please review the workbook and try again.</source><target>La importación falló. Revise el excel e inténtelo de nuevo.</target></trans-unit>
+      <trans-unit id="biomodelImportSubtitle" datatype="html"><source>Upload the legacy XLSX workbook to create or update patients, tumors, and PDX biomodels.</source><target>Cargue el archivo XLSX heredado para crear o actualizar pacientes, tumores y biomodelos PDX.</target></trans-unit>
+      <trans-unit id="backToBiomodels" datatype="html"><source>Back to Biomodels</source><target>Volver a biomodelos</target></trans-unit>
+      <trans-unit id="importAdminsOnlyTitle" datatype="html"><source>Administrator access required</source><target>Se requiere acceso de administrador</target></trans-unit>
+      <trans-unit id="importAdminsOnlyMessage" datatype="html"><source>Only administrators can import workbook data into the platform.</source><target>Solo los administradores pueden importar datos del excel en la plataforma.</target></trans-unit>
+      <trans-unit id="uploadWorkbookHeading" datatype="html"><source>Upload workbook</source><target>Cargar excel</target></trans-unit>
+      <trans-unit id="uploadWorkbookCopy" datatype="html"><source>The importer reads the PDX template columns embedded in the workbook and processes every matching sheet.</source><target>El importador lee las columnas de la plantilla PDX incrustadas en el excel y procesa cada hoja coincidente.</target></trans-unit>
+      <trans-unit id="supportedFormatLabel" datatype="html"><source>Supported format:</source><target>Formato admitido:</target></trans-unit>
+      <trans-unit id="chooseWorkbookBtn" datatype="html"><source>Choose workbook</source><target>Elegir excel</target></trans-unit>
+      <trans-unit id="clearSelectionBtn" datatype="html"><source>Clear</source><target>Limpiar</target></trans-unit>
+      <trans-unit id="importWorkbookBtn" datatype="html"><source>Import workbook</source><target>Importar excel</target></trans-unit>
+      <trans-unit id="noWorkbookSelected" datatype="html"><source>No workbook selected</source><target>No se ha seleccionado ningún excel</target></trans-unit>
+      <trans-unit id="importSummaryHeading" datatype="html"><source>Import summary</source><target>Resumen de la importación</target></trans-unit>
+      <trans-unit id="importSummaryFileLabel" datatype="html"><source>File:</source><target>Archivo:</target></trans-unit>
+      <trans-unit id="sheetsProcessedLabel" datatype="html"><source>Sheets processed</source><target>Hojas procesadas</target></trans-unit>
+      <trans-unit id="rowsImportedLabel" datatype="html"><source>Rows imported</source><target>Filas importadas</target></trans-unit>
+      <trans-unit id="rowsSkippedLabel" datatype="html"><source>Rows skipped</source><target>Filas omitidas</target></trans-unit>
+      <trans-unit id="rowsFailedLabel" datatype="html"><source>Rows failed</source><target>Filas fallidas</target></trans-unit>
+      <trans-unit id="createdLabel" datatype="html"><source>created</source><target>creados</target></trans-unit>
+      <trans-unit id="updatedLabel" datatype="html"><source>updated</source><target>actualizados</target></trans-unit>
+      <trans-unit id="importErrorsHeading" datatype="html"><source>Rows with issues</source><target>Filas con incidencias</target></trans-unit>
+      <trans-unit id="importPdxWorkbook" datatype="html"><source>Import PDX Workbook</source><target>Importar excel PDX</target></trans-unit>
       <trans-unit id="navTrials" datatype="html"><source>Trials</source><target>Ensayos</target></trans-unit>
       <trans-unit id="addTumorBtn" datatype="html"><source>Add Tumor</source><target>Añadir Tumor</target></trans-unit>
       <trans-unit id="addBiomodelFullBtn" datatype="html"><source>Add Biomodel</source><target>Añadir Biomodelo</target></trans-unit>

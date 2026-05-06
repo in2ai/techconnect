@@ -58,6 +58,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'biomodels/import',
+        loadComponent: () =>
+          import('./features/biomodels/pages/biomodel-import/biomodel-import.page').then(
+            (m) => m.BiomodelImportPage,
+          ),
+      },
+      {
         path: 'biomodels/:id',
         loadComponent: () =>
           import('./features/biomodels/pages/biomodel-detail/biomodel-detail.page').then(

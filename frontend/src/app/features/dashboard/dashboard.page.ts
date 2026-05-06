@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '@core/services/auth.service';
 import { API_URL } from '@core/tokens/api-url.token';
 
 interface DashboardCard {
@@ -29,6 +30,14 @@ interface DashboardCard {
           Biomedical research data management platform. Navigate through your registry, biomodels,
           and passage data.
         </p>
+        @if (auth.isAdmin()) {
+          <div class="hero-actions">
+            <a mat-flat-button routerLink="/biomodels/import">
+              <mat-icon>upload_file</mat-icon>
+              <ng-container i18n="@@importPdxWorkbook">Import PDX Workbook</ng-container>
+            </a>
+          </div>
+        }
       </div>
       <div class="hero-decoration" aria-hidden="true">
         <mat-icon class="hero-deco-icon">biotech</mat-icon>
@@ -118,6 +127,17 @@ interface DashboardCard {
       margin: 0;
       max-width: 560px;
       line-height: 1.65;
+    }
+
+    .hero-actions {
+      display: flex;
+      margin-top: 1.25rem;
+    }
+
+    .hero-actions a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .hero-decoration {
@@ -265,6 +285,7 @@ interface DashboardCard {
 })
 export class DashboardPage {
   private readonly apiUrl = inject(API_URL);
+  protected readonly auth = inject(AuthService);
 
   cards: DashboardCard[] = [
     {

@@ -3006,6 +3006,195 @@
           <context context-type="linenumber">491</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="biomodelImportTitle" datatype="html">
+        <source>Import PDX Workbook</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">48,53,364</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importCompletedWithIssues" datatype="html">
+        <source>Completed with issues</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">383</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importCompleted" datatype="html">
+        <source>Import completed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">386</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importPartialSuccess" datatype="html">
+        <source><x id="rowCount" equiv-text="{{ response.rows_imported }}"/> rows imported with <x id="errorCount" equiv-text="{{ response.rows_failed }}"/> issues.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">411</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importSuccessMessage" datatype="html">
+        <source><x id="rowCount" equiv-text="{{ response.rows_imported }}"/> rows imported successfully.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">417</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importRequestFailed" datatype="html">
+        <source>Import request failed. Please review the workbook and try again.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">427</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="biomodelImportSubtitle" datatype="html">
+        <source>Upload the legacy XLSX workbook to create or update patients, tumors, and PDX biomodels.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="backToBiomodels" datatype="html">
+        <source>Back to Biomodels</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importAdminsOnlyTitle" datatype="html">
+        <source>Administrator access required</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importAdminsOnlyMessage" datatype="html">
+        <source>Only administrators can import workbook data into the platform.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">64,66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="uploadWorkbookHeading" datatype="html">
+        <source>Upload workbook</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="uploadWorkbookCopy" datatype="html">
+        <source>The importer reads the PDX template columns embedded in the workbook and processes every matching sheet.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">73,75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="supportedFormatLabel" datatype="html">
+        <source>Supported format:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chooseWorkbookBtn" datatype="html">
+        <source>Choose workbook</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">87</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="clearSelectionBtn" datatype="html">
+        <source>Clear</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">105</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importWorkbookBtn" datatype="html">
+        <source>Import workbook</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">114</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noWorkbookSelected" datatype="html">
+        <source>No workbook selected</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">100</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importSummaryHeading" datatype="html">
+        <source>Import summary</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">131</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importSummaryFileLabel" datatype="html">
+        <source>File:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">133</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="sheetsProcessedLabel" datatype="html">
+        <source>Sheets processed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">144</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rowsImportedLabel" datatype="html">
+        <source>Rows imported</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">148</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rowsSkippedLabel" datatype="html">
+        <source>Rows skipped</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">152</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rowsFailedLabel" datatype="html">
+        <source>Rows failed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">156</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createdLabel" datatype="html">
+        <source>created</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">168</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="updatedLabel" datatype="html">
+        <source>updated</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">172</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importErrorsHeading" datatype="html">
+        <source>Rows with issues</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
+          <context context-type="linenumber">181</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importPdxWorkbook" datatype="html">
+        <source>Import PDX Workbook</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-list/biomodel-list.page.ts</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>
