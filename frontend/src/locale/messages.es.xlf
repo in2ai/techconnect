@@ -1376,6 +1376,74 @@
       <trans-unit id="lcSpheroidsLbl" datatype="html"><source>Spheroids</source><target>Esferoides</target></trans-unit>
       <trans-unit id="lcDigestionDateLbl" datatype="html"><source>Digestion Date</source><target>Fecha de digestión</target></trans-unit>
       <trans-unit id="lcPlateTypeLbl" datatype="html"><source>Plate Type</source><target>Tipo de placa</target></trans-unit>
+      <trans-unit id="classificationLbl" datatype="html">
+        <source>Classification</source>
+        <target>Clasificación</target>
+      </trans-unit>
+      <trans-unit id="organLbl" datatype="html">
+        <source>Organ</source>
+        <target>Órgano</target>
+      </trans-unit>
+      <trans-unit id="sampleOrganLbl" datatype="html">
+        <source>Organ</source>
+        <target>Órgano</target>
+      </trans-unit>
+      <trans-unit id="adenocarcinomaOpt" datatype="html">
+        <source>Adenocarcinoma</source>
+        <target>Adenocarcinoma</target>
+      </trans-unit>
+      <trans-unit id="carcinomaOpt" datatype="html">
+        <source>Carcinoma</source>
+        <target>Carcinoma</target>
+      </trans-unit>
+      <trans-unit id="sarcomaOpt" datatype="html">
+        <source>Sarcoma</source>
+        <target>Sarcoma</target>
+      </trans-unit>
+      <trans-unit id="metastasisOpt" datatype="html">
+        <source>Metastasis</source>
+        <target>Metástasis</target>
+      </trans-unit>
+      <trans-unit id="lungOpt" datatype="html">
+        <source>Lung</source>
+        <target>Pulmón</target>
+      </trans-unit>
+      <trans-unit id="bladderOpt" datatype="html">
+        <source>Bladder</source>
+        <target>Vejiga</target>
+      </trans-unit>
+      <trans-unit id="colonOpt" datatype="html">
+        <source>Colon</source>
+        <target>Colon</target>
+      </trans-unit>
+      <trans-unit id="pancreasOpt" datatype="html">
+        <source>Pancreas</source>
+        <target>Páncreas</target>
+      </trans-unit>
+      <trans-unit id="breastOpt" datatype="html">
+        <source>Breast</source>
+        <target>Mama</target>
+      </trans-unit>
+      <trans-unit id="softPartsOpt" datatype="html">
+        <source>Soft tissue</source>
+        <target>Partes blandas</target>
+      </trans-unit>
+      <trans-unit id="hardPartsOpt" datatype="html">
+        <source>Bone/Hard tissue</source>
+        <target>Partes duras/oseas</target>
+      </trans-unit>
+      <trans-unit id="pdxTypeOpt" datatype="html">
+        <source>PDX</source>
+        <target>PDX</target>
+      </trans-unit>
+      <trans-unit id="pdoTypeOpt" datatype="html">
+        <source>PDO</source>
+        <target>PDO</target>
+      </trans-unit>
+      <trans-unit id="lcTypeOpt" datatype="html">
+        <source>LC</source>
+        <target>LC</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

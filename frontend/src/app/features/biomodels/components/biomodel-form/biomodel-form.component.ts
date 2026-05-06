@@ -99,9 +99,9 @@ export interface BiomodelFormData {
         <mat-form-field appearance="outline">
           <mat-label i18n="@@biomodelTypeLbl">Type</mat-label>
           <mat-select formControlName="type">
-            <mat-option value="PDX">PDX</mat-option>
-            <mat-option value="PDO">PDO</mat-option>
-            <mat-option value="LC">LC</mat-option>
+            <mat-option value="PDX" i18n="@@pdxTypeOpt">PDX</mat-option>
+            <mat-option value="PDO" i18n="@@pdoTypeOpt">PDO</mat-option>
+            <mat-option value="LC" i18n="@@lcTypeOpt">LC</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">

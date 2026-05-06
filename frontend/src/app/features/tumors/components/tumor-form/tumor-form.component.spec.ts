@@ -65,7 +65,7 @@ describe('TumorFormComponent', () => {
     component.form.patchValue({
       biobank_code: 'TB-42',
       patient_nhc: 'P-1',
-      classification: 'adenocarcinoma',
+      classification: 'Adenocarcinoma',
     });
     fixture.detectChanges();
 
@@ -74,7 +74,7 @@ describe('TumorFormComponent', () => {
     expect(closeDirective.dialogResult).toMatchObject({
       biobank_code: 'TB-42',
       patient_nhc: 'P-1',
-      classification: 'adenocarcinoma',
+      classification: 'Adenocarcinoma',
     });
     httpMock.verify();
   });

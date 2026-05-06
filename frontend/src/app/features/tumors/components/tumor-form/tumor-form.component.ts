@@ -70,7 +70,15 @@ export interface TumorFormData {
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label i18n="@@classificationLbl">Classification</mat-label>
-          <input matInput formControlName="classification" />
+          <mat-select formControlName="classification">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option value="Adenocarcinoma" i18n="@@adenocarcinomaOpt"
+              >Adenocarcinoma</mat-option
+            >
+            <mat-option value="Carcinoma" i18n="@@carcinomaOpt">Carcinoma</mat-option>
+            <mat-option value="Sarcoma" i18n="@@sarcomaOpt">Sarcoma</mat-option>
+            <mat-option value="Metastasis" i18n="@@metastasisOpt">Metastasis</mat-option>
+          </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label i18n="@@tumorGradeLbl">Grade</mat-label>
@@ -78,7 +86,16 @@ export interface TumorFormData {
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label i18n="@@organLbl">Organ</mat-label>
-          <input matInput formControlName="organ" />
+          <mat-select formControlName="organ">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option value="Lung" i18n="@@lungOpt">Lung</mat-option>
+            <mat-option value="Bladder" i18n="@@bladderOpt">Bladder</mat-option>
+            <mat-option value="Colon" i18n="@@colonOpt">Colon</mat-option>
+            <mat-option value="Pancreas" i18n="@@pancreasOpt">Pancreas</mat-option>
+            <mat-option value="Breast" i18n="@@breastOpt">Breast</mat-option>
+            <mat-option value="Soft tissue" i18n="@@softPartsOpt">Soft tissue</mat-option>
+            <mat-option value="Bone/Hard tissue" i18n="@@hardPartsOpt">Bone/Hard tissue</mat-option>
+          </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label i18n="@@tumorStageLbl">Stage</mat-label>

@@ -61,7 +61,16 @@ export interface SampleFormData {
 
         <mat-form-field appearance="outline">
           <mat-label i18n="@@sampleOrganLbl">Organ</mat-label>
-          <input matInput formControlName="organ" />
+          <mat-select formControlName="organ">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option value="Lung" i18n="@@lungOpt">Lung</mat-option>
+            <mat-option value="Bladder" i18n="@@bladderOpt">Bladder</mat-option>
+            <mat-option value="Colon" i18n="@@colonOpt">Colon</mat-option>
+            <mat-option value="Pancreas" i18n="@@pancreasOpt">Pancreas</mat-option>
+            <mat-option value="Breast" i18n="@@breastOpt">Breast</mat-option>
+            <mat-option value="Soft tissue" i18n="@@softPartsOpt">Soft tissue</mat-option>
+            <mat-option value="Bone/Hard tissue" i18n="@@hardPartsOpt">Bone/Hard tissue</mat-option>
+          </mat-select>
         </mat-form-field>
         <div class="checkbox-group">
           <mat-checkbox formControlName="has_serum" i18n="@@sampleHasSerumLbl"
