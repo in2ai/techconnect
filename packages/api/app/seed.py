@@ -1,10 +1,10 @@
-"""Seed the database with a coherent sample dataset."""
+"""Seed the database with a rich, varied sample dataset for demo charts."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date
-from uuid import UUID
+from datetime import date, timedelta
+from uuid import UUID, uuid4
 
 from sqlmodel import SQLModel, Session
 
@@ -40,6 +40,22 @@ class SeedStats:
     updated: int = 0
 
 
+ORGANS = [
+    "Lung", "Bladder", "Colon", "Pancreas", "Breast",
+    "Soft tissue", "Bone/Hard tissue",
+]
+
+CLASSIFICATIONS = [
+    "Adenocarcinoma", "Carcinoma", "Sarcoma", "Metastasis",
+]
+
+GRADES = ["G1", "G2", "G3", "G4", None]
+STAGES = ["IA", "IB", "IIA", "IIB", "IIIA", "IIIB", "IV", None]
+TNMS = ["T1N0M0", "T2N0M0", "T2N1M0", "T3N1M0", "T4N2M1", "T3N2M0", None]
+
+BIOMODEL_TYPES = ["PDX", "PDO", "LC"]
+
+
 def _upsert(
     session: Session,
     model: type[SQLModel],
@@ -62,411 +78,40 @@ def _upsert(
 
 
 def seed_database() -> SeedStats:
-    """Insert or update deterministic sample rows across all entities."""
+    """Insert or update a large deterministic sample dataset."""
     create_db_and_tables()
     stats = SeedStats()
 
-    patient_1 = "SEED-PAT-001"
-    patient_2 = "SEED-PAT-002"
-    tumor_1 = "SEED-TUMOR-001"
-
-    sample_id = f"{tumor_1}-M1"
-    biomodel_id = "SEED-BIOMODEL-001"
-    biomodel_pdo_id = "SEED-BIOMODEL-002"
-    biomodel_lc_id = "SEED-BIOMODEL-003"
-    passage_pdx_id = f"{biomodel_id}-P1"
-    passage_pdo_id = f"{biomodel_pdo_id}-P1"
-    passage_lc_id = f"{biomodel_lc_id}-P1"
-
-    implant_id = UUID("50000000-0000-0000-0000-000000000001")
-    size_record_id = UUID("50000000-0000-0000-0000-000000000002")
-    mouse_id = UUID("50000000-0000-0000-0000-000000000003")
-    facs_id = UUID("50000000-0000-0000-0000-000000000004")
-
-    usage_pdx_id = "UR-PDX-001"
-    usage_pdo_id = "UR-PDO-001"
-    usage_lc_id = "UR-LC-001"
-    image_id = UUID("60000000-0000-0000-0000-000000000004")
-    cryo_id = UUID("60000000-0000-0000-0000-000000000005")
-    genomic_id = UUID("60000000-0000-0000-0000-000000000006")
-    molecular_id = UUID("60000000-0000-0000-0000-000000000007")
-    viewer_user_id = UUID("70000000-0000-0000-0000-000000000001")
-
+    # ─── Admin + viewer users ──────────────────────────────────────
+    # Try to find existing admin by email to avoid UNIQUE constraint
     with Session(get_engine()) as session:
-        _upsert(
-            session,
-            Patient,
-            patient_1,
-            {
-                "nhc": patient_1,
-                "sex": "F",
-                "age": 44,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Patient,
-            patient_2,
-            {
-                "nhc": patient_2,
-                "sex": "M",
-                "age": 48,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Tumor,
-            tumor_1,
-            {
-                "biobank_code": tumor_1,
-                "tube_code": "TUBE-TC-001",
-                "classification": "Adenocarcinoma",
-                "ap_diagnosis": "Moderately differentiated",
-                "grade": "G2",
-                "organ": "Lung",
-                "stage": "IIA",
-                "tnm": "T2N0M0",
-                "intervention_date": date(2024, 1, 25),
-                "patient_nhc": patient_1,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Sample,
-            sample_id,
-            {
-                "id": sample_id,
-                "has_serum": True,
-                "has_buffy": True,
-                "has_plasma": True,
-                "has_tumor_tissue_oct": True,
-                "has_non_tumor_tissue_oct": False,
-                "obtain_date": date(2024, 2, 1),
-                "organ": "Lung",
-                "tumor_biobank_code": tumor_1,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Biomodel,
-            biomodel_id,
-            {
-                "id": biomodel_id,
-                "type": "PDX",
-                "description": "Primary xenograft line",
-                "creation_date": date(2024, 2, 10),
-                "status": True,
-                "success": True,
-                "tumor_biobank_code": tumor_1,
-                "parent_passage_id": None,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Biomodel,
-            biomodel_pdo_id,
-            {
-                "id": biomodel_pdo_id,
-                "type": "PDO",
-                "description": "Primary organoid line",
-                "creation_date": date(2024, 2, 12),
-                "status": True,
-                "success": True,
-                "tumor_biobank_code": tumor_1,
-                "parent_passage_id": None,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Biomodel,
-            biomodel_lc_id,
-            {
-                "id": biomodel_lc_id,
-                "type": "LC",
-                "description": "Primary liquid culture line",
-                "creation_date": date(2024, 2, 14),
-                "status": False,
-                "success": False,
-                "tumor_biobank_code": tumor_1,
-                "parent_passage_id": None,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Passage,
-            passage_pdx_id,
-            {
-                "id": passage_pdx_id,
-                "success": True,
-                "status": True,
-                "preclinical_trials": "Pilot oncology panel",
-                "description": "PDX efficacy baseline",
-                "creation_date": date(2024, 3, 5),
-                "biobank_shipment": True,
-                "biobank_arrival_date": date(2024, 3, 1),
-                "biomodel_id": biomodel_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Passage,
-            passage_pdo_id,
-            {
-                "id": passage_pdo_id,
-                "success": True,
-                "description": "PDO drug screen",
-                "creation_date": date(2024, 3, 12),
-                "biobank_shipment": False,
-                "biobank_arrival_date": None,
-                "biomodel_id": biomodel_pdo_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Passage,
-            passage_lc_id,
-            {
-                "id": passage_lc_id,
-                "success": False,
-                "description": "LC confluence optimization",
-                "creation_date": date(2024, 3, 20),
-                "biobank_shipment": False,
-                "biobank_arrival_date": None,
-                "biomodel_id": biomodel_lc_id,
-            },
-            stats,
-        )
+        existing_admin = session.query(AuthUser).filter_by(email="admin@techconnect.local").first()
+        if existing_admin:
+            admin_id = existing_admin.id
+        else:
+            admin_id = UUID("70000000-0000-0000-0000-000000000000")
+            _upsert(
+                session,
+                AuthUser,
+                admin_id,
+                {
+                    "id": admin_id,
+                    "email": "admin@techconnect.local",
+                    "password_hash": hash_password("adminpassword"),
+                    "full_name": "Admin User",
+                    "is_active": True,
+                    "is_admin": True,
+                },
+                stats,
+            )
 
-        _upsert(
-            session,
-            PDXTrial,
-            passage_pdx_id,
-            {
-                "id": passage_pdx_id,
-                "ffpe": True,
-                "he_slide": True,
-                "ihq_data": "Ki67 and p53 available",
-                "has_ihq_data": True,
-                "latency_weeks": 6.5,
-                "similarity": 85.0,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            PDOTrial,
-            passage_pdo_id,
-            {
-                "id": passage_pdo_id,
-                "drop_count": 8,
-                "organoid_count": 126,
-                "plate_type": "96-well",
-                "assessment": "Good morphology",
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            LCTrial,
-            passage_lc_id,
-            {
-                "id": passage_lc_id,
-                "confluence": 73.5,
-                "spheroids": False,
-                "digestion_date": date(2024, 4, 2),
-                "plate_type": "24-well",
-            },
-            stats,
-        )
-
-        _upsert(
-            session,
-            Mouse,
-            mouse_id,
-            {
-                "id": mouse_id,
-                "birth_date": date(2023, 11, 1),
-                "death_cause": None,
-                "animal_facility": "AF-02",
-                "proex": "PROEX-7781",
-                "strain": "NSG",
-                "sex": "female",
-                "death_date": None,
-                "pdx_trial_id": passage_pdx_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Implant,
-            implant_id,
-            {
-                "id": implant_id,
-                "implant_location": "Flank",
-                "type": "Subcutaneous",
-                "mouse_id": mouse_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Measure,
-            size_record_id,
-            {
-                "id": size_record_id,
-                "measure_date": date(2024, 4, 5),
-                "measure_value": 365.0,
-                "implant_id": implant_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            FACS,
-            facs_id,
-            {
-                "id": facs_id,
-                "measure": "FITC",
-                "measure_value": 4.5,
-                "lc_trial_id": passage_lc_id,
-            },
-            stats,
-        )
-
-        _upsert(
-            session,
-            UsageRecord,
-            usage_pdx_id,
-            {
-                "id": usage_pdx_id,
-                "record_type": "Drug treatment",
-                "description": "Cohort A dosing",
-                "record_date": date(2024, 4, 10),
-                "passage_id": passage_pdx_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            UsageRecord,
-            usage_pdo_id,
-            {
-                "id": usage_pdo_id,
-                "record_type": "Organoid assay",
-                "description": "Growth curve acquisition",
-                "record_date": date(2024, 4, 15),
-                "passage_id": passage_pdo_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            UsageRecord,
-            usage_lc_id,
-            {
-                "id": usage_lc_id,
-                "record_type": "Media optimization",
-                "description": "Serum concentration test",
-                "record_date": date(2024, 4, 18),
-                "passage_id": passage_lc_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Image,
-            image_id,
-            {
-                "id": image_id,
-                "image_date": date(2024, 4, 11),
-                "scanner_magnification": 20,
-                "type": "Histology",
-                "ap_review": True,
-                "passage_id": passage_pdx_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            Cryopreservation,
-            cryo_id,
-            {
-                "id": cryo_id,
-                "location": "LN2-Tank-07",
-                "cryo_date": date(2024, 4, 19),
-                "vial_count": 12,
-                "passage_id": passage_pdo_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            TrialGenomicSequencing,
-            genomic_id,
-            {
-                "id": genomic_id,
-                "has_data": True,
-                "data": "Whole exome sequencing completed",
-                "passage_id": passage_pdx_id,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            TrialMolecularData,
-            molecular_id,
-            {
-                "id": molecular_id,
-                "has_data": False,
-                "data": None,
-                "passage_id": passage_lc_id,
-            },
-            stats,
-        )
-        
-        tumor_genomic_id = UUID("60000000-0000-0000-0000-000000000008")
-        tumor_molecular_id = UUID("60000000-0000-0000-0000-000000000009")
-        
-        _upsert(
-            session,
-            TumorGenomicSequencing,
-            tumor_genomic_id,
-            {
-                "id": tumor_genomic_id,
-                "has_data": True,
-                "data": "Sample data",
-                "tumor_biobank_code": tumor_1,
-            },
-            stats,
-        )
-        _upsert(
-            session,
-            TumorMolecularData,
-            tumor_molecular_id,
-            {
-                "id": tumor_molecular_id,
-                "has_data": True,
-                "data": "Sample data",
-                "tumor_biobank_code": tumor_1,
-            },
-            stats,
-        )
-
+        viewer_id = UUID("70000000-0000-0000-0000-000000000001")
         _upsert(
             session,
             AuthUser,
-            viewer_user_id,
+            viewer_id,
             {
-                "id": viewer_user_id,
+                "id": viewer_id,
                 "email": "viewer@techconnect.local",
                 "password_hash": hash_password("viewerpassword"),
                 "full_name": "Viewer Tester",
@@ -475,6 +120,388 @@ def seed_database() -> SeedStats:
             },
             stats,
         )
+
+        # ─── Patients ────────────────────────────────────────────────
+        patients: list[str] = []
+        sexes = ["M", "F"]
+        for i in range(25):
+            nhc = f"SEED-PAT-{i+1:03d}"
+            patients.append(nhc)
+            _upsert(
+                session,
+                Patient,
+                nhc,
+                {
+                    "nhc": nhc,
+                    "sex": sexes[i % 2],
+                    "age": 30 + (i * 3) % 55,
+                },
+                stats,
+            )
+
+        # ─── Tumors ──────────────────────────────────────────────────
+        tumors: list[str] = []
+        tumor_organ_map: dict[str, str] = {}
+        tumor_classification_map: dict[str, str] = {}
+        for i in range(80):
+            code = f"SEED-TUMOR-{i+1:03d}"
+            tumors.append(code)
+            organ = ORGANS[i % len(ORGANS)]
+            classification = CLASSIFICATIONS[i % len(CLASSIFICATIONS)]
+            tumor_organ_map[code] = organ
+            tumor_classification_map[code] = classification
+
+            _upsert(
+                session,
+                Tumor,
+                code,
+                {
+                    "biobank_code": code,
+                    "tube_code": f"TUBE-TC-{i+1:03d}" if i % 3 != 0 else None,
+                    "classification": classification,
+                    "ap_diagnosis": (
+                        "Moderately differentiated" if i % 4 == 0
+                        else "Poorly differentiated" if i % 4 == 1
+                        else "Well differentiated" if i % 4 == 2
+                        else "Undifferentiated"
+                    ),
+                    "grade": GRADES[i % len(GRADES)],
+                    "organ": organ,
+                    "stage": STAGES[i % len(STAGES)],
+                    "tnm": TNMS[i % len(TNMS)],
+                    "intervention_date": date(2023, 1, 1) + timedelta(days=i * 7),
+                    "patient_nhc": patients[i % len(patients)],
+                },
+                stats,
+            )
+
+        # ─── Samples ─────────────────────────────────────────────────
+        for i, tumor_code in enumerate(tumors[:60]):
+            sid = f"{tumor_code}-M1"
+            _upsert(
+                session,
+                Sample,
+                sid,
+                {
+                    "id": sid,
+                    "has_serum": i % 2 == 0,
+                    "has_buffy": i % 3 == 0,
+                    "has_plasma": i % 4 == 0,
+                    "has_tumor_tissue_oct": i % 5 == 0,
+                    "has_non_tumor_tissue_oct": i % 7 == 0,
+                    "obtain_date": date(2023, 2, 1) + timedelta(days=i * 5),
+                    "organ": tumor_organ_map.get(tumor_code),
+                    "tumor_biobank_code": tumor_code,
+                },
+                stats,
+            )
+
+        # ─── Biomodels ───────────────────────────────────────────────
+        biomodels: list[str] = []
+        for i in range(120):
+            bmid = f"SEED-BIOMODEL-{i+1:03d}"
+            biomodels.append(bmid)
+            tumor_code = tumors[i % len(tumors)]
+            btype = BIOMODEL_TYPES[i % 3]
+            # varied success: ~40% true, ~30% false, ~30% null
+            success = (
+                True if i % 10 < 4
+                else False if i % 10 < 7
+                else None
+            )
+            _upsert(
+                session,
+                Biomodel,
+                bmid,
+                {
+                    "id": bmid,
+                    "type": btype,
+                    "description": f"{btype} line derived from {tumor_code}",
+                    "creation_date": date(2023, 3, 1) + timedelta(days=i * 3),
+                    "status": i % 3 != 0,
+                    "success": success,
+                    "tumor_biobank_code": tumor_code,
+                    "tumor_organ": tumor_organ_map.get(tumor_code),
+                    "parent_passage_id": None,
+                },
+                stats,
+            )
+
+        # ─── Passages ────────────────────────────────────────────────
+        passages: list[str] = []
+        for i, bmid in enumerate(biomodels[:90]):
+            pid = f"{bmid}-P1"
+            passages.append(pid)
+            _upsert(
+                session,
+                Passage,
+                pid,
+                {
+                    "id": pid,
+                    "success": i % 3 == 0,
+                    "status": i % 4 != 0,
+                    "preclinical_trials": (
+                        "Oncology panel" if i % 5 == 0
+                        else "Immunotherapy screen" if i % 5 == 1
+                        else "Chemotherapy baseline" if i % 5 == 2
+                        else "Radiation study" if i % 5 == 3
+                        else "Combination therapy"
+                    ),
+                    "description": f"Passage {i+1} for {bmid}",
+                    "creation_date": date(2023, 4, 1) + timedelta(days=i * 2),
+                    "biobank_shipment": i % 2 == 0,
+                    "biobank_arrival_date": (
+                        date(2023, 4, 1) + timedelta(days=i * 2 - 5)
+                        if i % 2 == 0 else None
+                    ),
+                    "biomodel_id": bmid,
+                },
+                stats,
+            )
+
+        # ─── Trials ──────────────────────────────────────────────────
+        for i, pid in enumerate(passages):
+            bmid = biomodels[i % len(biomodels)]
+            btype = BIOMODEL_TYPES[i % 3]
+            if btype == "PDX":
+                _upsert(
+                    session,
+                    PDXTrial,
+                    pid,
+                    {
+                        "id": pid,
+                        "ffpe": i % 2 == 0,
+                        "he_slide": i % 3 == 0,
+                        "ihq_data": f"Ki67 and p53 batch {i+1}",
+                        "has_ihq_data": i % 4 == 0,
+                        "latency_weeks": 3.0 + (i % 8),
+                        "similarity": 70.0 + (i % 25),
+                    },
+                    stats,
+                )
+            elif btype == "PDO":
+                _upsert(
+                    session,
+                    PDOTrial,
+                    pid,
+                    {
+                        "id": pid,
+                        "drop_count": 4 + (i % 12),
+                        "organoid_count": 50 + (i % 200),
+                        "plate_type": "96-well" if i % 2 == 0 else "24-well",
+                        "assessment": (
+                            "Good morphology" if i % 3 == 0
+                            else "Moderate growth" if i % 3 == 1
+                            else "Poor viability"
+                        ),
+                    },
+                    stats,
+                )
+            else:
+                _upsert(
+                    session,
+                    LCTrial,
+                    pid,
+                    {
+                        "id": pid,
+                        "confluence": 40.0 + (i % 55),
+                        "spheroids": i % 4 == 0,
+                        "digestion_date": date(2023, 5, 1) + timedelta(days=i * 2),
+                        "plate_type": "6-well" if i % 2 == 0 else "12-well",
+                    },
+                    stats,
+                )
+
+        # ─── Mice ────────────────────────────────────────────────────
+        mice: list[UUID] = []
+        for i in range(min(30, len(passages))):
+            mid = UUID(f"50000000-0000-0000-0000-{i+1:012d}")
+            mice.append(mid)
+            _upsert(
+                session,
+                Mouse,
+                mid,
+                {
+                    "id": mid,
+                    "birth_date": date(2023, 1, 1) + timedelta(days=i * 10),
+                    "death_cause": None if i % 3 != 0 else "Euthanasia",
+                    "animal_facility": f"AF-{(i % 5)+1:02d}",
+                    "proex": f"PROEX-{7000+i}",
+                    "strain": ["NSG", "BALB/c", "C57BL/6", "NOD", "SCID"][i % 5],
+                    "sex": ["male", "female"][i % 2],
+                    "death_date": None if i % 3 != 0 else date(2023, 8, 1) + timedelta(days=i * 5),
+                    "pdx_trial_id": passages[i],
+                },
+                stats,
+            )
+
+        # ─── Implants ────────────────────────────────────────────────
+        implants: list[UUID] = []
+        for i, mid in enumerate(mice):
+            iid = UUID(f"51000000-0000-0000-0000-{i+1:012d}")
+            implants.append(iid)
+            _upsert(
+                session,
+                Implant,
+                iid,
+                {
+                    "id": iid,
+                    "implant_location": ["Flank", "Mammary fat pad", "Subrenal", "Orthotopic"][i % 4],
+                    "type": ["Subcutaneous", "Orthotopic"][i % 2],
+                    "mouse_id": mid,
+                },
+                stats,
+            )
+
+        # ─── Measures ────────────────────────────────────────────────
+        for i, iid in enumerate(implants):
+            for j in range(3):
+                mid = UUID(f"52000000-0000-0000-0000-{(i*3+j+1):012d}")
+                _upsert(
+                    session,
+                    Measure,
+                    mid,
+                    {
+                        "id": mid,
+                        "measure_date": date(2023, 6, 1) + timedelta(days=i * 5 + j * 2),
+                        "measure_value": 100.0 + (i * 15) + (j * 30),
+                        "implant_id": iid,
+                    },
+                    stats,
+                )
+
+        # ─── FACS ────────────────────────────────────────────────────
+        # FACS has UNIQUE on lc_trial_id — only create one per LC passage
+        # passages[i] belongs to biomodels[i]; biomodel i is LC when i%3==2
+        lc_passages = [passages[i] for i in range(len(passages)) if i % 3 == 2]
+        for i, pid in enumerate(lc_passages[:15]):
+            fid = UUID(f"53000000-0000-0000-0000-{i+1:012d}")
+            _upsert(
+                session,
+                FACS,
+                fid,
+                {
+                    "id": fid,
+                    "measure": ["FITC", "PE", "APC", "PerCP"][i % 4],
+                    "measure_value": 1.0 + (i % 10) * 0.8,
+                    "lc_trial_id": pid,
+                },
+                stats,
+            )
+
+        # ─── Usage Records ───────────────────────────────────────────
+        for i in range(40):
+            uid = f"UR-{i+1:03d}"
+            _upsert(
+                session,
+                UsageRecord,
+                uid,
+                {
+                    "id": uid,
+                    "record_type": [
+                        "Drug treatment", "Organoid assay", "Media optimization",
+                        "Cryopreservation", "Sequencing", "Imaging"
+                    ][i % 6],
+                    "description": f"Usage record {i+1}",
+                    "record_date": date(2023, 7, 1) + timedelta(days=i * 3),
+                    "passage_id": passages[i % len(passages)] if passages else "",
+                },
+                stats,
+            )
+
+        # ─── Images ──────────────────────────────────────────────────
+        for i in range(25):
+            img_id = UUID(f"60000000-0000-0000-0000-{i+1:012d}")
+            _upsert(
+                session,
+                Image,
+                img_id,
+                {
+                    "id": img_id,
+                    "image_date": date(2023, 8, 1) + timedelta(days=i * 4),
+                    "scanner_magnification": [10, 20, 40][i % 3],
+                    "type": ["Histology", "Fluorescence", "Brightfield"][i % 3],
+                    "ap_review": i % 2 == 0,
+                    "passage_id": passages[i % len(passages)] if passages else "",
+                },
+                stats,
+            )
+
+        # ─── Cryopreservations ───────────────────────────────────────
+        for i in range(20):
+            cid = UUID(f"61000000-0000-0000-0000-{i+1:012d}")
+            _upsert(
+                session,
+                Cryopreservation,
+                cid,
+                {
+                    "id": cid,
+                    "location": f"LN2-Tank-{(i % 10)+1:02d}",
+                    "cryo_date": date(2023, 9, 1) + timedelta(days=i * 6),
+                    "vial_count": 5 + (i % 20),
+                    "passage_id": passages[i % len(passages)] if passages else "",
+                },
+                stats,
+            )
+
+        # ─── Genomic / Molecular (trial-level) ───────────────────────
+        for i in range(30):
+            gid = UUID(f"62000000-0000-0000-0000-{i+1:012d}")
+            _upsert(
+                session,
+                TrialGenomicSequencing,
+                gid,
+                {
+                    "id": gid,
+                    "has_data": i % 3 != 0,
+                    "data": f"WES batch {i+1}" if i % 3 != 0 else None,
+                    "passage_id": passages[i % len(passages)] if passages else None,
+                },
+                stats,
+            )
+            mid = UUID(f"63000000-0000-0000-0000-{i+1:012d}")
+            _upsert(
+                session,
+                TrialMolecularData,
+                mid,
+                {
+                    "id": mid,
+                    "has_data": i % 4 != 0,
+                    "data": f"qPCR panel {i+1}" if i % 4 != 0 else None,
+                    "passage_id": passages[i % len(passages)] if passages else None,
+                },
+                stats,
+            )
+
+        # ─── Genomic / Molecular (tumor-level) ───────────────────────
+        for i in range(40):
+            tgid = UUID(f"64000000-0000-0000-0000-{i+1:012d}")
+            tumor = tumors[i % len(tumors)]
+            _upsert(
+                session,
+                TumorGenomicSequencing,
+                tgid,
+                {
+                    "id": tgid,
+                    "has_data": i % 3 != 0,
+                    "data": f"Tumor WES {i+1}" if i % 3 != 0 else None,
+                    "tumor_biobank_code": tumor,
+                },
+                stats,
+            )
+            tmid = UUID(f"65000000-0000-0000-0000-{i+1:012d}")
+            _upsert(
+                session,
+                TumorMolecularData,
+                tmid,
+                {
+                    "id": tmid,
+                    "has_data": i % 4 != 0,
+                    "data": f"Tumor IHC {i+1}" if i % 4 != 0 else None,
+                    "tumor_biobank_code": tumor,
+                },
+                stats,
+            )
 
         session.commit()
 
@@ -488,4 +515,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

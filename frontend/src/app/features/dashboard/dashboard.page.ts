@@ -1,12 +1,18 @@
 import { httpResource } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { API_URL } from '@core/tokens/api-url.token';
+import { TumorsByOrganChartComponent } from './components/tumors-by-organ-chart/tumors-by-organ-chart.component';
+import { BiomodelSuccessChartComponent } from './components/biomodel-success-chart/biomodel-success-chart.component';
+import { OrganClassificationChartComponent } from './components/organ-classification-chart/organ-classification-chart.component';
+import { DashboardPreferencesService } from './services/dashboard-preferences.service';
 
 interface DashboardCard {
   title: string;
@@ -20,7 +26,7 @@ interface DashboardCard {
 @Component({
   selector: 'app-dashboard',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MatCardModule, MatIconModule, MatButtonModule, MatProgressSpinnerModule],
+  imports: [RouterLink, MatCardModule, MatIconModule, MatButtonModule, MatMenuModule, MatProgressSpinnerModule, MatSlideToggleModule, TumorsByOrganChartComponent, BiomodelSuccessChartComponent, OrganClassificationChartComponent],
   template: `
     <div class="dashboard-hero">
       <div class="hero-content">
@@ -79,6 +85,64 @@ interface DashboardCard {
             </mat-card-content>
           </mat-card>
         </a>
+      }
+    </section>
+
+    <section class="charts-section" aria-label="Statistics charts">
+      <div class="charts-section-header">
+        <h2 class="charts-section-title" i18n>Statistics</h2>
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="chartMenu"
+          aria-label="Chart settings"
+          i18n-aria-label
+        >
+          <mat-icon>settings</mat-icon>
+        </button>
+        <mat-menu #chartMenu="matMenu">
+          <div class="chart-menu-content">
+            <span class="chart-menu-heading" i18n>Show charts</span>
+            <mat-slide-toggle
+              [checked]="prefs.visibility().tumorsByOrgan"
+              (change)="prefs.toggleChart('tumorsByOrgan')"
+              i18n
+            >
+              Tumors by Organ
+            </mat-slide-toggle>
+            <mat-slide-toggle
+              [checked]="prefs.visibility().biomodelSuccess"
+              (change)="prefs.toggleChart('biomodelSuccess')"
+              i18n
+            >
+              Biomodel Success
+            </mat-slide-toggle>
+            <mat-slide-toggle
+              [checked]="prefs.visibility().organClassification"
+              (change)="prefs.toggleChart('organClassification')"
+              i18n
+            >
+              Organ Classification
+            </mat-slide-toggle>
+          </div>
+        </mat-menu>
+      </div>
+      @if (anyChartVisible()) {
+        <div class="charts-grid">
+          @if (prefs.visibility().tumorsByOrgan) {
+            <app-tumors-by-organ-chart class="chart-item" />
+          }
+          @if (prefs.visibility().biomodelSuccess) {
+            <app-biomodel-success-chart class="chart-item chart-item-wide" />
+          }
+          @if (prefs.visibility().organClassification) {
+            <app-organ-classification-chart class="chart-item chart-item-wide" />
+          }
+        </div>
+      } @else {
+        <div class="charts-empty" role="status">
+          <mat-icon aria-hidden="true">bar_chart</mat-icon>
+          <span i18n>No charts selected. Use the settings button to enable charts.</span>
+        </div>
       }
     </section>
   `,
@@ -281,11 +345,87 @@ interface DashboardCard {
         transform: translateY(0);
       }
     }
+
+    /* ─── Charts Section ──────────────────────────────────────── */
+
+    .charts-section {
+      margin-top: 2.5rem;
+    }
+
+    .charts-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .charts-section-title {
+      font: var(--mat-sys-headline-small);
+      color: var(--mat-sys-on-surface);
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .chart-menu-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 0.5rem 1rem;
+      min-width: 220px;
+    }
+
+    .chart-menu-heading {
+      font: var(--mat-sys-title-small);
+      color: var(--mat-sys-on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    .charts-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 3rem;
+      color: var(--mat-sys-on-surface-variant);
+      border: 2px dashed var(--mat-sys-outline-variant);
+      border-radius: 16px;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      gap: 1rem;
+    }
+
+    .chart-item {
+      min-width: 0;
+    }
+
+    .chart-item-wide {
+      grid-column: 1 / -1;
+    }
+
+    @media (min-width: 1024px) {
+      .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .chart-item-wide {
+        grid-column: span 2;
+      }
+    }
   `,
 })
 export class DashboardPage {
   private readonly apiUrl = inject(API_URL);
   protected readonly auth = inject(AuthService);
+  protected readonly prefs = inject(DashboardPreferencesService);
+
+  readonly anyChartVisible = computed(() => {
+    const v = this.prefs.visibility();
+    return v.tumorsByOrgan || v.biomodelSuccess || v.organClassification;
+  });
 
   cards: DashboardCard[] = [
     {

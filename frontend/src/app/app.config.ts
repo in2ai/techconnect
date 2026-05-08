@@ -6,12 +6,13 @@ import { authInterceptor } from '@core/interceptors/auth.interceptor';
 import { credentialsInterceptor } from '@core/interceptors/credentials.interceptor';
 import { errorInterceptor } from '@core/interceptors/error.interceptor';
 import { routes } from './app.routes';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([credentialsInterceptor, authInterceptor, errorInterceptor])),
-    provideAnimationsAsync(),
+    provideAnimationsAsync(), provideCharts(withDefaultRegisterables()),
   ],
 };

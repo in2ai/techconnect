@@ -1448,6 +1448,82 @@
         <source>LC</source>
         <target>LC</target>
       </trans-unit>
+      <trans-unit id="1216019953565353819" datatype="html">
+        <source>Tumors by Organ</source>
+        <target>Tumores por Órgano</target>
+      </trans-unit>
+      <trans-unit id="5243693895648667123" datatype="html">
+        <source>Error loading data</source>
+        <target>Error al cargar datos</target>
+      </trans-unit>
+      <trans-unit id="4893616715766810081" datatype="html">
+        <source>No data available</source>
+        <target>No hay datos disponibles</target>
+      </trans-unit>
+      <trans-unit id="1420141588859446587" datatype="html">
+        <source>No success</source>
+        <target>Sin éxito</target>
+      </trans-unit>
+      <trans-unit id="882871133685031749" datatype="html">
+        <source>Undefined</source>
+        <target>Sin definir</target>
+      </trans-unit>
+      <trans-unit id="6825238700731902832" datatype="html">
+        <source>Biomodel Success by Organ and Type</source>
+        <target>Éxito de Biomodelos por Órgano y Tipo</target>
+      </trans-unit>
+      <trans-unit id="1946279273676895336" datatype="html">
+        <source> Include undefined success </source>
+        <target> Incluir éxito sin definir </target>
+      </trans-unit>
+      <trans-unit id="1340836955375321438" datatype="html">
+        <source>No data available for the selected filters</source>
+        <target>No hay datos disponibles para los filtros seleccionados</target>
+      </trans-unit>
+      <trans-unit id="1947399705912679448" datatype="html">
+        <source>Biomodel Success by Tumor Classification</source>
+        <target>Éxito de Biomodelos por Clasificación de Tumor</target>
+      </trans-unit>
+      <trans-unit id="410895489831021831" datatype="html">
+        <source>Select organ</source>
+        <target>Seleccionar órgano</target>
+      </trans-unit>
+      <trans-unit id="9080323703406809577" datatype="html">
+        <source>Please select an organ to view the chart</source>
+        <target>Seleccione un órgano para ver el gráfico</target>
+      </trans-unit>
+      <trans-unit id="9208346280816616972" datatype="html">
+        <source>No data available for the selected organ</source>
+        <target>No hay datos disponibles para el órgano seleccionado</target>
+      </trans-unit>
+      <trans-unit id="1069523139277190436" datatype="html">
+        <source>Statistics</source>
+        <target>Estadísticas</target>
+      </trans-unit>
+      <trans-unit id="5618929564982530591" datatype="html">
+        <source>Chart settings</source>
+        <target>Configuración de gráficos</target>
+      </trans-unit>
+      <trans-unit id="4326912686247672855" datatype="html">
+        <source>Show charts</source>
+        <target>Mostrar gráficos</target>
+      </trans-unit>
+      <trans-unit id="6103993203357271804" datatype="html">
+        <source> Tumors by Organ </source>
+        <target> Tumores por Órgano </target>
+      </trans-unit>
+      <trans-unit id="8970589070437959670" datatype="html">
+        <source> Biomodel Success </source>
+        <target> Éxito de Biomodelos </target>
+      </trans-unit>
+      <trans-unit id="2011095852612923613" datatype="html">
+        <source> Organ Classification </source>
+        <target> Clasificación por Órgano </target>
+      </trans-unit>
+      <trans-unit id="3499267397168795824" datatype="html">
+        <source>No charts selected. Use the settings button to enable charts.</source>
+        <target>No hay gráficos seleccionados. Use el botón de configuración para habilitar gráficos.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

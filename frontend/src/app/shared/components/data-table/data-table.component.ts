@@ -21,6 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
+import { OrganTranslatePipe } from '@shared/pipes/organ-translate.pipe';
 
 @Injectable()
 export class CustomPaginatorIntl extends MatPaginatorIntl {
@@ -52,7 +53,7 @@ export interface ColumnDef {
   key: string;
   label: string;
   sortable?: boolean;
-  type?: 'text' | 'date' | 'boolean' | 'number';
+  type?: 'text' | 'date' | 'boolean' | 'number' | 'organ';
   suffix?: string;
 }
 
@@ -72,6 +73,7 @@ export interface ColumnDef {
     MatSelectModule,
     MatMenuModule,
     LocalizedDatePipe,
+    OrganTranslatePipe,
   ],
   template: `
     <div class="table-wrapper">
@@ -142,6 +144,9 @@ export interface ColumnDef {
                     } @else {
                       <span class="null-value">—</span>
                     }
+                  }
+                  @case ('organ') {
+                    {{ row[col.key] !== null && row[col.key] !== undefined ? (row[col.key] | organTranslate) : '—' }}
                   }
                   @case ('date') {
                     {{ row[col.key] !== null && row[col.key] !== undefined ? (row[col.key] | localizedDate) : '—' }}

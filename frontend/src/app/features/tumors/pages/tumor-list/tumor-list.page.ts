@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, LOCALE_ID } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,6 +16,7 @@ import {
 } from '@shared/components/data-table/data-table.component';
 import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
+import { translateOrgan } from '@shared/pipes/organ-translate.pipe';
 import { catchError, EMPTY, filter, switchMap, tap } from 'rxjs';
 import { TumorFormComponent } from '../../components/tumor-form/tumor-form.component';
 import { TumorService } from '../../services/tumor.service';
@@ -77,6 +78,7 @@ export class TumorListPage {
   private readonly notification = inject(NotificationService);
   private readonly apiUrl = inject(API_URL);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly locale = inject(LOCALE_ID);
   protected readonly auth = inject(AuthService);
 
   columns: ColumnDef[] = [
@@ -87,7 +89,7 @@ export class TumorListPage {
       label: $localize`:@@classificationLbl:Classification`,
       sortable: true,
     },
-    { key: 'organ', label: $localize`:@@organLbl:Organ`, sortable: true },
+    { key: 'organ', label: $localize`:@@organLbl:Organ`, sortable: true, type: 'organ' },
     { key: 'grade', label: $localize`:@@tumorGradeLbl:Grade`, sortable: true },
     { key: 'stage', label: $localize`:@@tumorStageLbl:Stage`, sortable: true },
     { key: 'patient_nhc', label: $localize`:@@tumorPatientNhcLbl:Patient NHC`, sortable: true },
@@ -108,7 +110,7 @@ export class TumorListPage {
       {
         key: 'organ',
         label: $localize`:@@organLbl:Organ`,
-        options: organs.map((o) => ({ label: o, value: o })),
+        options: organs.map((o) => ({ label: translateOrgan(o, this.locale), value: o })),
       },
       {
         key: 'classification',
