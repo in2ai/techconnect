@@ -28,343 +28,520 @@ interface DashboardCard {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, MatCardModule, MatIconModule, MatButtonModule, MatMenuModule, MatProgressSpinnerModule, MatSlideToggleModule, TumorsByOrganChartComponent, BiomodelSuccessChartComponent, OrganClassificationChartComponent],
   template: `
-    <div class="dashboard-hero">
-      <div class="hero-content">
-        <span class="hero-badge" i18n>Platform</span>
+    <div class="dashboard-container">
+      <!-- Animated background blobs -->
+      <div class="ambient-bg" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+      </div>
+
+      <!-- Hero -->
+      <header class="dashboard-hero">
+        <div class="hero-badge" i18n>Platform</div>
         <h1 class="hero-title" i18n>Welcome to TechConnect</h1>
         <p class="hero-subtitle" i18n>
           Biomedical research data management platform. Navigate through your registry, biomodels,
           and passage data.
         </p>
         @if (auth.isAdmin()) {
-          <div class="hero-actions">
-            <a mat-flat-button routerLink="/biomodels/import">
-              <mat-icon>upload_file</mat-icon>
-              <ng-container i18n="@@importPdxWorkbook">Import PDX Workbook</ng-container>
-            </a>
-          </div>
+          <a mat-flat-button routerLink="/biomodels/import" class="hero-cta">
+            <mat-icon>upload_file</mat-icon>
+            <ng-container i18n="@@importPdxWorkbook">Import PDX Workbook</ng-container>
+          </a>
         }
-      </div>
-      <div class="hero-decoration" aria-hidden="true">
-        <mat-icon class="hero-deco-icon">biotech</mat-icon>
-      </div>
-    </div>
+      </header>
 
-    <section class="dashboard-grid" aria-label="Entity overview">
-      @for (card of cards; track card.route; let i = $index) {
-        <a [routerLink]="card.route" class="card-link" [style.animation-delay]="i * 60 + 'ms'">
-          <mat-card class="entity-card" appearance="outlined">
-            <mat-card-content>
-              <div class="card-header">
-                <div
-                  class="card-icon-wrap"
-                  [style.background]="card.color + '14'"
-                  [style.color]="card.color"
-                >
-                  <mat-icon>{{ card.icon }}</mat-icon>
-                </div>
-                <div class="card-count">
+      <!-- Vitals Strip -->
+      <nav class="vitals-strip" aria-label="Entity overview">
+        @for (card of cards; track card.route; let i = $index) {
+          <a
+            [routerLink]="card.route"
+            class="vital-tile"
+            [style.--vital-color]="card.color"
+            [style.animation-delay]="(200 + i * 80) + 'ms'"
+          >
+            <div class="vital-accent" [style.background]="card.color"></div>
+            <div class="vital-content">
+              <div class="vital-icon">
+                <mat-icon>{{ card.icon }}</mat-icon>
+              </div>
+              <div class="vital-data">
+                <div class="vital-count">
                   @if (getResource(card.endpoint).isLoading()) {
-                    <mat-spinner diameter="20" aria-label="Loading count"></mat-spinner>
+                    <mat-spinner diameter="18" aria-label="Loading count"></mat-spinner>
                   } @else if (getResource(card.endpoint).error()) {
-                    <mat-icon class="count-error-icon" aria-label="Error loading data"
-                      >error_outline</mat-icon
-                    >
+                    <mat-icon class="count-error-icon" aria-label="Error loading data">error_outline</mat-icon>
                   } @else if (getResource(card.endpoint).hasValue()) {
-                    {{ getResource(card.endpoint).value()!.length }}
+                    <span class="count-number">{{ getResource(card.endpoint).value()!.length }}</span>
                   } @else {
-                    —
+                    <span class="count-number">—</span>
                   }
                 </div>
+                <div class="vital-label">{{ card.title }}</div>
               </div>
-              <h3 class="card-title">{{ card.title }}</h3>
-              <p class="card-desc">{{ card.description }}</p>
-              <div class="card-arrow" aria-hidden="true">
-                <mat-icon>arrow_forward</mat-icon>
-              </div>
-            </mat-card-content>
-          </mat-card>
-        </a>
-      }
-    </section>
+            </div>
+            <div class="vital-arrow" aria-hidden="true">
+              <mat-icon>arrow_forward</mat-icon>
+            </div>
+          </a>
+        }
+      </nav>
 
-    <section class="charts-section" aria-label="Statistics charts">
-      <div class="charts-section-header">
-        <h2 class="charts-section-title" i18n>Statistics</h2>
-        <button
-          mat-icon-button
-          [matMenuTriggerFor]="chartMenu"
-          aria-label="Chart settings"
-          i18n-aria-label
-        >
-          <mat-icon>settings</mat-icon>
-        </button>
-        <mat-menu #chartMenu="matMenu">
-          <div class="chart-menu-content">
-            <span class="chart-menu-heading" i18n>Show charts</span>
-            <mat-slide-toggle
-              [checked]="prefs.visibility().tumorsByOrgan"
-              (change)="prefs.toggleChart('tumorsByOrgan')"
-              i18n
-            >
-              Tumors by Organ
-            </mat-slide-toggle>
-            <mat-slide-toggle
-              [checked]="prefs.visibility().biomodelSuccess"
-              (change)="prefs.toggleChart('biomodelSuccess')"
-              i18n
-            >
-              Biomodel Success
-            </mat-slide-toggle>
-            <mat-slide-toggle
-              [checked]="prefs.visibility().organClassification"
-              (change)="prefs.toggleChart('organClassification')"
-              i18n
-            >
-              Organ Classification
-            </mat-slide-toggle>
+      <!-- Charts Bento -->
+      <section class="charts-bento" aria-label="Statistics charts">
+        <div class="bento-header">
+          <div class="bento-header-left">
+            <h2 class="bento-title" i18n>Statistics</h2>
+            <span class="bento-subtitle" i18n>Real-time analytics from your research data</span>
           </div>
-        </mat-menu>
-      </div>
-      @if (anyChartVisible()) {
-        <div class="charts-grid">
-          @if (prefs.visibility().tumorsByOrgan) {
-            <app-tumors-by-organ-chart class="chart-item" />
-          }
-          @if (prefs.visibility().biomodelSuccess) {
-            <app-biomodel-success-chart class="chart-item chart-item-wide" />
-          }
-          @if (prefs.visibility().organClassification) {
-            <app-organ-classification-chart class="chart-item chart-item-wide" />
-          }
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="chartMenu"
+            aria-label="Chart settings"
+            i18n-aria-label
+            class="bento-settings"
+          >
+            <mat-icon>settings</mat-icon>
+          </button>
+          <mat-menu #chartMenu="matMenu">
+            <div class="chart-menu-content">
+              <span class="chart-menu-heading" i18n>Show charts</span>
+              <mat-slide-toggle
+                [checked]="prefs.visibility().tumorsByOrgan"
+                (change)="prefs.toggleChart('tumorsByOrgan')"
+                i18n
+              >
+                Tumors by Organ
+              </mat-slide-toggle>
+              <mat-slide-toggle
+                [checked]="prefs.visibility().biomodelSuccess"
+                (change)="prefs.toggleChart('biomodelSuccess')"
+                i18n
+              >
+                Biomodel Success
+              </mat-slide-toggle>
+              <mat-slide-toggle
+                [checked]="prefs.visibility().organClassification"
+                (change)="prefs.toggleChart('organClassification')"
+                i18n
+              >
+                Organ Classification
+              </mat-slide-toggle>
+            </div>
+          </mat-menu>
         </div>
-      } @else {
-        <div class="charts-empty" role="status">
-          <mat-icon aria-hidden="true">bar_chart</mat-icon>
-          <span i18n>No charts selected. Use the settings button to enable charts.</span>
-        </div>
-      }
-    </section>
+
+        @if (anyChartVisible()) {
+          <div class="bento-grid">
+            @if (prefs.visibility().tumorsByOrgan) {
+              <div class="bento-cell bento-cell-tumors">
+                <app-tumors-by-organ-chart />
+              </div>
+            }
+            @if (prefs.visibility().biomodelSuccess) {
+              <div class="bento-cell bento-cell-biomodel">
+                <app-biomodel-success-chart />
+              </div>
+            }
+            @if (prefs.visibility().organClassification) {
+              <div class="bento-cell bento-cell-classification">
+                <app-organ-classification-chart />
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="charts-empty" role="status">
+            <mat-icon aria-hidden="true">bar_chart</mat-icon>
+            <span i18n>No charts selected. Use the settings button to enable charts.</span>
+          </div>
+        }
+      </section>
+    </div>
   `,
   styles: `
+    /* ─── Container & Ambient Background ──────────────────────── */
+
+    .dashboard-container {
+      position: relative;
+      padding: 2rem 1.5rem 3rem;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      animation: blobFloat 12s ease-in-out infinite;
+    }
+
+    .blob-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #c5e3ec 0%, transparent 70%);
+      top: -120px;
+      right: -80px;
+      animation-delay: 0s;
+    }
+
+    .blob-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #e8d5d5 0%, transparent 70%);
+      top: 200px;
+      left: -100px;
+      animation-delay: -4s;
+    }
+
+    .blob-3 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, #d5e8d5 0%, transparent 70%);
+      bottom: 10%;
+      right: 10%;
+      animation-delay: -8s;
+    }
+
+    @keyframes blobFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(20px, -30px) scale(1.05); }
+      66% { transform: translate(-15px, 15px) scale(0.95); }
+    }
+
     /* ─── Hero ────────────────────────────────────────────────── */
 
     .dashboard-hero {
-      margin-bottom: 2rem;
-      padding: 2.5rem 2.25rem;
-      background: linear-gradient(
-        135deg,
-        var(--mat-sys-primary-container),
-        var(--mat-sys-tertiary-container)
-      );
-      border-radius: 20px;
       position: relative;
+      z-index: 1;
+      margin-bottom: 2.5rem;
+      padding: 3rem 2.5rem;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(250,248,245,0.85) 100%);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 24px;
+      animation: heroEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       overflow: hidden;
-      animation: heroEnter 0.5s ease-out;
+    }
+
+    .dashboard-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #2d6a4f, #006d77, #5c4d7d, #bc6c25, #9b2335);
+      opacity: 0.6;
     }
 
     .hero-badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      border-radius: 100px;
-      background: color-mix(in srgb, var(--mat-sys-on-primary-container) 10%, transparent);
-      font: var(--mat-sys-label-small);
-      color: var(--mat-sys-on-primary-container);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-    }
-
-    .hero-title {
-      font: var(--mat-sys-display-small);
-      color: var(--mat-sys-on-primary-container);
-      margin: 0 0 0.625rem;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-    }
-
-    .hero-subtitle {
-      font: var(--mat-sys-body-large);
-      color: var(--mat-sys-on-primary-container);
-      opacity: 0.8;
-      margin: 0;
-      max-width: 560px;
-      line-height: 1.65;
-    }
-
-    .hero-actions {
-      display: flex;
-      margin-top: 1.25rem;
-    }
-
-    .hero-actions a {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
+      padding: 0.35rem 1rem;
+      border-radius: 100px;
+      background: rgba(0,0,0,0.04);
+      border: 1px solid rgba(0,0,0,0.06);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: #57534e;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 1.25rem;
     }
 
-    .hero-decoration {
-      position: absolute;
-      right: -16px;
-      bottom: -20px;
-      opacity: 0.06;
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse 2s ease-in-out infinite;
     }
 
-    .hero-deco-icon {
-      font-size: 200px;
-      width: 200px;
-      height: 200px;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
-    /* ─── Card Grid ───────────────────────────────────────────── */
+    .hero-title {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 700;
+      color: #1c1917;
+      margin: 0 0 0.75rem;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
 
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    .hero-subtitle {
+      font-size: 1.0625rem;
+      color: #78716c;
+      margin: 0;
+      max-width: 520px;
+      line-height: 1.65;
+      font-weight: 400;
+    }
+
+    .hero-cta {
+      margin-top: 1.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1.25rem;
+      border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* ─── Vitals Strip ────────────────────────────────────────── */
+
+    .vitals-strip {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scrollbar-width: none;
+    }
+
+    .vitals-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .vital-tile {
+      position: relative;
+      flex: 1 1 0;
+      min-width: 160px;
+      max-width: 280px;
+      display: flex;
+      align-items: center;
       gap: 1rem;
-    }
-
-    .card-link {
+      padding: 1.25rem 1.5rem;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 20px;
       text-decoration: none;
       color: inherit;
-      animation: cardEnter 0.45s ease backwards;
-    }
-
-    .entity-card {
-      height: 100%;
-      transition:
-        transform 0.2s ease,
-        box-shadow 0.25s ease;
-      cursor: pointer;
-      border-radius: 16px !important;
-      position: relative;
+      transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: tileEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
       overflow: hidden;
-
-      &:hover {
-        transform: translateY(-4px);
-        box-shadow:
-          0 8px 24px rgba(0, 0, 0, 0.06),
-          0 2px 8px rgba(0, 0, 0, 0.04);
-
-        .card-arrow {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
     }
 
-    .card-header {
+    .vital-tile:hover {
+      transform: translateY(-3px);
+      border-color: var(--vital-color);
+      box-shadow:
+        0 12px 32px rgba(0,0,0,0.06),
+        0 0 0 1px var(--vital-color);
+    }
+
+    .vital-tile:hover .vital-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .vital-accent {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      opacity: 0.7;
+      transition: width 0.25s ease, opacity 0.25s ease;
+    }
+
+    .vital-tile:hover .vital-accent {
+      width: 4px;
+      opacity: 1;
+    }
+
+    .vital-content {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      gap: 0.875rem;
+      flex: 1;
     }
 
-    .card-icon-wrap {
+    .vital-icon {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-
-      mat-icon {
-        font-size: 24px;
-        width: 24px;
-        height: 24px;
-      }
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--vital-color) 10%, transparent);
+      color: var(--vital-color);
+      flex-shrink: 0;
     }
 
-    .card-count {
-      font: var(--mat-sys-headline-medium);
-      font-weight: 700;
-      color: var(--mat-sys-on-surface);
-      letter-spacing: -0.02em;
-    }
-
-    .count-error-icon {
-      color: var(--mat-sys-error);
+    .vital-icon mat-icon {
       font-size: 22px;
       width: 22px;
       height: 22px;
     }
 
-    .card-title {
-      font: var(--mat-sys-title-medium);
-      color: var(--mat-sys-on-surface);
-      margin: 0 0 0.25rem;
-      font-weight: 600;
+    .vital-data {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
     }
 
-    .card-desc {
-      font: var(--mat-sys-body-small);
-      color: var(--mat-sys-on-surface-variant);
-      margin: 0;
-      line-height: 1.5;
-    }
-
-    .card-arrow {
-      position: absolute;
-      bottom: 16px;
-      right: 16px;
-      opacity: 0;
-      transform: translateX(-4px);
-      transition:
-        opacity 0.2s ease,
-        transform 0.2s ease;
-      color: var(--mat-sys-primary);
-
-      mat-icon {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-      }
-    }
-
-    /* ─── Animations ──────────────────────────────────────────── */
-
-    @keyframes heroEnter {
-      from {
-        opacity: 0;
-        transform: scale(0.98);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    @keyframes cardEnter {
-      from {
-        opacity: 0;
-        transform: translateY(16px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* ─── Charts Section ──────────────────────────────────────── */
-
-    .charts-section {
-      margin-top: 2.5rem;
-    }
-
-    .charts-section-header {
+    .vital-count {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1c1917;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
     }
 
-    .charts-section-title {
-      font: var(--mat-sys-headline-small);
-      color: var(--mat-sys-on-surface);
-      margin: 0;
-      font-weight: 600;
+    .count-number {
+      animation: countPop 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
+
+    @keyframes countPop {
+      from { opacity: 0; transform: scale(0.8) translateY(4px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .count-error-icon {
+      color: var(--mat-sys-error);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .vital-label {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: #78716c;
+      letter-spacing: -0.01em;
+    }
+
+    .vital-arrow {
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: all 0.25s ease;
+      color: var(--vital-color);
+    }
+
+    .vital-arrow mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ─── Charts Bento ────────────────────────────────────────── */
+
+    .charts-bento {
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 0.5s ease 0.3s both;
+    }
+
+    .bento-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding: 0 0.25rem;
+    }
+
+    .bento-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .bento-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1c1917;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .bento-subtitle {
+      font-size: 0.8125rem;
+      color: #a8a29e;
+      font-weight: 400;
+    }
+
+    .bento-settings {
+      color: #a8a29e;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .bento-settings:hover {
+      color: #57534e;
+      transform: rotate(30deg);
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .bento-cell {
+      animation: cellEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    .bento-cell-tumors { animation-delay: 0.35s; }
+    .bento-cell-biomodel { animation-delay: 0.45s; }
+    .bento-cell-classification { animation-delay: 0.55s; }
+
+    .bento-cell ::ng-deep .chart-card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 20px !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    .bento-cell ::ng-deep .chart-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      transform: translateY(-1px);
+    }
+
+    .bento-cell ::ng-deep .mat-mdc-card-header {
+      padding: 1.25rem 1.5rem 0.75rem;
+    }
+
+    .bento-cell ::ng-deep .mat-mdc-card-title {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: #44403c;
+      letter-spacing: -0.01em;
+    }
+
+    .bento-cell ::ng-deep .mat-mdc-card-content {
+      padding: 0 1.5rem 1.5rem;
+    }
+
+    /* ─── Chart Menu ──────────────────────────────────────────── */
 
     .chart-menu-content {
       display: flex;
@@ -375,10 +552,11 @@ interface DashboardCard {
     }
 
     .chart-menu-heading {
-      font: var(--mat-sys-title-small);
-      color: var(--mat-sys-on-surface-variant);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: #a8a29e;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
       margin-bottom: 0.25rem;
     }
 
@@ -386,33 +564,122 @@ interface DashboardCard {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      padding: 3rem;
-      color: var(--mat-sys-on-surface-variant);
-      border: 2px dashed var(--mat-sys-outline-variant);
-      border-radius: 16px;
+      gap: 0.625rem;
+      padding: 4rem 2rem;
+      color: #a8a29e;
+      background: rgba(255,255,255,0.6);
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 20px;
+      font-size: 0.9375rem;
     }
 
-    .charts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-      gap: 1rem;
+    /* ─── Animations ──────────────────────────────────────────── */
+
+    @keyframes heroEnter {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
-    .chart-item {
-      min-width: 0;
+    @keyframes tileEnter {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
-    .chart-item-wide {
-      grid-column: 1 / -1;
+    @keyframes cellEnter {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ─── Responsive ──────────────────────────────────────────── */
+
+    @media (min-width: 768px) {
+      .dashboard-container {
+        padding: 2.5rem 2rem 4rem;
+      }
+
+      .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .bento-cell-classification {
+        grid-column: 1 / -1;
+      }
     }
 
     @media (min-width: 1024px) {
-      .charts-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .dashboard-container {
+        padding: 3rem 2.5rem 5rem;
       }
-      .chart-item-wide {
-        grid-column: span 2;
+
+      .dashboard-hero {
+        padding: 3.5rem 3rem;
+      }
+
+      .vitals-strip {
+        gap: 1rem;
+      }
+
+      .vital-tile {
+        padding: 1.5rem 1.75rem;
+      }
+
+      .vital-icon {
+        width: 48px;
+        height: 48px;
+      }
+
+      .vital-count {
+        font-size: 1.75rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .dashboard-hero {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+      }
+
+      .vital-tile {
+        min-width: 140px;
+        padding: 1rem 1.25rem;
+      }
+
+      .vital-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .vital-icon mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+
+      .vital-count {
+        font-size: 1.25rem;
       }
     }
   `,
@@ -433,7 +700,7 @@ export class DashboardPage {
       icon: 'person',
       route: '/patients',
       endpoint: 'patients',
-      color: '#2563eb',
+      color: '#2d6a4f',
       description: $localize`View and manage patient records and demographics.`,
     },
     {
@@ -441,7 +708,7 @@ export class DashboardPage {
       icon: 'coronavirus',
       route: '/tumors',
       endpoint: 'tumors',
-      color: '#dc2626',
+      color: '#9b2335',
       description: $localize`:@@dashboardTumorsDescription:Track tumor samples, diagnoses, and biobank codes.`,
     },
     {
@@ -449,7 +716,7 @@ export class DashboardPage {
       icon: 'water_drop',
       route: '/samples',
       endpoint: 'samples',
-      color: '#0891b2',
+      color: '#006d77',
       description: $localize`Manage serum, buffy coat, and plasma samples.`,
     },
     {
@@ -457,7 +724,7 @@ export class DashboardPage {
       icon: 'science',
       route: '/biomodels',
       endpoint: 'biomodels',
-      color: '#6366f1',
+      color: '#5c4d7d',
       description: $localize`Preclinical biomodels derived from tumor samples.`,
     },
     {
@@ -465,7 +732,7 @@ export class DashboardPage {
       icon: 'swap_horiz',
       route: '/passages',
       endpoint: 'passages',
-      color: '#059669',
+      color: '#bc6c25',
       description: $localize`Track biomodel passages and detailed outcomes.`,
     },
   ];

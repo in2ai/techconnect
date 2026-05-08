@@ -1500,6 +1500,10 @@
         <source>Statistics</source>
         <target>Estadísticas</target>
       </trans-unit>
+      <trans-unit id="665128192645754609" datatype="html">
+        <source>Real-time analytics from your research data</source>
+        <target>Análisis en tiempo real de sus datos de investigación</target>
+      </trans-unit>
       <trans-unit id="5618929564982530591" datatype="html">
         <source>Chart settings</source>
         <target>Configuración de gráficos</target>

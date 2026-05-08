@@ -84,7 +84,17 @@ const ALL_TYPES = Object.keys(TYPE_META);
   `,
   styles: `
     .chart-card {
-      border-radius: 16px !important;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 20px !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    .chart-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      transform: translateY(-1px);
     }
     .chart-filters {
       display: flex;
