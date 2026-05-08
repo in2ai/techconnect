@@ -64,7 +64,7 @@ import { BiomodelService } from '../../services/biomodel.service';
     } @else if (biomodelsResource.hasValue()) {
       <app-data-table
         [columns]="columns"
-        [data]="biomodelsResource.value()!"
+        [data]="biomodelRows()"
         [filters]="tableFilters()"
         (rowClicked)="onBiomodelClick($event)"
       />
@@ -93,6 +93,18 @@ export class BiomodelListPage {
     defaultValue: [],
   });
 
+  biomodelRows = computed(() =>
+    (this.biomodelsResource.value() ?? []).map((b) => ({
+      ...b,
+      status:
+        b.status === true
+          ? $localize`:@@activeStatusOpt:Active`
+          : b.status === false
+            ? $localize`:@@inactiveStatusOpt:Inactive`
+            : '—',
+    })),
+  );
+
   tableFilters = computed<TableFilter[]>(() => {
     const data = this.biomodelsResource.value() || [];
     const organs = Array.from(
@@ -116,7 +128,7 @@ export class BiomodelListPage {
     ];
   });
 
-  onBiomodelClick(biomodel: Biomodel): void {
+  onBiomodelClick(biomodel: any): void {
     this.router.navigate(['/biomodels', biomodel.id]);
   }
 

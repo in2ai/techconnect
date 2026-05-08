@@ -44,13 +44,13 @@ describe('BiomodelFormComponent', () => {
       id: 'B-1',
       tumor_biobank_code: 'TB-1',
       type: 'PDX',
-      status: 'active',
+      status: true,
       success: true,
     });
     const payload = component.buildDialogResult();
     expect(payload.id).toBe('B-1');
     expect(payload.type).toBe('PDX');
-    expect(payload.status).toBe('active');
+    expect(payload.status).toBe(true);
     expect(payload.success).toBe(true);
     httpMock.verify();
   });
@@ -63,7 +63,7 @@ describe('BiomodelFormComponent', () => {
         type: 'PDO',
         description: 'old',
         creation_date: '2024-05-01',
-        status: 'active',
+        status: true,
         success: false,
         tumor_biobank_code: 'TB-1',
         parent_passage_id: null,

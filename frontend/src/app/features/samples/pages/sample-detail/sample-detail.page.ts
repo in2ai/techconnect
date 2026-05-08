@@ -9,6 +9,7 @@ import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
 import { Sample } from '@generated/models';
+import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
@@ -30,6 +31,7 @@ import { SampleService } from '../../services/sample.service';
     MatIconModule,
     PageHeaderComponent,
     LoadingStateComponent,
+    LocalizedDatePipe,
   ],
   template: `
     <app-page-header i18n-title="@@sampleTitle" title="Sample" [breadcrumbs]="breadcrumbs()">
@@ -67,7 +69,7 @@ import { SampleService } from '../../services/sample.service';
             </div>
             <div class="detail-item">
               <span class="detail-label" i18n="@@sampleObtainDateLbl">Obtain Date</span
-              ><span class="detail-value">{{ resource.value()!.obtain_date || '—' }}</span>
+              ><span class="detail-value">{{ (resource.value()!.obtain_date | localizedDate) || '—' }}</span>
             </div>
             <div class="detail-item">
               <span class="detail-label" i18n="@@sampleOrganLbl">Organ</span

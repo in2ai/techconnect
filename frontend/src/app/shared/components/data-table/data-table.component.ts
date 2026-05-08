@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,6 +6,7 @@ import {
   effect,
   Injectable,
   input,
+  LOCALE_ID,
   output,
   signal,
   viewChild,
@@ -18,6 +20,7 @@ import { MatPaginator, MatPaginatorIntl, MatPaginatorModule } from '@angular/mat
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
 
 @Injectable()
 export class CustomPaginatorIntl extends MatPaginatorIntl {
@@ -68,6 +71,7 @@ export interface ColumnDef {
     MatButtonModule,
     MatSelectModule,
     MatMenuModule,
+    LocalizedDatePipe,
   ],
   template: `
     <div class="table-wrapper">
@@ -140,7 +144,7 @@ export interface ColumnDef {
                     }
                   }
                   @case ('date') {
-                    {{ row[col.key] !== null && row[col.key] !== undefined ? row[col.key] : '—' }}
+                    {{ row[col.key] !== null && row[col.key] !== undefined ? (row[col.key] | localizedDate) : '—' }}
                   }
                   @case ('number') {
                     {{ row[col.key] !== null && row[col.key] !== undefined ? row[col.key] + (col.suffix || '') : '—' }}

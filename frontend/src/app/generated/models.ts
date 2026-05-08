@@ -57,7 +57,7 @@ export interface Biomodel {
   type: string | null;
   description: string | null;
   creation_date: string | null;
-  status: string | null;
+  status: boolean | null;
   success: boolean | null;
   tumor_biobank_code: string;
   parent_passage_id: string | null;
@@ -89,7 +89,6 @@ export interface PDXTrial {
 export interface PDOTrial {
   id: string;
   drop_count: number | null;
-  frozen_organoid_count: number | null;
   organoid_count: number | null;
   plate_type: string | null;
   assessment: string | null;
@@ -163,13 +162,15 @@ export interface Cryopreservation {
 
 export interface TrialGenomicSequencing {
   id: string;
-  annotations: string | null;
+  has_data: boolean | null;
+  data: string | null;
   passage_id: string | null;
 }
 
 export interface TrialMolecularData {
   id: string;
-  annotations: string | null;
+  has_data: boolean | null;
+  data: string | null;
   passage_id: string | null;
 }
 

@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +32,7 @@ import {
   Breadcrumb,
   PageHeaderComponent,
 } from '@shared/components/page-header/page-header.component';
+import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
 import { BiomodelFormComponent } from '../../../biomodels/components/biomodel-form/biomodel-form.component';
 import { BiomodelService } from '../../../biomodels/services/biomodel.service';
 import { SampleFormComponent } from '../../../samples/components/sample-form/sample-form.component';
@@ -49,6 +51,7 @@ import { TumorService } from '../../services/tumor.service';
     PageHeaderComponent,
     DataTableComponent,
     LoadingStateComponent,
+    LocalizedDatePipe,
   ],
   template: `
     <app-page-header [title]="pageTitle()" [breadcrumbs]="breadcrumbs()">
@@ -112,7 +115,7 @@ import { TumorService } from '../../services/tumor.service';
             <div class="detail-item">
               <span class="detail-label" i18n="@@interventionDateLbl">Intervention Date</span
               ><span class="detail-value">{{
-                tumorResource.value()!.intervention_date || '—'
+                (tumorResource.value()!.intervention_date | localizedDate) || '—'
               }}</span>
             </div>
             <div class="detail-item">
@@ -158,7 +161,7 @@ import { TumorService } from '../../services/tumor.service';
             } @else {
               <app-data-table
                 [columns]="biomodelColumns"
-                [data]="filteredBiomodels()"
+                [data]="biomodelRows()"
                 (rowClicked)="onBiomodelClick($event)"
               />
             }
@@ -435,6 +438,18 @@ export class TumorDetailPage {
     { key: 'creation_date', label: $localize`Created`, sortable: true, type: 'date' },
   ];
 
+  biomodelRows = computed(() =>
+    this.filteredBiomodels().map((b) => ({
+      ...b,
+      status:
+        b.status === true
+          ? $localize`:@@activeStatusOpt:Active`
+          : b.status === false
+            ? $localize`:@@inactiveStatusOpt:Inactive`
+            : '—',
+    })),
+  );
+
   lbColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID`, sortable: true },
     { key: 'has_serum', label: $localize`Serum`, type: 'boolean' },
@@ -453,7 +468,7 @@ export class TumorDetailPage {
     { key: 'obtain_date', label: $localize`Date`, sortable: true, type: 'date' },
   ];
 
-  onBiomodelClick(biomodel: Biomodel): void {
+  onBiomodelClick(biomodel: any): void {
     this.router.navigate(['/biomodels', biomodel.id]);
   }
 

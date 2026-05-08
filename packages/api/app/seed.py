@@ -83,9 +83,9 @@ def seed_database() -> SeedStats:
     mouse_id = UUID("50000000-0000-0000-0000-000000000003")
     facs_id = UUID("50000000-0000-0000-0000-000000000004")
 
-    usage_pdx_id = UUID("60000000-0000-0000-0000-000000000001")
-    usage_pdo_id = UUID("60000000-0000-0000-0000-000000000002")
-    usage_lc_id = UUID("60000000-0000-0000-0000-000000000003")
+    usage_pdx_id = "UR-PDX-001"
+    usage_pdo_id = "UR-PDO-001"
+    usage_lc_id = "UR-LC-001"
     image_id = UUID("60000000-0000-0000-0000-000000000004")
     cryo_id = UUID("60000000-0000-0000-0000-000000000005")
     genomic_id = UUID("60000000-0000-0000-0000-000000000006")
@@ -159,7 +159,7 @@ def seed_database() -> SeedStats:
                 "type": "PDX",
                 "description": "Primary xenograft line",
                 "creation_date": date(2024, 2, 10),
-                "status": "active",
+                "status": True,
                 "success": True,
                 "tumor_biobank_code": tumor_1,
                 "parent_passage_id": None,
@@ -175,7 +175,7 @@ def seed_database() -> SeedStats:
                 "type": "PDO",
                 "description": "Primary organoid line",
                 "creation_date": date(2024, 2, 12),
-                "status": "active",
+                "status": True,
                 "success": True,
                 "tumor_biobank_code": tumor_1,
                 "parent_passage_id": None,
@@ -191,7 +191,7 @@ def seed_database() -> SeedStats:
                 "type": "LC",
                 "description": "Primary liquid culture line",
                 "creation_date": date(2024, 2, 14),
-                "status": "inactive",
+                "status": False,
                 "success": False,
                 "tumor_biobank_code": tumor_1,
                 "parent_passage_id": None,
@@ -268,7 +268,6 @@ def seed_database() -> SeedStats:
             {
                 "id": passage_pdo_id,
                 "drop_count": 8,
-                "frozen_organoid_count": 40,
                 "organoid_count": 126,
                 "plate_type": "96-well",
                 "assessment": "Good morphology",
@@ -415,7 +414,8 @@ def seed_database() -> SeedStats:
             genomic_id,
             {
                 "id": genomic_id,
-                "annotations": "Some annotations",
+                "has_data": True,
+                "data": "Whole exome sequencing completed",
                 "passage_id": passage_pdx_id,
             },
             stats,
@@ -426,7 +426,8 @@ def seed_database() -> SeedStats:
             molecular_id,
             {
                 "id": molecular_id,
-                "annotations": "Some annotations",
+                "has_data": False,
+                "data": None,
                 "passage_id": passage_lc_id,
             },
             stats,

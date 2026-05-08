@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -45,6 +46,7 @@ import {
   Breadcrumb,
   PageHeaderComponent,
 } from '@shared/components/page-header/page-header.component';
+import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
 import { PassageFormComponent } from '../../components/passage-form/passage-form.component';
 import { PassageService } from '../../services/passage.service';
 
@@ -74,6 +76,7 @@ interface MouseInVivoNode {
     PageHeaderComponent,
     DataTableComponent,
     LoadingStateComponent,
+    LocalizedDatePipe,
   ],
   template: `
     <app-page-header i18n-title="@@passageTitleLbl" title="Passage" [breadcrumbs]="breadcrumbs()">
@@ -130,7 +133,7 @@ interface MouseInVivoNode {
             </div>
             <div class="detail-item">
               <span class="detail-label" i18n="@@trialCreatedLbl">Created</span
-              ><span class="detail-value">{{ passageResource.value()!.creation_date || '—' }}</span>
+              ><span class="detail-value">{{ (passageResource.value()!.creation_date | localizedDate) || '—' }}</span>
             </div>
             <div class="detail-item">
               <span class="detail-label" i18n="@@trialBiobankShipmentLbl">Biobank Shipment</span
@@ -147,7 +150,7 @@ interface MouseInVivoNode {
             <div class="detail-item">
               <span class="detail-label" i18n="@@trialArrivalDateLbl">Arrival Date</span
               ><span class="detail-value">{{
-                passageResource.value()!.biobank_arrival_date || '—'
+                (passageResource.value()!.biobank_arrival_date | localizedDate) || '—'
               }}</span>
             </div>
             <div class="detail-item full-width">
@@ -229,12 +232,6 @@ interface MouseInVivoNode {
                   ><span class="detail-value">{{ currentPdoTrial()!.organoid_count ?? '—' }}</span>
                 </div>
                 <div class="detail-item">
-                  <span class="detail-label" i18n="@@pdoFrozenOrganoidsLbl">Frozen Organoids</span
-                  ><span class="detail-value">{{
-                    currentPdoTrial()!.frozen_organoid_count ?? '—'
-                  }}</span>
-                </div>
-                <div class="detail-item">
                   <span class="detail-label" i18n="@@pdoPlateTypeLbl">Plate Type</span
                   ><span class="detail-value">{{ currentPdoTrial()!.plate_type || '—' }}</span>
                 </div>
@@ -279,7 +276,7 @@ interface MouseInVivoNode {
                 </div>
                 <div class="detail-item">
                   <span class="detail-label" i18n="@@lcDigestionDateLbl">Digestion Date</span
-                  ><span class="detail-value">{{ currentLcTrial()!.digestion_date || '—' }}</span>
+                  ><span class="detail-value">{{ (currentLcTrial()!.digestion_date | localizedDate) || '—' }}</span>
                 </div>
                 <div class="detail-item">
                   <span class="detail-label" i18n="@@lcPlateTypeLbl">Plate Type</span
@@ -370,24 +367,12 @@ interface MouseInVivoNode {
                 <mat-accordion class="in-vivo-accordion" multi displayMode="flat">
                   @for (node of inVivoHierarchyFiltered(); track node.mouse.id; let mi = $index) {
                     <mat-expansion-panel class="mouse-panel" [expanded]="true">
-                      <mat-expansion-panel-header>
+                        <mat-expansion-panel-header>
                         <mat-panel-title>
                           <span class="mouse-panel-title">
                             <span i18n="@@mouseOrdinalPrefix">Mouse</span>
                             {{ mi + 1 }}
-                            @if (node.mouse.strain || node.mouse.sex) {
-                              <span class="mouse-panel-subtitle">
-                                @if (node.mouse.strain) {
-                                  <span>{{ node.mouse.strain }}</span>
-                                }
-                                @if (node.mouse.strain && node.mouse.sex) {
-                                  <span aria-hidden="true"> · </span>
-                                }
-                                @if (node.mouse.sex) {
-                                  <span>{{ node.mouse.sex }}</span>
-                                }
-                              </span>
-                            }
+                            <span class="mouse-panel-subtitle">{{ id() }}</span>
                           </span>
                         </mat-panel-title>
                         <mat-panel-description class="mouse-panel-desc">
@@ -401,7 +386,7 @@ interface MouseInVivoNode {
                             <span class="mouse-birth">
                               ·
                               <ng-container i18n="@@birthShortLbl">b.</ng-container>
-                              {{ node.mouse.birth_date }}
+                              {{ node.mouse.birth_date | localizedDate }}
                             </span>
                           }
                         </mat-panel-description>
@@ -409,17 +394,12 @@ interface MouseInVivoNode {
 
                       <div class="mouse-detail-grid">
                         <div class="mouse-detail-item">
-                          <span class="detail-label" i18n="@@mouseShortIdLbl">Reference</span>
-                          <code
-                            class="id-chip"
-                            [matTooltip]="node.mouse.id"
-                            matTooltipShowDelay="200"
-                            >{{ formatShortId(node.mouse.id) }}</code
-                          >
+                          <span class="detail-label" i18n="@@sexLbl">Sex</span>
+                          <span>{{ node.mouse.sex || '—' }}</span>
                         </div>
                         <div class="mouse-detail-item">
                           <span class="detail-label" i18n="@@deathDateLbl">Death Date</span>
-                          <span>{{ node.mouse.death_date || '—' }}</span>
+                          <span>{{ (node.mouse.death_date | localizedDate) || '—' }}</span>
                         </div>
                         <div class="mouse-detail-item">
                           <span class="detail-label" i18n="@@deathCauseLbl">Death Cause</span>
@@ -468,12 +448,6 @@ interface MouseInVivoNode {
                                 <h4 class="implant-heading">
                                   <span i18n="@@implantOrdinalPrefix">Implant</span>
                                   {{ ii + 1 }}
-                                  <code
-                                    class="id-chip"
-                                    [matTooltip]="iw.implant.id"
-                                    matTooltipShowDelay="200"
-                                    >{{ formatShortId(iw.implant.id) }}</code
-                                  >
                                 </h4>
                                 <p class="implant-meta">
                                   @if (iw.implant.implant_location) {
@@ -532,13 +506,6 @@ interface MouseInVivoNode {
                                     <tr>
                                       <th scope="col" i18n="@@measureDateCol">Date</th>
                                       <th scope="col" i18n="@@measureValueCol">Value</th>
-                                      <th
-                                        scope="col"
-                                        class="measures-col-ref"
-                                        i18n="@@measureRefCol"
-                                      >
-                                        Reference
-                                      </th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -553,22 +520,14 @@ interface MouseInVivoNode {
                                           openMeasureForm(mv); $event.preventDefault()
                                         "
                                       >
-                                        <td>{{ mv.measure_date || '—' }}</td>
+                                        <td>{{ (mv.measure_date | localizedDate) || '—' }}</td>
                                         <td>
                                           {{
                                             mv.measure_value !== null &&
                                             mv.measure_value !== undefined
-                                              ? mv.measure_value
+                                              ? mv.measure_value + ' mm³'
                                               : '—'
                                           }}
-                                        </td>
-                                        <td class="measures-col-ref">
-                                          <code
-                                            class="id-chip id-chip-sm"
-                                            [matTooltip]="mv.id"
-                                            matTooltipShowDelay="200"
-                                            >{{ formatShortId(mv.id) }}</code
-                                          >
                                         </td>
                                       </tr>
                                     }
@@ -596,7 +555,7 @@ interface MouseInVivoNode {
               <div class="section-container">
                 <div class="section-header">
                   <h3 i18n="@@facsSectionTitle">FACS Data</h3>
-                  @if (auth.isAdmin()) {
+                  @if (auth.isAdmin() && filteredFACS().length === 0) {
                     <button mat-flat-button color="primary" (click)="openFacsForm()">
                       <mat-icon>add</mat-icon> <ng-container i18n="@@addFacsBtn">Add</ng-container>
                     </button>
@@ -665,22 +624,164 @@ interface MouseInVivoNode {
         </mat-tab>
         <mat-tab i18n-label="@@genomicTabLbl" label="Genomic Sequencing">
           <div class="tab-content">
-            <h3 i18n="@@genomicsTitle">Genomic Sequencing</h3>
-            <app-data-table
-              [columns]="genomicColumns"
-              [data]="filteredGenomic()"
-              (rowClicked)="openGenomicForm($event)"
-            />
+            @if (genomicResource.isLoading()) {
+              <app-loading-state status="loading" />
+            } @else if (genomicResource.error()) {
+              <app-loading-state
+                status="error"
+                i18n-errorMessage="@@failedToLoadGenomicData"
+                errorMessage="Failed to load genomic data"
+                (retry)="genomicResource.reload()"
+              />
+            } @else if (filteredGenomic().length === 0) {
+              <div class="empty-state-with-action">
+                <app-loading-state
+                  status="empty"
+                  emptyIcon="science"
+                  i18n-emptyTitle="@@noGenomicDataTitle"
+                  emptyTitle="No genomic data"
+                  i18n-emptyMessage="@@noPassageGenomicDataMsg"
+                  emptyMessage="No genomic sequencing data linked to this passage."
+                />
+                @if (auth.isAdmin()) {
+                  <div
+                    style="display: flex; justify-content: center; margin-top: -24px; padding-bottom: 32px;"
+                  >
+                    <button mat-flat-button color="primary" (click)="openGenomicForm()">
+                      <mat-icon>add</mat-icon>
+                      <ng-container i18n="@@addGenomicDataBtn">Add Genomic Data</ng-container>
+                    </button>
+                  </div>
+                }
+              </div>
+            } @else {
+              @let genomic = filteredGenomic()[0];
+              <mat-card appearance="outlined" class="detail-card" style="margin-top: 16px;">
+                <mat-card-header>
+                  <mat-card-title i18n="@@genomicDataInfoLbl"
+                    >Genomic Data Information</mat-card-title
+                  >
+                  <span class="spacer" style="flex: 1 1 auto;"></span>
+                  @if (auth.isAdmin()) {
+                    <button mat-icon-button (click)="openGenomicForm(genomic)" aria-label="Edit">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  }
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="detail-grid" style="margin-top: 16px;">
+                    <div class="detail-item">
+                      <span class="detail-label" i18n="@@hasDataLbl">Has Data</span>
+                      <span
+                        class="detail-value"
+                        style="display: flex; align-items: center; gap: 4px;"
+                      >
+                        @if (genomic.has_data) {
+                          <mat-icon
+                            color="primary"
+                            style="font-size: 20px; width: 20px; height: 20px;"
+                            >check_circle</mat-icon
+                          >
+                          <span i18n="@@yesLbl">Yes</span>
+                        } @else {
+                          <mat-icon color="warn" style="font-size: 20px; width: 20px; height: 20px;"
+                            >cancel</mat-icon
+                          >
+                          <span i18n="@@noLbl">No</span>
+                        }
+                      </span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label" i18n="@@dataLbl">Data</span>
+                      <span class="detail-value">{{ genomic.data || '—' }}</span>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            }
           </div>
         </mat-tab>
         <mat-tab i18n-label="@@molecularTabLbl" label="Molecular Data">
           <div class="tab-content">
-            <h3 i18n="@@molecularTitle">Molecular Data</h3>
-            <app-data-table
-              [columns]="molecularColumns"
-              [data]="filteredMolecular()"
-              (rowClicked)="openMolecularForm($event)"
-            />
+            @if (molecularResource.isLoading()) {
+              <app-loading-state status="loading" />
+            } @else if (molecularResource.error()) {
+              <app-loading-state
+                status="error"
+                i18n-errorMessage="@@failedToLoadMolecularData"
+                errorMessage="Failed to load molecular data"
+                (retry)="molecularResource.reload()"
+              />
+            } @else if (filteredMolecular().length === 0) {
+              <div class="empty-state-with-action">
+                <app-loading-state
+                  status="empty"
+                  emptyIcon="biotech"
+                  i18n-emptyTitle="@@noMolecularDataTitle"
+                  emptyTitle="No molecular data"
+                  i18n-emptyMessage="@@noPassageMolecularDataMsg"
+                  emptyMessage="No molecular data linked to this passage."
+                />
+                @if (auth.isAdmin()) {
+                  <div
+                    style="display: flex; justify-content: center; margin-top: -24px; padding-bottom: 32px;"
+                  >
+                    <button mat-flat-button color="primary" (click)="openMolecularForm()">
+                      <mat-icon>add</mat-icon>
+                      <ng-container i18n="@@addMolecularDataBtn">Add Molecular Data</ng-container>
+                    </button>
+                  </div>
+                }
+              </div>
+            } @else {
+              @let molecular = filteredMolecular()[0];
+              <mat-card appearance="outlined" class="detail-card" style="margin-top: 16px;">
+                <mat-card-header>
+                  <mat-card-title i18n="@@molecularDataInfoLbl"
+                    >Molecular Data Information</mat-card-title
+                  >
+                  <span class="spacer" style="flex: 1 1 auto;"></span>
+                  @if (auth.isAdmin()) {
+                    <button
+                      mat-icon-button
+                      (click)="openMolecularForm(molecular)"
+                      aria-label="Edit"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  }
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="detail-grid" style="margin-top: 16px;">
+                    <div class="detail-item">
+                      <span class="detail-label" i18n="@@hasDataLbl">Has Data</span>
+                      <span
+                        class="detail-value"
+                        style="display: flex; align-items: center; gap: 4px;"
+                      >
+                        @if (molecular.has_data) {
+                          <mat-icon
+                            color="primary"
+                            style="font-size: 20px; width: 20px; height: 20px;"
+                            >check_circle</mat-icon
+                          >
+                          <span i18n="@@yesLbl">Yes</span>
+                        } @else {
+                          <mat-icon color="warn" style="font-size: 20px; width: 20px; height: 20px;"
+                            >cancel</mat-icon
+                          >
+                          <span i18n="@@noLbl">No</span>
+                        }
+                      </span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label" i18n="@@dataLbl">Data</span>
+                      <span class="detail-value">{{ molecular.data || '—' }}</span>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            }
           </div>
         </mat-tab>
       </mat-tab-group>
@@ -1037,9 +1138,6 @@ export class PassageDetailPage {
       list.push(imp);
       implantsByMouse.set(imp.mouse_id, list);
     }
-    for (const list of implantsByMouse.values()) {
-      list.sort((a, b) => a.id.localeCompare(b.id));
-    }
     const measuresByImplant = new Map<string, Measure[]>();
     for (const m of this.filteredMeasures()) {
       const list = measuresByImplant.get(m.implant_id) ?? [];
@@ -1082,7 +1180,7 @@ export class PassageDetailPage {
   });
 
   usageColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID` },
+    { key: 'id', label: $localize`ID`, sortable: true },
     { key: 'record_type', label: $localize`Type` },
     {
       key: 'description',
@@ -1094,30 +1192,20 @@ export class PassageDetailPage {
     {
       key: 'scanner_magnification',
       label: $localize`:@@trialImageEnlargement:Enlargement`,
-      suffix: 'x',
+      suffix: 'X',
     },
     { key: 'type', label: $localize`Type` },
     { key: 'image_date', label: $localize`Date`, type: 'date' },
-    { key: 'ap_review', label: $localize`AP Review` },
+    { key: 'ap_review', label: $localize`AP Review`, type: 'boolean' },
   ];
   cryoColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID` },
     { key: 'location', label: $localize`Location` },
     { key: 'cryo_date', label: $localize`Date`, type: 'date' },
     { key: 'vial_count', label: $localize`Vials`, type: 'number' },
   ];
   facsColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID` },
     { key: 'measure', label: $localize`Measure` },
     { key: 'measure_value', label: $localize`Value`, type: 'number' },
-  ];
-  genomicColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID` },
-    { key: 'annotations', label: $localize`Annotations` },
-  ];
-  molecularColumns: ColumnDef[] = [
-    { key: 'id', label: $localize`ID` },
-    { key: 'annotations', label: $localize`Annotations` },
   ];
 
   yesNo(value: boolean | null): string {
@@ -1190,12 +1278,6 @@ export class PassageDetailPage {
           type: 'number',
           integerOnly: true,
         },
-        {
-          name: 'frozen_organoid_count',
-          label: $localize`:@@pdoFrozenOrganoidsLbl:Frozen Organoids`,
-          type: 'number',
-          integerOnly: true,
-        },
         { name: 'plate_type', label: $localize`:@@pdoPlateTypeLbl:Plate Type`, type: 'text' },
         { name: 'assessment', label: $localize`:@@pdoAssessmentLbl:Assessment`, type: 'text' },
       ],
@@ -1231,7 +1313,16 @@ export class PassageDetailPage {
       '/mice',
       [
         { name: 'strain', label: $localize`Strain`, type: 'text' },
-        { name: 'sex', label: $localize`:@@sexLbl:Sex`, type: 'text' },
+        {
+          name: 'sex',
+          label: $localize`:@@sexLbl:Sex`,
+          type: 'select',
+          options: [
+            { value: null, label: $localize`:@@sexNotSpecified:Not specified` },
+            { value: 'M', label: $localize`:@@sexMale:Male` },
+            { value: 'F', label: $localize`:@@sexFemale:Female` },
+          ],
+        },
         { name: 'birth_date', label: $localize`:@@birthDateLbl:Birth Date`, type: 'date' },
         { name: 'death_date', label: $localize`Death Date`, type: 'date' },
         { name: 'death_cause', label: $localize`Death Cause`, type: 'text' },
@@ -1251,7 +1342,7 @@ export class PassageDetailPage {
   openImplantForm(entity: Implant | null = null, presetDefaults: Record<string, unknown> = {}) {
     const miceOpts = this.filteredMice().map((m) => ({
       value: m.id,
-      label: `${this.formatShortId(m.id)} · ${m.strain ?? '—'} · ${m.sex ?? '—'}`,
+      label: `${m.strain ?? '—'} · ${m.sex ?? '—'}`,
     }));
     const lockMouse = !entity && presetDefaults['mouse_id'] != null;
     this.openEntityForm(
@@ -1278,12 +1369,10 @@ export class PassageDetailPage {
   openMeasureForm(entity: Measure | null = null, presetDefaults: Record<string, unknown> = {}) {
     const implantOpts = this.filteredImplants().map((i) => {
       const mouse = this.filteredMice().find((m) => m.id === i.mouse_id);
-      const mouseBit = mouse
-        ? `${mouse.strain ?? '—'} · ${mouse.sex ?? '—'}`
-        : this.formatShortId(i.mouse_id);
+      const mouseBit = mouse ? `${mouse.strain ?? '—'} · ${mouse.sex ?? '—'}` : '—';
       return {
         value: i.id,
-        label: `${this.formatShortId(i.id)} · ${i.implant_location ?? '—'} · ${i.type ?? '—'} (${mouseBit})`,
+        label: `${i.implant_location ?? '—'} · ${i.type ?? '—'} (${mouseBit})`,
       };
     });
     const lockImplant = !entity && presetDefaults['implant_id'] != null;
@@ -1327,6 +1416,12 @@ export class PassageDetailPage {
       $localize`:@@usageRecordFormDialogTitle:Usage Record`,
       '/usage-records',
       [
+        {
+          name: 'id',
+          label: $localize`ID`,
+          type: 'text',
+          required: true,
+        },
         {
           name: 'record_type',
           label: $localize`:@@usageRecordTypeField:Type`,
@@ -1391,7 +1486,10 @@ export class PassageDetailPage {
     this.openEntityForm(
       $localize`:@@genomicSequenceFormTitle:Genomic Sequence`,
       '/trial-genomic-sequencings',
-      [{ name: 'annotations', label: $localize`Annotations`, type: 'text' }],
+      [
+        { name: 'has_data', label: $localize`:@@hasDataLbl:Has Data`, type: 'boolean' },
+        { name: 'data', label: $localize`:@@dataLbl:Data`, type: 'text' },
+      ],
       this.genomicResource,
       entity,
       { passage_id: this.id() },
@@ -1402,7 +1500,10 @@ export class PassageDetailPage {
     this.openEntityForm(
       $localize`:@@molecularTitle:Molecular Data`,
       '/trial-molecular-data',
-      [{ name: 'annotations', label: $localize`Annotations`, type: 'text' }],
+      [
+        { name: 'has_data', label: $localize`:@@hasDataLbl:Has Data`, type: 'boolean' },
+        { name: 'data', label: $localize`:@@dataLbl:Data`, type: 'text' },
+      ],
       this.molecularResource,
       entity,
       { passage_id: this.id() },

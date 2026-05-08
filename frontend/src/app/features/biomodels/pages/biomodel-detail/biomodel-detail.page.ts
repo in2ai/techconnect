@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,6 +11,7 @@ import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
 import { Biomodel, Passage } from '@generated/models';
+import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
 import {
   ConfirmDialogComponent,
   ConfirmDialogData,
@@ -36,6 +38,7 @@ import { BiomodelService } from '../../services/biomodel.service';
     PageHeaderComponent,
     DataTableComponent,
     LoadingStateComponent,
+    LocalizedDatePipe,
   ],
   template: `
     <app-page-header
@@ -76,7 +79,15 @@ import { BiomodelService } from '../../services/biomodel.service';
             </div>
             <div class="detail-item">
               <span class="detail-label" i18n="@@biomodelStatusLbl">Status</span
-              ><span class="detail-value">{{ biomodelResource.value()!.status }}</span>
+              ><span class="detail-value">
+                @if (biomodelResource.value()!.status === true) {
+                  <ng-container i18n="@@activeStatusOpt">Active</ng-container>
+                } @else if (biomodelResource.value()!.status === false) {
+                  <ng-container i18n="@@inactiveStatusOpt">Inactive</ng-container>
+                } @else {
+                  —
+                }
+              </span>
             </div>
             <div class="detail-item">
               <span class="detail-label" i18n="@@biomodelSuccessLbl">Success</span
@@ -97,7 +108,7 @@ import { BiomodelService } from '../../services/biomodel.service';
             <div class="detail-item">
               <span class="detail-label" i18n="@@biomodelCreatedLbl">Created</span
               ><span class="detail-value">{{
-                biomodelResource.value()!.creation_date || '—'
+                (biomodelResource.value()!.creation_date | localizedDate) || '—'
               }}</span>
             </div>
             <div class="detail-item">

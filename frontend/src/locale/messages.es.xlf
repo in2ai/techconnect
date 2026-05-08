@@ -1061,10 +1061,14 @@
       <trans-unit id="passageTitleLbl"><source>Passage</source><target>Pase</target></trans-unit>
       <trans-unit id="failedToLoadPassage"><source>Failed to load passage</source><target>Error al cargar pase</target></trans-unit>
       <trans-unit id="passageIdLbl"><source>ID</source><target>ID</target></trans-unit>
+      <trans-unit id="passageFormIdLbl"><source>Passage ID</source><target>ID del Pase</target></trans-unit>
+      <trans-unit id="passageIdPlaceholder"><source>Enter passage ID</source><target>Introduzca el ID del pase</target></trans-unit>
       <trans-unit id="passageDescLbl"><source>Description</source><target>Descripción</target></trans-unit>
       <trans-unit id="passageBiomodelLbl"><source>Biomodel</source><target>Biomodelo</target></trans-unit>
       <trans-unit id="noPassagesYet"><source>No passages yet</source><target>Aún no hay pases</target></trans-unit>
       <trans-unit id="createFirstPassage"><source>Use Add Passage above or create one from a biomodel detail page.</source><target>Puede añadir un pase con el botón superior o desde la página de detalle de un biomodelo.</target></trans-unit>
+      <trans-unit id="noPassageGenomicDataMsg"><source>No genomic sequencing data linked to this passage.</source><target>No hay datos de secuenciación genómica vinculados a este pase.</target></trans-unit>
+      <trans-unit id="noPassageMolecularDataMsg"><source>No molecular data linked to this passage.</source><target>No hay datos moleculares vinculados a este pase.</target></trans-unit>
 
       <trans-unit id="trialsTabLbl"><source>Trials</source><target>Ensayos</target></trans-unit>
       <trans-unit id="failedToLoadTrials"><source>Failed to load trials</source><target>Error al cargar ensayos</target></trans-unit>

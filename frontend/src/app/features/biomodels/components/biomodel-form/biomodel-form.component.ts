@@ -74,26 +74,23 @@ export interface BiomodelFormData {
 
         <mat-form-field appearance="outline">
           <mat-label i18n="@@biomodelParentPassageOptionalLbl">Parent Passage (Optional)</mat-label>
-          @if (passagesResource.isLoading()) {
-            <input matInput disabled i18n-placeholder="@@loadingLbl" placeholder="Loading…" />
-          } @else {
-            <input
-              matInput
-              [formControl]="parentPassageSearch"
-              [matAutocomplete]="parentPassageAutocomplete"
-              i18n-placeholder="@@parentPassageSearchPlaceholder"
-              placeholder="Search passage ID"
-            />
-            <mat-autocomplete
-              #parentPassageAutocomplete="matAutocomplete"
-              (optionSelected)="selectParentPassage($event.option.value)"
-            >
-              <mat-option [value]="null" i18n="@@noneOptionLbl">None</mat-option>
-              @for (passage of filteredParentPassages(); track passage.id) {
-                <mat-option [value]="passage.id">{{ passage.id }}</mat-option>
-              }
-            </mat-autocomplete>
-          }
+          <input
+            matInput
+            [formControl]="parentPassageSearch"
+            [matAutocomplete]="parentPassageAutocomplete"
+            [readonly]="passagesResource.isLoading()"
+            i18n-placeholder="@@parentPassageSearchPlaceholder"
+            placeholder="Search passage ID"
+          />
+          <mat-autocomplete
+            #parentPassageAutocomplete="matAutocomplete"
+            (optionSelected)="selectParentPassage($event.option.value)"
+          >
+            <mat-option [value]="null" i18n="@@noneOptionLbl">None</mat-option>
+            @for (passage of filteredParentPassages(); track passage.id) {
+              <mat-option [value]="passage.id">{{ passage.id }}</mat-option>
+            }
+          </mat-autocomplete>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -107,8 +104,9 @@ export interface BiomodelFormData {
         <mat-form-field appearance="outline">
           <mat-label i18n="@@biomodelStatusLbl">Status</mat-label>
           <mat-select formControlName="status">
-            <mat-option value="active" i18n="@@activeStatusOpt">Active</mat-option>
-            <mat-option value="inactive" i18n="@@inactiveStatusOpt">Inactive</mat-option>
+            <mat-option [value]="null">—</mat-option>
+            <mat-option [value]="true" i18n="@@activeStatusOpt">Active</mat-option>
+            <mat-option [value]="false" i18n="@@inactiveStatusOpt">Inactive</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">

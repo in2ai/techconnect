@@ -145,9 +145,7 @@ function applyPayloadFieldTransforms(
     <mat-dialog-actions align="end">
       @if (auth.isAdmin()) {
         @if (isEdit) {
-          <button mat-button color="warn" (click)="deleteEntity()" i18n="@@deleteBtn">
-            Delete
-          </button>
+          <button mat-button color="warn" (click)="deleteEntity()" i18n="@@deleteBtn">Delete</button>
         }
         <span class="spacer"></span>
         <button mat-button mat-dialog-close i18n="@@cancelBtn">Cancel</button>
@@ -157,9 +155,7 @@ function applyPayloadFieldTransforms(
           [disabled]="form.invalid || submitting"
           (click)="save()"
           i18n="@@saveBtn"
-        >
-          Save
-        </button>
+        >Save</button>
       } @else {
         <span class="spacer"></span>
         <button mat-button mat-dialog-close i18n="@@closeAction">Close</button>

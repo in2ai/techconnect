@@ -114,10 +114,10 @@ async function setup(opts: SetupOptions = {}) {
   httpMock.expectOne('/api/facs').flush([{ id: 'F-1', lc_trial_id: id } as FACS]);
   httpMock
     .expectOne('/api/trial-genomic-sequencings')
-    .flush([{ id: 'G-1', passage_id: id } as TrialGenomicSequencing]);
+    .flush([{ id: 'G-1', passage_id: id, has_data: true, data: 'seq-data' } as TrialGenomicSequencing]);
   httpMock
     .expectOne('/api/trial-molecular-data')
-    .flush([{ id: 'MO-1', passage_id: id } as TrialMolecularData]);
+    .flush([{ id: 'MO-1', passage_id: id, has_data: false, data: null } as TrialMolecularData]);
   await fixture.whenStable();
   fixture.detectChanges();
 
@@ -130,9 +130,6 @@ describe('PassageDetailPage', () => {
     expect(fixture.componentInstance.currentBiomodel()?.type).toBe('PDX');
     expect(fixture.componentInstance.filteredUsage().map((item) => item.id)).toEqual(['U-1']);
     expect(fixture.componentInstance.filteredGenomic().map((item) => item.id)).toEqual(['G-1']);
-    expect(fixture.componentInstance.filteredBiomodels().map((item) => item.id)).toEqual([
-      'BM-CHILD',
-    ]);
     httpMock.verify();
   });
 

@@ -35,6 +35,19 @@ export interface PassageFormData {
     </h2>
     <mat-dialog-content>
       <form class="form-grid" [formGroup]="form">
+        @if (data.mode === 'create') {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label i18n="@@passageFormIdLbl">Passage ID</mat-label>
+            <input
+              matInput
+              formControlName="id"
+              required
+              i18n-placeholder="@@passageIdPlaceholder"
+              placeholder="Enter passage ID"
+            />
+          </mat-form-field>
+        }
+
         @if (showBiomodelPicker) {
           <mat-form-field appearance="outline" class="full-width">
             <mat-label i18n="@@passageBiomodelLbl">Biomodel</mat-label>
@@ -132,7 +145,9 @@ export class PassageFormComponent {
   });
 
   readonly form = this.formBuilder.group({
-    id: this.formBuilder.nonNullable.control(this.data.passage?.id ?? ''),
+    id: this.formBuilder.nonNullable.control(this.data.passage?.id ?? '', {
+      validators: this.data.mode === 'create' ? [Validators.required, Validators.pattern(/\S/)] : [],
+    }),
     description: this.formBuilder.control<Passage['description']>(
       this.data.passage?.description ?? null,
     ),

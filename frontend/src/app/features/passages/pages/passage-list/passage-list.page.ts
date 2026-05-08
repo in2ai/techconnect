@@ -101,11 +101,17 @@ export class PassageListPage {
       this.passagesResource.value()?.map((passage) => ({
         ...passage,
         type: biomodelTypes.get(passage.biomodel_id) ?? '—',
+        status:
+          passage.status === true
+            ? $localize`:@@activeStatusOpt:Active`
+            : passage.status === false
+              ? $localize`:@@inactiveStatusOpt:Inactive`
+              : '—',
       })) ?? []
     );
   });
 
-  onPassageClick(passage: Passage): void {
+  onPassageClick(passage: any): void {
     this.router.navigate(['/passages', passage.id]);
   }
 

@@ -37,7 +37,7 @@ class Biomodel(SQLModel, table=True):
     type: Optional[str] = Field(default=None, max_length=50)
     description: Optional[str] = Field(default=None)  # text field
     creation_date: Union[date, None] = Field(default=None)
-    status: Optional[str] = Field(default=None, max_length=50)
+    status: Optional[bool] = Field(default=None)
     success: Optional[bool] = Field(default=None)
     
     # Foreign keys (required - 1:N relationship with Tumor)

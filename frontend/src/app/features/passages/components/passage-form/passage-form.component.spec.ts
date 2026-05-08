@@ -29,14 +29,14 @@ describe('PassageFormComponent', () => {
     const { component, httpMock } = await setup({ mode: 'create' });
     expect(component.showBiomodelPicker).toBe(true);
     expect(component.form.invalid).toBe(true);
-    component.form.patchValue({ biomodel_id: 'BM-1' });
+    component.form.patchValue({ id: 'P-1', biomodel_id: 'BM-1' });
     expect(component.form.valid).toBe(true);
     httpMock.verify();
   });
 
   it('omits id from create payload', async () => {
     const { component, httpMock } = await setup({ mode: 'create' });
-    component.form.patchValue({ biomodel_id: 'BM-1' });
+    component.form.patchValue({ id: 'P-1', biomodel_id: 'BM-1' });
     const payload = component.buildDialogResult();
     expect('id' in payload).toBe(false);
     expect('number' in payload).toBe(false);

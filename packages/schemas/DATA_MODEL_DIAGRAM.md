@@ -64,7 +64,7 @@ erDiagram
         string type
         string description
         date creation_date
-        string status
+        boolean status
         boolean success
         string tumor_biobank_code FK
         string parent_passage_id FK
@@ -95,7 +95,6 @@ erDiagram
     PDO_TRIAL {
         string id PK
         integer drop_count
-        integer frozen_organoid_count
         integer organoid_count
         string plate_type
         string assessment
@@ -150,13 +149,15 @@ erDiagram
 
     TRIAL_GENOMIC_SEQUENCING {
         uuid id PK
-        string annotations
+        boolean has_data
+        string data
         string passage_id FK
     }
 
     TRIAL_MOLECULAR_DATA {
         uuid id PK
-        string annotations
+        boolean has_data
+        string data
         string passage_id FK
     }
 

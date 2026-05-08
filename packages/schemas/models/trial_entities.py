@@ -16,7 +16,7 @@ class UsageRecord(SQLModel, table=True):
     __tablename__ = "usage_record"
 
     # Primary key
-    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    id: str = Field(primary_key=True, max_length=100)
 
     # Fields
     record_type: Optional[str] = Field(default=None, max_length=100)
@@ -80,7 +80,8 @@ class TrialGenomicSequencing(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
 
     # Fields
-    annotations: Optional[str] = Field(default=None)
+    has_data: Optional[bool] = Field(default=None)
+    data: Optional[str] = Field(default=None)
 
     # Foreign keys (optional - 1:0..1 relationship with Passage)
     passage_id: Optional[str] = Field(
@@ -101,7 +102,10 @@ class TrialMolecularData(SQLModel, table=True):
 
     # Primary key
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    annotations: Optional[str] = Field(default=None)
+
+    # Fields
+    has_data: Optional[bool] = Field(default=None)
+    data: Optional[str] = Field(default=None)
 
     # Foreign keys (optional - 1:0..1 relationship with Passage)
     passage_id: Optional[str] = Field(

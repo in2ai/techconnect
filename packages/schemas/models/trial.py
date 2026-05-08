@@ -42,7 +42,6 @@ class PDOTrial(SQLModel, table=True):
 
     # Fields
     drop_count: Optional[int] = Field(default=None)
-    frozen_organoid_count: Optional[int] = Field(default=None)
     organoid_count: Optional[int] = Field(default=None)
     plate_type: Optional[str] = Field(default=None, max_length=50)
     assessment: Optional[str] = Field(default=None, max_length=100)
