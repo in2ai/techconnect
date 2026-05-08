@@ -395,7 +395,7 @@ interface MouseInVivoNode {
                       <div class="mouse-detail-grid">
                         <div class="mouse-detail-item">
                           <span class="detail-label" i18n="@@sexLbl">Sex</span>
-                          <span>{{ node.mouse.sex || '—' }}</span>
+                          <span>{{ node.mouse.sex ? (node.mouse.sex === 'Male' ? 'M' : 'F') : '—' }}</span>
                         </div>
                         <div class="mouse-detail-item">
                           <span class="detail-label" i18n="@@deathDateLbl">Death Date</span>
@@ -1342,7 +1342,7 @@ export class PassageDetailPage {
   openImplantForm(entity: Implant | null = null, presetDefaults: Record<string, unknown> = {}) {
     const miceOpts = this.filteredMice().map((m) => ({
       value: m.id,
-      label: `${m.strain ?? '—'} · ${m.sex ?? '—'}`,
+      label: `${m.strain ?? '—'} · ${m.sex ? (m.sex === 'Male' ? 'M' : 'F') : '—'}`,
     }));
     const lockMouse = !entity && presetDefaults['mouse_id'] != null;
     this.openEntityForm(
@@ -1369,7 +1369,7 @@ export class PassageDetailPage {
   openMeasureForm(entity: Measure | null = null, presetDefaults: Record<string, unknown> = {}) {
     const implantOpts = this.filteredImplants().map((i) => {
       const mouse = this.filteredMice().find((m) => m.id === i.mouse_id);
-      const mouseBit = mouse ? `${mouse.strain ?? '—'} · ${mouse.sex ?? '—'}` : '—';
+      const mouseBit = mouse ? `${mouse.strain ?? '—'} · ${mouse.sex ? (mouse.sex === 'Male' ? 'M' : 'F') : '—'}` : '—';
       return {
         value: i.id,
         label: `${i.implant_location ?? '—'} · ${i.type ?? '—'} (${mouseBit})`,
