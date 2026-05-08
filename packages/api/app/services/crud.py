@@ -120,10 +120,25 @@ def _prepare_create_payload(
             "id": _next_sample_id(session, model, str(tumor_biobank_code)),
         }
 
-    if model.__name__ == "Passage" and not payload_data.get("id"):
+    if model.__name__ == "Passage":
         biomodel_id = payload_data.get("biomodel_id")
         if not biomodel_id:
             raise HTTPException(status_code=400, detail="Passage biomodel_id is required")
+
+        passage_id = payload_data.get("id")
+        if passage_id:
+            expected_prefix = f"{biomodel_id}-"
+            if not str(passage_id).startswith(expected_prefix):
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Passage ID must start with '{expected_prefix}'",
+                )
+            if session.get(model, passage_id) is not None:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Passage ID '{passage_id}' already exists",
+                )
+            return payload_data
 
         return {
             **payload_data,

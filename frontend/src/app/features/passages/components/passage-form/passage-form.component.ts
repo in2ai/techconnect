@@ -37,13 +37,13 @@ export interface PassageFormData {
       <form class="form-grid" [formGroup]="form">
         @if (data.mode === 'create') {
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label i18n="@@passageFormIdLbl">Passage ID</mat-label>
+            <mat-label i18n="@@passageFormIdLbl">Passage identifier</mat-label>
             <input
               matInput
               formControlName="id"
               required
               i18n-placeholder="@@passageIdPlaceholder"
-              placeholder="Enter passage ID"
+              placeholder="e.g., P1, P2"
             />
           </mat-form-field>
         }
@@ -173,8 +173,9 @@ export class PassageFormComponent {
   buildDialogResult(): Partial<Passage> {
     const value = this.form.getRawValue();
     if (this.data.mode === 'create') {
-      const { id: _, ...createPayload } = value;
-      return createPayload;
+      const { id: passageId, ...rest } = value;
+      const fullId = `${rest.biomodel_id}-${passageId}`;
+      return { ...rest, id: fullId };
     }
     return value;
   }
