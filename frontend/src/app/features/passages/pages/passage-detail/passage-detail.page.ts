@@ -423,6 +423,7 @@ interface MouseInVivoNode {
                             mat-flat-button
                             color="primary"
                             type="button"
+                            [disabled]="node.implants.length >= 2"
                             (click)="openImplantForm(null, { mouse_id: node.mouse.id })"
                           >
                             <mat-icon>add</mat-icon>
