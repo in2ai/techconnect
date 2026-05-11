@@ -25,6 +25,13 @@ export const routes: Routes = [
           import('./features/dashboard/dashboard.page').then((m) => m.DashboardPage),
       },
       {
+        path: 'admin/data-transfer',
+        loadComponent: () =>
+          import('./features/admin/pages/data-transfer/data-transfer.page').then(
+            (m) => m.DataTransferPage,
+          ),
+      },
+      {
         path: 'patients',
         loadComponent: () =>
           import('./features/patients/pages/patient-list/patient-list.page').then(

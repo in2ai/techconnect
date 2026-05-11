@@ -3,30 +3,10 @@
 from typing import Annotated, TypeVar
 
 from fastapi import APIRouter, Query
-from models import (
-    FACS,
-    Biomodel,
-    Cryopreservation,
-    Image,
-    Implant,
-    LCTrial,
-    Sample,
-    Mouse,
-    Passage,
-    Patient,
-    PDOTrial,
-    PDXTrial,
-    Tumor,
-    UsageRecord,
-    Measure,
-    TrialGenomicSequencing,
-    TrialMolecularData,
-    TumorGenomicSequencing,
-    TumorMolecularData,
-)
 from sqlmodel import SQLModel
 
 from app.api.dependencies import AdminUserDep, SessionDep
+from app.services.entity_catalog import ENTITY_ROUTERS
 from app.services.crud import create_item, delete_item, get_item_or_404, list_items, update_item
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
@@ -99,29 +79,6 @@ def build_entity_router(model: type[ModelType], *, prefix: str, tag: str) -> API
         return delete_item(session, model, item_id)
 
     return entity_router
-
-
-ENTITY_ROUTERS: tuple[tuple[type[SQLModel], str, str], ...] = (
-    (Patient, "patients", "Patients"),
-    (Tumor, "tumors", "Tumors"),
-    (Sample, "samples", "Samples"),
-    (Biomodel, "biomodels", "Biomodels"),
-    (Passage, "passages", "Passages"),
-    (PDXTrial, "pdx-trials", "PDX Trials"),
-    (PDOTrial, "pdo-trials", "PDO Trials"),
-    (LCTrial, "lc-trials", "LC Trials"),
-    (Implant, "implants", "Implants"),
-    (Measure, "measures", "Measures"),
-    (Mouse, "mice", "Mice"),
-    (FACS, "facs", "FACS"),
-    (UsageRecord, "usage-records", "Usage Records"),
-    (Image, "images", "Images"),
-    (Cryopreservation, "cryopreservations", "Cryopreservations"),
-    (TrialGenomicSequencing, "trial-genomic-sequencings", "Trial Genomic Sequencings"),
-    (TrialMolecularData, "trial-molecular-data", "Trial Molecular Data"),
-    (TumorGenomicSequencing, "tumor-genomic-sequencings", "Tumor Genomic Sequencings"),
-    (TumorMolecularData, "tumor-molecular-data", "Tumor Molecular Data"),
-)
 
 for entity_model, entity_prefix, entity_tag in ENTITY_ROUTERS:
     router.include_router(

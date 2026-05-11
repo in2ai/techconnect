@@ -45,9 +45,9 @@ interface DashboardCard {
           and passage data.
         </p>
         @if (auth.isAdmin()) {
-          <a mat-flat-button routerLink="/biomodels/import" class="hero-cta">
-            <mat-icon>upload_file</mat-icon>
-            <ng-container i18n="@@importPdxWorkbook">Import PDX Workbook</ng-container>
+          <a mat-flat-button routerLink="/admin/data-transfer" class="hero-cta">
+            <mat-icon>sync_alt</mat-icon>
+            <ng-container i18n="@@openDatasetTransfer">Open Dataset Transfer</ng-container>
           </a>
         }
       </header>

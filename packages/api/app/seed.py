@@ -97,7 +97,7 @@ def seed_database() -> SeedStats:
                 {
                     "id": admin_id,
                     "email": "admin@techconnect.local",
-                    "password_hash": hash_password("adminpassword"),
+                    "password_hash": hash_password("techconnect-dev-password"),
                     "full_name": "Admin User",
                     "is_active": True,
                     "is_admin": True,

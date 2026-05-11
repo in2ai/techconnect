@@ -1,9 +1,10 @@
 from collections.abc import Iterator
 from io import BytesIO
+from zipfile import ZipFile
 
 import pytest
 from fastapi.testclient import TestClient
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 
 from app.core.config import get_settings
 from app.core.database import get_engine
@@ -182,6 +183,200 @@ def test_import_pdx_workbook_supports_legacy_sheet_layout(client: TestClient):
     assert images[0]['type'] == 'H&E'
     assert images[0]['scanner_magnification'] == 40
     assert images[0]['image_date'] == '2024-12-05'
+
+
+def test_download_dataset_template_workbook(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    response = client.get('/api/imports/dataset-template.xlsx')
+
+    assert response.status_code == 200
+    assert response.headers['content-type'].startswith(
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    assert 'techconnect-dataset-template.xlsx' in response.headers['content-disposition']
+
+    workbook = load_workbook(BytesIO(response.content), read_only=True)
+    try:
+        assert 'README' in workbook.sheetnames
+        assert 'patient' in workbook.sheetnames
+        assert 'tumor' in workbook.sheetnames
+        assert 'biomodel' in workbook.sheetnames
+
+        patient_headers = next(workbook['patient'].iter_rows(min_row=1, max_row=1, values_only=True))
+        patient_notes = next(workbook['patient'].iter_rows(min_row=2, max_row=2, values_only=True))
+        tumor_headers = next(workbook['tumor'].iter_rows(min_row=1, max_row=1, values_only=True))
+
+        assert patient_headers == ('nhc', 'sex', 'age')
+        assert patient_notes[0] == 'primary key | required | type:string'
+        assert tumor_headers[-1] == 'patient_nhc'
+    finally:
+        workbook.close()
+
+
+def test_download_dataset_template_csv_zip(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    response = client.get('/api/imports/dataset-template.zip')
+
+    assert response.status_code == 200
+    assert response.headers['content-type'].startswith('application/zip')
+    assert 'techconnect-dataset-template.zip' in response.headers['content-disposition']
+
+    with ZipFile(BytesIO(response.content)) as archive:
+        names = set(archive.namelist())
+        assert 'README.txt' in names
+        assert 'patient.csv' in names
+        assert 'tumor.csv' in names
+        assert 'biomodel.csv' in names
+        patient_csv = archive.read('patient.csv').decode('utf-8').strip()
+        readme = archive.read('README.txt').decode('utf-8')
+
+    assert patient_csv == 'nhc,sex,age'
+    assert 'Dates should use YYYY-MM-DD.' in readme
+
+
+def test_export_dataset_workbook_includes_existing_rows(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    patient_response = client.post('/api/patients', json={'nhc': 'PAT-001', 'sex': 'F', 'age': 42})
+    assert patient_response.status_code == 200
+    tumor_response = client.post(
+        '/api/tumors',
+        json={
+            'biobank_code': 'TUM-001',
+            'patient_nhc': 'PAT-001',
+            'organ': 'Lung',
+            'classification': 'Adenocarcinoma',
+        },
+    )
+    assert tumor_response.status_code == 200
+
+    response = client.get('/api/imports/dataset.xlsx')
+
+    assert response.status_code == 200
+    workbook = load_workbook(BytesIO(response.content), read_only=True)
+    try:
+        patient_rows = list(workbook['patient'].iter_rows(min_row=3, values_only=True))
+        tumor_rows = list(workbook['tumor'].iter_rows(min_row=3, values_only=True))
+    finally:
+        workbook.close()
+
+    assert ('PAT-001', 'F', 42) in patient_rows
+    assert ('TUM-001', None, 'Adenocarcinoma', None, None, 'Lung', None, None, None, 'PAT-001') in tumor_rows
+
+
+def test_import_dataset_workbook_creates_and_updates_related_rows(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    template_response = client.get('/api/imports/dataset-template.xlsx')
+    workbook = load_workbook(BytesIO(template_response.content))
+    patient_sheet = workbook['patient']
+    tumor_sheet = workbook['tumor']
+    patient_sheet.append(['PAT-100', 'F', 35])
+    tumor_sheet.append(['TUM-100', None, None, 'Adenocarcinoma', None, 'Lung', None, None, None, 'PAT-100'])
+    payload = BytesIO()
+    workbook.save(payload)
+    workbook.close()
+
+    first_response = client.post(
+        '/api/imports/dataset-workbook',
+        files={
+            'file': (
+                'dataset.xlsx',
+                payload.getvalue(),
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            )
+        },
+    )
+
+    assert first_response.status_code == 200
+    assert first_response.json()['rows_imported'] == 2
+    assert first_response.json()['table_counts']['patient'] == {'created': 1, 'updated': 0}
+    assert first_response.json()['table_counts']['tumor'] == {'created': 1, 'updated': 0}
+
+    patient_response = client.get('/api/patients/PAT-100')
+    assert patient_response.status_code == 200
+    assert patient_response.json()['age'] == 35
+
+    updated_workbook = load_workbook(BytesIO(template_response.content))
+    updated_patient_sheet = updated_workbook['patient']
+    updated_tumor_sheet = updated_workbook['tumor']
+    updated_patient_sheet.append(['PAT-100', 'F', 36])
+    updated_tumor_sheet.append(['TUM-100', None, None, 'Updated diagnosis', None, 'Lung', None, None, None, 'PAT-100'])
+    updated_payload = BytesIO()
+    updated_workbook.save(updated_payload)
+    updated_workbook.close()
+
+    second_response = client.post(
+        '/api/imports/dataset-workbook',
+        files={
+            'file': (
+                'dataset.xlsx',
+                updated_payload.getvalue(),
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            )
+        },
+    )
+
+    assert second_response.status_code == 200
+    assert second_response.json()['table_counts']['patient'] == {'created': 0, 'updated': 1}
+    assert second_response.json()['table_counts']['tumor'] == {'created': 0, 'updated': 1}
+
+    updated_patient_response = client.get('/api/patients/PAT-100')
+    updated_tumor_response = client.get('/api/tumors/TUM-100')
+    assert updated_patient_response.json()['age'] == 36
+    assert updated_tumor_response.json()['ap_diagnosis'] == 'Updated diagnosis'
+
+
+def test_import_dataset_csv_zip_reports_partial_failures(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    archive_buffer = BytesIO()
+    with ZipFile(archive_buffer, mode='w') as archive:
+        archive.writestr('patient.csv', 'nhc,sex,age\nPAT-200,F,40\n')
+        archive.writestr('tumor.csv', 'biobank_code,tube_code,classification,ap_diagnosis,grade,organ,stage,tnm,intervention_date,patient_nhc\nTUM-200,,Adenocarcinoma,,,Lung,,,,PAT-200\nTUM-201,,Adenocarcinoma,,,Lung,,,,MISSING\n')
+
+    response = client.post(
+        '/api/imports/dataset-csv-zip',
+        files={'file': ('dataset.zip', archive_buffer.getvalue(), 'application/zip')},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body['rows_imported'] == 2
+    assert body['rows_failed'] == 1
+    assert body['table_counts']['patient'] == {'created': 1, 'updated': 0}
+    assert body['table_counts']['tumor'] == {'created': 1, 'updated': 0}
+    assert body['errors'][0]['table'] == 'tumor'
+    assert body['errors'][0]['primary_key'] == 'TUM-201'
+
+    patient_response = client.get('/api/patients/PAT-200')
+    tumor_response = client.get('/api/tumors/TUM-200')
+    missing_tumor_response = client.get('/api/tumors/TUM-201')
+    assert patient_response.status_code == 200
+    assert tumor_response.status_code == 200
+    assert missing_tumor_response.status_code == 404
 
 
 def _build_workbook(*, age: int, diagnosis: str) -> BytesIO:

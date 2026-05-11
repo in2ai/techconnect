@@ -21,6 +21,325 @@
           <context context-type="linenumber">161,163</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="dataTransferTitle" datatype="html">
+        <source>Dataset Transfer</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">60,61</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">563</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="dataTransferSubtitle" datatype="html">
+        <source>Download templates, export the current database, and import completed Excel or CSV packages for all domain tables.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">62,63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="backToDashboard" datatype="html">
+        <source>Back to Dashboard</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">68,70</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="legacyPdxImportLink" datatype="html">
+        <source>Legacy PDX Import</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">72,74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="dataTransferAdminsOnlyTitle" datatype="html">
+        <source>Administrator access required</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">82,83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="dataTransferAdminsOnlyMessage" datatype="html">
+        <source> Only administrators can export or import dataset files. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">84,86</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="downloadAssetsHeading" datatype="html">
+        <source>Download assets</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">93,94</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="downloadAssetsCopy" datatype="html">
+        <source> Use the empty templates for new data entry or export the current database to edit it offline. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">95,97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importDatasetHeading" datatype="html">
+        <source>Import dataset package</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">124,125</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importDatasetCopy" datatype="html">
+        <source> Upload the completed Excel workbook or the CSV ZIP package. Existing primary keys are updated; new ones are created. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">126,128</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chooseDatasetPackageBtn" datatype="html">
+        <source>Choose package</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">133,135</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noDatasetPackageSelected" datatype="html">
+        <source>No package selected</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">147,149</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="clearDatasetSelectionBtn" datatype="html">
+        <source>Clear</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">159,161</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="importDatasetPackageBtn" datatype="html">
+        <source>Import package</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">169,171</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetImportSummaryHeading" datatype="html">
+        <source>Transfer summary</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">187,189</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetImportSummaryFileLabel" datatype="html">
+        <source>File:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">189,190</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetImportSummaryFormatLabel" datatype="html">
+        <source>Format:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">193,194</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="tablesProcessedLabel" datatype="html">
+        <source>Tables processed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">205,206</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetRowsImportedLabel" datatype="html">
+        <source>Rows imported</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">209,210</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetRowsSkippedLabel" datatype="html">
+        <source>Rows skipped</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">213,214</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetRowsFailedLabel" datatype="html">
+        <source>Rows failed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">217,218</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetCreatedLabel" datatype="html">
+        <source>created</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">229,231</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetUpdatedLabel" datatype="html">
+        <source>updated</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">233,235</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetImportErrorsHeading" datatype="html">
+        <source>Rows with issues</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">244,245</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetImportErrorsCopy" datatype="html">
+        <source> Download the failed rows as CSV to share them or fix them offline. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">246,247</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="downloadDatasetErrorReportBtn" datatype="html">
+        <source>Download error report</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">252,254</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="dashboardTitle" datatype="html">
+        <source>Dashboard</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">562</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="downloadExcelTemplateLabel" datatype="html">
+        <source>Download Excel template</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">568</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="downloadExcelTemplateDescription" datatype="html">
+        <source>One sheet per domain table, ready for manual entry.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">569</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="downloadCsvTemplateLabel" datatype="html">
+        <source>Download CSV template ZIP</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">575</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="downloadCsvTemplateDescription" datatype="html">
+        <source>One CSV per domain table inside a ZIP archive.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">576</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="downloadExcelExportLabel" datatype="html">
+        <source>Export current dataset as Excel</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">582</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="downloadExcelExportDescription" datatype="html">
+        <source>Round-trip the current domain records in workbook form.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">583</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="downloadCsvExportLabel" datatype="html">
+        <source>Export current dataset as CSV ZIP</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">589</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="downloadCsvExportDescription" datatype="html">
+        <source>Round-trip the current domain records in CSV form.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">590</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetWorkbookHint" datatype="html">
+        <source>Workbook upload detected. This will import the Excel workbook template.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">612</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetZipHint" datatype="html">
+        <source>ZIP upload detected. This will import one CSV file per table.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">615</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetUploadHint" datatype="html">
+        <source>Accepted formats: .xlsx workbook or .zip archive containing one CSV per supported table.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">617</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetImportCompletedWithErrors" datatype="html">
+        <source>Completed with issues</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">643</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetImportCompleted" datatype="html">
+        <source>Import completed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">646</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetErrorReportDownloaded" datatype="html">
+        <source>Error report downloaded successfully.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">681</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetDownloadSuccessMessage" datatype="html">
+        <source>Download started successfully.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">699</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetUnsupportedFileType" datatype="html">
+        <source>Select a .xlsx workbook or .zip archive before importing.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">714</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetImportSuccessMessage" datatype="html">
+        <source><x id="rowCount" equiv-text="response.rows_imported"/> rows imported successfully.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">733</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="datasetTransferGenericError" datatype="html">
+        <source>Something went wrong while processing the dataset request.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
+          <context context-type="linenumber">772</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="loginEyebrow" datatype="html">
         <source>TechConnect access</source>
         <context-group purpose="location">
@@ -1247,8 +1566,8 @@
           <context context-type="linenumber">44,45</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="importPdxWorkbook" datatype="html">
-        <source>Import PDX Workbook</source>
+      <trans-unit id="openDatasetTransfer" datatype="html">
+        <source>Open Dataset Transfer</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
           <context context-type="linenumber">50,52</context>
