@@ -313,8 +313,9 @@ def seed_database() -> SeedStats:
                 )
 
         # ─── Mice ────────────────────────────────────────────────────
+        pdx_passages = [pid for i, pid in enumerate(passages) if BIOMODEL_TYPES[i % 3] == "PDX"]
         mice: list[UUID] = []
-        for i in range(min(30, len(passages))):
+        for i, pid in enumerate(pdx_passages[:30]):
             mid = UUID(f"50000000-0000-0000-0000-{i+1:012d}")
             mice.append(mid)
             _upsert(
@@ -330,7 +331,7 @@ def seed_database() -> SeedStats:
                     "strain": ["NSG", "BALB/c", "C57BL/6", "NOD", "SCID"][i % 5],
                     "sex": ["male", "female"][i % 2],
                     "death_date": None if i % 3 != 0 else date(2023, 8, 1) + timedelta(days=i * 5),
-                    "pdx_trial_id": passages[i],
+                    "pdx_trial_id": pid,
                 },
                 stats,
             )

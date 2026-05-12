@@ -9,6 +9,7 @@ from openpyxl import Workbook, load_workbook
 from app.core.config import get_settings
 from app.core.database import get_engine
 from app.main import create_application
+from app.seed import seed_database
 
 
 @pytest.fixture
@@ -346,6 +347,37 @@ def test_import_dataset_workbook_creates_and_updates_related_rows(client: TestCl
     updated_tumor_response = client.get('/api/tumors/TUM-100')
     assert updated_patient_response.json()['age'] == 36
     assert updated_tumor_response.json()['ap_diagnosis'] == 'Updated diagnosis'
+
+
+def test_exported_dataset_workbook_roundtrips_seed_data(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    seed_stats = seed_database()
+    assert seed_stats.created > 0
+
+    export_response = client.get('/api/imports/dataset.xlsx')
+    assert export_response.status_code == 200
+
+    import_response = client.post(
+        '/api/imports/dataset-workbook',
+        files={
+            'file': (
+                'techconnect-dataset.xlsx',
+                export_response.content,
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            )
+        },
+    )
+
+    assert import_response.status_code == 200
+    body = import_response.json()
+    assert body['rows_failed'] == 0
+    assert body['errors'] == []
+    assert body['table_counts']['mouse']['updated'] > 0
 
 
 def test_import_dataset_csv_zip_reports_partial_failures(client: TestClient):
