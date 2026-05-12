@@ -67,10 +67,6 @@ interface TransferAction {
           <mat-icon>arrow_back</mat-icon>
           <ng-container i18n="@@backToDashboard">Back to Dashboard</ng-container>
         </a>
-        <a mat-button routerLink="/biomodels/import">
-          <mat-icon>upload_file</mat-icon>
-          <ng-container i18n="@@legacyPdxImportLink">Legacy PDX Import</ng-container>
-        </a>
       </div>
     </app-page-header>
 

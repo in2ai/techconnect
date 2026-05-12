@@ -14,10 +14,6 @@
         <source>Back to Dashboard</source>
         <target>Volver al panel</target>
       </trans-unit>
-      <trans-unit id="legacyPdxImportLink" datatype="html">
-        <source>Legacy PDX Import</source>
-        <target>Importación PDX heredada</target>
-      </trans-unit>
       <trans-unit id="dataTransferAdminsOnlyTitle" datatype="html">
         <source>Administrator access required</source>
         <target>Se requiere acceso de administrador</target>
