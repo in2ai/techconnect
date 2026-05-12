@@ -7,8 +7,8 @@
         <target>Transferencia de datos</target>
       </trans-unit>
       <trans-unit id="dataTransferSubtitle" datatype="html">
-        <source>Download templates, export the current database, and import completed Excel or CSV packages for all domain tables.</source>
-        <target>Descarga plantillas, exporta la base de datos actual e importa paquetes de Excel o CSV completados para todas las tablas de dominio.</target>
+        <source>Download Excel templates, export the current database, and import completed Excel workbooks for all domain tables.</source>
+        <target>Descarga plantillas de Excel, exporta la base de datos actual e importa libros de Excel completados para todas las tablas de dominio.</target>
       </trans-unit>
       <trans-unit id="backToDashboard" datatype="html">
         <source>Back to Dashboard</source>
@@ -35,24 +35,24 @@
         <target>Importar paquete de datos</target>
       </trans-unit>
       <trans-unit id="importDatasetCopy" datatype="html">
-        <source> Upload the completed Excel workbook or the CSV ZIP package. Existing primary keys are updated; new ones are created. </source>
-        <target> Sube el libro de Excel completado o el paquete ZIP de CSV. Las claves primarias existentes se actualizan y las nuevas se crean. </target>
+        <source> Upload the completed Excel workbook. Existing primary keys are updated; new ones are created. </source>
+        <target> Sube el libro de Excel completado. Las claves primarias existentes se actualizan y las nuevas se crean. </target>
       </trans-unit>
       <trans-unit id="chooseDatasetPackageBtn" datatype="html">
-        <source>Choose package</source>
-        <target>Elegir paquete</target>
+        <source>Choose Excel file</source>
+        <target>Elegir archivo Excel</target>
       </trans-unit>
       <trans-unit id="noDatasetPackageSelected" datatype="html">
-        <source>No package selected</source>
-        <target>Ningún paquete seleccionado</target>
+        <source>No Excel file selected</source>
+        <target>Ningún archivo Excel seleccionado</target>
       </trans-unit>
       <trans-unit id="clearDatasetSelectionBtn" datatype="html">
         <source>Clear</source>
         <target>Borrar</target>
       </trans-unit>
       <trans-unit id="importDatasetPackageBtn" datatype="html">
-        <source>Import package</source>
-        <target>Importar paquete</target>
+        <source>Import Excel file</source>
+        <target>Importar archivo Excel</target>
       </trans-unit>
       <trans-unit id="datasetImportSummaryHeading" datatype="html">
         <source>Transfer summary</source>
@@ -95,12 +95,8 @@
         <target>Filas con incidencias</target>
       </trans-unit>
       <trans-unit id="datasetImportErrorsCopy" datatype="html">
-        <source> Download the failed rows as CSV to share them or fix them offline. </source>
-        <target> Descarga las filas fallidas como CSV para compartirlas o corregirlas sin conexión. </target>
-      </trans-unit>
-      <trans-unit id="downloadDatasetErrorReportBtn" datatype="html">
-        <source>Download error report</source>
-        <target>Descargar informe de errores</target>
+        <source> Download the failed rows to share them or fix them offline. </source>
+        <target> Descarga las filas fallidas para compartirlas o corregirlas sin conexión. </target>
       </trans-unit>
       <trans-unit id="dashboardTitle" datatype="html">
         <source>Dashboard</source>
@@ -114,14 +110,6 @@
         <source>One sheet per domain table, ready for manual entry.</source>
         <target>Una hoja por tabla de dominio, lista para introducir datos manualmente.</target>
       </trans-unit>
-      <trans-unit id="downloadCsvTemplateLabel" datatype="html">
-        <source>Download CSV template ZIP</source>
-        <target>Descargar ZIP de plantilla CSV</target>
-      </trans-unit>
-      <trans-unit id="downloadCsvTemplateDescription" datatype="html">
-        <source>One CSV per domain table inside a ZIP archive.</source>
-        <target>Un CSV por tabla de dominio dentro de un archivo ZIP.</target>
-      </trans-unit>
       <trans-unit id="downloadExcelExportLabel" datatype="html">
         <source>Export current dataset as Excel</source>
         <target>Exportar datos actuales como Excel</target>
@@ -130,25 +118,13 @@
         <source>Round-trip the current domain records in workbook form.</source>
         <target>Haz una ida y vuelta de los registros actuales de dominio en formato de libro.</target>
       </trans-unit>
-      <trans-unit id="downloadCsvExportLabel" datatype="html">
-        <source>Export current dataset as CSV ZIP</source>
-        <target>Exportar datos actuales como ZIP CSV</target>
-      </trans-unit>
-      <trans-unit id="downloadCsvExportDescription" datatype="html">
-        <source>Round-trip the current domain records in CSV form.</source>
-        <target>Haz una ida y vuelta de los registros actuales de dominio en formato CSV.</target>
-      </trans-unit>
       <trans-unit id="datasetWorkbookHint" datatype="html">
         <source>Workbook upload detected. This will import the Excel workbook template.</source>
         <target>Se detectó una carga de libro. Esto importará la plantilla de Excel.</target>
       </trans-unit>
-      <trans-unit id="datasetZipHint" datatype="html">
-        <source>ZIP upload detected. This will import one CSV file per table.</source>
-        <target>Se detectó una carga ZIP. Esto importará un archivo CSV por tabla.</target>
-      </trans-unit>
       <trans-unit id="datasetUploadHint" datatype="html">
-        <source>Accepted formats: .xlsx workbook or .zip archive containing one CSV per supported table.</source>
-        <target>Formatos aceptados: libro .xlsx o archivo .zip que contenga un CSV por cada tabla compatible.</target>
+        <source>Accepted format: .xlsx workbook.</source>
+        <target>Formato aceptado: libro .xlsx.</target>
       </trans-unit>
       <trans-unit id="datasetImportCompletedWithErrors" datatype="html">
         <source>Completed with issues</source>
@@ -158,17 +134,13 @@
         <source>Import completed</source>
         <target>Importación completada</target>
       </trans-unit>
-      <trans-unit id="datasetErrorReportDownloaded" datatype="html">
-        <source>Error report downloaded successfully.</source>
-        <target>El informe de errores se descargó correctamente.</target>
-      </trans-unit>
       <trans-unit id="datasetDownloadSuccessMessage" datatype="html">
         <source>Download started successfully.</source>
         <target>La descarga se inició correctamente.</target>
       </trans-unit>
       <trans-unit id="datasetUnsupportedFileType" datatype="html">
-        <source>Select a .xlsx workbook or .zip archive before importing.</source>
-        <target>Selecciona un libro .xlsx o un archivo .zip antes de importar.</target>
+        <source>Select a .xlsx workbook before importing.</source>
+        <target>Selecciona un libro .xlsx antes de importar.</target>
       </trans-unit>
       <trans-unit id="datasetImportSuccessMessage" datatype="html">
         <source><x id="rowCount" equiv-text="response.rows_imported"/> rows imported successfully.</source>

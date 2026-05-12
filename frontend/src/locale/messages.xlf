@@ -33,7 +33,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="dataTransferSubtitle" datatype="html">
-        <source>Download templates, export the current database, and import completed Excel or CSV packages for all domain tables.</source>
+        <source>Download Excel templates, export the current database, and import completed Excel workbooks for all domain tables.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
           <context context-type="linenumber">62,63</context>
@@ -82,21 +82,21 @@
         </context-group>
       </trans-unit>
       <trans-unit id="importDatasetCopy" datatype="html">
-        <source> Upload the completed Excel workbook or the CSV ZIP package. Existing primary keys are updated; new ones are created. </source>
+        <source> Upload the completed Excel workbook. Existing primary keys are updated; new ones are created. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
           <context context-type="linenumber">126,128</context>
         </context-group>
       </trans-unit>
       <trans-unit id="chooseDatasetPackageBtn" datatype="html">
-        <source>Choose package</source>
+        <source>Choose Excel file</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
           <context context-type="linenumber">133,135</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noDatasetPackageSelected" datatype="html">
-        <source>No package selected</source>
+        <source>No Excel file selected</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
           <context context-type="linenumber">147,149</context>
@@ -110,7 +110,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="importDatasetPackageBtn" datatype="html">
-        <source>Import package</source>
+        <source>Import Excel file</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
           <context context-type="linenumber">169,171</context>
@@ -187,17 +187,10 @@
         </context-group>
       </trans-unit>
       <trans-unit id="datasetImportErrorsCopy" datatype="html">
-        <source> Download the failed rows as CSV to share them or fix them offline. </source>
+        <source> Download the failed rows to share them or fix them offline. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
           <context context-type="linenumber">246,247</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="downloadDatasetErrorReportBtn" datatype="html">
-        <source>Download error report</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">252,254</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dashboardTitle" datatype="html">
@@ -221,20 +214,6 @@
           <context context-type="linenumber">590</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="downloadCsvTemplateLabel" datatype="html">
-        <source>Download CSV template ZIP</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">596</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="downloadCsvTemplateDescription" datatype="html">
-        <source>One CSV per domain table inside a ZIP archive.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">597</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="downloadExcelExportLabel" datatype="html">
         <source>Export current dataset as Excel</source>
         <context-group purpose="location">
@@ -249,20 +228,6 @@
           <context context-type="linenumber">604</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="downloadCsvExportLabel" datatype="html">
-        <source>Export current dataset as CSV ZIP</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">610</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="downloadCsvExportDescription" datatype="html">
-        <source>Round-trip the current domain records in CSV form.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">611</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="datasetWorkbookHint" datatype="html">
         <source>Workbook upload detected. This will import the Excel workbook template.</source>
         <context-group purpose="location">
@@ -270,15 +235,8 @@
           <context context-type="linenumber">633</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="datasetZipHint" datatype="html">
-        <source>ZIP upload detected. This will import one CSV file per table.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">636</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="datasetUploadHint" datatype="html">
-        <source>Accepted formats: .xlsx workbook or .zip archive containing one CSV per supported table.</source>
+        <source>Accepted format: .xlsx workbook.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
           <context context-type="linenumber">638</context>
@@ -298,13 +256,6 @@
           <context context-type="linenumber">667</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="datasetErrorReportDownloaded" datatype="html">
-        <source>Error report downloaded successfully.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">702</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="datasetDownloadSuccessMessage" datatype="html">
         <source>Download started successfully.</source>
         <context-group purpose="location">
@@ -313,7 +264,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="datasetUnsupportedFileType" datatype="html">
-        <source>Select a .xlsx workbook or .zip archive before importing.</source>
+        <source>Select a .xlsx workbook before importing.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
           <context context-type="linenumber">735</context>

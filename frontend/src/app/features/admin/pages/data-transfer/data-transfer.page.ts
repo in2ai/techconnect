@@ -59,7 +59,7 @@ interface TransferAction {
       i18n-title="@@dataTransferTitle"
       title="Dataset Transfer"
       i18n-subtitle="@@dataTransferSubtitle"
-      subtitle="Download templates, export the current database, and import completed Excel or CSV packages for all domain tables."
+      subtitle="Download Excel templates, export the current database, and import completed Excel workbooks for all domain tables."
       [breadcrumbs]="breadcrumbs"
     >
       <div class="header-actions">
@@ -119,20 +119,20 @@ interface TransferAction {
           <div class="section-copy">
             <h2 i18n="@@importDatasetHeading">Import dataset package</h2>
             <p i18n="@@importDatasetCopy">
-              Upload the completed Excel workbook or the CSV ZIP package. Existing primary keys are updated; new ones are created.
+              Upload the completed Excel workbook. Existing primary keys are updated; new ones are created.
             </p>
           </div>
 
           <div class="picker-row">
             <label class="file-picker" for="datasetTransferUpload">
               <mat-icon aria-hidden="true">drive_folder_upload</mat-icon>
-              <span i18n="@@chooseDatasetPackageBtn">Choose package</span>
+              <span i18n="@@chooseDatasetPackageBtn">Choose Excel file</span>
             </label>
             <input
               id="datasetTransferUpload"
               class="visually-hidden"
               type="file"
-              accept=".xlsx,.zip,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/zip"
+              accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               (change)="onFileSelected($event)"
             />
 
@@ -140,7 +140,7 @@ interface TransferAction {
               @if (selectedFileName()) {
                 <span>{{ selectedFileName() }}</span>
               } @else {
-                <span i18n="@@noDatasetPackageSelected">No package selected</span>
+                <span i18n="@@noDatasetPackageSelected">No Excel file selected</span>
               }
             </div>
           </div>
@@ -162,7 +162,7 @@ interface TransferAction {
               [disabled]="uploading() || !selectedFile()"
             >
               <mat-icon>publish</mat-icon>
-              <ng-container i18n="@@importDatasetPackageBtn">Import package</ng-container>
+              <ng-container i18n="@@importDatasetPackageBtn">Import Excel file</ng-container>
             </button>
           </div>
 
@@ -239,15 +239,9 @@ interface TransferAction {
                 <div>
                   <h3 i18n="@@datasetImportErrorsHeading">Rows with issues</h3>
                   <p class="error-panel__copy" i18n="@@datasetImportErrorsCopy">
-                    Download the failed rows as CSV to share them or fix them offline.
+                    Download the failed rows to share them or fix them offline.
                   </p>
                 </div>
-                <button mat-stroked-button type="button" (click)="downloadErrorReport()">
-                  <mat-icon>download</mat-icon>
-                  <ng-container i18n="@@downloadDatasetErrorReportBtn"
-                    >Download error report</ng-container
-                  >
-                </button>
               </div>
               <ul>
                 @for (
@@ -589,25 +583,11 @@ export class DataTransferPage {
       defaultFileName: 'techconnect-dataset-template.xlsx',
     },
     {
-      label: $localize`:@@downloadCsvTemplateLabel:Download CSV template ZIP`,
-      description: $localize`:@@downloadCsvTemplateDescription:One CSV per domain table inside a ZIP archive.`,
-      icon: 'folder_zip',
-      endpoint: '/imports/dataset-template.zip',
-      defaultFileName: 'techconnect-dataset-template.zip',
-    },
-    {
       label: $localize`:@@downloadExcelExportLabel:Export current dataset as Excel`,
       description: $localize`:@@downloadExcelExportDescription:Round-trip the current domain records in workbook form.`,
       icon: 'download',
       endpoint: '/imports/dataset.xlsx',
       defaultFileName: 'techconnect-dataset.xlsx',
-    },
-    {
-      label: $localize`:@@downloadCsvExportLabel:Export current dataset as CSV ZIP`,
-      description: $localize`:@@downloadCsvExportDescription:Round-trip the current domain records in CSV form.`,
-      icon: 'archive',
-      endpoint: '/imports/dataset.zip',
-      defaultFileName: 'techconnect-dataset.zip',
     },
   ];
 
@@ -618,20 +598,13 @@ export class DataTransferPage {
     if (fileName.endsWith('.xlsx')) {
       return '/imports/dataset-workbook';
     }
-    if (fileName.endsWith('.zip')) {
-      return '/imports/dataset-csv-zip';
-    }
     return null;
   });
   protected readonly importEndpointHint = computed(() => {
-    const endpoint = this.uploadEndpoint();
-    if (endpoint === '/imports/dataset-workbook') {
+    if (this.uploadEndpoint() === '/imports/dataset-workbook') {
       return $localize`:@@datasetWorkbookHint:Workbook upload detected. This will import the Excel workbook template.`;
     }
-    if (endpoint === '/imports/dataset-csv-zip') {
-      return $localize`:@@datasetZipHint:ZIP upload detected. This will import one CSV file per table.`;
-    }
-    return $localize`:@@datasetUploadHint:Accepted formats: .xlsx workbook or .zip archive containing one CSV per supported table.`;
+    return $localize`:@@datasetUploadHint:Accepted format: .xlsx workbook.`;
   });
   protected readonly downloadInFlight = signal<string | null>(null);
   protected readonly uploading = signal(false);
@@ -675,30 +648,6 @@ export class DataTransferPage {
     this.lastError.set(null);
   }
 
-  protected downloadErrorReport(): void {
-    const result = this.result();
-    if (!result?.errors.length) {
-      return;
-    }
-
-    const rows = [
-      'table,row_number,primary_key,message',
-      ...result.errors.map((issue) =>
-        [issue.table, issue.row_number, issue.primary_key ?? '', issue.message]
-          .map((value) => this.escapeCsv(value))
-          .join(','),
-      ),
-    ];
-
-    this.saveGeneratedBlob(
-      new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' }),
-      `techconnect-dataset-import-errors-${Date.now()}.csv`,
-    );
-    this.notifications.info(
-      $localize`:@@datasetErrorReportDownloaded:Error report downloaded successfully.`,
-    );
-  }
-
   protected download(action: TransferAction): void {
     this.downloadInFlight.set(action.endpoint);
     this.lastError.set(null);
@@ -728,7 +677,7 @@ export class DataTransferPage {
     const file = this.selectedFile();
     const endpoint = this.uploadEndpoint();
     if (!file || !endpoint) {
-      const message = $localize`:@@datasetUnsupportedFileType:Select a .xlsx workbook or .zip archive before importing.`;
+      const message = $localize`:@@datasetUnsupportedFileType:Select a .xlsx workbook before importing.`;
       this.lastError.set(message);
       this.notifications.error(message);
       return;
@@ -791,13 +740,5 @@ export class DataTransferPage {
 
   private toTitleCase(value: string): string {
     return value.replaceAll(/\b\w/g, (character) => character.toUpperCase());
-  }
-
-  private escapeCsv(value: string | number): string {
-    const text = String(value);
-    if (!/[",\n]/.test(text)) {
-      return text;
-    }
-    return `"${text.replaceAll('"', '""')}"`;
   }
 }
