@@ -52,7 +52,7 @@
       </trans-unit>
       <trans-unit id="clearDatasetSelectionBtn" datatype="html">
         <source>Clear</source>
-        <target>Limpiar</target>
+        <target>Borrar</target>
       </trans-unit>
       <trans-unit id="importDatasetPackageBtn" datatype="html">
         <source>Import package</source>
@@ -1258,7 +1258,7 @@
       <trans-unit id="failedToLoadTrials"><source>Failed to load trials</source><target>Error al cargar ensayos</target></trans-unit>
       <trans-unit id="failedToLoadTrial"><source>Failed to load trial</source><target>Error al cargar ensayo</target></trans-unit>
       <trans-unit id="anyFilterLabel"><source>Any</source><target>Cualquiera</target></trans-unit>
-      <trans-unit id="clearFiltersBtn"><source>Clear Filters</source><target>Limpiar filtros</target></trans-unit>
+      <trans-unit id="clearFiltersBtn"><source>Clear Filters</source><target>Borrar filtros</target></trans-unit>
       <trans-unit id="tableRecordCount"><source> <x id="INTERPOLATION" /> records </source><target> <x id="INTERPOLATION" /> registros </target></trans-unit>
       <trans-unit id="noMatchingRecords"><source>No records matching the filters.</source><target>No se han encontrado registros coincidiendo con los filtros.</target></trans-unit>
       <trans-unit id="trialTypeLabel"><source>Trial Type</source><target>Tipo de ensayo</target></trans-unit>
@@ -1467,7 +1467,7 @@
       <trans-unit id="uploadWorkbookCopy" datatype="html"><source>The importer reads the PDX template columns embedded in the workbook and processes every matching sheet.</source><target>El importador lee las columnas de la plantilla PDX incrustadas en el excel y procesa cada hoja coincidente.</target></trans-unit>
       <trans-unit id="supportedFormatLabel" datatype="html"><source>Supported format:</source><target>Formato admitido:</target></trans-unit>
       <trans-unit id="chooseWorkbookBtn" datatype="html"><source>Choose workbook</source><target>Elegir excel</target></trans-unit>
-      <trans-unit id="clearSelectionBtn" datatype="html"><source>Clear</source><target>Limpiar</target></trans-unit>
+      <trans-unit id="clearSelectionBtn" datatype="html"><source>Clear</source><target>Borrar</target></trans-unit>
       <trans-unit id="importWorkbookBtn" datatype="html"><source>Import workbook</source><target>Importar excel</target></trans-unit>
       <trans-unit id="noWorkbookSelected" datatype="html"><source>No workbook selected</source><target>No se ha seleccionado ningún excel</target></trans-unit>
       <trans-unit id="importSummaryHeading" datatype="html"><source>Import summary</source><target>Resumen de la importación</target></trans-unit>
