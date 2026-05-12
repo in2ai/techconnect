@@ -285,12 +285,10 @@ def _get_model_columns(model: type[SQLModel]) -> tuple[DatasetColumnSpec, ...]:
 
 def _build_base_workbook() -> Workbook:
     workbook = Workbook()
-    readme = workbook.active
-    readme.title = 'README'
-    _populate_readme_sheet(readme)
-
-    for table_spec in get_dataset_table_specs():
-        worksheet = workbook.create_sheet(title=table_spec.table_name)
+    table_specs = get_dataset_table_specs()
+    for index, table_spec in enumerate(table_specs):
+        worksheet = workbook.active if index == 0 else workbook.create_sheet(title=table_spec.table_name)
+        worksheet.title = table_spec.table_name
         header_row = [column.name for column in table_spec.columns]
         note_row = [_column_note(column) for column in table_spec.columns]
         worksheet.append(header_row)
@@ -470,40 +468,6 @@ def _error_message(exc: Exception) -> str:
     if isinstance(exc, ValidationError):
         return '; '.join(error['msg'] for error in exc.errors())
     return str(exc)
-
-
-def _populate_readme_sheet(worksheet) -> None:
-    worksheet.append(['TechConnect dataset import template'])
-    worksheet.append([
-        'Fill one row per record in the table sheets. Preserve primary keys to update existing records; new primary keys create new records.',
-    ])
-    worksheet.append([
-        'Row 2 in each sheet documents required fields, detected data types, and foreign-key references.',
-    ])
-    worksheet.append([
-        'Boolean values accept true/false, yes/no, or 1/0. Dates should use YYYY-MM-DD. UUID fields should keep canonical UUID formatting.',
-    ])
-    worksheet.append([
-        'Domain tables only are included. Authentication and session tables are intentionally excluded from this template.',
-    ])
-    worksheet.append([])
-    worksheet.append(['Sheet', 'Route', 'Columns', 'Guidance'])
-
-    for cell in worksheet[1]:
-        cell.font = Font(bold=True)
-    for cell in worksheet[7]:
-        cell.font = Font(bold=True)
-
-    for table_spec in get_dataset_table_specs():
-        worksheet.append(
-            [
-                table_spec.table_name,
-                f'/api/{table_spec.route_prefix}',
-                ', '.join(column.name for column in table_spec.columns),
-                '; '.join(_column_note(column) for column in table_spec.columns),
-            ]
-        )
-
 
 def _build_readme_text() -> str:
     lines = [

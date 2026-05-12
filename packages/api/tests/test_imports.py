@@ -202,7 +202,8 @@ def test_download_dataset_template_workbook(client: TestClient):
 
     workbook = load_workbook(BytesIO(response.content), read_only=True)
     try:
-        assert 'README' in workbook.sheetnames
+        assert 'README' not in workbook.sheetnames
+        assert workbook.sheetnames[0] == 'patient'
         assert 'patient' in workbook.sheetnames
         assert 'tumor' in workbook.sheetnames
         assert 'biomodel' in workbook.sheetnames
@@ -269,6 +270,8 @@ def test_export_dataset_workbook_includes_existing_rows(client: TestClient):
     assert response.status_code == 200
     workbook = load_workbook(BytesIO(response.content), read_only=True)
     try:
+        assert 'README' not in workbook.sheetnames
+        assert workbook.sheetnames[0] == 'patient'
         patient_rows = list(workbook['patient'].iter_rows(min_row=3, values_only=True))
         tumor_rows = list(workbook['tumor'].iter_rows(min_row=3, values_only=True))
     finally:
