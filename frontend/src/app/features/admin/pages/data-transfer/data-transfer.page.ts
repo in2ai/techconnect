@@ -88,20 +88,23 @@ interface TransferAction {
           <div class="section-copy">
             <h2 i18n="@@downloadAssetsHeading">Download assets</h2>
             <p i18n="@@downloadAssetsCopy">
-              Use the empty templates for new data entry or export the current database to edit it offline.
+              Use the empty templates for new data entry or export the current database to edit it
+              offline.
             </p>
           </div>
 
           <div class="action-list">
             @for (action of transferActions; track action.endpoint) {
               <button
-                mat-stroked-button
+                mat-button
                 type="button"
                 class="download-button"
                 [disabled]="downloadInFlight() === action.endpoint"
                 (click)="download(action)"
               >
-                <mat-icon>{{ action.icon }}</mat-icon>
+                <span class="download-button__icon">
+                  <mat-icon>{{ action.icon }}</mat-icon>
+                </span>
                 <span class="download-button__content">
                   <span>{{ action.label }}</span>
                   <small>{{ action.description }}</small>
@@ -119,7 +122,8 @@ interface TransferAction {
           <div class="section-copy">
             <h2 i18n="@@importDatasetHeading">Import dataset package</h2>
             <p i18n="@@importDatasetCopy">
-              Upload the completed Excel workbook. Existing primary keys are updated; new ones are created.
+              Upload the completed Excel workbook. Existing primary keys are updated; new ones are
+              created.
             </p>
           </div>
 
@@ -191,18 +195,24 @@ interface TransferAction {
               </p>
             </div>
             <div class="summary-pill" [class.summary-pill--warning]="importResult.rows_failed > 0">
-              <mat-icon aria-hidden="true">{{ importResult.rows_failed > 0 ? 'warning' : 'task_alt' }}</mat-icon>
+              <mat-icon aria-hidden="true">{{
+                importResult.rows_failed > 0 ? 'warning' : 'task_alt'
+              }}</mat-icon>
               <span>{{ successLabel() }}</span>
             </div>
           </div>
 
           <div class="summary-grid">
             <div class="summary-stat">
-              <span class="summary-stat__label" i18n="@@tablesProcessedLabel">Tables processed</span>
+              <span class="summary-stat__label" i18n="@@tablesProcessedLabel"
+                >Tables processed</span
+              >
               <strong>{{ importResult.tables_processed }}</strong>
             </div>
             <div class="summary-stat">
-              <span class="summary-stat__label" i18n="@@datasetRowsImportedLabel">Rows imported</span>
+              <span class="summary-stat__label" i18n="@@datasetRowsImportedLabel"
+                >Rows imported</span
+              >
               <strong>{{ importResult.rows_imported }}</strong>
             </div>
             <div class="summary-stat">
@@ -342,26 +352,47 @@ interface TransferAction {
       min-height: 4.75rem;
       height: auto;
       display: inline-flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: flex-start;
       padding: 0.875rem 1rem;
       text-align: left;
       white-space: normal;
       line-height: 1.35;
-      gap: 0.25rem;
+      gap: 0.75rem;
       box-sizing: border-box;
+      border-radius: 0.75rem !important;
+      background-color: var(--mat-sys-surface-container) !important;
+      transition:
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
     }
 
-    .download-button mat-icon {
+    .download-button:hover:not([disabled]) {
+      background-color: var(--mat-sys-surface-container-high) !important;
+      box-shadow: 0 2px 10px color-mix(in srgb, var(--mat-sys-shadow) 8%, transparent);
+    }
+
+    .download-button .download-button__icon {
       flex-shrink: 0;
-      margin-top: 0.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.625rem;
+      background: color-mix(in srgb, var(--mat-sys-primary) 14%, transparent);
+      color: var(--mat-sys-primary);
+      transition: background-color 0.2s ease;
+    }
+
+    .download-button:hover:not([disabled]) .download-button__icon {
+      background: color-mix(in srgb, var(--mat-sys-primary) 22%, transparent);
     }
 
     .download-button__content {
       display: grid;
       gap: 0.125rem;
       justify-items: start;
-      margin-left: 0.5rem;
       min-width: 0;
       flex: 1 1 auto;
     }
@@ -369,6 +400,11 @@ interface TransferAction {
     .download-button__content > span,
     .download-button__content > small {
       white-space: normal;
+    }
+
+    .download-button__content > span {
+      font-weight: 600;
+      color: var(--mat-sys-on-surface);
     }
 
     .download-button__content small {
@@ -735,7 +771,10 @@ export class DataTransferPage {
     if (typeof error.error?.detail === 'string') {
       return error.error.detail;
     }
-    return error.message || $localize`:@@datasetTransferGenericError:Something went wrong while processing the dataset request.`;
+    return (
+      error.message ||
+      $localize`:@@datasetTransferGenericError:Something went wrong while processing the dataset request.`
+    );
   }
 
   private toTitleCase(value: string): string {
