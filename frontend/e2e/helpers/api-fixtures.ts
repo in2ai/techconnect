@@ -51,7 +51,6 @@ interface PassagePayload {
   description: string | null;
   success: boolean | null;
   status: boolean | null;
-  preclinical_trials: string | null;
   creation_date: string | null;
   biobank_shipment: boolean | null;
   biobank_arrival_date: string | null;
@@ -173,7 +172,6 @@ export async function createPassage(
     description: 'fixture',
     success: true,
     status: true,
-    preclinical_trials: null,
     creation_date: '2025-01-01',
     biobank_shipment: false,
     biobank_arrival_date: null,

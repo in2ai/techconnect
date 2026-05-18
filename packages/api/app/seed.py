@@ -240,13 +240,6 @@ def seed_database() -> SeedStats:
                     "id": pid,
                     "success": i % 3 == 0,
                     "status": i % 4 != 0,
-                    "preclinical_trials": (
-                        "Oncology panel" if i % 5 == 0
-                        else "Immunotherapy screen" if i % 5 == 1
-                        else "Chemotherapy baseline" if i % 5 == 2
-                        else "Radiation study" if i % 5 == 3
-                        else "Combination therapy"
-                    ),
                     "description": f"Passage {i+1} for {bmid}",
                     "creation_date": date(2023, 4, 1) + timedelta(days=i * 2),
                     "biobank_shipment": i % 2 == 0,

@@ -1507,7 +1507,6 @@
       <trans-unit id="passageDeleteFailedToast" datatype="html"><source>Failed to delete passage</source><target>Error al eliminar el pase</target></trans-unit>
       <trans-unit id="typeLbl" datatype="html"><source>Type</source><target>Tipo</target></trans-unit>
       <trans-unit id="trialStatusLbl" datatype="html"><source>Status</source><target>Estado</target></trans-unit>
-      <trans-unit id="preclinicalTrialsLbl" datatype="html"><source>Preclinical Trials</source><target>Ensayos preclínicos</target></trans-unit>
       <trans-unit id="7610193920778630976" datatype="html"><source>Track biomodel passages and detailed outcomes.</source><target>Seguimiento de pases de biomodelos y resultados detallados.</target></trans-unit>
       <trans-unit id="7219355796144107567" datatype="html"><source> Biomedical research data management platform. Navigate through your registry, biomodels, and passage data. </source><target> Plataforma de gestión de datos de investigación biomédica. Navega por tu registro, biomodelos y datos de pases. </target></trans-unit>
       <trans-unit id="7255211079421549257" datatype="html">

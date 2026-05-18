@@ -26,7 +26,6 @@ class Passage(SQLModel, table=True):
         description: General description
         success: Whether the passage experiment was successful
         status: Status of the passage experiment
-        preclinical_trials: Preclinical trials information
         creation_date: Date the passage was created
         biobank_shipment: Whether there was a biobank shipment
         biobank_arrival_date: Date of biobank arrival
@@ -42,7 +41,6 @@ class Passage(SQLModel, table=True):
     description: Optional[str] = Field(default=None)  # text field
     success: Optional[bool] = Field(default=None)
     status: Optional[bool] = Field(default=None)
-    preclinical_trials: Optional[str] = Field(default=None)
     creation_date: Union[date, None] = Field(default=None)
     biobank_shipment: Optional[bool] = Field(default=None)
     biobank_arrival_date: Union[date, None] = Field(default=None)

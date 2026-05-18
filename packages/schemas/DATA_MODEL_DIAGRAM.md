@@ -75,7 +75,6 @@ erDiagram
         string description
         boolean success
         boolean status
-        string preclinical_trials
         date creation_date
         boolean biobank_shipment
         date biobank_arrival_date

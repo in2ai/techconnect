@@ -1508,13 +1508,6 @@
           <context context-type="linenumber">151,152</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="preclinicalTrialsLbl" datatype="html">
-        <source>Preclinical Trials</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/passages/components/passage-form/passage-form.component.ts</context>
-          <context context-type="linenumber">101,102</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="passageDescLbl" datatype="html">
         <source>Description</source>
         <context-group purpose="location">

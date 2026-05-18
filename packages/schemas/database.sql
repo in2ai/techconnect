@@ -101,7 +101,6 @@ CREATE TABLE passage (
 	description VARCHAR, 
 	success BOOLEAN, 
 	status BOOLEAN, 
-	preclinical_trials VARCHAR, 
 	creation_date DATE, 
 	biobank_shipment BOOLEAN, 
 	biobank_arrival_date DATE, 

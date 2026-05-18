@@ -69,7 +69,6 @@ export interface Passage {
   description: string | null;
   success: boolean | null;
   status: boolean | null;
-  preclinical_trials: string | null;
   creation_date: string | null;
   biobank_shipment: boolean | null;
   biobank_arrival_date: string | null;

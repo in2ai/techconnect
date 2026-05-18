@@ -98,10 +98,6 @@ export interface PassageFormData {
           <input matInput type="date" formControlName="biobank_arrival_date" />
         </mat-form-field>
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label i18n="@@preclinicalTrialsLbl">Preclinical Trials</mat-label>
-          <textarea matInput formControlName="preclinical_trials" rows="2"></textarea>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full-width">
           <mat-label i18n="@@passageDescLbl">Description</mat-label>
           <textarea matInput formControlName="description" rows="3"></textarea>
         </mat-form-field>
@@ -156,9 +152,6 @@ export class PassageFormComponent {
     }),
     success: this.formBuilder.control<Passage['success']>(this.data.passage?.success ?? null),
     status: this.formBuilder.control<Passage['status']>(this.data.passage?.status ?? null),
-    preclinical_trials: this.formBuilder.control<Passage['preclinical_trials']>(
-      this.data.passage?.preclinical_trials ?? null,
-    ),
     creation_date: this.formBuilder.control<Passage['creation_date']>(
       this.data.passage?.creation_date ?? null,
     ),
