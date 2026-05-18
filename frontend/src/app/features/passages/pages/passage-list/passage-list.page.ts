@@ -8,7 +8,11 @@ import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
 import { Biomodel, Passage } from '@generated/models';
-import { DataTableComponent, ColumnDef } from '@shared/components/data-table/data-table.component';
+import {
+  ColumnDef,
+  DataTableComponent,
+  TableFilter,
+} from '@shared/components/data-table/data-table.component';
 import { LoadingStateComponent } from '@shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '@shared/components/page-header/page-header.component';
 import { PassageFormComponent } from '../../components/passage-form/passage-form.component';
@@ -61,6 +65,7 @@ import { PassageService } from '../../services/passage.service';
       <app-data-table
         [columns]="columns"
         [data]="passageRows()"
+        [filters]="tableFilters()"
         (rowClicked)="onPassageClick($event)"
       />
     }
@@ -109,6 +114,41 @@ export class PassageListPage {
               : '—',
       })) ?? []
     );
+  });
+
+  tableFilters = computed<TableFilter[]>(() => {
+    const rows = this.passageRows();
+    const types = Array.from(
+      new Set(rows.map((row) => row.type).filter((type): type is string => !!type && type !== '—')),
+    ).sort((a, b) => a.localeCompare(b));
+    const statuses = Array.from(
+      new Set(
+        rows
+          .map((row) => row.status)
+          .filter((status): status is string => !!status && status !== '—'),
+      ),
+    ).sort((a, b) => a.localeCompare(b));
+
+    return [
+      {
+        key: 'type',
+        label: $localize`Type`,
+        options: types.map((type) => ({ label: type, value: type })),
+      },
+      {
+        key: 'status',
+        label: $localize`Status`,
+        options: statuses.map((status) => ({ label: status, value: status })),
+      },
+      {
+        key: 'success',
+        label: $localize`:@@trialSuccessLbl:Success`,
+        options: [
+          { label: $localize`:@@yesOpt:Yes`, value: true },
+          { label: $localize`:@@noOpt:No`, value: false },
+        ],
+      },
+    ];
   });
 
   onPassageClick(passage: any): void {
