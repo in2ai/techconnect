@@ -1,6 +1,7 @@
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,6 +21,7 @@ export interface PassageFormData {
   imports: [
     MatDialogModule,
     MatButtonModule,
+    MatAutocompleteModule,
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -51,17 +53,23 @@ export interface PassageFormData {
         @if (showBiomodelPicker) {
           <mat-form-field appearance="outline" class="full-width">
             <mat-label i18n="@@passageBiomodelLbl">Biomodel</mat-label>
-            @if (biomodelsResource.isLoading()) {
-              <mat-select disabled>
-                <mat-option i18n="@@loadingLbl">Loading…</mat-option>
-              </mat-select>
-            } @else {
-              <mat-select formControlName="biomodel_id" required>
-                @for (biomodel of biomodelsResource.value(); track biomodel.id) {
-                  <mat-option [value]="biomodel.id">{{ biomodel.id }}</mat-option>
-                }
-              </mat-select>
-            }
+            <input
+              matInput
+              required
+              [formControl]="biomodelSearch"
+              [matAutocomplete]="biomodelAutocomplete"
+              [readonly]="biomodelsResource.isLoading()"
+              i18n-placeholder="@@passageBiomodelSearchPlaceholder"
+              placeholder="Search biomodel ID"
+            />
+            <mat-autocomplete
+              #biomodelAutocomplete="matAutocomplete"
+              (optionSelected)="selectBiomodel($event.option.value)"
+            >
+              @for (biomodel of filteredBiomodels(); track biomodel.id) {
+                <mat-option [value]="biomodel.id">{{ biomodel.id }}</mat-option>
+              }
+            </mat-autocomplete>
           </mat-form-field>
         }
 
@@ -139,6 +147,9 @@ export class PassageFormComponent {
   biomodelsResource = httpResource<Biomodel[]>(() => `${this.apiUrl}/biomodels`, {
     defaultValue: [],
   });
+  readonly biomodelSearch = this.formBuilder.nonNullable.control(
+    this.data.passage?.biomodel_id ?? '',
+  );
 
   readonly form = this.formBuilder.group({
     id: this.formBuilder.nonNullable.control(this.data.passage?.id ?? '', {
@@ -162,6 +173,16 @@ export class PassageFormComponent {
       this.data.passage?.biobank_arrival_date ?? null,
     ),
   });
+
+  filteredBiomodels(): Biomodel[] {
+    const query = this.biomodelSearch.value.trim().toLowerCase();
+    return this.biomodelsResource.value().filter((biomodel) => biomodel.id.toLowerCase().includes(query));
+  }
+
+  selectBiomodel(biomodelId: string): void {
+    this.form.controls.biomodel_id.setValue(biomodelId);
+    this.biomodelSearch.setValue(biomodelId);
+  }
 
   buildDialogResult(): Partial<Passage> {
     const value = this.form.getRawValue();

@@ -98,4 +98,14 @@ describe('SampleFormComponent', () => {
     });
     httpMock.verify();
   });
+
+  it('filters tumors and stores only the selected biobank code', async () => {
+    const { component, httpMock } = await setup({ mode: 'create' });
+    component.tumorSearch.setValue('TB-1');
+    expect(component.filteredTumors().map((tumor) => tumor.biobank_code)).toEqual(['TB-1']);
+    component.selectTumor('TB-1');
+    expect(component.form.controls.tumor_biobank_code.value).toBe('TB-1');
+    expect(component.tumorSearch.value).toBe('TB-1');
+    httpMock.verify();
+  });
 });

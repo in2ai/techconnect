@@ -78,4 +78,14 @@ describe('TumorFormComponent', () => {
     });
     httpMock.verify();
   });
+
+  it('filters patients and stores only the selected nhc', async () => {
+    const { component, httpMock } = await setup({ mode: 'create' });
+    component.patientSearch.setValue('P-1');
+    expect(component.filteredPatients().map((patient) => patient.nhc)).toEqual(['P-1']);
+    component.selectPatient('P-1');
+    expect(component.form.controls.patient_nhc.value).toBe('P-1');
+    expect(component.patientSearch.value).toBe('P-1');
+    httpMock.verify();
+  });
 });

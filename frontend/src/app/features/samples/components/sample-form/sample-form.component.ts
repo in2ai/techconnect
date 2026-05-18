@@ -1,6 +1,7 @@
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -23,6 +24,7 @@ export interface SampleFormData {
   imports: [
     MatDialogModule,
     MatButtonModule,
+    MatAutocompleteModule,
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -41,17 +43,23 @@ export interface SampleFormData {
       <form class="form-grid" [formGroup]="form">
         <mat-form-field appearance="outline">
           <mat-label i18n="@@sampleTumorLbl">Tumor</mat-label>
-          @if (tumorsResource.isLoading()) {
-            <mat-select disabled>
-              <mat-option i18n="@@loadingLbl">Loading…</mat-option>
-            </mat-select>
-          } @else {
-            <mat-select formControlName="tumor_biobank_code" required>
-              @for (tumor of tumorsResource.value(); track tumor.biobank_code) {
-                <mat-option [value]="tumor.biobank_code">{{ tumor.biobank_code }}</mat-option>
-              }
-            </mat-select>
-          }
+          <input
+            matInput
+            required
+            [formControl]="tumorSearch"
+            [matAutocomplete]="tumorAutocomplete"
+            [readonly]="tumorsResource.isLoading()"
+            i18n-placeholder="@@sampleTumorSearchPlaceholder"
+            placeholder="Search tumor biobank code"
+          />
+          <mat-autocomplete
+            #tumorAutocomplete="matAutocomplete"
+            (optionSelected)="selectTumor($event.option.value)"
+          >
+            @for (tumor of filteredTumors(); track tumor.biobank_code) {
+              <mat-option [value]="tumor.biobank_code">{{ tumor.biobank_code }}</mat-option>
+            }
+          </mat-autocomplete>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -128,6 +136,9 @@ export class SampleFormComponent {
   tumorsResource = httpResource<TumorOption[]>(() => `${this.apiUrl}/tumors`, {
     defaultValue: [],
   });
+  readonly tumorSearch = this.formBuilder.nonNullable.control(
+    this.data.biopsy?.tumor_biobank_code ?? '',
+  );
 
   readonly form = this.formBuilder.group({
     id: this.formBuilder.nonNullable.control(this.data.biopsy?.id ?? ''),
@@ -151,6 +162,18 @@ export class SampleFormComponent {
       { validators: [Validators.required] },
     ),
   });
+
+  filteredTumors(): TumorOption[] {
+    const query = this.tumorSearch.value.trim().toLowerCase();
+    return this.tumorsResource
+      .value()
+      .filter((tumor) => tumor.biobank_code.toLowerCase().includes(query));
+  }
+
+  selectTumor(tumorBiobankCode: string): void {
+    this.form.controls.tumor_biobank_code.setValue(tumorBiobankCode);
+    this.tumorSearch.setValue(tumorBiobankCode);
+  }
 
   buildDialogResult(): Partial<Sample> {
     const value = this.form.getRawValue();

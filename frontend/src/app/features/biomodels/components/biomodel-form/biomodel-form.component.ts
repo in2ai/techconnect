@@ -58,17 +58,23 @@ export interface BiomodelFormData {
 
         <mat-form-field appearance="outline">
           <mat-label i18n="@@biomodelTumorLbl">Tumor</mat-label>
-          @if (tumorsResource.isLoading()) {
-            <mat-select disabled>
-              <mat-option i18n="@@loadingLbl">Loading…</mat-option>
-            </mat-select>
-          } @else {
-            <mat-select formControlName="tumor_biobank_code" required>
-              @for (tumor of tumorsResource.value(); track tumor.biobank_code) {
-                <mat-option [value]="tumor.biobank_code">{{ tumor.biobank_code }}</mat-option>
-              }
-            </mat-select>
-          }
+          <input
+            matInput
+            required
+            [formControl]="tumorSearch"
+            [matAutocomplete]="tumorAutocomplete"
+            [readonly]="tumorsResource.isLoading()"
+            i18n-placeholder="@@biomodelTumorSearchPlaceholder"
+            placeholder="Search tumor biobank code"
+          />
+          <mat-autocomplete
+            #tumorAutocomplete="matAutocomplete"
+            (optionSelected)="selectTumor($event.option.value)"
+          >
+            @for (tumor of filteredTumors(); track tumor.biobank_code) {
+              <mat-option [value]="tumor.biobank_code">{{ tumor.biobank_code }}</mat-option>
+            }
+          </mat-autocomplete>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -199,6 +205,21 @@ export class BiomodelFormComponent {
   readonly parentPassageSearch = this.formBuilder.nonNullable.control(
     this.data.biomodel?.parent_passage_id ?? '',
   );
+  readonly tumorSearch = this.formBuilder.nonNullable.control(
+    this.data.biomodel?.tumor_biobank_code ?? '',
+  );
+
+  filteredTumors(): TumorOption[] {
+    const query = this.tumorSearch.value.trim().toLowerCase();
+    return this.tumorsResource
+      .value()
+      .filter((tumor) => tumor.biobank_code.toLowerCase().includes(query));
+  }
+
+  selectTumor(tumorBiobankCode: string): void {
+    this.form.controls.tumor_biobank_code.setValue(tumorBiobankCode);
+    this.tumorSearch.setValue(tumorBiobankCode);
+  }
 
   filteredParentPassages(): PassageOption[] {
     const query = this.parentPassageSearch.value.trim().toLowerCase();

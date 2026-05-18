@@ -81,7 +81,17 @@ describe('PassageFormComponent', () => {
     httpMock.verify();
   });
 
-  it('shows a disabled loading select while the biomodels resource is pending', async () => {
+  it('filters biomodels and stores only the selected id', async () => {
+    const { component, httpMock } = await setup({ mode: 'create' });
+    component.biomodelSearch.setValue('BM-1');
+    expect(component.filteredBiomodels().map((biomodel) => biomodel.id)).toEqual(['BM-1']);
+    component.selectBiomodel('BM-1');
+    expect(component.form.controls.biomodel_id.value).toBe('BM-1');
+    expect(component.biomodelSearch.value).toBe('BM-1');
+    httpMock.verify();
+  });
+
+  it('shows a readonly loading input while the biomodels resource is pending', async () => {
     await TestBed.configureTestingModule({
       imports: [PassageFormComponent],
       providers: [
@@ -97,7 +107,9 @@ describe('PassageFormComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.componentInstance.biomodelsResource.isLoading()).toBe(true);
-    expect(fixture.nativeElement.querySelector('mat-select[disabled]')).toBeTruthy();
+    const input = fixture.nativeElement.querySelector('input[placeholder="Search biomodel ID"]');
+    expect(input).toBeTruthy();
+    expect(input.readOnly).toBe(true);
 
     httpMock.expectOne('/api/biomodels').flush([]);
     fixture.detectChanges();

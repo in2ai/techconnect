@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -23,6 +24,7 @@ export interface TumorFormData {
   imports: [
     MatDialogModule,
     MatButtonModule,
+    MatAutocompleteModule,
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -51,17 +53,23 @@ export interface TumorFormData {
 
         <mat-form-field appearance="outline">
           <mat-label i18n="@@tumorPatientLbl">Patient</mat-label>
-          @if (patientsResource.isLoading()) {
-            <mat-select disabled>
-              <mat-option i18n="@@loadingLbl">Loading…</mat-option>
-            </mat-select>
-          } @else {
-            <mat-select formControlName="patient_nhc" required>
-              @for (patient of patientsResource.value(); track patient.nhc) {
-                <mat-option [value]="patient.nhc">{{ patient.nhc }}</mat-option>
-              }
-            </mat-select>
-          }
+          <input
+            matInput
+            required
+            [formControl]="patientSearch"
+            [matAutocomplete]="patientAutocomplete"
+            [readonly]="patientsResource.isLoading()"
+            i18n-placeholder="@@tumorPatientSearchPlaceholder"
+            placeholder="Search patient NHC"
+          />
+          <mat-autocomplete
+            #patientAutocomplete="matAutocomplete"
+            (optionSelected)="selectPatient($event.option.value)"
+          >
+            @for (patient of filteredPatients(); track patient.nhc) {
+              <mat-option [value]="patient.nhc">{{ patient.nhc }}</mat-option>
+            }
+          </mat-autocomplete>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -147,6 +155,7 @@ export class TumorFormComponent {
   patientsResource = httpResource<PatientOption[]>(() => `${this.apiUrl}/patients`, {
     defaultValue: [],
   });
+  readonly patientSearch = this.formBuilder.nonNullable.control(this.data.tumor?.patient_nhc ?? '');
 
   readonly form = this.formBuilder.group({
     biobank_code: this.formBuilder.nonNullable.control(this.data.tumor?.biobank_code ?? '', {
@@ -170,4 +179,14 @@ export class TumorFormComponent {
       validators: [Validators.required, Validators.pattern(/\S/)],
     }),
   });
+
+  filteredPatients(): PatientOption[] {
+    const query = this.patientSearch.value.trim().toLowerCase();
+    return this.patientsResource.value().filter((patient) => patient.nhc.toLowerCase().includes(query));
+  }
+
+  selectPatient(patientNhc: string): void {
+    this.form.controls.patient_nhc.setValue(patientNhc);
+    this.patientSearch.setValue(patientNhc);
+  }
 }
