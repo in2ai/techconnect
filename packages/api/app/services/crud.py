@@ -157,10 +157,12 @@ def list_items(
     model: type[ModelType],
     *,
     offset: int,
-    limit: int,
+    limit: int | None,
 ) -> list[ModelType]:
     """List entities with offset/limit pagination."""
-    statement = select(model).offset(offset).limit(limit)
+    statement = select(model).offset(offset)
+    if limit is not None:
+        statement = statement.limit(limit)
     if model.__name__ == "Biomodel":
         statement = statement.options(joinedload(model.tumor))
     return list(session.exec(statement))

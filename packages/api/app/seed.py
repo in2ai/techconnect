@@ -157,7 +157,7 @@ def seed_database() -> SeedStats:
                 code,
                 {
                     "biobank_code": code,
-                    "tube_code": f"TUBE-TC-{i+1:03d}" if i % 3 != 0 else None,
+                    "tube_code": f"TUBE-TC-{i+1:03d}" if (i + 1) % 3 != 0 else None,
                     "classification": classification,
                     "ap_diagnosis": (
                         "Moderately differentiated" if i % 4 == 0

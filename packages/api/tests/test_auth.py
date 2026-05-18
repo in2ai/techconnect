@@ -2,10 +2,12 @@ from collections.abc import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlmodel import Session
 
 from app.core.config import get_settings
 from app.core.database import get_engine
 from app.main import create_application
+from models import Biomodel, Patient, Tumor
 
 
 @pytest.fixture
@@ -94,3 +96,34 @@ def test_logout_revokes_the_browser_session(client: TestClient):
 
     protected_response = client.get('/api/patients')
     assert protected_response.status_code == 401
+
+
+def test_biomodel_list_returns_all_rows_when_limit_is_omitted(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    with Session(get_engine()) as session:
+        session.add(Patient(nhc='PAT-ALL', sex='F', age=42))
+        for tumor_index in range(35):
+            tumor_code = f'TUM-{tumor_index:03d}'
+            session.add(Tumor(biobank_code=tumor_code, patient_nhc='PAT-ALL', organ='Lung'))
+            for biomodel_index in range(3):
+                session.add(
+                    Biomodel(
+                        id=f'BM-{tumor_index:03d}-{biomodel_index}',
+                        type='PDX',
+                        tumor_biobank_code=tumor_code,
+                    )
+                )
+        session.commit()
+
+    response = client.get('/api/biomodels')
+
+    assert response.status_code == 200
+    biomodel_ids = {item['id'] for item in response.json()}
+    assert len(biomodel_ids) == 105
+    assert 'BM-000-0' in biomodel_ids
+    assert 'BM-034-2' in biomodel_ids

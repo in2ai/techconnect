@@ -26,16 +26,16 @@ describe('Tumor services', () => {
 
   it('TumorService hits /tumors', () => {
     TestBed.inject(TumorService).list().subscribe();
-    httpTesting.expectOne('/api/tumors?offset=0&limit=100').flush([]);
+    httpTesting.expectOne('/api/tumors?offset=0').flush([]);
   });
 
   it('TumorGenomicSequencingService hits /tumor-genomic-sequencings', () => {
     TestBed.inject(TumorGenomicSequencingService).list().subscribe();
-    httpTesting.expectOne('/api/tumor-genomic-sequencings?offset=0&limit=100').flush([]);
+    httpTesting.expectOne('/api/tumor-genomic-sequencings?offset=0').flush([]);
   });
 
   it('TumorMolecularDataService hits /tumor-molecular-data', () => {
     TestBed.inject(TumorMolecularDataService).list().subscribe();
-    httpTesting.expectOne('/api/tumor-molecular-data?offset=0&limit=100').flush([]);
+    httpTesting.expectOne('/api/tumor-molecular-data?offset=0').flush([]);
   });
 });

@@ -14,10 +14,11 @@ export abstract class BaseCrudService<T> {
     return `${this.apiUrl}/${this.endpoint}`;
   }
 
-  list(offset = 0, limit = 100): Observable<T[]> {
-    const params = new HttpParams()
-      .set('offset', offset.toString())
-      .set('limit', limit.toString());
+  list(offset = 0, limit?: number): Observable<T[]> {
+    let params = new HttpParams().set('offset', offset.toString());
+    if (limit !== undefined) {
+      params = params.set('limit', limit.toString());
+    }
     return this.http.get<T[]>(this.baseUrl, { params });
   }
 

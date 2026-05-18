@@ -25,12 +25,12 @@ def build_entity_router(model: type[ModelType], *, prefix: str, tag: str) -> API
         response_model=list[model],
         operation_id=f"get_{operation_slug}",
         summary=f"List {tag}",
-        description=f"Retrieve a list of {tag} with pagination support.",
+        description=f"Retrieve a list of {tag} with optional pagination.",
     )
     def read_items(
         session: SessionDep,
         offset: int = 0,
-        limit: Annotated[int, Query(ge=1, le=100)] = 100,
+        limit: Annotated[int | None, Query(ge=1)] = None,
     ):
         """List all items."""
         return list_items(session, model, offset=offset, limit=limit)

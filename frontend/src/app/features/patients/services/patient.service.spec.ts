@@ -24,7 +24,7 @@ describe('PatientService', () => {
 
   it('targets the patients endpoint for list requests', () => {
     service.list().subscribe();
-    httpTesting.expectOne('/api/patients?offset=0&limit=100').flush([]);
+    httpTesting.expectOne('/api/patients?offset=0').flush([]);
   });
 
   it('targets the patients endpoint for get requests', () => {
