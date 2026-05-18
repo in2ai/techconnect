@@ -258,8 +258,8 @@ export class GenericEntityFormComponent implements OnInit {
         this.notification.success(`Successfully ${this.isEdit ? 'updated' : 'created'} item`);
         this.dialogRef.close(true);
       },
-      error: () => {
-        this.notification.error(`Failed to save item`);
+      error: (error) => {
+        this.notification.requestError(error, `Failed to save item`);
         this.submitting = false;
       },
     });
@@ -274,8 +274,8 @@ export class GenericEntityFormComponent implements OnInit {
         this.notification.success('Item deleted');
         this.dialogRef.close(true);
       },
-      error: () => {
-        this.notification.error('Failed to delete item');
+      error: (error) => {
+        this.notification.requestError(error, 'Failed to delete item');
         this.submitting = false;
       },
     });

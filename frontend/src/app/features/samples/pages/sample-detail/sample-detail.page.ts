@@ -181,8 +181,8 @@ export class SampleDetailPage {
             this.notification.success('Sample updated');
             this.resource.reload();
           },
-          error: () => {
-            this.notification.error('Failed to update sample');
+          error: (error) => {
+            this.notification.requestError(error, 'Failed to update sample');
           },
         });
       }
@@ -206,8 +206,8 @@ export class SampleDetailPage {
             this.notification.success('Sample deleted');
             this.router.navigate(['/samples']);
           },
-          error: () => {
-            this.notification.error('Failed to delete sample');
+          error: (error) => {
+            this.notification.requestError(error, 'Failed to delete sample');
           },
         });
       }

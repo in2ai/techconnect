@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
@@ -24,9 +25,24 @@ function setup(options: {
   data: GenericEntityDialogData;
   isAdmin?: boolean;
   dialogRef?: Partial<MatDialogRef<unknown>>;
-  notification?: { success: ReturnType<typeof vi.fn>; error: ReturnType<typeof vi.fn> };
+  notification?: {
+    success: ReturnType<typeof vi.fn>;
+    error: ReturnType<typeof vi.fn>;
+    requestError: ReturnType<typeof vi.fn>;
+  };
 }) {
-  const notification = options.notification ?? { success: vi.fn(), error: vi.fn() };
+  const errorSpy = vi.fn();
+  const notification =
+    options.notification ??
+    ({
+      success: vi.fn(),
+      error: errorSpy,
+      requestError: vi.fn((error: unknown, message: string) => {
+        if (!(error instanceof HttpErrorResponse)) {
+          errorSpy(message);
+        }
+      }),
+    } as const);
   const dialogRef = { close: vi.fn(), ...options.dialogRef };
   const authMock = {
     isAdmin: signal(options.isAdmin ?? true),
@@ -119,7 +135,7 @@ describe('GenericEntityFormComponent', () => {
     expect(dialogRef.close).toHaveBeenCalledWith(true);
   });
 
-  it('PATCHes the existing entity and notifies errors without closing', () => {
+  it('PATCHes the existing entity and defers request errors without closing', () => {
     const { component, httpMock, dialogRef, notification } = setup({
       data: {
         title: 'Edit',
@@ -134,7 +150,7 @@ describe('GenericEntityFormComponent', () => {
     const req = httpMock.expectOne('/api/items/ID-9');
     expect(req.request.method).toBe('PATCH');
     req.flush({ detail: 'bad' }, { status: 422, statusText: 'Unprocessable' });
-    expect(notification.error).toHaveBeenCalled();
+    expect(notification.requestError).toHaveBeenCalled();
     expect(dialogRef.close).not.toHaveBeenCalled();
     expect(component.submitting).toBe(false);
   });
@@ -194,7 +210,7 @@ describe('GenericEntityFormComponent', () => {
     confirmSpy.mockRestore();
   });
 
-  it('deleteEntity surfaces errors and keeps the dialog open', () => {
+  it('deleteEntity defers request errors and keeps the dialog open', () => {
     const { component, httpMock, dialogRef, notification } = setup({
       data: {
         title: 'Edit',
@@ -208,7 +224,7 @@ describe('GenericEntityFormComponent', () => {
     httpMock
       .expectOne('/api/items/X-2')
       .flush({ detail: 'nope' }, { status: 500, statusText: 'fail' });
-    expect(notification.error).toHaveBeenCalled();
+    expect(notification.requestError).toHaveBeenCalled();
     expect(dialogRef.close).not.toHaveBeenCalled();
     expect(component.submitting).toBe(false);
     confirmSpy.mockRestore();

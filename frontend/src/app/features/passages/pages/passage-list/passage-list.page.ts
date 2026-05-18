@@ -127,8 +127,11 @@ export class PassageListPage {
           this.notification.success($localize`:@@passageCreatedToast:Passage created`);
           this.passagesResource.reload();
         },
-        error: () =>
-          this.notification.error($localize`:@@passageCreateFailedToast:Failed to create passage`),
+        error: (error) =>
+          this.notification.requestError(
+            error,
+            $localize`:@@passageCreateFailedToast:Failed to create passage`,
+          ),
       });
     });
   }

@@ -10,6 +10,11 @@ from sqlmodel import SQLModel, Session, select, func
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 
+_MODEL_NAME_PATTERN = re.compile(r"[A-Z]+(?=[A-Z][a-z]|\b)|[A-Z]?[a-z]+|\d+")
+_UNIQUE_CONSTRAINT_PATTERN = re.compile(r"UNIQUE constraint failed: (?P<columns>.+)")
+_NOT_NULL_CONSTRAINT_PATTERN = re.compile(r"NOT NULL constraint failed: (?P<column>.+)")
+_CHECK_CONSTRAINT_PATTERN = re.compile(r"CHECK constraint failed(?:: (?P<constraint>.+))?")
+
 
 def _as_uuid(value: Any) -> UUID | None:
     """Normalize FK values from JSON/model_dump (often str) for UUID SQL columns."""
@@ -32,8 +37,55 @@ def _coerce_pk(model: type[ModelType], item_id: str) -> Any:
         try:
             return UUID(item_id)
         except ValueError as exc:
-            raise HTTPException(status_code=422, detail=f"Invalid UUID: {item_id}") from exc
+            raise HTTPException(status_code=422, detail="Invalid identifier format.") from exc
     return item_id
+
+
+def _format_model_name(model: type[ModelType]) -> str:
+    words = _MODEL_NAME_PATTERN.findall(model.__name__)
+    return " ".join(word if word.isupper() else word.lower() for word in words)
+
+
+def _format_field_name(field_name: str) -> str:
+    special_names = {
+        "id": "ID",
+        "nhc": "NHC",
+    }
+    return special_names.get(field_name, field_name.replace("_", " "))
+
+
+def _sentence_case(value: str) -> str:
+    return value[:1].upper() + value[1:] if value else value
+
+
+def _format_database_error(model: type[ModelType], raw_detail: str, *, action: str) -> str:
+    model_name = _format_model_name(model)
+
+    unique_match = _UNIQUE_CONSTRAINT_PATTERN.search(raw_detail)
+    if unique_match:
+        columns = [column.strip().split(".")[-1] for column in unique_match.group("columns").split(",")]
+        if len(columns) == 1:
+            field_name = _format_field_name(columns[0])
+            return f"A {model_name} with this {field_name} already exists."
+        return f"A {model_name} with this combination of values already exists."
+
+    not_null_match = _NOT_NULL_CONSTRAINT_PATTERN.search(raw_detail)
+    if not_null_match:
+        field_name = not_null_match.group("column").strip().split(".")[-1]
+        return f"{_sentence_case(_format_field_name(field_name))} is required."
+
+    if "FOREIGN KEY constraint failed" in raw_detail:
+        if action == "delete":
+            return f"This {_format_model_name(model)} cannot be deleted because related records still exist."
+        return f"This {_format_model_name(model)} references related data that does not exist."
+
+    if _CHECK_CONSTRAINT_PATTERN.search(raw_detail):
+        return f"One or more {_format_model_name(model)} values are invalid."
+
+    if action == "delete":
+        return f"Could not delete this {model_name}. Please try again."
+
+    return f"Could not save this {model_name}. Please review the input and try again."
 
 
 def _check_constraints(session: Session, model: type[ModelType], payload_data: dict, item_id: Any = None) -> None:
@@ -41,9 +93,9 @@ def _check_constraints(session: Session, model: type[ModelType], payload_data: d
         if item_id is None:
             biomodel_id = payload_data.get("id")
             if not biomodel_id:
-                raise HTTPException(status_code=400, detail="Biomodel ID is required")
+                raise HTTPException(status_code=400, detail="Enter a biomodel ID.")
             if session.get(model, biomodel_id) is not None:
-                raise HTTPException(status_code=400, detail="Biomodel ID already exists")
+                raise HTTPException(status_code=400, detail="This biomodel ID already exists.")
 
         tumor_code = payload_data.get("tumor_biobank_code")
         if tumor_code:
@@ -113,7 +165,7 @@ def _prepare_create_payload(
     if model.__name__ == "Sample" and not payload_data.get("id"):
         tumor_biobank_code = payload_data.get("tumor_biobank_code")
         if not tumor_biobank_code:
-            raise HTTPException(status_code=400, detail="Sample tumor_biobank_code is required")
+            raise HTTPException(status_code=400, detail="Select a tumor for the sample.")
 
         return {
             **payload_data,
@@ -123,7 +175,7 @@ def _prepare_create_payload(
     if model.__name__ == "Passage":
         biomodel_id = payload_data.get("biomodel_id")
         if not biomodel_id:
-            raise HTTPException(status_code=400, detail="Passage biomodel_id is required")
+            raise HTTPException(status_code=400, detail="Select a biomodel for the passage.")
 
         passage_id = payload_data.get("id")
         if passage_id:
@@ -131,12 +183,12 @@ def _prepare_create_payload(
             if not str(passage_id).startswith(expected_prefix):
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Passage ID must start with '{expected_prefix}'",
+                    detail=f"Passage ID must start with '{expected_prefix}'.",
                 )
             if session.get(model, passage_id) is not None:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Passage ID '{passage_id}' already exists",
+                    detail="This passage ID already exists.",
                 )
             return payload_data
 
@@ -177,7 +229,7 @@ def get_item_or_404(session: Session, model: type[ModelType], item_id: str) -> M
     else:
         item = session.get(model, pk)
     if item is None:
-        raise HTTPException(status_code=404, detail=f"{model.__name__} not found")
+        raise HTTPException(status_code=404, detail=f"{_sentence_case(_format_model_name(model))} not found.")
     return item
 
 
@@ -188,7 +240,7 @@ def create_item(session: Session, model: type[ModelType], payload: ModelType) ->
     
     validated = model.model_validate(payload_dump)
     session.add(validated)
-    _commit_or_400(session)
+    _commit_or_400(session, model, action="save")
     session.refresh(validated)
     return validated
 
@@ -215,7 +267,7 @@ def update_item(
 
     db_item.sqlmodel_update(clean_data)
     session.add(db_item)
-    _commit_or_400(session)
+    _commit_or_400(session, model, action="save")
     session.refresh(db_item)
     return db_item
 
@@ -224,15 +276,16 @@ def delete_item(session: Session, model: type[ModelType], item_id: str) -> dict[
     """Delete one entity by id."""
     db_item = get_item_or_404(session, model, item_id)
     session.delete(db_item)
-    _commit_or_400(session)
+    _commit_or_400(session, model, action="delete")
     return {"ok": True}
 
 
-def _commit_or_400(session: Session) -> None:
+def _commit_or_400(session: Session, model: type[ModelType], *, action: str) -> None:
     """Commit a transaction and map database errors to HTTP 400."""
     try:
         session.commit()
     except SQLAlchemyError as exc:
         session.rollback()
-        detail = str(getattr(exc, "orig", exc))
+        raw_detail = str(getattr(exc, "orig", exc))
+        detail = _format_database_error(model, raw_detail, action=action)
         raise HTTPException(status_code=400, detail=detail) from exc

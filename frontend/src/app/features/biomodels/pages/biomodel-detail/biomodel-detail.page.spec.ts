@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -27,7 +27,17 @@ interface SetupOptions {
 async function setup(opts: SetupOptions = {}) {
   const id = opts.id ?? 'B-1';
   const authStub = { isAdmin: () => true } as unknown as AuthService;
-  const notification = { success: vi.fn(), error: vi.fn(), info: vi.fn() };
+  const errorSpy = vi.fn();
+  const notification = {
+    success: vi.fn(),
+    error: errorSpy,
+    info: vi.fn(),
+    requestError: vi.fn((error: unknown, message: string) => {
+      if (!(error instanceof HttpErrorResponse)) {
+        errorSpy(message);
+      }
+    }),
+  };
   const biomodelService = {
     update: vi.fn(() =>
       opts.updateResult === 'error' ? throwError(() => new Error('boom')) : of({} as Biomodel),

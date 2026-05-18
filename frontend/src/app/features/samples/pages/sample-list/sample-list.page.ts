@@ -143,8 +143,8 @@ export class SampleListPage {
           this.notification.success('Sample created');
           this.resource.reload();
         }),
-        catchError(() => {
-          this.notification.error('Failed to create sample');
+        catchError((error) => {
+          this.notification.requestError(error, 'Failed to create sample');
           return EMPTY;
         }),
       )

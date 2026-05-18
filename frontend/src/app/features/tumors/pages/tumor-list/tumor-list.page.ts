@@ -139,8 +139,8 @@ export class TumorListPage {
           this.notification.success('Tumor created successfully');
           this.tumorsResource.reload();
         }),
-        catchError(() => {
-          this.notification.error('Failed to create tumor');
+        catchError((error) => {
+          this.notification.requestError(error, 'Failed to create tumor');
           return EMPTY;
         }),
       )

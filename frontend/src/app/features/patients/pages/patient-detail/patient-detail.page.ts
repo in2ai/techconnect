@@ -192,8 +192,8 @@ export class PatientDetailPage {
             this.notification.success('Patient updated successfully');
             this.patientResource.reload();
           },
-          error: () => {
-            this.notification.error('Failed to update patient');
+          error: (error) => {
+            this.notification.requestError(error, 'Failed to update patient');
           },
         });
       }
@@ -213,8 +213,8 @@ export class PatientDetailPage {
             this.notification.success('Tumor created successfully');
             this.tumorsResource.reload();
           },
-          error: () => {
-            this.notification.error('Failed to create tumor');
+          error: (error) => {
+            this.notification.requestError(error, 'Failed to create tumor');
           },
         });
       }
@@ -239,8 +239,8 @@ export class PatientDetailPage {
             this.notification.success('Patient deleted');
             this.router.navigate(['/patients']);
           },
-          error: () => {
-            this.notification.error('Failed to delete patient');
+          error: (error) => {
+            this.notification.requestError(error, 'Failed to delete patient');
           },
         });
       }

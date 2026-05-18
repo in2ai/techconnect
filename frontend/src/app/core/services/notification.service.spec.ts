@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { vi } from 'vitest';
@@ -46,5 +47,19 @@ describe('NotificationService', () => {
     );
     const config = snackBarMock.open.mock.calls.at(-1)?.[2];
     expect(config?.panelClass).toBeUndefined();
+  });
+
+  it('uses the fallback message for non-http request errors', () => {
+    service.requestError(new Error('boom'), 'Fallback message');
+    expect(snackBarMock.open).toHaveBeenCalledWith(
+      'Fallback message',
+      'Close',
+      expect.objectContaining({ duration: 6000 }),
+    );
+  });
+
+  it('does not emit a duplicate fallback for HttpErrorResponse values', () => {
+    service.requestError(new HttpErrorResponse({ status: 400, error: { detail: 'Bad request' } }), 'Fallback');
+    expect(snackBarMock.open).not.toHaveBeenCalled();
   });
 });

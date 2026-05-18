@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -1527,8 +1526,11 @@ export class PassageDetailPage {
           this.notification.success($localize`:@@passageUpdatedToast:Passage updated`);
           this.passageResource.reload();
         },
-        error: () => {
-          this.notification.error($localize`:@@passageUpdateFailedToast:Failed to update passage`);
+        error: (error) => {
+          this.notification.requestError(
+            error,
+            $localize`:@@passageUpdateFailedToast:Failed to update passage`,
+          );
         },
       });
     });
@@ -1551,8 +1553,9 @@ export class PassageDetailPage {
             this.notification.success($localize`:@@passageDeletedToast:Passage deleted`);
             this.router.navigate(['/passages']);
           },
-          error: () => {
-            this.notification.error(
+          error: (error) => {
+            this.notification.requestError(
+              error,
               $localize`:@@passageDeleteFailedToast:Failed to delete passage`,
             );
           },

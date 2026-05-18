@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -21,6 +22,14 @@ export class NotificationService {
       horizontalPosition: 'end',
       verticalPosition: 'bottom',
     });
+  }
+
+  requestError(error: unknown, fallbackMessage: string): void {
+    if (error instanceof HttpErrorResponse) {
+      return;
+    }
+
+    this.error(fallbackMessage);
   }
 
   info(message: string): void {

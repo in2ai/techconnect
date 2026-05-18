@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -218,8 +217,8 @@ export class BiomodelDetailPage {
             this.notification.success('Biomodel updated');
             this.biomodelResource.reload();
           },
-          error: () => {
-            this.notification.error('Failed to update biomodel');
+          error: (error) => {
+            this.notification.requestError(error, 'Failed to update biomodel');
           },
         });
       }
@@ -238,8 +237,8 @@ export class BiomodelDetailPage {
             this.notification.success('Passage created');
             this.passagesResource.reload();
           },
-          error: () => {
-            this.notification.error('Failed to create passage');
+          error: (error) => {
+            this.notification.requestError(error, 'Failed to create passage');
           },
         });
       }
@@ -263,8 +262,8 @@ export class BiomodelDetailPage {
             this.notification.success('Biomodel deleted');
             this.router.navigate(['/biomodels']);
           },
-          error: () => {
-            this.notification.error('Failed to delete biomodel');
+          error: (error) => {
+            this.notification.requestError(error, 'Failed to delete biomodel');
           },
         });
       }

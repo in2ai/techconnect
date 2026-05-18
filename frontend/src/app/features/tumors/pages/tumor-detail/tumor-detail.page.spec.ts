@@ -38,7 +38,17 @@ interface SetupOptions {
 async function setup(opts: SetupOptions = {}) {
   const biobank = opts.biobank ?? 'T-1';
   const authStub = { isAdmin: () => true } as unknown as AuthService;
-  const notification = { success: vi.fn(), error: vi.fn(), info: vi.fn() };
+  const errorSpy = vi.fn();
+  const notification = {
+    success: vi.fn(),
+    error: errorSpy,
+    info: vi.fn(),
+    requestError: vi.fn((error: unknown, message: string) => {
+      if (!(error instanceof HttpErrorResponse)) {
+        errorSpy(message);
+      }
+    }),
+  };
   const tumorService = {
     update: vi.fn(() =>
       opts.updateResult === 'error' ? throwError(() => new Error('boom')) : of({} as Tumor),
