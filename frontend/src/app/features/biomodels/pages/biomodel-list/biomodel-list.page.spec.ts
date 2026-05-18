@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -17,7 +17,7 @@ async function setup(
   opts: {
     biomodels?: Biomodel[];
     dialogResult?: Partial<Biomodel> | null;
-    createResult?: 'ok' | 'error';
+    createResult?: 'ok' | 'error' | 'detail-error';
     isAdmin?: boolean;
   } = {},
 ) {
@@ -27,7 +27,15 @@ async function setup(
     create: vi.fn(() =>
       opts.createResult === 'error'
         ? throwError(() => new Error('boom'))
-        : of({ id: 'B-1' } as Biomodel),
+        : opts.createResult === 'detail-error'
+          ? throwError(
+              () =>
+                new HttpErrorResponse({
+                  status: 400,
+                  error: { detail: 'A tumor can generate max 3 biomodels' },
+                }),
+            )
+          : of({ id: 'B-1' } as Biomodel),
     ),
   } as unknown as BiomodelService;
   const dialogRef = {
@@ -102,6 +110,15 @@ describe('BiomodelListPage', () => {
     });
     fixture.componentInstance.openCreateDialog();
     expect(notification.error).toHaveBeenCalled();
+  });
+
+  it('does not replace backend biomodel limit detail with a generic error', async () => {
+    const { fixture, notification } = await setup({
+      dialogResult: { id: 'B-1', tumor_biobank_code: 'TB-1' } as Biomodel,
+      createResult: 'detail-error',
+    });
+    fixture.componentInstance.openCreateDialog();
+    expect(notification.error).not.toHaveBeenCalledWith('Failed to create biomodel');
   });
 
   it('does nothing when the dialog is dismissed', async () => {

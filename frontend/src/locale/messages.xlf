@@ -2,6 +2,13 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="biomodelTumorLimitToast" datatype="html">
+        <source>This tumor already has the maximum of 3 biomodels.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/interceptors/error.interceptor.ts</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="closeAction" datatype="html">
         <source>Close</source>
         <context-group purpose="location">
@@ -29,7 +36,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">584</context>
+          <context context-type="linenumber">610</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dataTransferSubtitle" datatype="html">
@@ -50,42 +57,42 @@
         <source>Administrator access required</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">82,83</context>
+          <context context-type="linenumber">78,79</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dataTransferAdminsOnlyMessage" datatype="html">
         <source> Only administrators can export or import dataset files. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">84,86</context>
+          <context context-type="linenumber">80,82</context>
         </context-group>
       </trans-unit>
       <trans-unit id="downloadAssetsHeading" datatype="html">
         <source>Download assets</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">93,94</context>
+          <context context-type="linenumber">89,90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="downloadAssetsCopy" datatype="html">
         <source> Use the empty templates for new data entry or export the current database to edit it offline. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">95,97</context>
+          <context context-type="linenumber">91,93</context>
         </context-group>
       </trans-unit>
       <trans-unit id="importDatasetHeading" datatype="html">
         <source>Import dataset package</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">124,125</context>
+          <context context-type="linenumber">123,124</context>
         </context-group>
       </trans-unit>
       <trans-unit id="importDatasetCopy" datatype="html">
         <source> Upload the completed Excel workbook. Existing primary keys are updated; new ones are created. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">126,128</context>
+          <context context-type="linenumber">125,127</context>
         </context-group>
       </trans-unit>
       <trans-unit id="chooseDatasetPackageBtn" datatype="html">
@@ -141,147 +148,147 @@
         <source>Tables processed</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">205,206</context>
+          <context context-type="linenumber">208,210</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetRowsImportedLabel" datatype="html">
         <source>Rows imported</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">209,210</context>
+          <context context-type="linenumber">214,216</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetRowsSkippedLabel" datatype="html">
         <source>Rows skipped</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">213,214</context>
+          <context context-type="linenumber">219,220</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetRowsFailedLabel" datatype="html">
         <source>Rows failed</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">217,218</context>
+          <context context-type="linenumber">223,224</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetCreatedLabel" datatype="html">
         <source>created</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">229,231</context>
+          <context context-type="linenumber">235,237</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetUpdatedLabel" datatype="html">
         <source>updated</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">233,235</context>
+          <context context-type="linenumber">239,241</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetImportErrorsHeading" datatype="html">
         <source>Rows with issues</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">244,245</context>
+          <context context-type="linenumber">250,251</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetImportErrorsCopy" datatype="html">
         <source> Download the failed rows to share them or fix them offline. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">246,247</context>
+          <context context-type="linenumber">252,253</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dashboardTitle" datatype="html">
         <source>Dashboard</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">583</context>
+          <context context-type="linenumber">609</context>
         </context-group>
       </trans-unit>
       <trans-unit id="downloadExcelTemplateLabel" datatype="html">
         <source>Download Excel template</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">589</context>
+          <context context-type="linenumber">615</context>
         </context-group>
       </trans-unit>
       <trans-unit id="downloadExcelTemplateDescription" datatype="html">
         <source>One sheet per domain table, ready for manual entry.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">590</context>
+          <context context-type="linenumber">616</context>
         </context-group>
       </trans-unit>
       <trans-unit id="downloadExcelExportLabel" datatype="html">
         <source>Export current dataset as Excel</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">603</context>
+          <context context-type="linenumber">622</context>
         </context-group>
       </trans-unit>
       <trans-unit id="downloadExcelExportDescription" datatype="html">
         <source>Round-trip the current domain records in workbook form.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">604</context>
+          <context context-type="linenumber">623</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetWorkbookHint" datatype="html">
         <source>Workbook upload detected. This will import the Excel workbook template.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">633</context>
+          <context context-type="linenumber">641</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetUploadHint" datatype="html">
         <source>Accepted format: .xlsx workbook.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">638</context>
+          <context context-type="linenumber">643</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetImportCompletedWithErrors" datatype="html">
         <source>Completed with issues</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">664</context>
+          <context context-type="linenumber">669</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetImportCompleted" datatype="html">
         <source>Import completed</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">667</context>
+          <context context-type="linenumber">672</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetDownloadSuccessMessage" datatype="html">
         <source>Download started successfully.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">720</context>
+          <context context-type="linenumber">701</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetUnsupportedFileType" datatype="html">
         <source>Select a .xlsx workbook before importing.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">735</context>
+          <context context-type="linenumber">716</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetImportSuccessMessage" datatype="html">
         <source><x id="rowCount" equiv-text="response.rows_imported"/> rows imported successfully.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">754</context>
+          <context context-type="linenumber">735</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datasetTransferGenericError" datatype="html">
         <source>Something went wrong while processing the dataset request.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/pages/data-transfer/data-transfer.page.ts</context>
-          <context context-type="linenumber">793</context>
+          <context context-type="linenumber">776</context>
         </context-group>
       </trans-unit>
       <trans-unit id="loginEyebrow" datatype="html">
@@ -532,7 +539,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">446</context>
+          <context context-type="linenumber">445</context>
         </context-group>
       </trans-unit>
       <trans-unit id="inactiveStatusOpt" datatype="html">
@@ -559,7 +566,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">448</context>
+          <context context-type="linenumber">447</context>
         </context-group>
       </trans-unit>
       <trans-unit id="biomodelSuccessLbl" datatype="html">
@@ -578,7 +585,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">437</context>
+          <context context-type="linenumber">436</context>
         </context-group>
       </trans-unit>
       <trans-unit id="sexNotSpecified" datatype="html">
@@ -813,7 +820,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">61,62</context>
+          <context context-type="linenumber">60,61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deleteBtn" datatype="html">
@@ -836,7 +843,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">65,66</context>
+          <context context-type="linenumber">64,65</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/components/generic-entity-form/generic-entity-form.component.ts</context>
@@ -939,11 +946,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">434</context>
+          <context context-type="linenumber">433</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">454</context>
+          <context context-type="linenumber">453</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5611592591303869712" datatype="html">
@@ -962,7 +969,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">436</context>
+          <context context-type="linenumber">435</context>
         </context-group>
       </trans-unit>
       <trans-unit id="trialSuccessLbl" datatype="html">
@@ -996,7 +1003,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">438</context>
+          <context context-type="linenumber">437</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2912790887397720753" datatype="html">
@@ -1004,229 +1011,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-detail/biomodel-detail.page.ts</context>
           <context context-type="linenumber">253</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="biomodelImportTitle" datatype="html">
-        <source>Import PDX Workbook</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">53,54</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">442</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="biomodelImportSubtitle" datatype="html">
-        <source>Upload the legacy XLSX workbook to create or update patients, tumors, and PDX biomodels.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">55,57</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="backToBiomodels" datatype="html">
-        <source>Back to Biomodels</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">60,62</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="importAdminsOnlyTitle" datatype="html">
-        <source>Administrator access required</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">69,70</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="importAdminsOnlyMessage" datatype="html">
-        <source> Only administrators can import workbook data into the platform. </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">71,73</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="uploadWorkbookHeading" datatype="html">
-        <source>Upload workbook</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">80,81</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="uploadWorkbookCopy" datatype="html">
-        <source> The importer reads the PDX template columns embedded in the workbook and processes every matching sheet. </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">82,84</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="supportedFormatLabel" datatype="html">
-        <source>Supported format:</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">87,88</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="chooseWorkbookBtn" datatype="html">
-        <source>Choose workbook</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">95,97</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="noWorkbookSelected" datatype="html">
-        <source>No workbook selected</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">109,111</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="clearSelectionBtn" datatype="html">
-        <source>Clear</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">116,117</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="importWorkbookBtn" datatype="html">
-        <source>Import workbook</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">126,127</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="importSummaryHeading" datatype="html">
-        <source>Import summary</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">143,145</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="importSummaryFileLabel" datatype="html">
-        <source>File:</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">145,146</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="sheetsProcessedLabel" datatype="html">
-        <source>Sheets processed</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">160,162</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="rowsImportedLabel" datatype="html">
-        <source>Rows imported</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">165,166</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="rowsSkippedLabel" datatype="html">
-        <source>Rows skipped</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">169,170</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="rowsFailedLabel" datatype="html">
-        <source>Rows failed</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">173,174</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="createdLabel" datatype="html">
-        <source>created</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">185,186</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="updatedLabel" datatype="html">
-        <source>updated</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">189,190</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="importErrorsHeading" datatype="html">
-        <source>Rows with issues</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">198,200</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="navBiomodels" datatype="html">
-        <source>Biomodels</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">441</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">459</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
-          <context context-type="linenumber">490</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="navPatients" datatype="html">
-        <source>Patients</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">457</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
-          <context context-type="linenumber">482</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="navTumors" datatype="html">
-        <source>Tumors</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">458</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
-          <context context-type="linenumber">483</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="importCompletedWithIssues" datatype="html">
-        <source>Completed with issues</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">469</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="importCompleted" datatype="html">
-        <source>Import completed</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">472</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="importPartialSuccess" datatype="html">
-        <source><x id="rowCount" equiv-text="response.rows_imported"/> rows imported with <x id="errorCount" equiv-text="response.rows_failed"/> issues.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">508</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="importSuccessMessage" datatype="html">
-        <source><x id="rowCount" equiv-text="response.rows_imported"/> rows imported successfully.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">514</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="importRequestFailed" datatype="html">
-        <source>Import request failed. Please review the workbook and try again.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/biomodels/pages/biomodel-import/biomodel-import.page.ts</context>
-          <context context-type="linenumber">528</context>
         </context-group>
       </trans-unit>
       <trans-unit id="biomodelsTitle" datatype="html">
@@ -1258,7 +1042,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">149,150</context>
+          <context context-type="linenumber">148,149</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noBiomodelsYet" datatype="html">
@@ -1303,7 +1087,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">435</context>
+          <context context-type="linenumber">434</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2060021892500932246" datatype="html">
@@ -1486,7 +1270,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">391</context>
+          <context context-type="linenumber">390</context>
         </context-group>
       </trans-unit>
       <trans-unit id="962765493084218985" datatype="html">
@@ -2293,7 +2077,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">210,211</context>
+          <context context-type="linenumber">209,210</context>
         </context-group>
       </trans-unit>
       <trans-unit id="failedToLoadGenomicData" datatype="html">
@@ -2304,7 +2088,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">218,219</context>
+          <context context-type="linenumber">217,218</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noGenomicDataTitle" datatype="html">
@@ -2315,7 +2099,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">227,228</context>
+          <context context-type="linenumber">226,227</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noPassageGenomicDataMsg" datatype="html">
@@ -2333,7 +2117,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">237,238</context>
+          <context context-type="linenumber">236,237</context>
         </context-group>
       </trans-unit>
       <trans-unit id="genomicDataInfoLbl" datatype="html">
@@ -2344,7 +2128,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">247,248</context>
+          <context context-type="linenumber">246,247</context>
         </context-group>
       </trans-unit>
       <trans-unit id="hasDataLbl" datatype="html">
@@ -2367,27 +2151,27 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">259,260</context>
+          <context context-type="linenumber">258,259</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">342,343</context>
+          <context context-type="linenumber">341,342</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">565</context>
+          <context context-type="linenumber">572</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">579</context>
+          <context context-type="linenumber">586</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">593</context>
+          <context context-type="linenumber">600</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">606</context>
+          <context context-type="linenumber">613</context>
         </context-group>
       </trans-unit>
       <trans-unit id="yesLbl" datatype="html">
@@ -2402,11 +2186,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">270,271</context>
+          <context context-type="linenumber">269,270</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">353,354</context>
+          <context context-type="linenumber">352,353</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noLbl" datatype="html">
@@ -2421,11 +2205,11 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">275,276</context>
+          <context context-type="linenumber">274,275</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">358,359</context>
+          <context context-type="linenumber">357,358</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dataLbl" datatype="html">
@@ -2448,27 +2232,27 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">280,281</context>
+          <context context-type="linenumber">279,280</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">363,364</context>
+          <context context-type="linenumber">362,363</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">566</context>
+          <context context-type="linenumber">573</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">580</context>
+          <context context-type="linenumber">587</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">594</context>
+          <context context-type="linenumber">601</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">607</context>
+          <context context-type="linenumber">614</context>
         </context-group>
       </trans-unit>
       <trans-unit id="molecularTabLbl" datatype="html">
@@ -2479,7 +2263,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">289,290</context>
+          <context context-type="linenumber">288,289</context>
         </context-group>
       </trans-unit>
       <trans-unit id="failedToLoadMolecularData" datatype="html">
@@ -2490,7 +2274,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">297,298</context>
+          <context context-type="linenumber">296,297</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noMolecularDataTitle" datatype="html">
@@ -2501,7 +2285,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">306,307</context>
+          <context context-type="linenumber">305,306</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noPassageMolecularDataMsg" datatype="html">
@@ -2519,7 +2303,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">316,317</context>
+          <context context-type="linenumber">315,316</context>
         </context-group>
       </trans-unit>
       <trans-unit id="molecularDataInfoLbl" datatype="html">
@@ -2530,7 +2314,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">326,327</context>
+          <context context-type="linenumber">325,326</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usageRecordDescriptionField" datatype="html">
@@ -2576,7 +2360,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">468</context>
+          <context context-type="linenumber">467</context>
         </context-group>
       </trans-unit>
       <trans-unit id="trialImageEnlargement" datatype="html">
@@ -2766,7 +2550,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">590</context>
+          <context context-type="linenumber">597</context>
         </context-group>
       </trans-unit>
       <trans-unit id="molecularTitle" datatype="html">
@@ -2777,7 +2561,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">603</context>
+          <context context-type="linenumber">610</context>
         </context-group>
       </trans-unit>
       <trans-unit id="passageUpdatedToast" datatype="html">
@@ -2984,7 +2768,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">88,89</context>
+          <context context-type="linenumber">87,88</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
@@ -3003,7 +2787,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">92,93</context>
+          <context context-type="linenumber">91,92</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
@@ -3045,7 +2829,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">104,105</context>
+          <context context-type="linenumber">103,104</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
@@ -3064,7 +2848,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">116,117</context>
+          <context context-type="linenumber">115,116</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8182213789791478633" datatype="html">
@@ -3349,7 +3133,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">455</context>
+          <context context-type="linenumber">454</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3393571693845224543" datatype="html">
@@ -3364,7 +3148,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">456</context>
+          <context context-type="linenumber">455</context>
         </context-group>
       </trans-unit>
       <trans-unit id="770748809189248828" datatype="html">
@@ -3379,7 +3163,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">457</context>
+          <context context-type="linenumber">456</context>
         </context-group>
       </trans-unit>
       <trans-unit id="tumorTissueOctLbl" datatype="html">
@@ -3390,7 +3174,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">460</context>
+          <context context-type="linenumber">459</context>
         </context-group>
       </trans-unit>
       <trans-unit id="nonTumorTissueOctLbl" datatype="html">
@@ -3401,7 +3185,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">465</context>
+          <context context-type="linenumber">464</context>
         </context-group>
       </trans-unit>
       <trans-unit id="yesLabel" datatype="html">
@@ -3491,7 +3275,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">96,97</context>
+          <context context-type="linenumber">95,96</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
@@ -3506,7 +3290,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">108,109</context>
+          <context context-type="linenumber">107,108</context>
         </context-group>
       </trans-unit>
       <trans-unit id="tumorApDiagnosisLbl" datatype="html">
@@ -3517,35 +3301,35 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">122,123</context>
+          <context context-type="linenumber">121,122</context>
         </context-group>
       </trans-unit>
       <trans-unit id="failedToLoadTumor" datatype="html">
         <source>Failed to load tumor</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">76,77</context>
+          <context context-type="linenumber">75,76</context>
         </context-group>
       </trans-unit>
       <trans-unit id="tumorBiobankCodeLbl" datatype="html">
         <source>Biobank Code</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">84,85</context>
+          <context context-type="linenumber">83,84</context>
         </context-group>
       </trans-unit>
       <trans-unit id="tumorOrganLbl" datatype="html">
         <source>Organ</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">100,101</context>
+          <context context-type="linenumber">99,100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="tumorPatientNhcLbl" datatype="html">
         <source>Patient NHC</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">112,113</context>
+          <context context-type="linenumber">111,112</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-list/tumor-list.page.ts</context>
@@ -3556,105 +3340,105 @@
         <source>Biomodels</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">130,131</context>
+          <context context-type="linenumber">129,130</context>
         </context-group>
       </trans-unit>
       <trans-unit id="addBiomodelFullBtn" datatype="html">
         <source>Add Biomodel</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">139,140</context>
+          <context context-type="linenumber">138,139</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noBiomodelsEmpty" datatype="html">
         <source>No biomodels</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">157,158</context>
+          <context context-type="linenumber">156,157</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noBiomodelsMsg" datatype="html">
         <source>No biomodels linked to this tumor.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">159,161</context>
+          <context context-type="linenumber">158,160</context>
         </context-group>
       </trans-unit>
       <trans-unit id="samplesTab" datatype="html">
         <source>Samples</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">170,171</context>
+          <context context-type="linenumber">169,170</context>
         </context-group>
       </trans-unit>
       <trans-unit id="addSampleBtn" datatype="html">
         <source>Add Sample</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">179,180</context>
+          <context context-type="linenumber">178,179</context>
         </context-group>
       </trans-unit>
       <trans-unit id="failedToLoadSamples" datatype="html">
         <source>Failed to load samples</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">189,190</context>
+          <context context-type="linenumber">188,189</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noSamplesEmpty" datatype="html">
         <source>No samples</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">197,198</context>
+          <context context-type="linenumber">196,197</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noSamplesMsg" datatype="html">
         <source>No samples linked to this tumor.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">199,201</context>
+          <context context-type="linenumber">198,200</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noTumorGenomicDataMsg" datatype="html">
         <source>No genomic sequencing data linked to this tumor.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">229,231</context>
+          <context context-type="linenumber">228,230</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noTumorMolecularDataMsg" datatype="html">
         <source>No molecular data linked to this tumor.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">308,310</context>
+          <context context-type="linenumber">307,309</context>
         </context-group>
       </trans-unit>
       <trans-unit id="tumorDetailTitle" datatype="html">
         <source>Tumor <x id="code" equiv-text="this.biobank_code()"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">379</context>
+          <context context-type="linenumber">378</context>
         </context-group>
       </trans-unit>
       <trans-unit id="createGenomicDataTitle" datatype="html">
         <source>Add Genomic Sequence</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">562</context>
+          <context context-type="linenumber">569</context>
         </context-group>
       </trans-unit>
       <trans-unit id="createMolecularDataTitle" datatype="html">
         <source>Add Molecular Data</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">576</context>
+          <context context-type="linenumber">583</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2130228186826233628" datatype="html">
         <source>Delete Tumor</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/tumors/pages/tumor-detail/tumor-detail.page.ts</context>
-          <context context-type="linenumber">618</context>
+          <context context-type="linenumber">625</context>
         </context-group>
       </trans-unit>
       <trans-unit id="tumorsTitle" datatype="html">
@@ -3867,6 +3651,20 @@
           <context context-type="linenumber">480</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="navPatients" datatype="html">
+        <source>Patients</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">482</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="navTumors" datatype="html">
+        <source>Tumors</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">483</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="navSamples" datatype="html">
         <source>Samples</source>
         <context-group purpose="location">
@@ -3879,6 +3677,13 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
           <context context-type="linenumber">488</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="navBiomodels" datatype="html">
+        <source>Biomodels</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
+          <context context-type="linenumber">490</context>
         </context-group>
       </trans-unit>
       <trans-unit id="navPassages" datatype="html">

@@ -2,6 +2,10 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en" target-language="es" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="biomodelTumorLimitToast" datatype="html">
+        <source>This tumor already has the maximum of 3 biomodels.</source>
+        <target>Este tumor ya tiene el máximo de 3 biomodelos.</target>
+      </trans-unit>
       <trans-unit id="dataTransferTitle" datatype="html">
         <source>Dataset Transfer</source>
         <target>Transferencia de datos</target>

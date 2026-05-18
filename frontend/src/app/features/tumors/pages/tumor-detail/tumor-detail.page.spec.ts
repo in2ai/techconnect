@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -31,7 +31,7 @@ interface SetupOptions {
   dialogResult?: unknown;
   updateResult?: 'ok' | 'error';
   deleteResult?: 'ok' | 'error';
-  createBiomodelResult?: 'ok' | 'error';
+  createBiomodelResult?: 'ok' | 'error' | 'detail-error';
   createSampleResult?: 'ok' | 'error';
 }
 
@@ -51,6 +51,14 @@ async function setup(opts: SetupOptions = {}) {
     create: vi.fn(() =>
       opts.createBiomodelResult === 'error'
         ? throwError(() => new Error('boom'))
+        : opts.createBiomodelResult === 'detail-error'
+          ? throwError(
+              () =>
+                new HttpErrorResponse({
+                  status: 400,
+                  error: { detail: 'A tumor can generate max 3 biomodels' },
+                }),
+            )
         : of({} as Biomodel),
     ),
   } as unknown as BiomodelService;

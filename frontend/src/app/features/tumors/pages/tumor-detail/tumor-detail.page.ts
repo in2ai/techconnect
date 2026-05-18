@@ -1,5 +1,4 @@
-import { DatePipe } from '@angular/common';
-import { httpResource } from '@angular/common/http';
+import { HttpErrorResponse, httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -476,6 +475,10 @@ export class TumorDetailPage {
     this.router.navigate(['/samples', sample.id]);
   }
 
+  private shouldShowGenericBiomodelCreateError(error: unknown): boolean {
+    return !(error instanceof HttpErrorResponse && typeof error.error?.detail === 'string');
+  }
+
   openEditDialog(): void {
     const tumor = this.tumorResource.value();
     if (!tumor) return;
@@ -513,7 +516,11 @@ export class TumorDetailPage {
             this.notification.success('Biomodel created');
             this.biomodelsResource.reload();
           },
-          error: () => this.notification.error('Failed to create biomodel'),
+          error: (error: unknown) => {
+            if (this.shouldShowGenericBiomodelCreateError(error)) {
+              this.notification.error('Failed to create biomodel');
+            }
+          },
         });
       }
     });

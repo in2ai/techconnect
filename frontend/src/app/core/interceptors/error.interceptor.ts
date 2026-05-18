@@ -3,6 +3,14 @@ import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { NotificationService } from '../services/notification.service';
 
+function mapDetailMessage(detail: string): string {
+  if (detail === 'A tumor can generate max 3 biomodels') {
+    return $localize`:@@biomodelTumorLimitToast:This tumor already has the maximum of 3 biomodels.`;
+  }
+
+  return detail;
+}
+
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notification = inject(NotificationService);
 
@@ -22,7 +30,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         message = 'A server error occurred. Please try again later.';
       } else if (error.error?.detail) {
         message = typeof error.error.detail === 'string'
-          ? error.error.detail
+          ? mapDetailMessage(error.error.detail)
           : 'Request failed. Please try again.';
       }
 

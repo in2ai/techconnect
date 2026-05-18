@@ -1,4 +1,4 @@
-import { httpResource } from '@angular/common/http';
+import { HttpErrorResponse, httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -132,6 +132,10 @@ export class BiomodelListPage {
     this.router.navigate(['/biomodels', biomodel.id]);
   }
 
+  private shouldShowGenericCreateError(error: unknown): boolean {
+    return !(error instanceof HttpErrorResponse && typeof error.error?.detail === 'string');
+  }
+
   openCreateDialog(): void {
     const dialogRef = this.dialog.open(BiomodelFormComponent, {
       width: '600px',
@@ -144,8 +148,10 @@ export class BiomodelListPage {
             this.notification.success('Biomodel created');
             this.biomodelsResource.reload();
           },
-          error: () => {
-            this.notification.error('Failed to create biomodel');
+          error: (error: unknown) => {
+            if (this.shouldShowGenericCreateError(error)) {
+              this.notification.error('Failed to create biomodel');
+            }
           },
         });
       }

@@ -64,6 +64,13 @@ describe('errorInterceptor', () => {
     expect(notification.error).toHaveBeenCalledWith('Bad NHC');
   });
 
+  it('maps the biomodel-per-tumor limit detail to a friendlier message', () => {
+    trigger(400, { detail: 'A tumor can generate max 3 biomodels' });
+    expect(notification.error).toHaveBeenCalledWith(
+      'This tumor already has the maximum of 3 biomodels.',
+    );
+  });
+
   it('falls back to generic message when no detail provided', () => {
     trigger(400, null);
     expect(notification.error).toHaveBeenCalledWith('An unexpected error occurred');
