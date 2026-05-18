@@ -46,7 +46,6 @@ export interface BiomodelFormData {
             matInput
             formControlName="id"
             required
-            [readonly]="data.mode === 'edit'"
             i18n-placeholder="@@biomodelIdPlaceholder"
             placeholder="Enter biomodel ID"
           />
@@ -171,9 +170,15 @@ export class BiomodelFormComponent {
   });
 
   readonly form = this.formBuilder.group({
-    id: this.formBuilder.nonNullable.control(this.data.biomodel?.id ?? '', {
-      validators: [Validators.required, Validators.pattern(/\S/)],
-    }),
+    id: this.formBuilder.nonNullable.control(
+      {
+        value: this.data.biomodel?.id ?? '',
+        disabled: this.data.mode === 'edit',
+      },
+      {
+        validators: [Validators.required, Validators.pattern(/\S/)],
+      },
+    ),
     type: this.formBuilder.control<Biomodel['type']>(this.data.biomodel?.type ?? null),
     description: this.formBuilder.control<Biomodel['description']>(
       this.data.biomodel?.description ?? null,

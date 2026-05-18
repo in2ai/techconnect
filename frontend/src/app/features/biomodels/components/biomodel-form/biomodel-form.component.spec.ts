@@ -70,6 +70,7 @@ describe('BiomodelFormComponent', () => {
         tumor_organ: null,
       },
     });
+    expect(component.form.controls.id.disabled).toBe(true);
     const payload = component.buildDialogResult();
     expect(payload.id).toBe('B-9');
     expect(payload.success).toBe(false);
