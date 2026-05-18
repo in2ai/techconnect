@@ -37,7 +37,7 @@ export interface PassageFormData {
       <form class="form-grid" [formGroup]="form">
         @if (data.mode === 'create') {
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label i18n="@@passageFormIdLbl">Passage identifier</mat-label>
+            <mat-label i18n="@@passageFormIdLbl">Passage number</mat-label>
             <input
               matInput
               formControlName="id"

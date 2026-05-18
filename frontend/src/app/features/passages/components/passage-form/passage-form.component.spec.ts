@@ -34,7 +34,7 @@ describe('PassageFormComponent', () => {
     httpMock.verify();
   });
 
-  it('computes composite id from passage identifier and biomodel_id in create mode', async () => {
+  it('computes composite id from passage number and biomodel_id in create mode', async () => {
     const { component, httpMock } = await setup({ mode: 'create' });
     component.form.patchValue({ id: 'P-1', biomodel_id: 'BM-1' });
     const payload = component.buildDialogResult();
