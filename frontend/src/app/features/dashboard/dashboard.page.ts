@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,9 +10,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { API_URL } from '@core/tokens/api-url.token';
-import { TumorsByOrganChartComponent } from './components/tumors-by-organ-chart/tumors-by-organ-chart.component';
 import { BiomodelSuccessChartComponent } from './components/biomodel-success-chart/biomodel-success-chart.component';
 import { OrganClassificationChartComponent } from './components/organ-classification-chart/organ-classification-chart.component';
+import { TumorsByOrganChartComponent } from './components/tumors-by-organ-chart/tumors-by-organ-chart.component';
 import { DashboardPreferencesService } from './services/dashboard-preferences.service';
 
 interface DashboardCard {
@@ -26,7 +27,19 @@ interface DashboardCard {
 @Component({
   selector: 'app-dashboard',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MatCardModule, MatIconModule, MatButtonModule, MatMenuModule, MatProgressSpinnerModule, MatSlideToggleModule, TumorsByOrganChartComponent, BiomodelSuccessChartComponent, OrganClassificationChartComponent],
+  imports: [
+    RouterLink,
+    NgOptimizedImage,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatSlideToggleModule,
+    TumorsByOrganChartComponent,
+    BiomodelSuccessChartComponent,
+    OrganClassificationChartComponent,
+  ],
   template: `
     <div class="dashboard-container">
       <!-- Animated background blobs -->
@@ -38,18 +51,37 @@ interface DashboardCard {
 
       <!-- Hero -->
       <header class="dashboard-hero">
-        <div class="hero-badge" i18n>Platform</div>
-        <h1 class="hero-title" i18n>Biomodels Management at IRYCIS Biobank</h1>
-        <p class="hero-subtitle" i18n>
-          Biomedical research data management platform. Navigate through your registry, biomodels,
-          and passage data.
-        </p>
-        @if (auth.isAdmin()) {
-          <a mat-flat-button routerLink="/admin/data-transfer" class="hero-cta">
-            <mat-icon>sync_alt</mat-icon>
-            <ng-container i18n="@@openDatasetTransfer">Open Dataset Transfer</ng-container>
-          </a>
-        }
+        <div class="hero-copy">
+          <div class="hero-badge" i18n>Platform</div>
+          <h1 class="hero-title" i18n>Biomodels Management at IRYCIS Biobank</h1>
+          <p class="hero-subtitle" i18n>
+            Biomedical research data management platform. Navigate through your registry, biomodels,
+            and passage data.
+          </p>
+          @if (auth.isAdmin()) {
+            <a mat-flat-button routerLink="/admin/data-transfer" class="hero-cta">
+              <mat-icon>sync_alt</mat-icon>
+              <ng-container i18n="@@openDatasetTransfer">Open Dataset Transfer</ng-container>
+            </a>
+          }
+        </div>
+
+        <div class="hero-brand-rail" aria-label="Institutional partners" i18n-aria-label>
+          <img
+            class="hero-brand hero-brand-eu"
+            ngSrc="/founded-by-europe.png"
+            width="196"
+            height="54"
+            alt="Funded by the European Union"
+          />
+          <img
+            class="hero-brand hero-brand-techconnect"
+            ngSrc="/techconnect.png"
+            width="219"
+            height="86"
+            alt="TechConnect Human Tech Index"
+          />
+        </div>
       </header>
 
       <!-- Vitals Strip -->
@@ -59,7 +91,7 @@ interface DashboardCard {
             [routerLink]="card.route"
             class="vital-tile"
             [style.--vital-color]="card.color"
-            [style.animation-delay]="(200 + i * 80) + 'ms'"
+            [style.animation-delay]="200 + i * 80 + 'ms'"
           >
             <div class="vital-accent" [style.background]="card.color"></div>
             <div class="vital-content">
@@ -71,9 +103,13 @@ interface DashboardCard {
                   @if (getResource(card.endpoint).isLoading()) {
                     <mat-spinner diameter="18" aria-label="Loading count"></mat-spinner>
                   } @else if (getResource(card.endpoint).error()) {
-                    <mat-icon class="count-error-icon" aria-label="Error loading data">error_outline</mat-icon>
+                    <mat-icon class="count-error-icon" aria-label="Error loading data"
+                      >error_outline</mat-icon
+                    >
                   } @else if (getResource(card.endpoint).hasValue()) {
-                    <span class="count-number">{{ getResource(card.endpoint).value()!.length }}</span>
+                    <span class="count-number card-count">{{
+                      getResource(card.endpoint).value()!.length
+                    }}</span>
                   } @else {
                     <span class="count-number">—</span>
                   }
@@ -213,22 +249,34 @@ interface DashboardCard {
     }
 
     @keyframes blobFloat {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(20px, -30px) scale(1.05); }
-      66% { transform: translate(-15px, 15px) scale(0.95); }
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+      33% {
+        transform: translate(20px, -30px) scale(1.05);
+      }
+      66% {
+        transform: translate(-15px, 15px) scale(0.95);
+      }
     }
 
     /* ─── Hero ────────────────────────────────────────────────── */
 
     .dashboard-hero {
       position: relative;
+      display: grid;
+      gap: 1.75rem;
       z-index: 1;
       margin-bottom: 2.5rem;
       padding: 3rem 2.5rem;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(250,248,245,0.85) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(250, 248, 245, 0.85) 100%
+      );
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(0,0,0,0.06);
+      border: 1px solid rgba(0, 0, 0, 0.06);
       border-radius: 24px;
       animation: heroEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       overflow: hidden;
@@ -245,14 +293,20 @@ interface DashboardCard {
       opacity: 0.6;
     }
 
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+    }
+
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       padding: 0.35rem 1rem;
       border-radius: 100px;
-      background: rgba(0,0,0,0.04);
-      border: 1px solid rgba(0,0,0,0.06);
+      background: rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.06);
       font-size: 0.6875rem;
       font-weight: 600;
       color: #57534e;
@@ -271,8 +325,13 @@ interface DashboardCard {
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.4;
+      }
     }
 
     .hero-title {
@@ -302,12 +361,40 @@ interface DashboardCard {
       border-radius: 12px;
       font-weight: 600;
       letter-spacing: -0.01em;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
     }
 
     .hero-cta:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-brand-rail {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 1.25rem;
+      padding-top: 0.25rem;
+    }
+
+    .hero-brand {
+      display: block;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 20px rgba(28, 25, 23, 0.08));
+    }
+
+    .hero-brand-eu {
+      width: min(196px, 45vw);
+    }
+
+    .hero-brand-techconnect {
+      width: min(219px, 48vw);
     }
 
     /* ─── Vitals Strip ────────────────────────────────────────── */
@@ -336,9 +423,9 @@ interface DashboardCard {
       align-items: center;
       gap: 1rem;
       padding: 1.25rem 1.5rem;
-      background: rgba(255,255,255,0.85);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(0,0,0,0.06);
+      border: 1px solid rgba(0, 0, 0, 0.06);
       border-radius: 20px;
       text-decoration: none;
       color: inherit;
@@ -351,7 +438,7 @@ interface DashboardCard {
       transform: translateY(-3px);
       border-color: var(--vital-color);
       box-shadow:
-        0 12px 32px rgba(0,0,0,0.06),
+        0 12px 32px rgba(0, 0, 0, 0.06),
         0 0 0 1px var(--vital-color);
     }
 
@@ -367,7 +454,9 @@ interface DashboardCard {
       bottom: 0;
       width: 3px;
       opacity: 0.7;
-      transition: width 0.25s ease, opacity 0.25s ease;
+      transition:
+        width 0.25s ease,
+        opacity 0.25s ease;
     }
 
     .vital-tile:hover .vital-accent {
@@ -421,8 +510,14 @@ interface DashboardCard {
     }
 
     @keyframes countPop {
-      from { opacity: 0; transform: scale(0.8) translateY(4px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
+      from {
+        opacity: 0;
+        transform: scale(0.8) translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
 
     .count-error-icon {
@@ -490,7 +585,9 @@ interface DashboardCard {
 
     .bento-settings {
       color: #a8a29e;
-      transition: color 0.2s ease, transform 0.2s ease;
+      transition:
+        color 0.2s ease,
+        transform 0.2s ease;
     }
 
     .bento-settings:hover {
@@ -508,21 +605,29 @@ interface DashboardCard {
       animation: cellEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
-    .bento-cell-tumors { animation-delay: 0.35s; }
-    .bento-cell-biomodel { animation-delay: 0.45s; }
-    .bento-cell-classification { animation-delay: 0.55s; }
+    .bento-cell-tumors {
+      animation-delay: 0.35s;
+    }
+    .bento-cell-biomodel {
+      animation-delay: 0.45s;
+    }
+    .bento-cell-classification {
+      animation-delay: 0.55s;
+    }
 
     .bento-cell ::ng-deep .chart-card {
-      background: rgba(255,255,255,0.85);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(8px);
-      border: 1px solid rgba(0,0,0,0.06);
+      border: 1px solid rgba(0, 0, 0, 0.06);
       border-radius: 20px !important;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-      transition: box-shadow 0.25s ease, transform 0.25s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      transition:
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
     }
 
     .bento-cell ::ng-deep .chart-card:hover {
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
       transform: translateY(-1px);
     }
 
@@ -567,8 +672,8 @@ interface DashboardCard {
       gap: 0.625rem;
       padding: 4rem 2rem;
       color: #a8a29e;
-      background: rgba(255,255,255,0.6);
-      border: 2px dashed rgba(0,0,0,0.08);
+      background: rgba(255, 255, 255, 0.6);
+      border: 2px dashed rgba(0, 0, 0, 0.08);
       border-radius: 20px;
       font-size: 0.9375rem;
     }
@@ -609,8 +714,12 @@ interface DashboardCard {
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
 
     /* ─── Responsive ──────────────────────────────────────────── */
@@ -635,7 +744,16 @@ interface DashboardCard {
       }
 
       .dashboard-hero {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
         padding: 3.5rem 3rem;
+      }
+
+      .hero-brand-rail {
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: flex-end;
+        gap: 1rem;
       }
 
       .vitals-strip {
@@ -660,6 +778,10 @@ interface DashboardCard {
       .dashboard-hero {
         padding: 2rem 1.5rem;
         border-radius: 20px;
+      }
+
+      .hero-brand-rail {
+        gap: 1rem;
       }
 
       .vital-tile {
