@@ -69,14 +69,14 @@ interface DashboardCard {
         <div class="hero-brand-rail" aria-label="Institutional partners" i18n-aria-label>
           <img
             class="hero-brand hero-brand-eu"
-            ngSrc="/founded-by-europe.png"
+            ngSrc="founded-by-europe.png"
             width="196"
             height="54"
             alt="Funded by the European Union"
           />
           <img
             class="hero-brand hero-brand-techconnect"
-            ngSrc="/techconnect.png"
+            ngSrc="techconnect.png"
             width="219"
             height="86"
             alt="TechConnect Human Tech Index"
