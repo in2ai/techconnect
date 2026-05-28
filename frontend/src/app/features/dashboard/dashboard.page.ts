@@ -39,7 +39,7 @@ interface DashboardCard {
       <!-- Hero -->
       <header class="dashboard-hero">
         <div class="hero-badge" i18n>Platform</div>
-        <h1 class="hero-title" i18n>Welcome to TechConnect</h1>
+        <h1 class="hero-title" i18n>Biomodels Management at IRYCIS Biobank</h1>
         <p class="hero-subtitle" i18n>
           Biomedical research data management platform. Navigate through your registry, biomodels,
           and passage data.

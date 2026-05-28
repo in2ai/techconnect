@@ -483,8 +483,8 @@
         </context-group>
       </trans-unit>
       <trans-unit id="3997505011482678902" datatype="html">
-        <source>Welcome to TechConnect</source>
-        <target>Bienvenido a TechConnect</target>
+        <source>Biomodels Management at IRYCIS Biobank</source>
+        <target>Gestión de Biomodelos en el Biobanco IRYCIS</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/dashboard/dashboard.page.ts</context>
           <context context-type="linenumber">27,28</context>
