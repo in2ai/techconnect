@@ -482,6 +482,14 @@
           <context context-type="linenumber">26,27</context>
         </context-group>
       </trans-unit>
+        <trans-unit id="1214173080258084422" datatype="html">
+          <source>Biomodels Management at IRYCIS Biobank</source>
+          <target>Gestión de Biomodelos en el Biobanco IRYCIS</target>
+        </trans-unit>
+        <trans-unit id="5634523539494784593" datatype="html">
+          <source>Institutional partners</source>
+          <target>Socios institucionales</target>
+        </trans-unit>
       <trans-unit id="3997505011482678902" datatype="html">
         <source>Biomodels Management at IRYCIS Biobank</source>
         <target>Gestión de Biomodelos en el Biobanco IRYCIS</target>
@@ -1178,6 +1186,7 @@
       <trans-unit id="sampleIdLbl"><source>ID</source><target>ID</target></trans-unit>
       <trans-unit id="sampleBiopsyDateLbl"><source>Biopsy Date</source><target>Fecha de Biopsia</target></trans-unit>
       <trans-unit id="sampleTumorLbl"><source>Tumor</source><target>Tumor</target></trans-unit>
+      <trans-unit id="sampleTumorSearchPlaceholder" datatype="html"><source>Search tumor biobank code</source><target>Buscar código de biobanco del tumor</target></trans-unit>
       <trans-unit id="sampleHasSerumLbl"><source>Has Serum</source><target>Tiene Suero</target></trans-unit>
       <trans-unit id="sampleHasBuffyCoatLbl"><source>Has Buffy Coat</source><target>Tiene Capa Leucocitaria</target></trans-unit>
       <trans-unit id="sampleHasPlasmaLbl"><source>Has Plasma</source><target>Tiene Plasma</target></trans-unit>
@@ -1206,6 +1215,7 @@
       <trans-unit id="biomodelDescriptionLbl"><source>Description</source><target>Descripción</target></trans-unit>
       <trans-unit id="biomodelCreatedLbl"><source>Created</source><target>Creado</target></trans-unit>
       <trans-unit id="biomodelTumorLbl"><source>Tumor</source><target>Tumor</target></trans-unit>
+      <trans-unit id="biomodelTumorSearchPlaceholder" datatype="html"><source>Search tumor biobank code</source><target>Buscar código de biobanco del tumor</target></trans-unit>
 
       <trans-unit id="passagesTabLbl"><source>Passages</source><target>Pases</target></trans-unit>
       <trans-unit id="failedToLoadPassages"><source>Failed to load passages</source><target>Error al cargar pases</target></trans-unit>
@@ -1221,6 +1231,7 @@
       <trans-unit id="passageIdPlaceholder"><source>Enter passage ID</source><target>Introduzca el ID del pase</target></trans-unit>
       <trans-unit id="passageDescLbl"><source>Description</source><target>Descripción</target></trans-unit>
       <trans-unit id="passageBiomodelLbl"><source>Biomodel</source><target>Biomodelo</target></trans-unit>
+      <trans-unit id="passageBiomodelSearchPlaceholder" datatype="html"><source>Search biomodel ID</source><target>Buscar ID del biomodelo</target></trans-unit>
       <trans-unit id="noPassagesYet"><source>No passages yet</source><target>Aún no hay pases</target></trans-unit>
       <trans-unit id="createFirstPassage"><source>Use Add Passage above or create one from a biomodel detail page.</source><target>Puede añadir un pase con el botón superior o desde la página de detalle de un biomodelo.</target></trans-unit>
       <trans-unit id="noPassageGenomicDataMsg"><source>No genomic sequencing data linked to this passage.</source><target>No hay datos de secuenciación genómica vinculados a este pase.</target></trans-unit>
@@ -1475,6 +1486,7 @@
       <trans-unit id="editTumorTitle" datatype="html"><source>Edit Tumor</source><target>Editar Tumor</target></trans-unit>
       <trans-unit id="biobankCodeLbl" datatype="html"><source>Biobank Code</source><target>Código de Biobanco</target></trans-unit>
       <trans-unit id="tumorPatientLbl" datatype="html"><source>Patient</source><target>Paciente</target></trans-unit>
+      <trans-unit id="tumorPatientSearchPlaceholder" datatype="html"><source>Search patient NHC</source><target>Buscar NHC del paciente</target></trans-unit>
       <trans-unit id="tubeCodeLbl" datatype="html"><source>Tube Code</source><target>Código de tubo</target></trans-unit>
       <trans-unit id="classificationLbl" datatype="html"><source>Classification</source><target>Clasificación</target></trans-unit>
       <trans-unit id="tumorStageLbl" datatype="html"><source>Stage</source><target>Estadio</target></trans-unit>
