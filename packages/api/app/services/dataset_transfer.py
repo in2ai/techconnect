@@ -428,6 +428,8 @@ def _build_row_payload(table_spec: DatasetTableSpec, values: tuple[Any, ...] | l
         normalized = _normalize_value(value)
         if normalized is None and column.is_primary_key:
             continue
+        if normalized is not None and column.data_type == 'string' and not isinstance(normalized, str):
+            normalized = str(normalized)
         payload[column.name] = normalized
     return payload
 

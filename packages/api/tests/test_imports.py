@@ -349,6 +349,47 @@ def test_import_dataset_workbook_creates_and_updates_related_rows(client: TestCl
     assert updated_tumor_response.json()['ap_diagnosis'] == 'Updated diagnosis'
 
 
+def test_import_dataset_workbook_coerces_numeric_excel_values_for_string_columns(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    template_response = client.get('/api/imports/dataset-template.xlsx')
+    workbook = load_workbook(BytesIO(template_response.content))
+    patient_sheet = workbook['patient']
+    tumor_sheet = workbook['tumor']
+    patient_sheet.append(['PAT-300', 'F', 35])
+    tumor_sheet.append(['TUM-300', 222222222, 'carcinoma', None, 3, 'pulmon', 2, 'T1N2M0', None, 'PAT-300'])
+    payload = BytesIO()
+    workbook.save(payload)
+    workbook.close()
+
+    response = client.post(
+        '/api/imports/dataset-workbook',
+        files={
+            'file': (
+                'dataset.xlsx',
+                payload.getvalue(),
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            )
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body['rows_failed'] == 0
+    assert body['table_counts']['tumor'] == {'created': 1, 'updated': 0}
+
+    tumor_response = client.get('/api/tumors/TUM-300')
+    assert tumor_response.status_code == 200
+    tumor = tumor_response.json()
+    assert tumor['tube_code'] == '222222222'
+    assert tumor['grade'] == '3'
+    assert tumor['stage'] == '2'
+
+
 def test_exported_dataset_workbook_roundtrips_seed_data(client: TestClient):
     login_response = client.post(
         '/api/auth/login',
