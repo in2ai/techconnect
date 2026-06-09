@@ -430,8 +430,22 @@ def _build_row_payload(table_spec: DatasetTableSpec, values: tuple[Any, ...] | l
             continue
         if normalized is not None and column.data_type == 'string' and not isinstance(normalized, str):
             normalized = str(normalized)
+        if isinstance(normalized, str) and _should_normalize_passage_identifier(table_spec, column):
+            normalized = _normalize_passage_identifier(normalized)
         payload[column.name] = normalized
     return payload
+
+
+def _should_normalize_passage_identifier(table_spec: DatasetTableSpec, column: DatasetColumnSpec) -> bool:
+    if table_spec.table_name == 'passage' and column.name == 'id':
+        return True
+    if column.name in {'passage_id', 'parent_passage_id', 'pdx_trial_id'}:
+        return True
+    return 'passage.id' in column.foreign_keys
+
+
+def _normalize_passage_identifier(value: str) -> str:
+    return '-'.join(part for part in value.strip().split() if part)
 
 
 def _validate_foreign_keys(session: Session, table_spec: DatasetTableSpec, payload: dict[str, Any]) -> None:

@@ -390,6 +390,54 @@ def test_import_dataset_workbook_coerces_numeric_excel_values_for_string_columns
     assert tumor['stage'] == '2'
 
 
+def test_import_dataset_workbook_normalizes_passage_identifier_spaces(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    template_response = client.get('/api/imports/dataset-template.xlsx')
+    workbook = load_workbook(BytesIO(template_response.content))
+    patient_sheet = workbook['patient']
+    tumor_sheet = workbook['tumor']
+    biomodel_sheet = workbook['biomodel']
+    passage_sheet = workbook['passage']
+    pdx_trial_sheet = workbook['pdx_trial']
+
+    patient_sheet.append(['PAT-400', 'F', 35])
+    tumor_sheet.append(['TUM-400', None, None, 'Adenocarcinoma', None, 'Lung', None, None, None, 'PAT-400'])
+    biomodel_sheet.append(['LUNG260526', 'PDX', None, None, None, None, 'TUM-400', None])
+    passage_sheet.append(['LUNG260526 PX2', None, 'YES', 'YES', None, 'NO', None, 'LUNG260526'])
+    pdx_trial_sheet.append(['LUNG260526 PX2', None, None, None, None, None, None])
+
+    payload = BytesIO()
+    workbook.save(payload)
+    workbook.close()
+
+    response = client.post(
+        '/api/imports/dataset-workbook',
+        files={
+            'file': (
+                'dataset.xlsx',
+                payload.getvalue(),
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            )
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body['rows_failed'] == 0
+    assert body['table_counts']['passage'] == {'created': 1, 'updated': 0}
+    assert body['table_counts']['pdx_trial'] == {'created': 1, 'updated': 0}
+
+    passage_response = client.get('/api/passages/LUNG260526-PX2')
+    pdx_trial_response = client.get('/api/pdx-trials/LUNG260526-PX2')
+    assert passage_response.status_code == 200
+    assert pdx_trial_response.status_code == 200
+
+
 def test_exported_dataset_workbook_roundtrips_seed_data(client: TestClient):
     login_response = client.post(
         '/api/auth/login',
