@@ -64,6 +64,13 @@ class DatasetImportSummary(BaseModel):
     errors: list[DatasetImportError] = Field(default_factory=list)
 
 
+DATASET_SHEET_NAME_ALIASES = {
+    "pdx_trial": "pdx_passage",
+    "pdo_trial": "pdo_passage",
+    "lc_trial": "lc_passage",
+}
+
+
 MOUSE_RELATED_COLUMNS: tuple[DatasetColumnSpec, ...] = (
     DatasetColumnSpec("implant_1_id", False, False, (), "uuid", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"),
     DatasetColumnSpec("implant_1_location", False, False, (), "string"),
@@ -104,7 +111,7 @@ def build_dataset_export_workbook(session: Session) -> bytes:
     workbook = _build_base_workbook()
 
     for table_spec in get_dataset_table_specs():
-        worksheet = workbook[table_spec.table_name]
+        worksheet = workbook[_sheet_name(table_spec)]
         for item in session.exec(select(table_spec.model)).all():
             worksheet.append(_export_workbook_row_values(session, table_spec, item))
 
@@ -171,7 +178,7 @@ def import_dataset_workbook(
     try:
         worksheets = {worksheet.title: worksheet for worksheet in workbook.worksheets}
         for table_spec in get_dataset_table_specs():
-            worksheet = worksheets.get(table_spec.table_name)
+            worksheet = worksheets.get(_sheet_name(table_spec))
             if worksheet is None:
                 continue
 
@@ -192,7 +199,7 @@ def import_dataset_workbook(
             if actual_headers != expected_headers:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Worksheet {table_spec.table_name!r} does not match the expected template headers.",
+                    detail=f"Worksheet {_sheet_name(table_spec)!r} does not match the expected template headers.",
                 )
 
             note_row = next(
@@ -237,7 +244,7 @@ def build_dataset_template_csv_zip() -> bytes:
             csv_buffer = StringIO()
             writer = csv.writer(csv_buffer)
             writer.writerow([column.name for column in _workbook_columns(table_spec)])
-            archive.writestr(f"{table_spec.table_name}.csv", csv_buffer.getvalue())
+            archive.writestr(f"{_sheet_name(table_spec)}.csv", csv_buffer.getvalue())
 
     return buffer.getvalue()
 
@@ -253,7 +260,7 @@ def build_dataset_export_csv_zip(session: Session) -> bytes:
             writer.writerow([column.name for column in _workbook_columns(table_spec)])
             for item in session.exec(select(table_spec.model)).all():
                 writer.writerow(_export_workbook_row_values(session, table_spec, item))
-            archive.writestr(f"{table_spec.table_name}.csv", csv_buffer.getvalue())
+            archive.writestr(f"{_sheet_name(table_spec)}.csv", csv_buffer.getvalue())
 
         csv_buffer = StringIO()
         writer = csv.writer(csv_buffer)
@@ -292,7 +299,7 @@ def import_dataset_csv_zip(
     with archive:
         names = set(archive.namelist())
         for table_spec in get_dataset_table_specs():
-            filename_in_archive = f"{table_spec.table_name}.csv"
+            filename_in_archive = f"{_sheet_name(table_spec)}.csv"
             if filename_in_archive not in names:
                 continue
 
@@ -345,6 +352,10 @@ def _get_model_columns(model: type[SQLModel]) -> tuple[DatasetColumnSpec, ...]:
     )
 
 
+def _sheet_name(table_spec: DatasetTableSpec) -> str:
+    return DATASET_SHEET_NAME_ALIASES.get(table_spec.table_name, table_spec.table_name)
+
+
 def _workbook_columns(table_spec: DatasetTableSpec) -> tuple[DatasetColumnSpec, ...]:
     if table_spec.table_name == "mouse":
         return table_spec.columns + MOUSE_RELATED_COLUMNS
@@ -356,9 +367,9 @@ def _build_base_workbook() -> Workbook:
     table_specs = get_dataset_table_specs()
     for index, table_spec in enumerate(table_specs):
         worksheet = (
-            workbook.active if index == 0 else workbook.create_sheet(title=table_spec.table_name)
+            workbook.active if index == 0 else workbook.create_sheet(title=_sheet_name(table_spec))
         )
-        worksheet.title = table_spec.table_name
+        worksheet.title = _sheet_name(table_spec)
         workbook_columns = _workbook_columns(table_spec)
         header_row = [column.name for column in workbook_columns]
         note_row = [_column_note(column) for column in workbook_columns]

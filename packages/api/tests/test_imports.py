@@ -209,6 +209,12 @@ def test_download_dataset_template_workbook(client: TestClient):
         assert 'tumor' in workbook.sheetnames
         assert 'biomodel' in workbook.sheetnames
         assert 'mouse' in workbook.sheetnames
+        assert 'pdx_passage' in workbook.sheetnames
+        assert 'pdo_passage' in workbook.sheetnames
+        assert 'lc_passage' in workbook.sheetnames
+        assert 'pdx_trial' not in workbook.sheetnames
+        assert 'pdo_trial' not in workbook.sheetnames
+        assert 'lc_trial' not in workbook.sheetnames
         assert 'implant' not in workbook.sheetnames
         assert 'measure' not in workbook.sheetnames
         assert 'implant_measure' not in workbook.sheetnames
@@ -253,6 +259,12 @@ def test_download_dataset_template_csv_zip(client: TestClient):
         assert 'tumor.csv' in names
         assert 'biomodel.csv' in names
         assert 'mouse.csv' in names
+        assert 'pdx_passage.csv' in names
+        assert 'pdo_passage.csv' in names
+        assert 'lc_passage.csv' in names
+        assert 'pdx_trial.csv' not in names
+        assert 'pdo_trial.csv' not in names
+        assert 'lc_trial.csv' not in names
         assert 'implant.csv' not in names
         assert 'measure.csv' not in names
         assert 'implant_measure.csv' not in names
@@ -422,7 +434,7 @@ def test_import_dataset_workbook_normalizes_passage_identifier_spaces(client: Te
     tumor_sheet = workbook['tumor']
     biomodel_sheet = workbook['biomodel']
     passage_sheet = workbook['passage']
-    pdx_trial_sheet = workbook['pdx_trial']
+    pdx_trial_sheet = workbook['pdx_passage']
 
     patient_sheet.append(['PAT-400', 'F', 35])
     tumor_sheet.append(['TUM-400', None, None, 'Adenocarcinoma', None, 'Lung', None, None, None, 'PAT-400'])
@@ -470,7 +482,7 @@ def test_import_dataset_workbook_creates_mouse_implants_from_mouse_sheet(client:
     tumor_sheet = workbook['tumor']
     biomodel_sheet = workbook['biomodel']
     passage_sheet = workbook['passage']
-    pdx_trial_sheet = workbook['pdx_trial']
+    pdx_trial_sheet = workbook['pdx_passage']
     mouse_sheet = workbook['mouse']
 
     patient_sheet.append(['PAT-500', 'F', 35])
