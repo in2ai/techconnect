@@ -208,14 +208,27 @@ def test_download_dataset_template_workbook(client: TestClient):
         assert 'patient' in workbook.sheetnames
         assert 'tumor' in workbook.sheetnames
         assert 'biomodel' in workbook.sheetnames
+        assert 'mouse' in workbook.sheetnames
+        assert 'implant' not in workbook.sheetnames
+        assert 'measure' not in workbook.sheetnames
+        assert 'implant_measure' not in workbook.sheetnames
 
         patient_headers = next(workbook['patient'].iter_rows(min_row=1, max_row=1, values_only=True))
         patient_notes = next(workbook['patient'].iter_rows(min_row=2, max_row=2, values_only=True))
         tumor_headers = next(workbook['tumor'].iter_rows(min_row=1, max_row=1, values_only=True))
+        mouse_headers = next(workbook['mouse'].iter_rows(min_row=1, max_row=1, values_only=True))
 
         assert patient_headers == ('nhc', 'sex', 'age')
         assert patient_notes[0] == 'primary key | required | type:string'
         assert tumor_headers[-1] == 'patient_nhc'
+        assert mouse_headers[-6:] == (
+            'implant_1_id',
+            'implant_1_location',
+            'implant_1_type',
+            'implant_2_id',
+            'implant_2_location',
+            'implant_2_type',
+        )
     finally:
         workbook.close()
 
@@ -239,6 +252,10 @@ def test_download_dataset_template_csv_zip(client: TestClient):
         assert 'patient.csv' in names
         assert 'tumor.csv' in names
         assert 'biomodel.csv' in names
+        assert 'mouse.csv' in names
+        assert 'implant.csv' not in names
+        assert 'measure.csv' not in names
+        assert 'implant_measure.csv' not in names
         patient_csv = archive.read('patient.csv').decode('utf-8').strip()
         readme = archive.read('README.txt').decode('utf-8')
 
@@ -273,6 +290,8 @@ def test_export_dataset_workbook_includes_existing_rows(client: TestClient):
     try:
         assert 'README' not in workbook.sheetnames
         assert workbook.sheetnames[0] == 'patient'
+        assert 'measure' in workbook.sheetnames
+        assert 'implant' not in workbook.sheetnames
         patient_rows = list(workbook['patient'].iter_rows(min_row=3, values_only=True))
         tumor_rows = list(workbook['tumor'].iter_rows(min_row=3, values_only=True))
     finally:
@@ -436,6 +455,79 @@ def test_import_dataset_workbook_normalizes_passage_identifier_spaces(client: Te
     pdx_trial_response = client.get('/api/pdx-trials/LUNG260526-PX2')
     assert passage_response.status_code == 200
     assert pdx_trial_response.status_code == 200
+
+
+def test_import_dataset_workbook_creates_mouse_implants_from_mouse_sheet(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    template_response = client.get('/api/imports/dataset-template.xlsx')
+    workbook = load_workbook(BytesIO(template_response.content))
+    patient_sheet = workbook['patient']
+    tumor_sheet = workbook['tumor']
+    biomodel_sheet = workbook['biomodel']
+    passage_sheet = workbook['passage']
+    pdx_trial_sheet = workbook['pdx_trial']
+    mouse_sheet = workbook['mouse']
+
+    patient_sheet.append(['PAT-500', 'F', 35])
+    tumor_sheet.append(['TUM-500', None, None, 'Adenocarcinoma', None, 'Lung', None, None, None, 'PAT-500'])
+    biomodel_sheet.append(['LUNG500', 'PDX', None, None, None, None, 'TUM-500', None])
+    passage_sheet.append(['LUNG500 PX2', None, 'YES', 'YES', None, 'NO', None, 'LUNG500'])
+    pdx_trial_sheet.append(['LUNG500 PX2', None, None, None, None, None, None])
+    mouse_sheet.append([
+        None,
+        None,
+        None,
+        'AF-1',
+        'PROEX-1',
+        'NSG',
+        'female',
+        None,
+        'LUNG500 PX2',
+        None,
+        'izquierda',
+        'subcutaneo',
+        None,
+        'derecha',
+        'subcutaneo',
+    ])
+
+    payload = BytesIO()
+    workbook.save(payload)
+    workbook.close()
+
+    response = client.post(
+        '/api/imports/dataset-workbook',
+        files={
+            'file': (
+                'dataset.xlsx',
+                payload.getvalue(),
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            )
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body['rows_failed'] == 0
+    assert body['table_counts']['mouse'] == {'created': 1, 'updated': 0}
+    assert body['table_counts']['implant'] == {'created': 2, 'updated': 0}
+
+    mice_response = client.get('/api/mice')
+    implants_response = client.get('/api/implants')
+    assert mice_response.status_code == 200
+    assert implants_response.status_code == 200
+
+    mice = mice_response.json()
+    implants = implants_response.json()
+    assert len(mice) == 1
+    assert mice[0]['pdx_trial_id'] == 'LUNG500-PX2'
+    assert {implant['mouse_id'] for implant in implants} == {mice[0]['id']}
+    assert {implant['implant_location'] for implant in implants} == {'izquierda', 'derecha'}
 
 
 def test_exported_dataset_workbook_roundtrips_seed_data(client: TestClient):
