@@ -358,7 +358,8 @@ def seed_database() -> SeedStats:
                     {
                         "id": mid,
                         "measure_date": date(2023, 6, 1) + timedelta(days=i * 5 + j * 2),
-                        "measure_value": 100.0 + (i * 15) + (j * 30),
+                        "length": 10.0 + (i * 2.0) + (j * 3.0),
+                        "width": 5.0 + (i * 1.0) + (j * 1.5),
                         "implant_id": iid,
                     },
                     stats,

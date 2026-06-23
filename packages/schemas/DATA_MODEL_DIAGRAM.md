@@ -108,7 +108,7 @@ erDiagram
     }
 
     USAGE_RECORD {
-        uuid id PK
+        string id PK
         string record_type
         string description
         date record_date
@@ -170,7 +170,9 @@ erDiagram
     MEASURE {
         uuid id PK
         date measure_date
-        float measure_value
+        float length
+        float width
+        float tumor_volume
         uuid implant_id FK
     }
 

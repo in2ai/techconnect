@@ -111,8 +111,10 @@ export interface Implant {
 export interface Measure {
   id: string;
   measure_date: string | null;
-  measure_value: number | null;
+  length: number | null;
+  width: number | null;
   implant_id: string;
+  tumor_volume: number | null;
 }
 
 export interface Mouse {

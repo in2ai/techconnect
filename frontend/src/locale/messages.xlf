@@ -1978,18 +1978,36 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
-          <context context-type="linenumber">1391</context>
+          <context context-type="linenumber">1401</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="measureValueCol" datatype="html">
-        <source>Value</source>
+      <trans-unit id="measureLengthCol" datatype="html">
+        <source>Length (mm)</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
           <context context-type="linenumber">508,509</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
-          <context context-type="linenumber">1392</context>
+          <context context-type="linenumber">1402</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="measureWidthCol" datatype="html">
+        <source>Width (mm)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">509,510</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">1403</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="measureVolumeCol" datatype="html">
+        <source>Volume (mm³)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
+          <context context-type="linenumber">510,511</context>
         </context-group>
       </trans-unit>
       <trans-unit id="facsTabLbl" datatype="html">

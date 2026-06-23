@@ -54,7 +54,7 @@ CREATE TABLE biomodel (
 	type VARCHAR(50), 
 	description VARCHAR, 
 	creation_date DATE, 
-	status VARCHAR(50), 
+	status BOOLEAN, 
 	success BOOLEAN, 
 	tumor_biobank_code VARCHAR NOT NULL, 
 	parent_passage_id VARCHAR, 
@@ -143,7 +143,6 @@ CREATE TABLE lc_trial (
 CREATE TABLE pdo_trial (
 	id VARCHAR NOT NULL, 
 	drop_count INTEGER, 
-	frozen_organoid_count INTEGER, 
 	organoid_count INTEGER, 
 	plate_type VARCHAR(50), 
 	assessment VARCHAR(100), 
@@ -165,7 +164,8 @@ CREATE TABLE pdx_trial (
 
 CREATE TABLE trial_genomic_sequencing (
 	id UUID NOT NULL, 
-	annotations VARCHAR, 
+	has_data BOOLEAN, 
+	data VARCHAR, 
 	passage_id VARCHAR, 
 	PRIMARY KEY (id), 
 	UNIQUE (passage_id), 
@@ -174,7 +174,8 @@ CREATE TABLE trial_genomic_sequencing (
 
 CREATE TABLE trial_molecular_data (
 	id UUID NOT NULL, 
-	annotations VARCHAR, 
+	has_data BOOLEAN, 
+	data VARCHAR, 
 	passage_id VARCHAR, 
 	PRIMARY KEY (id), 
 	UNIQUE (passage_id), 
@@ -182,7 +183,7 @@ CREATE TABLE trial_molecular_data (
 );
 
 CREATE TABLE usage_record (
-	id UUID NOT NULL, 
+	id VARCHAR(100) NOT NULL, 
 	record_type VARCHAR(100), 
 	description VARCHAR, 
 	record_date DATE, 
@@ -227,7 +228,8 @@ CREATE TABLE implant (
 CREATE TABLE measure (
 	id UUID NOT NULL, 
 	measure_date DATE, 
-	measure_value FLOAT, 
+	length FLOAT, 
+	width FLOAT, 
 	implant_id UUID NOT NULL, 
 	PRIMARY KEY (id), 
 	FOREIGN KEY(implant_id) REFERENCES implant (id)

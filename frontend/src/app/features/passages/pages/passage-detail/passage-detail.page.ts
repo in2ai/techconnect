@@ -505,7 +505,9 @@ interface MouseInVivoNode {
                                   <thead>
                                     <tr>
                                       <th scope="col" i18n="@@measureDateCol">Date</th>
-                                      <th scope="col" i18n="@@measureValueCol">Value</th>
+                                      <th scope="col" i18n="@@measureLengthCol">Length (mm)</th>
+                                      <th scope="col" i18n="@@measureWidthCol">Width (mm)</th>
+                                      <th scope="col" i18n="@@measureVolumeCol">Volume (mm³)</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -521,14 +523,22 @@ interface MouseInVivoNode {
                                         "
                                       >
                                         <td>{{ (mv.measure_date | localizedDate) || '—' }}</td>
-                                        <td>
-                                          {{
-                                            mv.measure_value !== null &&
-                                            mv.measure_value !== undefined
-                                              ? mv.measure_value + ' mm³'
-                                              : '—'
-                                          }}
-                                        </td>
+                                        <td>{{
+                                          mv.length !== null && mv.length !== undefined
+                                            ? mv.length + ' mm'
+                                            : '—'
+                                        }}</td>
+                                        <td>{{
+                                          mv.width !== null && mv.width !== undefined
+                                            ? mv.width + ' mm'
+                                            : '—'
+                                        }}</td>
+                                        <td>{{
+                                          mv.tumor_volume !== null &&
+                                          mv.tumor_volume !== undefined
+                                            ? mv.tumor_volume + ' mm³'
+                                            : '—'
+                                        }}</td>
                                       </tr>
                                     }
                                   </tbody>
@@ -1389,7 +1399,8 @@ export class PassageDetailPage {
           disabled: lockImplant,
         },
         { name: 'measure_date', label: $localize`:@@measureDateCol:Date`, type: 'date' },
-        { name: 'measure_value', label: $localize`:@@measureValueCol:Value`, type: 'number' },
+        { name: 'length', label: $localize`:@@measureLengthCol:Length (mm)`, type: 'number' },
+        { name: 'width', label: $localize`:@@measureWidthCol:Width (mm)`, type: 'number' },
       ],
       this.measuresResource,
       entity,

@@ -4,6 +4,7 @@ from datetime import date
 from typing import TYPE_CHECKING, Optional, Union
 from uuid import UUID, uuid4
 
+from pydantic import computed_field
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
@@ -41,11 +42,22 @@ class Implant(SQLModel, table=True):
 class Measure(SQLModel, table=True):
     """
     Measure entity - records size measurements for an implant over time.
-    
+
+    Tumor volume is determined by external caliper measurement. Two perpendicular
+    dimensions are recorded: the major diameter (length) and the minor diameter
+    (width). The tumor volume is estimated using the formula:
+
+        Volume (mm³) = (Length × Width²) / 2
+
+    All measurements are expressed in millimetres (mm) and the resulting volume
+    in cubic millimetres (mm³).
+
     Attributes:
         id: Unique identifier (UUID)
         measure_date: Date of measurement
-        measure_value: Size Value
+        length: Major diameter (longest dimension) in mm
+        width: Minor diameter (perpendicular, shortest dimension) in mm
+        tumor_volume: Computed tumor volume in mm³ (read-only, not stored)
         implant_id: FK to Implant
     """
     
@@ -55,12 +67,22 @@ class Measure(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     
     measure_date: Union[date, None] = Field(default=None)
-    measure_value: Optional[float] = Field(default=None)
+    length: Optional[float] = Field(default=None, description="Major diameter in mm")
+    width: Optional[float] = Field(default=None, description="Minor diameter in mm")
     
     # Foreign keys (required - 1:N relationship with Implant)
     implant_id: UUID = Field(foreign_key="implant.id", description="FK to Implant")
     
+    # Relationships
     implant: Optional["Implant"] = Relationship(back_populates="measures")
+
+    @computed_field
+    @property
+    def tumor_volume(self) -> Optional[float]:
+        """Tumor volume in mm³, computed as (Length × Width²) / 2."""
+        if self.length is None or self.width is None:
+            return None
+        return (self.length * self.width ** 2) / 2
 
 
 class Mouse(SQLModel, table=True):

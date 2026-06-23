@@ -1375,7 +1375,9 @@
       <trans-unit id="addMeasureForImplantBtn" datatype="html"><source>Measure</source><target>Medida</target></trans-unit>
       <trans-unit id="noMeasuresForImplant" datatype="html"><source>No measures for this implant yet.</source><target>Aún no hay medidas para este implante.</target></trans-unit>
       <trans-unit id="measureDateCol" datatype="html"><source>Date</source><target>Fecha</target></trans-unit>
-      <trans-unit id="measureValueCol" datatype="html"><source>Value</source><target>Valor</target></trans-unit>
+      <trans-unit id="measureLengthCol" datatype="html"><source>Length (mm)</source><target>Longitud (mm)</target></trans-unit>
+      <trans-unit id="measureWidthCol" datatype="html"><source>Width (mm)</source><target>Anchura (mm)</target></trans-unit>
+      <trans-unit id="measureVolumeCol" datatype="html"><source>Volume (mm³)</source><target>Volumen (mm³)</target></trans-unit>
       <trans-unit id="measureRefCol" datatype="html"><source>Reference</source><target>Referencia</target></trans-unit>
       <trans-unit id="measuresAriaLabel" datatype="html"><source>Measures for mouse <x id="mouseOrd" equiv-text="mouseOrdinal"/> and implant <x id="implOrd" equiv-text="implantOrdinal"/></source><target>Medidas del ratón <x id="mouseOrd" equiv-text="mouseOrdinal"/> e implante <x id="implOrd" equiv-text="implantOrdinal"/></target></trans-unit>
       <trans-unit id="facsTabLbl" datatype="html"><source>FACS</source><target>FACS</target></trans-unit>
