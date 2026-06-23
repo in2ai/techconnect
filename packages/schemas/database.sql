@@ -156,7 +156,6 @@ CREATE TABLE pdx_trial (
 	he_slide BOOLEAN, 
 	ihq_data VARCHAR, 
 	has_ihq_data BOOLEAN, 
-	latency_weeks FLOAT, 
 	similarity FLOAT, 
 	PRIMARY KEY (id), 
 	FOREIGN KEY(id) REFERENCES passage (id)
@@ -220,6 +219,7 @@ CREATE TABLE implant (
 	id UUID NOT NULL, 
 	implant_location VARCHAR(100), 
 	type VARCHAR(50), 
+	implant_date DATE, 
 	mouse_id UUID NOT NULL, 
 	PRIMARY KEY (id), 
 	FOREIGN KEY(mouse_id) REFERENCES mouse (id)

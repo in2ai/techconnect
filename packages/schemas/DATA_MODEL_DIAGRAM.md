@@ -87,7 +87,6 @@ erDiagram
         boolean he_slide
         string ihq_data
         boolean has_ihq_data
-        float latency_weeks
         float similarity
     }
 
@@ -164,6 +163,7 @@ erDiagram
         uuid id PK
         string implant_location
         string type
+        date implant_date
         uuid mouse_id FK
     }
 
@@ -185,6 +185,7 @@ erDiagram
         string strain
         string sex
         date death_date
+        float latency_weeks
         string pdx_trial_id FK
     }
 

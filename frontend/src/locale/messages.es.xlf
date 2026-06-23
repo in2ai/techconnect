@@ -1320,7 +1320,7 @@
       <trans-unit id="pdxFfpeLbl"><source>FFPE</source><target>FFPE</target></trans-unit>
       <trans-unit id="pdxHeSlideLbl"><source>HE Slide</source><target>HE Slide</target></trans-unit>
       <trans-unit id="pdxIhqDataLbl"><source>IHQ Data</source><target>Datos IHQ</target></trans-unit>
-      <trans-unit id="pdxLatencyLbl"><source>Latency (weeks)</source><target>Latencia (semanas)</target></trans-unit>
+      <trans-unit id="mouseLatencyLbl"><source>Latency (weeks)</source><target>Latencia (semanas)</target></trans-unit>
 
       <trans-unit id="pdoTrialDetailsTitle"><source>PDO Trial Details</source><target>Detalles del Ensayo PDO</target></trans-unit>
       <trans-unit id="pdoDropCountLbl"><source>Drop Count</source><target>Recuento de gotas</target></trans-unit>
@@ -1539,7 +1539,8 @@
       <trans-unit id="pdxFfpeLbl" datatype="html"><source>FFPE</source><target>FFPE</target></trans-unit>
       <trans-unit id="pdxHeSlideLbl" datatype="html"><source>HE Slide</source><target>Slide HE</target></trans-unit>
       <trans-unit id="pdxIhqDataLbl" datatype="html"><source>IHQ Data</source><target>Datos IHQ</target></trans-unit>
-      <trans-unit id="pdxLatencyLbl" datatype="html"><source>Latency (weeks)</source><target>Latencia (semanas)</target></trans-unit>
+      <trans-unit id="mouseLatencyLbl" datatype="html"><source>Latency (weeks)</source><target>Latencia (semanas)</target></trans-unit>
+      <trans-unit id="implantDateLbl" datatype="html"><source>Implant Date</source><target>Fecha de implante</target></trans-unit>
       <trans-unit id="pdoDropCountLbl" datatype="html"><source>Drop Count</source><target>Recuento de gotas</target></trans-unit>
       <trans-unit id="pdoOrganoidCountLbl" datatype="html"><source>Organoid Count</source><target>Recuento de organoides</target></trans-unit>
       <trans-unit id="pdoFrozenOrganoidsLbl" datatype="html"><source>Frozen Organoids</source><target>Organoides congelados</target></trans-unit>

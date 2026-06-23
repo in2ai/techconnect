@@ -19,7 +19,7 @@ class Implant(SQLModel, table=True):
         id: Unique identifier (UUID)
         implant_location: Location of the implant
         type: Type of implant
-        type: Type of implant
+        implant_date: Date the implant was implanted
         mouse_id: FK to Mouse
     """
     
@@ -31,6 +31,7 @@ class Implant(SQLModel, table=True):
     # Fields
     implant_location: Optional[str] = Field(default=None, max_length=100)
     type: Optional[str] = Field(default=None, max_length=50)
+    implant_date: Union[date, None] = Field(default=None)
     # Foreign keys (required - 1:N relationship with Mouse)
     mouse_id: UUID = Field(foreign_key="mouse.id", description="FK to Mouse")
     
@@ -99,6 +100,7 @@ class Mouse(SQLModel, table=True):
         sex: Biological sex
         death_date: Date of death
         pdx_trial_id: FK to PDXTrial
+        latency_weeks: Computed latency in weeks (death_date - first implant_date)
     """
     
     __tablename__ = "mouse"
@@ -121,3 +123,17 @@ class Mouse(SQLModel, table=True):
     # Relationships
     pdx_trial: Optional["PDXTrial"] = Relationship(back_populates="mouse")
     implants: list["Implant"] = Relationship(back_populates="mouse")
+
+    @computed_field
+    @property
+    def latency_weeks(self) -> Optional[float]:
+        """Latency in weeks, computed as (death_date - earliest implant_date) / 7."""
+        if self.death_date is None:
+            return None
+        implant_dates = [
+            imp.implant_date for imp in self.implants if imp.implant_date is not None
+        ]
+        if not implant_dates:
+            return None
+        delta = (self.death_date - min(implant_dates)).days
+        return round(delta / 7, 1)

@@ -24,7 +24,6 @@ class PDXTrial(SQLModel, table=True):
     he_slide: Optional[bool] = Field(default=None)
     ihq_data: Optional[str] = Field(default=None)  # text field
     has_ihq_data: Optional[bool] = Field(default=None)
-    latency_weeks: Optional[float] = Field(default=None)
     similarity: Optional[float] = Field(default=None)
 
     # Relationships

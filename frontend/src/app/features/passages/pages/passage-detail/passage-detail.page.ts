@@ -191,10 +191,6 @@ interface MouseInVivoNode {
                   <span class="detail-label" i18n="@@pdxIhqDataLbl">IHQ Data</span
                   ><span class="detail-value">{{ currentPdxTrial()!.ihq_data || '—' }}</span>
                 </div>
-                <div class="detail-item">
-                  <span class="detail-label" i18n="@@pdxLatencyLbl">Latency (weeks)</span
-                  ><span class="detail-value">{{ currentPdxTrial()!.latency_weeks ?? '—' }}</span>
-                </div>
               </div>
             } @else {
               <div i18n="@@noDataMsg">No data</div>
@@ -410,6 +406,10 @@ interface MouseInVivoNode {
                           >
                           <span>{{ node.mouse.animal_facility || '—' }}</span>
                         </div>
+                        <div class="mouse-detail-item">
+                          <span class="detail-label" i18n="@@mouseLatencyLbl">Latency (weeks)</span>
+                          <span>{{ node.mouse.latency_weeks ?? '—' }}</span>
+                        </div>
                       </div>
 
                       <div class="mouse-actions">
@@ -459,7 +459,16 @@ interface MouseInVivoNode {
                                   @if (iw.implant.type) {
                                     <span>{{ iw.implant.type }}</span>
                                   }
-                                  @if (!iw.implant.implant_location && !iw.implant.type) {
+                                  @if (
+                                    (iw.implant.implant_location || iw.implant.type) &&
+                                    iw.implant.implant_date
+                                  ) {
+                                    <span aria-hidden="true"> · </span>
+                                  }
+                                  @if (iw.implant.implant_date) {
+                                    <span>{{ iw.implant.implant_date | localizedDate }}</span>
+                                  }
+                                  @if (!iw.implant.implant_location && !iw.implant.type && !iw.implant.implant_date) {
                                     <span class="muted" i18n="@@implantNoLocationType"
                                       >No location or type</span
                                     >
@@ -1259,11 +1268,6 @@ export class PassageDetailPage {
         { name: 'ffpe', label: $localize`:@@pdxFfpeLbl:FFPE`, type: 'boolean' },
         { name: 'he_slide', label: $localize`:@@pdxHeSlideLbl:HE Slide`, type: 'boolean' },
         { name: 'ihq_data', label: $localize`:@@pdxIhqDataLbl:IHQ Data`, type: 'text' },
-        {
-          name: 'latency_weeks',
-          label: $localize`:@@pdxLatencyLbl:Latency (weeks)`,
-          type: 'number',
-        },
       ],
       this.pdxTrialsResource,
       entity,
@@ -1369,6 +1373,7 @@ export class PassageDetailPage {
         },
         { name: 'implant_location', label: $localize`Location`, type: 'text' },
         { name: 'type', label: $localize`Type`, type: 'text' },
+        { name: 'implant_date', label: $localize`:@@implantDateLbl:Implant Date`, type: 'date' },
       ],
       this.implantsResource,
       entity,

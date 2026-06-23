@@ -1620,15 +1620,18 @@
           <context context-type="linenumber">1251</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="pdxLatencyLbl" datatype="html">
+      <trans-unit id="mouseLatencyLbl" datatype="html">
         <source>Latency (weeks)</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
-          <context context-type="linenumber">195,196</context>
+          <context context-type="linenumber">407,408</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="implantDateLbl" datatype="html">
+        <source>Implant Date</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/passages/pages/passage-detail/passage-detail.page.ts</context>
-          <context context-type="linenumber">1254</context>
+          <context context-type="linenumber">1373</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noDataMsg" datatype="html">

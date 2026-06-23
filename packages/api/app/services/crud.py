@@ -201,7 +201,7 @@ def _prepare_create_payload(
 
 
 
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
 
 def list_items(
@@ -217,6 +217,8 @@ def list_items(
         statement = statement.limit(limit)
     if model.__name__ == "Biomodel":
         statement = statement.options(joinedload(model.tumor))
+    if model.__name__ == "Mouse":
+        statement = statement.options(selectinload(model.implants))
     return list(session.exec(statement))
 
 
@@ -225,6 +227,13 @@ def get_item_or_404(session: Session, model: type[ModelType], item_id: str) -> M
     pk = _coerce_pk(model, item_id)
     if model.__name__ == "Biomodel":
         statement = select(model).where(getattr(model, "id") == pk).options(joinedload(model.tumor))
+        item = session.exec(statement).first()
+    elif model.__name__ == "Mouse":
+        statement = (
+            select(model)
+            .where(getattr(model, "id") == pk)
+            .options(selectinload(model.implants))
+        )
         item = session.exec(statement).first()
     else:
         item = session.get(model, pk)

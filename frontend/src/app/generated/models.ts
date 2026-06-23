@@ -81,7 +81,6 @@ export interface PDXTrial {
   he_slide: boolean | null;
   ihq_data: string | null;
   has_ihq_data: boolean | null;
-  latency_weeks: number | null;
   similarity: number | null;
 }
 
@@ -105,6 +104,7 @@ export interface Implant {
   id: string;
   implant_location: string | null;
   type: string | null;
+  implant_date: string | null;
   mouse_id: string;
 }
 
@@ -127,6 +127,7 @@ export interface Mouse {
   sex: string | null;
   death_date: string | null;
   pdx_trial_id: string;
+  latency_weeks: number | null;
 }
 
 export interface FACS {
