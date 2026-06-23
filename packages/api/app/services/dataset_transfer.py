@@ -75,9 +75,11 @@ MOUSE_RELATED_COLUMNS: tuple[DatasetColumnSpec, ...] = (
     DatasetColumnSpec("implant_1_id", False, False, (), "uuid", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"),
     DatasetColumnSpec("implant_1_location", False, False, (), "string"),
     DatasetColumnSpec("implant_1_type", False, False, (), "string"),
+    DatasetColumnSpec("implant_1_date", False, False, (), "date", "YYYY-MM-DD"),
     DatasetColumnSpec("implant_2_id", False, False, (), "uuid", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"),
     DatasetColumnSpec("implant_2_location", False, False, (), "string"),
     DatasetColumnSpec("implant_2_type", False, False, (), "string"),
+    DatasetColumnSpec("implant_2_date", False, False, (), "date", "YYYY-MM-DD"),
 )
 
 
@@ -134,9 +136,10 @@ def _export_workbook_row_values(session: Session, table_spec: DatasetTableSpec, 
                 _serialize_value(implant.id),
                 implant.implant_location,
                 implant.type,
+                _serialize_value(implant.implant_date),
             ])
         missing_implant_slots = 2 - min(len(implants), 2)
-        values.extend([None, None, None] * missing_implant_slots)
+        values.extend([None, None, None, None] * missing_implant_slots)
     return values
 
 
@@ -496,6 +499,7 @@ def _mouse_implant_payload(payload: dict[str, Any], implant_number: int) -> dict
         "id": payload.get(f"implant_{implant_number}_id"),
         "implant_location": payload.get(f"implant_{implant_number}_location"),
         "type": payload.get(f"implant_{implant_number}_type"),
+        "implant_date": payload.get(f"implant_{implant_number}_date"),
     }
     return {key: value for key, value in implant_payload.items() if value is not None}
 

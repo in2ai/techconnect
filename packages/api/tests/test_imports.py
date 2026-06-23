@@ -227,13 +227,15 @@ def test_download_dataset_template_workbook(client: TestClient):
         assert patient_headers == ('nhc', 'sex', 'age')
         assert patient_notes[0] == 'primary key | required | type:string'
         assert tumor_headers[-1] == 'patient_nhc'
-        assert mouse_headers[-6:] == (
+        assert mouse_headers[-8:] == (
             'implant_1_id',
             'implant_1_location',
             'implant_1_type',
+            'implant_1_date',
             'implant_2_id',
             'implant_2_location',
             'implant_2_type',
+            'implant_2_date',
         )
     finally:
         workbook.close()
@@ -440,7 +442,7 @@ def test_import_dataset_workbook_normalizes_passage_identifier_spaces(client: Te
     tumor_sheet.append(['TUM-400', None, None, 'Adenocarcinoma', None, 'Lung', None, None, None, 'PAT-400'])
     biomodel_sheet.append(['LUNG260526', 'PDX', None, None, None, None, 'TUM-400', None])
     passage_sheet.append(['LUNG260526 PX2', None, 'YES', 'YES', None, 'NO', None, 'LUNG260526'])
-    pdx_trial_sheet.append(['LUNG260526 PX2', None, None, None, None, None, None])
+    pdx_trial_sheet.append(['LUNG260526 PX2', None, None, None, None, None])
 
     payload = BytesIO()
     workbook.save(payload)
@@ -489,7 +491,7 @@ def test_import_dataset_workbook_creates_mouse_implants_from_mouse_sheet(client:
     tumor_sheet.append(['TUM-500', None, None, 'Adenocarcinoma', None, 'Lung', None, None, None, 'PAT-500'])
     biomodel_sheet.append(['LUNG500', 'PDX', None, None, None, None, 'TUM-500', None])
     passage_sheet.append(['LUNG500 PX2', None, 'YES', 'YES', None, 'NO', None, 'LUNG500'])
-    pdx_trial_sheet.append(['LUNG500 PX2', None, None, None, None, None, None])
+    pdx_trial_sheet.append(['LUNG500 PX2', None, None, None, None, None])
     mouse_sheet.append([
         None,
         None,
@@ -503,9 +505,11 @@ def test_import_dataset_workbook_creates_mouse_implants_from_mouse_sheet(client:
         None,
         'izquierda',
         'subcutaneo',
+        '2023-04-15',
         None,
         'derecha',
         'subcutaneo',
+        '2023-04-20',
     ])
 
     payload = BytesIO()
@@ -540,6 +544,7 @@ def test_import_dataset_workbook_creates_mouse_implants_from_mouse_sheet(client:
     assert mice[0]['pdx_trial_id'] == 'LUNG500-PX2'
     assert {implant['mouse_id'] for implant in implants} == {mice[0]['id']}
     assert {implant['implant_location'] for implant in implants} == {'izquierda', 'derecha'}
+    assert {implant['implant_date'] for implant in implants} == {'2023-04-15', '2023-04-20'}
 
 
 def test_exported_dataset_workbook_roundtrips_seed_data(client: TestClient):
