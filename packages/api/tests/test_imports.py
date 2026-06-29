@@ -463,7 +463,7 @@ def test_import_dataset_workbook_normalizes_passage_identifier_spaces(client: Te
     body = response.json()
     assert body['rows_failed'] == 0
     assert body['table_counts']['passage'] == {'created': 1, 'updated': 0}
-    assert body['table_counts']['pdx_trial'] == {'created': 1, 'updated': 0}
+    assert body['table_counts']['pdx_trial'] == {'created': 0, 'updated': 1}
 
     passage_response = client.get('/api/passages/LUNG260526-PX2')
     pdx_trial_response = client.get('/api/pdx-trials/LUNG260526-PX2')

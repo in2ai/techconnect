@@ -8,6 +8,8 @@ from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlmodel import SQLModel, Session, select, func
 
+from models import FACS, Biomodel, LCTrial, PDOTrial, PDXTrial
+
 ModelType = TypeVar("ModelType", bound=SQLModel)
 
 _MODEL_NAME_PATTERN = re.compile(r"[A-Z]+(?=[A-Z][a-z]|\b)|[A-Z]?[a-z]+|\d+")
@@ -246,12 +248,57 @@ def create_item(session: Session, model: type[ModelType], payload: ModelType) ->
     """Create and persist one entity."""
     payload_dump = _prepare_create_payload(session, model, payload.model_dump())
     _check_constraints(session, model, payload_dump)
-    
+
     validated = model.model_validate(payload_dump)
     session.add(validated)
     _commit_or_400(session, model, action="save")
     session.refresh(validated)
+
+    _create_passage_subtype_defaults(session, model, payload_dump, validated)
     return validated
+
+
+def _create_passage_subtype_defaults(
+    session: Session,
+    model: type[ModelType],
+    payload_data: dict,
+    validated: ModelType,
+) -> None:
+    """Create the empty sub-records (PDXTrial/LCTrial/PDOTrial + FACS) tied to a new Passage.
+
+    Mirrors the data the user expects to be able to fill in from the passage detail page,
+    so that the "In Vivo Data" (PDX) and "FACS" (LC) tabs and their "Add" actions are
+    immediately available for newly created passages of matching biomodel types.
+    """
+    if model.__name__ != "Passage":
+        return
+
+    biomodel_id = payload_data.get("biomodel_id")
+    passage_id = getattr(validated, "id", None)
+    if not biomodel_id or not passage_id:
+        return
+
+    biomodel = session.get(Biomodel, biomodel_id)
+    biomodel_type = (biomodel.type or "").upper() if biomodel is not None else ""
+
+    if biomodel_type == "PDX":
+        session.add(PDXTrial.model_validate({"id": passage_id}))
+    elif biomodel_type == "LC":
+        session.add(LCTrial.model_validate({"id": passage_id}))
+        session.add(FACS.model_validate({"lc_trial_id": passage_id}))
+    elif biomodel_type == "PDO":
+        session.add(PDOTrial.model_validate({"id": passage_id}))
+
+    if not session.new:
+        return
+
+    try:
+        session.commit()
+    except SQLAlchemyError as exc:
+        session.rollback()
+        raw_detail = str(getattr(exc, "orig", exc))
+        detail = _format_database_error(model, raw_detail, action="save")
+        raise HTTPException(status_code=400, detail=detail) from exc
 
 
 def update_item(
