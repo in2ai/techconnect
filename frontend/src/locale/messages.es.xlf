@@ -1228,7 +1228,7 @@
       <trans-unit id="failedToLoadPassage"><source>Failed to load passage</source><target>Error al cargar pase</target></trans-unit>
       <trans-unit id="passageIdLbl"><source>ID</source><target>ID</target></trans-unit>
       <trans-unit id="passageFormIdLbl"><source>Passage number</source><target>Número de pase</target></trans-unit>
-      <trans-unit id="passageIdPlaceholder"><source>Enter passage ID</source><target>Introduzca el ID del pase</target></trans-unit>
+      <trans-unit id="passageIdPlaceholder"><source>Enter passage ID</source><target>Introduzca el número del pase</target></trans-unit>
       <trans-unit id="passageDescLbl"><source>Description</source><target>Descripción</target></trans-unit>
       <trans-unit id="passageBiomodelLbl"><source>Biomodel</source><target>Biomodelo</target></trans-unit>
       <trans-unit id="passageBiomodelSearchPlaceholder" datatype="html"><source>Search biomodel ID</source><target>Buscar ID del biomodelo</target></trans-unit>
