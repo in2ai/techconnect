@@ -132,7 +132,7 @@ CREATE TABLE image (
 
 CREATE TABLE lc_trial (
 	id VARCHAR NOT NULL, 
-	confluence FLOAT, 
+	confluence VARCHAR(50), 
 	spheroids BOOLEAN, 
 	digestion_date DATE, 
 	plate_type VARCHAR(50), 

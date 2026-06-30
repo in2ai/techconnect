@@ -94,7 +94,7 @@ export interface PDOTrial {
 
 export interface LCTrial {
   id: string;
-  confluence: number | null;
+  confluence: string | null;
   spheroids: boolean | null;
   digestion_date: string | null;
   plate_type: string | null;

@@ -296,7 +296,7 @@ def seed_database() -> SeedStats:
                     pid,
                     {
                         "id": pid,
-                        "confluence": 40.0 + (i % 55),
+                        "confluence": f"{40 + (i % 55)}%-{chr(ord('A') + (i % 4))}",
                         "spheroids": i % 4 == 0,
                         "digestion_date": date(2023, 5, 1) + timedelta(days=i * 2),
                         "plate_type": "6-well" if i % 2 == 0 else "12-well",

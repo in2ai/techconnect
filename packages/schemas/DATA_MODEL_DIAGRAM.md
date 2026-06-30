@@ -100,7 +100,7 @@ erDiagram
 
     LC_TRIAL {
         string id PK
-        float confluence
+        string confluence
         boolean spheroids
         date digestion_date
         string plate_type

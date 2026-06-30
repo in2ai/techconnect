@@ -1306,7 +1306,7 @@ export class PassageDetailPage {
       $localize`:@@lcTrialDetailsTitle:LC Trial Details`,
       '/lc-trials',
       [
-        { name: 'confluence', label: $localize`:@@lcConfluenceLbl:Confluence`, type: 'number' },
+        { name: 'confluence', label: $localize`:@@lcConfluenceLbl:Confluence`, type: 'text' },
         { name: 'spheroids', label: $localize`:@@lcSpheroidsLbl:Spheroids`, type: 'boolean' },
         {
           name: 'digestion_date',

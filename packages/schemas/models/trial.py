@@ -58,7 +58,7 @@ class LCTrial(SQLModel, table=True):
     id: str = Field(foreign_key="passage.id", primary_key=True)
 
     # Fields
-    confluence: Optional[float] = Field(default=None)
+    confluence: Optional[str] = Field(default=None, max_length=50)
     spheroids: Optional[bool] = Field(default=None)
     digestion_date: Union[date, None] = Field(default=None)
     plate_type: Optional[str] = Field(default=None, max_length=50)
