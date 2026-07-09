@@ -1260,6 +1260,11 @@ export class PassageDetailPage {
     });
   }
 
+  private reloadInVivoResources(): void {
+    this.implantsResource.reload();
+    this.mouseResource.reload();
+  }
+
   openPdxTrialForm(entity: PDXTrial | null = null) {
     this.openEntityForm(
       $localize`:@@pdxTrialDetailsTitle:PDX Trial Details`,
@@ -1375,7 +1380,7 @@ export class PassageDetailPage {
         { name: 'type', label: $localize`Type`, type: 'text' },
         { name: 'implant_date', label: $localize`:@@implantDateLbl:Implant Date`, type: 'date' },
       ],
-      this.implantsResource,
+      { reload: () => this.reloadInVivoResources() },
       entity,
       entity ? {} : presetDefaults,
     );

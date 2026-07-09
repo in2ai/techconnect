@@ -159,6 +159,22 @@ describe('PassageDetailPage', () => {
     expect(navSpy).toHaveBeenCalledWith(['/passages']);
   });
 
+  it('reloads mice when an implant changes so latency is recomputed', async () => {
+    const { fixture, httpMock } = await setup({ dialogResult: { id: 'I-1' } });
+    const implantsReloadSpy = vi
+      .spyOn(fixture.componentInstance.implantsResource, 'reload')
+      .mockImplementation(() => true);
+    const miceReloadSpy = vi
+      .spyOn(fixture.componentInstance.mouseResource, 'reload')
+      .mockImplementation(() => true);
+
+    fixture.componentInstance.openImplantForm(null, { mouse_id: 'M-1' });
+
+    expect(implantsReloadSpy).toHaveBeenCalled();
+    expect(miceReloadSpy).toHaveBeenCalled();
+    httpMock.verify();
+  });
+
   it('notifies error on delete failure', async () => {
     const { fixture, notification } = await setup({ dialogResult: true, deleteResult: 'error' });
     fixture.componentInstance.confirmDelete();
