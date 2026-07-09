@@ -74,7 +74,9 @@ class DeferredBiomodelParentUpdate:
 @dataclass
 class DatasetImportContext:
     source_passage_ids: set[str] = dataclass_field(default_factory=set)
-    deferred_biomodel_parent_updates: list[DeferredBiomodelParentUpdate] = dataclass_field(default_factory=list)
+    deferred_biomodel_parent_updates: list[DeferredBiomodelParentUpdate] = dataclass_field(
+        default_factory=list
+    )
 
 
 DATASET_SHEET_NAME_ALIASES = {
@@ -85,11 +87,15 @@ DATASET_SHEET_NAME_ALIASES = {
 
 
 MOUSE_RELATED_COLUMNS: tuple[DatasetColumnSpec, ...] = (
-    DatasetColumnSpec("implant_1_id", False, False, (), "uuid", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"),
+    DatasetColumnSpec(
+        "implant_1_id", False, False, (), "uuid", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    ),
     DatasetColumnSpec("implant_1_location", False, False, (), "string"),
     DatasetColumnSpec("implant_1_type", False, False, (), "string"),
     DatasetColumnSpec("implant_1_date", False, False, (), "date", "YYYY-MM-DD"),
-    DatasetColumnSpec("implant_2_id", False, False, (), "uuid", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"),
+    DatasetColumnSpec(
+        "implant_2_id", False, False, (), "uuid", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    ),
     DatasetColumnSpec("implant_2_location", False, False, (), "string"),
     DatasetColumnSpec("implant_2_type", False, False, (), "string"),
     DatasetColumnSpec("implant_2_date", False, False, (), "date", "YYYY-MM-DD"),
@@ -138,19 +144,23 @@ def build_dataset_export_workbook(session: Session) -> bytes:
     return buffer.getvalue()
 
 
-def _export_workbook_row_values(session: Session, table_spec: DatasetTableSpec, item: SQLModel) -> list[Any]:
+def _export_workbook_row_values(
+    session: Session, table_spec: DatasetTableSpec, item: SQLModel
+) -> list[Any]:
     values = [_serialize_value(getattr(item, column.name, None)) for column in table_spec.columns]
     if table_spec.table_name == "mouse":
         implants = session.exec(
             select(Implant).where(Implant.mouse_id == getattr(item, "id")).order_by(Implant.id)
         ).all()
         for implant in implants[:2]:
-            values.extend([
-                _serialize_value(implant.id),
-                implant.implant_location,
-                implant.type,
-                _serialize_value(implant.implant_date),
-            ])
+            values.extend(
+                [
+                    _serialize_value(implant.id),
+                    implant.implant_location,
+                    implant.type,
+                    _serialize_value(implant.implant_date),
+                ]
+            )
         missing_implant_slots = 2 - min(len(implants), 2)
         values.extend([None, None, None, None] * missing_implant_slots)
     return values
@@ -287,7 +297,9 @@ def build_dataset_export_csv_zip(session: Session) -> bytes:
         measure_columns = _get_model_columns(Measure)
         writer.writerow([column.name for column in measure_columns])
         for item in session.exec(select(Measure)).all():
-            writer.writerow([_serialize_value(getattr(item, column.name, None)) for column in measure_columns])
+            writer.writerow(
+                [_serialize_value(getattr(item, column.name, None)) for column in measure_columns]
+            )
         archive.writestr("measure.csv", csv_buffer.getvalue())
 
     return buffer.getvalue()
@@ -345,7 +357,6 @@ def import_dataset_csv_zip(
 
             for row_number, values in enumerate(reader, start=2):
                 _import_tabular_row(summary, session, table_spec, row_number, values, context)
-
 
     if not found_supported_file:
         raise HTTPException(
@@ -412,9 +423,9 @@ def _collect_workbook_source_passage_ids(worksheets: dict[str, Any]) -> set[str]
         worksheet.iter_rows(min_row=2, max_row=2, max_col=len(expected_headers), values_only=True),
         None,
     )
-    has_note_row = note_row is not None and tuple(_normalize_text(value) for value in note_row) == tuple(
-        _column_note(column) for column in expected_columns
-    )
+    has_note_row = note_row is not None and tuple(
+        _normalize_text(value) for value in note_row
+    ) == tuple(_column_note(column) for column in expected_columns)
     data_start_row = 3 if has_note_row else 2
 
     return _collect_source_primary_keys_from_rows(
@@ -479,7 +490,6 @@ def _build_base_workbook() -> Workbook:
 
         for cell in worksheet[1]:
             cell.font = Font(bold=True)
-
 
     return workbook
 
@@ -713,7 +723,9 @@ def _upsert_mouse_implant(
     return "updated", update_item(session, Implant, str(existing.id), item)
 
 
-def _upsert_facs_row(session: Session, table_spec: DatasetTableSpec, payload: dict[str, Any]) -> str:
+def _upsert_facs_row(
+    session: Session, table_spec: DatasetTableSpec, payload: dict[str, Any]
+) -> str:
     _validate_foreign_keys(session, table_spec, payload)
     primary_key_value = payload.get("id")
     if primary_key_value is not None:
@@ -865,7 +877,9 @@ def _is_template_note_row(
     values: tuple[Any, ...] | list[Any],
 ) -> bool:
     expected_columns = _workbook_columns(table_spec)
-    normalized_values = tuple(_normalize_text(value) for value in list(values)[: len(expected_columns)])
+    normalized_values = tuple(
+        _normalize_text(value) for value in list(values)[: len(expected_columns)]
+    )
     expected_notes = tuple(_column_note(column) for column in expected_columns)
     if normalized_values == expected_notes:
         return True
@@ -991,5 +1005,5 @@ def _column_format_hint(column) -> str | None:
 def _column_python_type(column) -> type[Any] | None:
     try:
         return column.type.python_type
-    except (AttributeError, NotImplementedError):
+    except AttributeError, NotImplementedError:
         return None
