@@ -423,6 +423,142 @@ def test_import_dataset_workbook_coerces_numeric_excel_values_for_string_columns
     assert tumor['stage'] == '2'
 
 
+def test_import_dataset_workbook_defers_biomodel_parent_passage_references(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    template_response = client.get('/api/imports/dataset-template.xlsx')
+    workbook = load_workbook(BytesIO(template_response.content))
+    patient_sheet = workbook['patient']
+    tumor_sheet = workbook['tumor']
+    biomodel_sheet = workbook['biomodel']
+    passage_sheet = workbook['passage']
+
+    patient_sheet.append(['PAT-450', 'F', 35])
+    tumor_sheet.append(['TUM-450', None, None, 'Adenocarcinoma', None, 'Lung', None, None, None, 'PAT-450'])
+    biomodel_sheet.append(['PARENT450', 'PDX', None, None, None, None, 'TUM-450', None])
+    biomodel_sheet.append(['CHILD450-LC', 'LC', None, None, None, None, 'TUM-450', 'PARENT450-P1'])
+    passage_sheet.append(['PARENT450-P1', None, 'YES', 'YES', None, 'NO', None, 'PARENT450'])
+    passage_sheet.append(['CHILD450-LC-P1', None, 'YES', 'YES', None, 'NO', None, 'CHILD450-LC'])
+
+    payload = BytesIO()
+    workbook.save(payload)
+    workbook.close()
+
+    response = client.post(
+        '/api/imports/dataset-workbook',
+        files={
+            'file': (
+                'dataset.xlsx',
+                payload.getvalue(),
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            )
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body['rows_failed'] == 0, body
+    assert body['table_counts']['biomodel'] == {'created': 2, 'updated': 0}
+    assert body['table_counts']['passage'] == {'created': 2, 'updated': 0}
+
+    child_biomodel_response = client.get('/api/biomodels/CHILD450-LC')
+    child_passage_response = client.get('/api/passages/CHILD450-LC-P1')
+    assert child_biomodel_response.status_code == 200
+    assert child_biomodel_response.json()['parent_passage_id'] == 'PARENT450-P1'
+    assert child_passage_response.status_code == 200
+
+
+def test_import_dataset_workbook_updates_auto_created_facs_for_lc_passages(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    template_response = client.get('/api/imports/dataset-template.xlsx')
+    workbook = load_workbook(BytesIO(template_response.content))
+    patient_sheet = workbook['patient']
+    tumor_sheet = workbook['tumor']
+    biomodel_sheet = workbook['biomodel']
+    passage_sheet = workbook['passage']
+    lc_trial_sheet = workbook['lc_passage']
+    facs_sheet = workbook['facs']
+    facs_id = '85832835-9fb2-4124-9501-fed4b5996956'
+
+    patient_sheet.append(['PAT-460', 'F', 35])
+    tumor_sheet.append(['TUM-460', None, None, 'Adenocarcinoma', None, 'Lung', None, None, None, 'PAT-460'])
+    biomodel_sheet.append(['LC-FACS-460', 'LC', None, None, None, None, 'TUM-460', None])
+    passage_sheet.append(['LC-FACS-460-P1', None, 'YES', 'YES', None, 'NO', None, 'LC-FACS-460'])
+    lc_trial_sheet.append(['LC-FACS-460-P1', '90', 'YES', None, 'p5'])
+    facs_sheet.append([facs_id, 'Auto 0,69%, EpCam 60-70%, CD133 30%', 30, 'LC-FACS-460-P1'])
+
+    payload = BytesIO()
+    workbook.save(payload)
+    workbook.close()
+
+    response = client.post(
+        '/api/imports/dataset-workbook',
+        files={
+            'file': (
+                'dataset.xlsx',
+                payload.getvalue(),
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            )
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body['rows_failed'] == 0, body
+    assert body['table_counts']['facs'] == {'created': 0, 'updated': 1}
+
+    facs_response = client.get('/api/facs')
+    assert facs_response.status_code == 200
+    facs_rows = facs_response.json()
+    assert len(facs_rows) == 1
+    assert facs_rows[0]['id'] == facs_id
+    assert facs_rows[0]['lc_trial_id'] == 'LC-FACS-460-P1'
+    assert facs_rows[0]['measure'] == 'Auto 0,69%, EpCam 60-70%, CD133 30%'
+    assert facs_rows[0]['measure_value'] == 30
+
+
+def test_import_dataset_workbook_skips_template_note_rows_defensively(client: TestClient):
+    login_response = client.post(
+        '/api/auth/login',
+        json={'email': 'admin@example.com', 'password': 'super-secret-password'},
+    )
+    assert login_response.status_code == 200
+
+    template_response = client.get('/api/imports/dataset-template.xlsx')
+    workbook = load_workbook(BytesIO(template_response.content))
+    lc_trial_sheet = workbook['lc_passage']
+    lc_trial_sheet['B2'] = 'optional | type:string | changed'
+
+    payload = BytesIO()
+    workbook.save(payload)
+    workbook.close()
+
+    response = client.post(
+        '/api/imports/dataset-workbook',
+        files={
+            'file': (
+                'dataset.xlsx',
+                payload.getvalue(),
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            )
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body['rows_failed'] == 0
+    assert body['errors'] == []
+
+
 def test_import_dataset_workbook_normalizes_passage_identifier_spaces(client: TestClient):
     login_response = client.post(
         '/api/auth/login',

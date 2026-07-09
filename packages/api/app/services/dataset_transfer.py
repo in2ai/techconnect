@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import csv
-from dataclasses import dataclass
+from dataclasses import dataclass, field as dataclass_field
 from datetime import date, datetime
 from io import BytesIO, StringIO
 from typing import Any
@@ -11,7 +11,7 @@ from uuid import UUID
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from fastapi import HTTPException, status
-from models import Implant, Measure, Mouse
+from models import Biomodel, FACS, Implant, Measure, Mouse, Passage
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 from pydantic import BaseModel, Field, ValidationError
@@ -62,6 +62,19 @@ class DatasetImportSummary(BaseModel):
     rows_failed: int = 0
     table_counts: dict[str, EntityImportCounts] = Field(default_factory=dict)
     errors: list[DatasetImportError] = Field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class DeferredBiomodelParentUpdate:
+    row_number: int
+    primary_key: str
+    parent_passage_id: str
+
+
+@dataclass
+class DatasetImportContext:
+    source_passage_ids: set[str] = dataclass_field(default_factory=set)
+    deferred_biomodel_parent_updates: list[DeferredBiomodelParentUpdate] = dataclass_field(default_factory=list)
 
 
 DATASET_SHEET_NAME_ALIASES = {
@@ -177,9 +190,11 @@ def import_dataset_workbook(
 
     summary = _create_import_summary(filename=filename, format_name="xlsx")
     found_supported_sheet = False
+    context = DatasetImportContext()
 
     try:
         worksheets = {worksheet.title: worksheet for worksheet in workbook.worksheets}
+        context.source_passage_ids = _collect_workbook_source_passage_ids(worksheets)
         for table_spec in get_dataset_table_specs():
             worksheet = worksheets.get(_sheet_name(table_spec))
             if worksheet is None:
@@ -224,7 +239,7 @@ def import_dataset_workbook(
                 ),
                 start=data_start_row,
             ):
-                _import_tabular_row(summary, session, table_spec, row_number, values)
+                _import_tabular_row(summary, session, table_spec, row_number, values, context)
 
     finally:
         workbook.close()
@@ -234,6 +249,8 @@ def import_dataset_workbook(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Workbook does not contain any supported dataset sheets.",
         )
+
+    _apply_deferred_biomodel_parent_updates(summary, session, context)
 
     return summary
 
@@ -298,9 +315,11 @@ def import_dataset_csv_zip(
 
     summary = _create_import_summary(filename=filename, format_name="csv-zip")
     found_supported_file = False
+    context = DatasetImportContext()
 
     with archive:
         names = set(archive.namelist())
+        context.source_passage_ids = _collect_csv_source_passage_ids(archive, names)
         for table_spec in get_dataset_table_specs():
             filename_in_archive = f"{_sheet_name(table_spec)}.csv"
             if filename_in_archive not in names:
@@ -325,7 +344,7 @@ def import_dataset_csv_zip(
                 )
 
             for row_number, values in enumerate(reader, start=2):
-                _import_tabular_row(summary, session, table_spec, row_number, values)
+                _import_tabular_row(summary, session, table_spec, row_number, values, context)
 
 
     if not found_supported_file:
@@ -333,6 +352,8 @@ def import_dataset_csv_zip(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="ZIP archive does not contain any supported dataset CSV files.",
         )
+
+    _apply_deferred_biomodel_parent_updates(summary, session, context)
 
     return summary
 
@@ -363,6 +384,82 @@ def _workbook_columns(table_spec: DatasetTableSpec) -> tuple[DatasetColumnSpec, 
     if table_spec.table_name == "mouse":
         return table_spec.columns + MOUSE_RELATED_COLUMNS
     return table_spec.columns
+
+
+def _table_spec_by_name(table_name: str) -> DatasetTableSpec:
+    for table_spec in get_dataset_table_specs():
+        if table_spec.table_name == table_name:
+            return table_spec
+    raise RuntimeError(f"Unsupported dataset table: {table_name}")
+
+
+def _collect_workbook_source_passage_ids(worksheets: dict[str, Any]) -> set[str]:
+    passage_spec = _table_spec_by_name("passage")
+    worksheet = worksheets.get(_sheet_name(passage_spec))
+    if worksheet is None:
+        return set()
+
+    expected_columns = _workbook_columns(passage_spec)
+    expected_headers = tuple(column.name for column in expected_columns)
+    header_row = next(
+        worksheet.iter_rows(min_row=1, max_row=1, max_col=len(expected_headers), values_only=True),
+        None,
+    )
+    if header_row is None or _normalize_headers(header_row) != expected_headers:
+        return set()
+
+    note_row = next(
+        worksheet.iter_rows(min_row=2, max_row=2, max_col=len(expected_headers), values_only=True),
+        None,
+    )
+    has_note_row = note_row is not None and tuple(_normalize_text(value) for value in note_row) == tuple(
+        _column_note(column) for column in expected_columns
+    )
+    data_start_row = 3 if has_note_row else 2
+
+    return _collect_source_primary_keys_from_rows(
+        passage_spec,
+        worksheet.iter_rows(
+            min_row=data_start_row,
+            max_col=len(expected_headers),
+            values_only=True,
+        ),
+    )
+
+
+def _collect_csv_source_passage_ids(archive: ZipFile, names: set[str]) -> set[str]:
+    passage_spec = _table_spec_by_name("passage")
+    filename_in_archive = f"{_sheet_name(passage_spec)}.csv"
+    if filename_in_archive not in names:
+        return set()
+
+    content = archive.read(filename_in_archive).decode("utf-8-sig")
+    reader = csv.reader(StringIO(content))
+    header_row = next(reader, None)
+    expected_columns = _workbook_columns(passage_spec)
+    expected_headers = tuple(column.name for column in expected_columns)
+    if header_row is None or tuple(header_row) != expected_headers:
+        return set()
+
+    return _collect_source_primary_keys_from_rows(passage_spec, reader)
+
+
+def _collect_source_primary_keys_from_rows(
+    table_spec: DatasetTableSpec,
+    rows: Any,
+) -> set[str]:
+    keys: set[str] = set()
+    for values in rows:
+        if not any(_has_value(value) for value in values):
+            continue
+        if _is_template_note_row(table_spec, values):
+            continue
+
+        payload = _build_row_payload(table_spec, values)
+        primary_key = _primary_key_value(table_spec, payload)
+        if primary_key is not None:
+            keys.add(str(primary_key))
+    return keys
 
 
 def _build_base_workbook() -> Workbook:
@@ -405,13 +502,24 @@ def _import_tabular_row(
     table_spec: DatasetTableSpec,
     row_number: int,
     values: tuple[Any, ...] | list[Any],
+    context: DatasetImportContext,
 ) -> None:
     if not any(_has_value(value) for value in values):
+        summary.rows_skipped += 1
+        return
+    if _is_template_note_row(table_spec, values):
         summary.rows_skipped += 1
         return
 
     payload = _build_row_payload(table_spec, values)
     primary_key = _primary_key_value(table_spec, payload)
+    deferred_parent_update = _prepare_deferred_biomodel_parent_update(
+        session,
+        table_spec,
+        payload,
+        row_number,
+        context,
+    )
 
     try:
         if table_spec.table_name == "mouse":
@@ -432,6 +540,9 @@ def _import_tabular_row(
         )
         return
 
+    if deferred_parent_update is not None:
+        context.deferred_biomodel_parent_updates.append(deferred_parent_update)
+
     summary.rows_imported += 1
     counts = summary.table_counts[table_spec.table_name]
     if action == "created":
@@ -444,6 +555,82 @@ def _import_tabular_row(
             related_counts.created += 1
         else:
             related_counts.updated += 1
+
+
+def _prepare_deferred_biomodel_parent_update(
+    session: Session,
+    table_spec: DatasetTableSpec,
+    payload: dict[str, Any],
+    row_number: int,
+    context: DatasetImportContext,
+) -> DeferredBiomodelParentUpdate | None:
+    if table_spec.table_name != "biomodel":
+        return None
+
+    parent_passage_id = payload.get("parent_passage_id")
+    primary_key = payload.get("id")
+    if parent_passage_id is None or primary_key is None:
+        return None
+
+    parent_passage_id_text = str(parent_passage_id)
+    if session.get(Passage, _coerce_primary_key_value(parent_passage_id_text)) is not None:
+        return None
+    if parent_passage_id_text not in context.source_passage_ids:
+        return None
+
+    payload.pop("parent_passage_id", None)
+    return DeferredBiomodelParentUpdate(
+        row_number=row_number,
+        primary_key=str(primary_key),
+        parent_passage_id=parent_passage_id_text,
+    )
+
+
+def _apply_deferred_biomodel_parent_updates(
+    summary: DatasetImportSummary,
+    session: Session,
+    context: DatasetImportContext,
+) -> None:
+    for deferred_update in context.deferred_biomodel_parent_updates:
+        try:
+            _apply_deferred_biomodel_parent_update(session, deferred_update)
+        except (HTTPException, ValidationError, ValueError, SQLAlchemyError) as exc:
+            session.rollback()
+            summary.rows_failed += 1
+            summary.errors.append(
+                DatasetImportError(
+                    table="biomodel",
+                    row_number=deferred_update.row_number,
+                    primary_key=deferred_update.primary_key,
+                    message=_error_message(exc),
+                )
+            )
+
+
+def _apply_deferred_biomodel_parent_update(
+    session: Session,
+    deferred_update: DeferredBiomodelParentUpdate,
+) -> None:
+    biomodel = session.get(Biomodel, deferred_update.primary_key)
+    if biomodel is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Cannot set parent_passage_id because biomodel.id was not imported: {deferred_update.primary_key}",
+        )
+
+    if session.get(Passage, _coerce_primary_key_value(deferred_update.parent_passage_id)) is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                "Foreign key parent_passage_id references missing "
+                f"passage.id: {deferred_update.parent_passage_id}"
+            ),
+        )
+
+    patch = Biomodel.model_validate(
+        {**biomodel.model_dump(), "parent_passage_id": deferred_update.parent_passage_id}
+    )
+    update_item(session, Biomodel, deferred_update.primary_key, patch)
 
 
 def _upsert_mouse_row_with_related(
@@ -526,7 +713,37 @@ def _upsert_mouse_implant(
     return "updated", update_item(session, Implant, str(existing.id), item)
 
 
+def _upsert_facs_row(session: Session, table_spec: DatasetTableSpec, payload: dict[str, Any]) -> str:
+    _validate_foreign_keys(session, table_spec, payload)
+    primary_key_value = payload.get("id")
+    if primary_key_value is not None:
+        existing = session.get(FACS, _coerce_primary_key_value(primary_key_value))
+        if existing is not None:
+            update_item(session, FACS, str(primary_key_value), FACS.model_validate(payload))
+            return "updated"
+
+    lc_trial_id = payload.get("lc_trial_id")
+    if lc_trial_id is not None:
+        existing = session.exec(select(FACS).where(FACS.lc_trial_id == lc_trial_id)).first()
+        if existing is not None:
+            if primary_key_value is not None:
+                session.delete(existing)
+                session.flush()
+                create_item(session, FACS, FACS.model_validate(payload))
+                return "updated"
+
+            update_payload = {**existing.model_dump(), **payload, "id": existing.id}
+            update_item(session, FACS, str(existing.id), FACS.model_validate(update_payload))
+            return "updated"
+
+    create_item(session, FACS, FACS.model_validate(payload))
+    return "created"
+
+
 def _upsert_row(session: Session, table_spec: DatasetTableSpec, payload: dict[str, Any]) -> str:
+    if table_spec.table_name == "facs":
+        return _upsert_facs_row(session, table_spec, payload)
+
     model = table_spec.model
     primary_key_column = next(column for column in table_spec.columns if column.is_primary_key)
     primary_key_value = payload.get(primary_key_column.name)
@@ -641,6 +858,24 @@ def _should_normalize_passage_identifier(
 
 def _normalize_passage_identifier(value: str) -> str:
     return "-".join(part for part in value.strip().split() if part)
+
+
+def _is_template_note_row(
+    table_spec: DatasetTableSpec,
+    values: tuple[Any, ...] | list[Any],
+) -> bool:
+    expected_columns = _workbook_columns(table_spec)
+    normalized_values = tuple(_normalize_text(value) for value in list(values)[: len(expected_columns)])
+    expected_notes = tuple(_column_note(column) for column in expected_columns)
+    if normalized_values == expected_notes:
+        return True
+
+    first_cell = normalized_values[0].casefold() if normalized_values else ""
+    return (
+        first_cell.startswith("primary key")
+        and "type:" in first_cell
+        and ("required" in first_cell or "optional" in first_cell)
+    )
 
 
 def _validate_foreign_keys(
