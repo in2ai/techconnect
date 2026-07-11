@@ -172,7 +172,6 @@ erDiagram
         date measure_date
         float length
         float width
-        float tumor_volume
         uuid implant_id FK
     }
 
@@ -185,7 +184,6 @@ erDiagram
         string strain
         string sex
         date death_date
-        float latency_weeks
         string pdx_trial_id FK
     }
 
@@ -196,3 +194,8 @@ erDiagram
         string lc_trial_id FK
     }
 ```
+
+## Notes
+
+- Unless a field is a primary key or a required foreign key, it is generally nullable in the SQLModel definitions.
+- `Biomodel.tumor_organ`, `Measure.tumor_volume`, and `Mouse.latency_weeks` are computed properties and are **not** stored columns.

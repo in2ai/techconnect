@@ -2,110 +2,121 @@
 
 FastAPI backend for the TechConnect biomedical research application.
 
+## What it provides
+
+- cookie-based authentication endpoints under `/api/auth`
+- protected CRUD-style entity routes for the research domain
+- dataset import/export endpoints for admin workflows
+- a seed script for demo/sample data
+- shared SQLModel persistence models from `techconnect-schemas`
+
 ## Quick Start
 
+Run these commands from `packages/api/` unless noted otherwise.
+
 ```bash
-# From this directory
+# Install the package with dev tools
+uv sync --extra dev
+
+# Start the development server
 uv run fastapi dev app/main.py
 ```
 
-The server will start at:
+Default URLs:
 
-- **API**: <http://localhost:8000>
-- **Interactive Docs**: <http://localhost:8000/docs>
+- **API root**: <http://localhost:8000/api>
+- **OpenAPI docs**: <http://localhost:8000/docs>
 - **ReDoc**: <http://localhost:8000/redoc>
 
-## Commands
-
-### Development Server
+## Common Commands
 
 ```bash
-# Development mode (with auto-reload)
+# Development server with auto-reload
 uv run fastapi dev app/main.py
 
-# Custom port
-uv run fastapi dev app/main.py --port 8001
-
-# Bind to all interfaces
-uv run fastapi dev app/main.py --host 0.0.0.0
-```
-
-### Production Server
-
-```bash
-# Production mode
+# Production-style server
 uv run fastapi run app/main.py
 
-# Using uvicorn directly
-uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
-```
-
-### Testing
-
-> **Note**: Testing, linting, and type-checking require dev dependencies. Install them first:
->
-> ```bash
-> uv sync --extra dev
-> ```
-
-```bash
-# Run tests
+# Run the full test suite
 uv run pytest
 
-# Run tests with verbose output
-uv run pytest -v
+# Run a single test module
+uv run pytest tests/test_auth.py
 
-# Run tests with coverage
-uv run pytest --cov
+# Seed sample/demo data
+uv run seed-db
+
+# Lint and format
+uv run ruff check .
+uv run ruff format .
+
+# Type checking
+uv run pyrefly check .
 ```
 
-### Seed Sample Data
+From the repository root you can also run:
 
 ```bash
+uv run --package techconnect-api fastapi dev packages/api/app/main.py
+uv run --package techconnect-api pytest packages/api/tests
 uv run --package techconnect-api seed-db
 ```
 
-### Linting & Formatting
+## API Surface
 
-```bash
-# Check for linting errors
-uv run ruff check .
-
-# Auto-fix linting errors
-uv run ruff check --fix .
-
-# Format code
-uv run ruff format .
-```
-
-### Type Checking
-
-```bash
-# Type check with pyrefly
-uv run pyrefly check .
-```
+- `GET /api/health` - container and service health check
+- `POST /api/auth/login` - create a browser session cookie
+- `POST /api/auth/logout` - revoke the current session
+- `GET /api/auth/me` - return the authenticated user profile
+- entity routers from `entities.py` - protected CRUD routes for patients, tumors, biomodels, passages, samples, and related domain models
+- import/export routes from `imports.py` - dataset template download, dataset export, dataset import, and legacy PDX workbook import
 
 ## Project Structure
 
 ```text
 app/
-├── __init__.py
 ├── api/
 │   ├── dependencies.py
+│   ├── router.py
 │   ├── endpoints/
+│   │   ├── auth.py
 │   │   ├── entities.py
-│   │   └── health.py
-│   └── router.py
+│   │   ├── health.py
+│   │   └── imports.py
+│   └── schemas/
+│       └── auth.py
 ├── core/
 │   ├── config.py
-│   └── database.py
+│   ├── database.py
+│   └── security.py
 ├── services/
-│   └── crud.py
-└── main.py
+│   ├── auth.py
+│   ├── crud.py
+│   ├── dataset_transfer.py
+│   ├── entity_catalog.py
+│   └── pdx_import.py
+├── main.py
+└── seed.py
 tests/
-└── test_main.py     # API tests
+├── test_auth.py
+├── test_crud.py
+├── test_imports.py
+└── test_main.py
 ```
 
 ## Environment Variables
 
-- `DATABASE_URL`: SQLAlchemy URL (defaults to `sqlite:///techconnect.db`)
+- `DATABASE_URL` - database connection string, defaults to `sqlite:///techconnect.db`
+- `AUTH_COOKIE_NAME` - cookie name, defaults to `techconnect_session`
+- `AUTH_COOKIE_SAME_SITE` - cookie SameSite policy, defaults to `lax`
+- `AUTH_COOKIE_SECURE` - set to `true` behind HTTPS/TLS
+- `AUTH_SESSION_TTL_MINUTES` - session lifetime in minutes, defaults to `720`
+- `AUTH_BOOTSTRAP_EMAIL` - initial admin email for non-SQLite environments
+- `AUTH_BOOTSTRAP_PASSWORD` - initial admin password for non-SQLite environments
+- `AUTH_BOOTSTRAP_FULL_NAME` - optional display name for the bootstrap admin
+
+## Bootstrap Auth Behavior
+
+- SQLite development automatically falls back to a local bootstrap admin.
+- Non-SQLite deployments should provide explicit bootstrap credentials before first start.
+- Protected API routers are attached centrally in `app/api/router.py` with `require_authenticated_user`.

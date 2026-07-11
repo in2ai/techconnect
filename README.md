@@ -35,20 +35,17 @@ brew install uv
 ## Quick Start
 
 ```bash
-# Install all Python dependencies (creates .venv automatically)
+# Install the Python workspace
 uv sync --all-packages
 
-# Run backend development server (from workspace root)
+# Run the API from the workspace root
 uv run --package techconnect-api fastapi dev packages/api/app/main.py
 
-# Generate frontend TypeScript models from the Python schemas
-uv run --package techconnect-schemas export-schema --format typescript --output frontend/src/app/generated/models.ts
-
-# Run the Angular frontend
+# Run the Angular frontend (frontend scripts regenerate TypeScript models automatically)
 cd frontend && npm install && npm start
 
-# Or run from the package directory
-cd packages/api && uv run fastapi dev app/main.py
+# Optional: run the Spanish-only localized build in dev mode
+cd frontend && npm run start:es
 
 # Export SQL schema
 uv run --package techconnect-schemas export-schema --dialect postgresql
@@ -56,6 +53,15 @@ uv run --package techconnect-schemas export-schema --dialect postgresql
 # Initialize database tables
 uv run --package techconnect-schemas init-db
 ```
+
+## Frontend at a Glance
+
+- **Framework**: Angular 21 with standalone components and signal-based state
+- **UI stack**: Angular Material, Tailwind CSS 4, Chart.js via `ng2-charts`
+- **Localization**: localized builds for `/en/` and `/es/`
+- **Feature areas**: login, dashboard, patients, tumors, biomodels, passages, samples, and admin data transfer
+- **Testing**: Vitest for unit tests and Playwright for end-to-end coverage
+- **Shared models**: frontend TypeScript interfaces are generated from `packages/schemas`
 
 ## Authentication
 
@@ -119,9 +125,26 @@ uv run --package techconnect-api uvicorn app.main:app --reload --host 0.0.0.0 --
 # From the frontend directory
 cd frontend
 npm install
+
+# English + Spanish localized dev build
 npm start
 
-# The frontend scripts regenerate TypeScript models from packages/schemas automatically.
+# Spanish-only localized dev build
+npm run start:es
+
+# Production build
+npm run build
+
+# Unit tests
+npm run test
+
+# End-to-end tests
+npm run test:e2e
+
+# Extract translation source files
+npm run extract-i18n
+
+# Frontend scripts regenerate TypeScript models from packages/schemas automatically.
 ```
 
 ### Schema Export
@@ -206,6 +229,12 @@ uv run --package techconnect-api pytest
 
 # Run tests with coverage
 uv run --package techconnect-api pytest --cov
+
+# Run frontend unit tests
+cd frontend && npm run test
+
+# Run frontend end-to-end tests
+cd frontend && npm run test:e2e
 ```
 
 ## Packages
@@ -246,9 +275,10 @@ See `docs/docker-compose-deployment.md` for setup and operations.
 ## Development Workflow
 
 1. **Make schema changes** in `packages/schemas/models/`
-2. **Regenerate frontend types** with `uv run --package techconnect-schemas export-schema --format typescript --output frontend/src/app/generated/models.ts` or any frontend npm script
-3. **Export and apply** DDL to your database or run `uv run --package techconnect-schemas init-db`
-4. **Add API endpoints** in `packages/api/app/`
+2. **Regenerate frontend types** with `uv run --package techconnect-schemas export-schema --format typescript --output frontend/src/app/generated/models.ts` or by running any frontend npm script
+3. **Update the API** in `packages/api/app/` for CRUD, auth, or import/data-transfer workflows
+4. **Export and apply** DDL to your database or run `uv run --package techconnect-schemas init-db`
+5. **Validate both apps** with targeted API tests and frontend unit/e2e checks
 
 ## Adding a New Workspace Package
 

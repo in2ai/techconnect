@@ -1,214 +1,141 @@
-# TechConnect Schemas - Python (SQLModel)
+# TechConnect Schemas
 
-Python implementation of the TechConnect biomedical research database schemas using [SQLModel](https://sqlmodel.tiangolo.com/).
+Shared SQLModel schema package for the TechConnect biomedical research application.
 
-## Features
+## What this package does
 
-- **Type Safety**: Full type hints with Pydantic validation
-- **ORM Integration**: Direct SQLAlchemy compatibility for database operations
-- **Multi-Database Support**: Works with PostgreSQL, MySQL, MariaDB, and SQLite
-- **Relationship Mapping**: Full support for 1:1, 1:N, and inheritance relationships
+- defines the database tables used by the API
+- exports SQL DDL for PostgreSQL, MySQL/MariaDB, and SQLite
+- creates database tables directly from the schema definitions
+- generates TypeScript interfaces consumed by the Angular frontend
 
 ## Installation
 
-### Workspace Install (Default - Recommended)
-
-If you're working within the TechConnect monorepo, use the UV workspace command from the **repository root**:
+From the repository root:
 
 ```bash
-# From the repository root (backend/)
 uv sync --package techconnect-schemas
 ```
 
-### Standalone Install (Alternative)
-
-If you're working with this package independently (outside the monorepo), navigate to the package directory and install directly:
+From `packages/schemas/` directly:
 
 ```bash
-# Navigate to the package directory
-cd packages/schemas
-
-# Install the package in editable mode
-uv pip install -e .
+uv sync --extra dev
 ```
 
-## Quick Start
-
-### Export SQL Schema (without database connection)
+## Common Commands
 
 ```bash
-# Export PostgreSQL schema
+# Export SQL DDL
 uv run --package techconnect-schemas export-schema --dialect postgresql
-
-# Export MySQL schema
 uv run --package techconnect-schemas export-schema --dialect mysql
-
-# Export MariaDB schema
 uv run --package techconnect-schemas export-schema --dialect mariadb
-
-# Export SQLite schema
 uv run --package techconnect-schemas export-schema --dialect sqlite
 
-# Save to file
-uv run --package techconnect-schemas export-schema --dialect mariadb --output schema.sql
-```
+# Export TypeScript interfaces for the frontend
+uv run --package techconnect-schemas export-schema --format typescript --output frontend/src/app/generated/models.ts
 
-> **Note:** If running directly from `packages/schemas/`, you can also use `python export_schema.py --dialect postgresql`.
-
-### Create Database Tables
-
-#### Via CLI (Recommended)
-
-Initialize your database tables directly from the command line using the configured `DATABASE_URL` in your project root `.env` file:
-
-```bash
-# From the repository root (backend/)
+# Initialize tables using DATABASE_URL
 uv run --package techconnect-schemas init-db
 ```
 
-#### Via Python code
+## Model Groups
 
-```python
-from database import create_db_and_tables
+### Core domain
 
-# SQLite
-engine = create_db_and_tables("sqlite:///techconnect.db")
+- `Patient`
+- `Tumor`
+- `Sample`
+- `Biomodel`
+- `Passage`
 
-# PostgreSQL
-engine = create_db_and_tables("postgresql://user:pass@localhost:5432/techconnect")
+### Tumor and passage detail tables
 
-# MySQL
-engine = create_db_and_tables("mysql+pymysql://user:pass@localhost:3306/techconnect")
+- `TumorGenomicSequencing`
+- `TumorMolecularData`
+- `TrialGenomicSequencing`
+- `TrialMolecularData`
+
+### Passage subtype tables
+
+- `PDXTrial`
+- `PDOTrial`
+- `LCTrial`
+
+### PDX-related tables
+
+- `Mouse`
+- `Implant`
+- `Measure`
+
+### Passage support tables
+
+- `UsageRecord`
+- `Image`
+- `Cryopreservation`
+- `FACS`
+
+### Auth persistence tables
+
+- `AuthUser`
+- `AuthSession`
+
+## Relationship Overview
+
+```text
+Patient (1) ──────── (N) Tumor
+                      ├── (N) Sample
+                      ├── (N) Biomodel ──────── (N) Passage
+                      │                           ├── (0..1) PDXTrial ──────── (0..1) Mouse ──────── (N) Implant ──────── (N) Measure
+                      │                           ├── (0..1) PDOTrial
+                      │                           ├── (0..1) LCTrial ──────── (0..1) FACS
+                      │                           ├── (N) UsageRecord
+                      │                           ├── (N) Image
+                      │                           ├── (N) Cryopreservation
+                      │                           ├── (0..1) TrialGenomicSequencing
+                      │                           └── (0..1) TrialMolecularData
+                      ├── (0..1) TumorGenomicSequencing
+                      └── (0..1) TumorMolecularData
+
+Passage (1) ──────── (N) Biomodel (child biomodels via `parent_passage_id`)
 ```
 
-### Working with Models
-
-```python
-from sqlmodel import Session
-from models import Patient, Tumor, Biomodel, Passage
-from datetime import date
-
-# Create a session
-with Session(engine) as session:
-    # Create a patient
-    patient = Patient(
-        nhc="12345",
-        sex="F",
-        age=39
-    )
-    session.add(patient)
-    session.commit()
-
-    # Create a tumor for the patient
-    tumor = Tumor(
-        biobank_code="BB-2024-001",
-        classification="Adenocarcinoma",
-        organ="Lung",
-        patient_nhc=patient.nhc
-    )
-    session.add(tumor)
-    session.commit()
-
-    # Create a biomodel from the tumor
-    biomodel = Biomodel(
-        id="BM-2024-001",
-        type="PDX",
-        status="active",
-        success=True,
-        tumor_biobank_code=tumor.biobank_code
-    )
-    session.add(biomodel)
-    session.commit()
-
-    # Create a passage for the biomodel. The API generates IDs as {biomodel_id}-P{x};
-    # direct SQLModel usage can set the deterministic value explicitly.
-    passage = Passage(
-        id="BM-2024-001-P1",
-        success=True,
-        biomodel_id=biomodel.id
-    )
-    session.add(passage)
-    session.commit()
-```
-
-### Querying with Relationships
+## Working with Models
 
 ```python
 from sqlmodel import Session, select
+from models import Biomodel, Passage, Patient, Tumor
 
 with Session(engine) as session:
-    # Get patient with tumors
-    statement = select(Patient).where(Patient.nhc == "12345")
-    patient = session.exec(statement).first()
+    patient = Patient(nhc="12345", sex="F", age=39)
+    session.add(patient)
+    session.commit()
 
-    # Access related tumors
-    for tumor in patient.tumors:
-        print(f"Tumor: {tumor.biobank_code}")
+    tumor = Tumor(biobank_code="BB-2024-001", organ="Lung", patient_nhc=patient.nhc)
+    session.add(tumor)
+    session.commit()
 
-        # Access biomodels for each tumor
-        for biomodel in tumor.biomodels:
-            print(f"  Biomodel: {biomodel.type} - {biomodel.status}")
+    biomodel = Biomodel(id="BM-2024-001", type="PDX", success=True, tumor_biobank_code=tumor.biobank_code)
+    session.add(biomodel)
+    session.commit()
+
+    passage = Passage(id="BM-2024-001-P1", biomodel_id=biomodel.id)
+    session.add(passage)
+    session.commit()
+
+    stored_patient = session.exec(select(Patient).where(Patient.nhc == "12345")).first()
 ```
 
-## Schema Overview
+## Important Notes
 
-### Main Entities
+- Most non-primary-key fields in the schema are nullable by design.
+- `Biomodel.tumor_organ`, `Measure.tumor_volume`, and `Mouse.latency_weeks` are computed properties, not persisted columns.
+- `export-schema --format typescript` iterates over `models.__all__`, so it exports all currently listed models, including computed fields and the auth persistence models.
+- The frontend auth flow uses dedicated auth DTOs under `frontend/src/app/core/models/auth.models.ts` for request/response handling.
 
-- **Patient** - Patient with Clinical History Number (NHC)
-- **Tumor** - Tumor sample in biobank
-- **LiquidBiopsy** - Liquid biopsy sample
-- **Biomodel** - Biological model (PDX, PDO, LC)
-- **Passage** - Passage/generation of a biomodel and its experiment-level data
+## Related Files
 
-### Passage Detail Tables
-
-- **PDXTrial** - Patient-Derived Xenograft details keyed by `passage.id`
-- **PDOTrial** - Patient-Derived Organoid details keyed by `passage.id`
-- **LCTrial** - Liquid Culture details keyed by `passage.id`
-
-### PDX-Related Entities
-
-- **Implant** - Implant in PDX trial
-- **SizeRecord** - Size measurements for implants
-- **Mouse** - Mouse used in PDX trial
-
-### LC-Related Entities
-
-- **FACS** - Flow cytometry data
-
-### Passage-Related Entities
-
-- **UsageRecord** - Usage tracking
-- **Image** - Passage images
-- **Cryopreservation** - Frozen samples
-- **GenomicSequencing** - Sequencing data
-- **MolecularData** - Molecular analysis data
-
-## Entity Relationship Diagram
-
-```text
-Patient (1) ──────── (N) Tumor (1) ──────── (N) Biomodel (1) ──────── (N) Passage
-                           │                                                    │
-                           └── (0..1) LiquidBiopsy                              │
-                                                                                │
-                                                              (1) ──────── (0..2) Biomodel
-                                                                               │
-                                                    ┌──────────────────────────┼──────────────────────────┐
-                                                    │                          │                          │
-                                                PDXTrial                  PDOTrial                   LCTrial
-                                                    │                                                     │
-                                        ┌───────────┼───────────┐                                        │
-                                        │           │           │                                        │
-                                    Implant      Mouse    SizeRecord                                   FACS
-```
-
-## Comparison with Drizzle ORM
-
-| Feature           | Drizzle (TypeScript) | SQLModel (Python)                   |
-| ----------------- | -------------------- | ----------------------------------- |
-| Type Safety       | ✅                   | ✅                                  |
-| Schema Definition | `pgTable()`          | `class Model(SQLModel, table=True)` |
-| Relationships     | Implicit via FK      | Explicit `Relationship()`           |
-| Migrations        | `drizzle-kit`        | Alembic (external)                  |
-| Validation        | Zod integration      | Built-in Pydantic                   |
-| API Integration   | tRPC                 | FastAPI                             |
+- `models/` - SQLModel table definitions
+- `export_schema.py` - SQL/TypeScript export CLI
+- `database.py` - database initialization entry point
+- `DATA_MODEL_DIAGRAM.md` - ER diagram and storage notes

@@ -4,7 +4,7 @@ This repository includes a production-oriented Docker Compose stack for a VPS wi
 
 ## Services
 
-- `web`: Nginx container that serves the Angular production build and proxies `/api` to the backend.
+- `web`: Nginx container that serves the Angular production build, redirects `/` to a localized path, serves `/en/` and `/es/`, and proxies `/api` to the backend.
 - `api`: FastAPI container built from the monorepo with `uv`.
 - `db`: PostgreSQL container with a named persistent volume.
 
@@ -27,7 +27,15 @@ The published web port is bound to `127.0.0.1` so it is only reachable from the 
    cp .env.docker.example .env.docker
    ```
 
-2. Set a strong database password in `.env.docker`.
+2. Set a strong database password and bootstrap admin credentials in `.env.docker`.
+
+   At minimum review:
+
+   - `POSTGRES_PASSWORD`
+   - `DATABASE_URL`
+   - `AUTH_BOOTSTRAP_EMAIL`
+   - `AUTH_BOOTSTRAP_PASSWORD`
+   - `AUTH_BOOTSTRAP_FULL_NAME`
 
 3. Build and start the stack.
 
@@ -125,4 +133,6 @@ sudo certbot --nginx -d techconnect.in2ai.com
 
 - The backend currently creates tables on startup. That is convenient for bootstrapping but is not a replacement for schema migrations.
 - The default frontend API URL is `/api`, so the single-domain Nginx setup works without frontend environment rewrites.
+- The bundled Nginx config uses the `Accept-Language` header to redirect `/` to `/en/` or `/es/`, and it serves localized Angular builds from those paths.
+- If you terminate TLS at the host-level Nginx, set `AUTH_COOKIE_SECURE=true` in `.env.docker` so session cookies stay HTTPS-only.
 - For production data, back up the `postgres-data` Docker volume.

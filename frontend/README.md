@@ -1,59 +1,65 @@
-# Frontend
+# TechConnect Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+Angular 21 frontend for the TechConnect biomedical research workspace.
 
-## Development server
+## What lives here
 
-To start a local development server, run:
+- authenticated workspace UI with a dedicated login route
+- feature areas for dashboard, patients, tumors, biomodels, passages, samples, and admin data transfer
+- Angular Material components with Tailwind CSS utilities
+- generated TypeScript models from `packages/schemas`
+- localized builds for English (`/en/`) and Spanish (`/es/`)
+- Vitest unit tests and Playwright end-to-end tests
 
-```bash
-ng serve
-```
+## Scripts
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Run all commands from `frontend/`.
 
 ```bash
-ng generate --help
+# Install dependencies
+npm install
+
+# Start the localized development server
+npm start
+
+# Start a Spanish-only localized development server
+npm run start:es
+
+# Build the localized production bundles
+npm run build
+
+# Run unit tests
+npm run test
+
+# Run Playwright end-to-end tests
+npm run test:e2e
+
+# Extract translation source messages
+npm run extract-i18n
 ```
 
-## Building
+## Generated models
 
-To build the project run:
+Frontend scripts run `codegen:models` before `start`, `build`, `test`, `test:e2e`, and `extract-i18n`.
+That command regenerates `src/app/generated/models.ts` from the SQLModel definitions in `packages/schemas`.
+
+If you only need to regenerate the models manually, run:
 
 ```bash
-ng build
+npm run codegen:models
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Application structure
 
-## Running unit tests
+- `src/app/core/` - auth guards, interceptors, shared services, tokens, and app-wide models
+- `src/app/features/` - route-level feature areas
+- `src/app/shared/` - reusable UI, directives, layout, forms, and pipes
+- `src/app/generated/` - generated TypeScript interfaces from the shared schema package
+- `src/locale/` - translation files used by Angular localization
+- `e2e/` - Playwright coverage for auth and CRUD flows
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Notes
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- The app uses route-level lazy loading through `loadComponent` entries in `src/app/app.routes.ts`.
+- Authenticated routes render inside `AppShellComponent`; `/login` stays outside the shell.
+- The production build is localized, and the Docker/Nginx deployment serves language-aware paths.

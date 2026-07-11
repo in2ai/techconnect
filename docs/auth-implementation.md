@@ -9,7 +9,7 @@ The first implementation phase was intentionally narrow:
 - Require authentication for the Angular application and the existing domain API routes.
 - Support local email/password sign-in.
 - Use a browser-friendly session model that fits the current deployment.
-- Avoid exposing sensitive auth fields in the shared schema export.
+- Keep auth API payloads separate from persistence models and leave room to tighten schema export later.
 - Keep the solution small enough to extend later with admin user management or RBAC.
 
 This phase does not include self-service registration, password reset, invitations, MFA, or role-based authorization.
@@ -42,14 +42,15 @@ TechConnect uses the shared `packages/schemas` package for two different jobs:
 
 The existing entity CRUD pattern exposes SQLModel classes directly as API request and response models. That works for the research entities in this project, but it is unsafe for auth because a persistence model would contain fields such as `password_hash`.
 
-To avoid leaking auth persistence fields:
+To keep auth transport separate from persistence:
 
 - auth database tables are defined in `packages/schemas/models/auth.py`
-- those models are imported in `packages/schemas/models/__init__.py` so SQLModel metadata registers them
-- those models are intentionally not added to `__all__`
 - auth request and response payloads are defined separately in `packages/api/app/api/schemas/auth.py`
+- the frontend auth flow uses dedicated models in `frontend/src/app/core/models/auth.models.ts`
 
-That separation is the main guardrail that keeps the frontend code generator from exporting sensitive auth fields.
+One important current limitation: `packages/schemas/export_schema.py` exports every model listed in `packages/schemas/models/__init__.py::__all__`, and that list currently includes `AuthUser` and `AuthSession`. That means the generated frontend schema file includes auth persistence interfaces, including fields such as `password_hash`.
+
+So today, the separation protects the **API contract**, but it does **not** yet filter auth persistence models out of the generated TypeScript schema export.
 
 ## Backend Design
 
@@ -256,12 +257,19 @@ uv run --package techconnect-api pytest packages/api/tests
 
 ### Frontend validation
 
-Frontend validation was done in two ways:
+Relevant frontend validation lives in:
 
-- the Angular application builds successfully with `npm run build`
-- auth-related service and route integration code was added and checked through the compiler/build path
+- `frontend/src/app/core/services/auth.service.spec.ts`
+- `frontend/src/app/core/interceptors/*.spec.ts`
+- `frontend/e2e/auth.spec.ts`
 
-The full Angular unit test command is currently blocked by an unrelated pre-existing issue in `frontend/src/app/features/biomodels/components/biomodel-form/biomodel-form.component.spec.ts`, where the fixture shape does not match the generated `Biomodel` interface. That failure is outside the auth implementation.
+Typical commands are:
+
+```bash
+cd frontend && npm run test
+cd frontend && npm run test:e2e
+cd frontend && npm run build
+```
 
 ### E2E helpers
 
@@ -277,7 +285,7 @@ Current strengths:
 - server-side session revocation
 - Argon2 password hashing
 - no plaintext token storage in the browser
-- auth persistence models are not exported to frontend TypeScript codegen
+- dedicated auth API DTOs for backend/frontend request and response handling
 
 Known future improvements:
 
@@ -286,6 +294,7 @@ Known future improvements:
 - add explicit migration tooling for auth schema changes in production
 - add admin user management flows instead of relying only on bootstrap credentials
 - add RBAC when the application needs permission boundaries between users
+- filter auth persistence models out of the generated TypeScript schema export
 
 ## Files Added or Changed
 
