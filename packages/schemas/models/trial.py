@@ -28,7 +28,10 @@ class PDXTrial(SQLModel, table=True):
 
     # Relationships
     passage: Optional["Passage"] = Relationship(back_populates="pdx_trial")
-    mouse: Optional["Mouse"] = Relationship(back_populates="pdx_trial")
+    mouse: Optional["Mouse"] = Relationship(
+        back_populates="pdx_trial",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
 
 
 class PDOTrial(SQLModel, table=True):
@@ -65,4 +68,7 @@ class LCTrial(SQLModel, table=True):
 
     # Relationships
     passage: Optional["Passage"] = Relationship(back_populates="lc_trial")
-    facs: Optional["FACS"] = Relationship(back_populates="lc_trial")
+    facs: Optional["FACS"] = Relationship(
+        back_populates="lc_trial",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )

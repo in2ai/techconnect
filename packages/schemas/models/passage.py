@@ -57,11 +57,35 @@ class Passage(SQLModel, table=True):
         back_populates="parent_passage",
         sa_relationship_kwargs={"foreign_keys": "[Biomodel.parent_passage_id]"},
     )
-    usage_records: list["UsageRecord"] = Relationship(back_populates="passage")
-    images: list["Image"] = Relationship(back_populates="passage")
-    cryopreservations: list["Cryopreservation"] = Relationship(back_populates="passage")
-    genomic_sequencing: Optional["TrialGenomicSequencing"] = Relationship(back_populates="passage")
-    molecular_data: Optional["TrialMolecularData"] = Relationship(back_populates="passage")
-    pdx_trial: Optional["PDXTrial"] = Relationship(back_populates="passage")
-    pdo_trial: Optional["PDOTrial"] = Relationship(back_populates="passage")
-    lc_trial: Optional["LCTrial"] = Relationship(back_populates="passage")
+    usage_records: list["UsageRecord"] = Relationship(
+        back_populates="passage",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+    images: list["Image"] = Relationship(
+        back_populates="passage",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+    cryopreservations: list["Cryopreservation"] = Relationship(
+        back_populates="passage",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+    genomic_sequencing: Optional["TrialGenomicSequencing"] = Relationship(
+        back_populates="passage",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+    molecular_data: Optional["TrialMolecularData"] = Relationship(
+        back_populates="passage",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+    pdx_trial: Optional["PDXTrial"] = Relationship(
+        back_populates="passage",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+    pdo_trial: Optional["PDOTrial"] = Relationship(
+        back_populates="passage",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+    lc_trial: Optional["LCTrial"] = Relationship(
+        back_populates="passage",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )

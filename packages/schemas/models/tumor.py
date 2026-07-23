@@ -51,8 +51,14 @@ class Tumor(SQLModel, table=True):
     patient: Optional["Patient"] = Relationship(back_populates="tumors")
     samples: list["Sample"] = Relationship(back_populates="tumor")
     biomodels: list["Biomodel"] = Relationship(back_populates="tumor")
-    genomic_sequencing: Optional["TumorGenomicSequencing"] = Relationship(back_populates="tumor")
-    molecular_data: Optional["TumorMolecularData"] = Relationship(back_populates="tumor")
+    genomic_sequencing: Optional["TumorGenomicSequencing"] = Relationship(
+        back_populates="tumor",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+    molecular_data: Optional["TumorMolecularData"] = Relationship(
+        back_populates="tumor",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
 
 
 class TumorGenomicSequencing(SQLModel, table=True):

@@ -37,7 +37,10 @@ class Implant(SQLModel, table=True):
     
     # Relationships
     mouse: Optional["Mouse"] = Relationship(back_populates="implants")
-    measures: list["Measure"] = Relationship(back_populates="implant")
+    measures: list["Measure"] = Relationship(
+        back_populates="implant",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
 
 
 class Measure(SQLModel, table=True):
@@ -122,7 +125,10 @@ class Mouse(SQLModel, table=True):
     
     # Relationships
     pdx_trial: Optional["PDXTrial"] = Relationship(back_populates="mouse")
-    implants: list["Implant"] = Relationship(back_populates="mouse")
+    implants: list["Implant"] = Relationship(
+        back_populates="mouse",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
 
     @computed_field
     @property
