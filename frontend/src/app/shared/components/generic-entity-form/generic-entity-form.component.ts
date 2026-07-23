@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -17,13 +18,14 @@ import { numberFormatValidator } from '@shared/forms/numeric-input';
 export interface EntityField {
   name: string;
   label: string;
-  type: 'text' | 'number' | 'date' | 'boolean' | 'select';
+  type: 'text' | 'number' | 'date' | 'boolean' | 'select' | 'autocomplete';
   /** For numeric fields: allow only integers (no decimal separator). */
   integerOnly?: boolean;
   required?: boolean;
   /** When true, control is disabled after init (e.g. preset FK from context). Use with defaultValues. */
   disabled?: boolean;
   options?: { value: any; label: string }[];
+  autocompleteOptions?: string[];
   min?: number;
   max?: number;
 }
@@ -87,6 +89,7 @@ function applyPayloadFieldTransforms(
     MatInputModule,
     MatSelectModule,
     MatCheckboxModule,
+    MatAutocompleteModule,
     NumericInputDirective,
   ],
   template: `
@@ -98,6 +101,23 @@ function applyPayloadFieldTransforms(
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>{{ field.label }}</mat-label>
               <input matInput type="text" [formControlName]="field.name" />
+            </mat-form-field>
+          }
+
+          @if (field.type === 'autocomplete') {
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ field.label }}</mat-label>
+              <input
+                matInput
+                type="text"
+                [formControlName]="field.name"
+                [matAutocomplete]="auto"
+              />
+              <mat-autocomplete #auto="matAutocomplete">
+                @for (opt of getFilteredAutocompleteOptions(field); track opt) {
+                  <mat-option [value]="opt">{{ opt }}</mat-option>
+                }
+              </mat-autocomplete>
             </mat-form-field>
           }
 
@@ -279,5 +299,14 @@ export class GenericEntityFormComponent implements OnInit {
         this.submitting = false;
       },
     });
+  }
+
+  getFilteredAutocompleteOptions(field: EntityField): string[] {
+    const options = field.autocompleteOptions ?? [];
+    const val = (this.form?.get(field.name)?.value ?? '').toString().toLowerCase().trim();
+    if (!val) {
+      return options;
+    }
+    return options.filter((opt) => opt.toLowerCase().includes(val));
   }
 }

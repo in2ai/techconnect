@@ -1121,6 +1121,16 @@ export class PassageDetailPage {
   filteredUsage = computed(
     () => this.usageResource.value()?.filter((u) => u.passage_id === this.id()) ?? [],
   );
+  projectTitleOptions = computed(() => {
+    const records = this.usageResource.value() ?? [];
+    const titles = new Set<string>();
+    for (const r of records) {
+      if (r.description && r.description.trim()) {
+        titles.add(r.description.trim());
+      }
+    }
+    return Array.from(titles).sort((a, b) => a.localeCompare(b));
+  });
   filteredImages = computed(
     () => this.imagesResource.value()?.filter((img) => img.passage_id === this.id()) ?? [],
   );
@@ -1451,7 +1461,8 @@ export class PassageDetailPage {
         {
           name: 'description',
           label: $localize`:@@usageRecordDescriptionField:Preclinical project/trial title`,
-          type: 'text',
+          type: 'autocomplete',
+          autocompleteOptions: this.projectTitleOptions(),
         },
         { name: 'record_date', label: $localize`Date`, type: 'date' },
       ],

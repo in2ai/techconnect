@@ -229,4 +229,29 @@ describe('GenericEntityFormComponent', () => {
     expect(component.submitting).toBe(false);
     confirmSpy.mockRestore();
   });
+
+  it('filters autocomplete options based on typed input', () => {
+    const autocompleteField: EntityField = {
+      name: 'project',
+      label: 'Project',
+      type: 'autocomplete',
+      autocompleteOptions: ['Alpha Project', 'Beta Study', 'Gamma Trial'],
+    };
+    const { component } = setup({
+      data: {
+        title: 'New',
+        endpoint: '/items',
+        fields: [autocompleteField],
+      },
+    });
+
+    expect(component.getFilteredAutocompleteOptions(autocompleteField)).toEqual([
+      'Alpha Project',
+      'Beta Study',
+      'Gamma Trial',
+    ]);
+
+    component.form.patchValue({ project: 'alpha' });
+    expect(component.getFilteredAutocompleteOptions(autocompleteField)).toEqual(['Alpha Project']);
+  });
 });
