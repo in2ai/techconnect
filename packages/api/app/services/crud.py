@@ -63,6 +63,11 @@ def _sentence_case(value: str) -> str:
 def _format_database_error(model: type[ModelType], raw_detail: str, *, action: str) -> str:
     model_name = _format_model_name(model)
 
+    if action == "delete":
+        if "FOREIGN KEY constraint failed" in raw_detail or _NOT_NULL_CONSTRAINT_PATTERN.search(raw_detail):
+            return f"This {model_name} cannot be deleted because related records still exist."
+        return f"Could not delete this {model_name}. Please try again."
+
     unique_match = _UNIQUE_CONSTRAINT_PATTERN.search(raw_detail)
     if unique_match:
         columns = [column.strip().split(".")[-1] for column in unique_match.group("columns").split(",")]
@@ -77,15 +82,10 @@ def _format_database_error(model: type[ModelType], raw_detail: str, *, action: s
         return f"{_sentence_case(_format_field_name(field_name))} is required."
 
     if "FOREIGN KEY constraint failed" in raw_detail:
-        if action == "delete":
-            return f"This {_format_model_name(model)} cannot be deleted because related records still exist."
-        return f"This {_format_model_name(model)} references related data that does not exist."
+        return f"This {model_name} references related data that does not exist."
 
     if _CHECK_CONSTRAINT_PATTERN.search(raw_detail):
-        return f"One or more {_format_model_name(model)} values are invalid."
-
-    if action == "delete":
-        return f"Could not delete this {model_name}. Please try again."
+        return f"One or more {model_name} values are invalid."
 
     return f"Could not save this {model_name}. Please review the input and try again."
 

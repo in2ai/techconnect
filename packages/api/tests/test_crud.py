@@ -32,6 +32,16 @@ def test_format_database_error_humanizes_delete_foreign_key_details():
     assert message == 'This tumor cannot be deleted because related records still exist.'
 
 
+def test_format_database_error_humanizes_delete_not_null_constraint_details():
+    message = _format_database_error(
+        Tumor,
+        'NOT NULL constraint failed: biomodel.tumor_biobank_code',
+        action='delete',
+    )
+
+    assert message == 'This tumor cannot be deleted because related records still exist.'
+
+
 def test_format_database_error_falls_back_to_generic_save_message():
     message = _format_database_error(
         Tumor,
