@@ -88,6 +88,8 @@ Example site file for `/etc/nginx/sites-available/techconnect.in2ai.com`:
 server {
    server_name techconnect.in2ai.com;
 
+   client_max_body_size 50m;
+
    location / {
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -99,6 +101,7 @@ server {
       proxy_set_header Connection "Upgrade";
 
       proxy_pass http://127.0.0.1:8080;
+      proxy_read_timeout 300s;
       proxy_redirect off;
    }
 

@@ -79,5 +79,6 @@
     "viewports",
     "WCAG"
   ],
-  "python.languageServer": "None"
+  "python.languageServer": "None",
+  "python-envs.defaultEnvManager": "ms-python.python:system"
 }
