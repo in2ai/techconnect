@@ -1353,8 +1353,14 @@
       <trans-unit id="addMeasureBtn" datatype="html"><source>Add</source><target>Añadir</target></trans-unit>
       <trans-unit id="inVivoHierarchyHint" datatype="html"><source>Each passage links mice to implants and tumor measurements. Expand a mouse to see its implants; measures are listed under the implant they belong to.</source><target>Cada pase vincula ratones a implantes y mediciones tumorales. Expanda un ratón para ver sus implantes; las medidas aparecen bajo el implante al que pertenecen.</target></trans-unit>
       <trans-unit id="inVivoFilterPlaceholder" datatype="html"><source>Filter mice, implants, or measures…</source><target>Filtrar ratones, implantes o medidas…</target></trans-unit>
-      <trans-unit id="inVivoFilterLabel" datatype="html"><source>Filter in vivo records</source><target>Filtrar registros in vivo</target></trans-unit>
-      <trans-unit id="clearFilterAria" datatype="html"><source>Clear filter</source><target>Borrar filtro</target></trans-unit>
+      <trans-unit id="inVivoFilterLabel" datatype="html">
+        <source>Filter mice, implants, or measures</source>
+        <target>Filtrar ratones, implantes o medidas</target>
+      </trans-unit>
+      <trans-unit id="clearFilterAria" datatype="html">
+        <source>Clear filter</source>
+        <target>Borrar filtro</target>
+      </trans-unit>
       <trans-unit id="inVivoNoMice" datatype="html"><source>No mice recorded for this passage yet.</source><target>Aún no hay ratones registrados para este pase.</target></trans-unit>
       <trans-unit id="addFirstMouseBtn" datatype="html"><source>Add the first mouse</source><target>Añadir el primer ratón</target></trans-unit>
       <trans-unit id="inVivoNoMatches" datatype="html"><source>No mice or related records match your filter.</source><target>Ningún ratón ni registro relacionado coincide con el filtro.</target></trans-unit>
@@ -1421,6 +1427,7 @@
       <trans-unit id="loginHelperCopy" datatype="html"><source>Use the administrator account configured for this environment.</source><target>Use la cuenta de administrador configurada para este entorno.</target></trans-unit>
       <trans-unit id="loginSuccessToast" datatype="html"><source>Signed in successfully.</source><target>Sesión iniciada con éxito.</target></trans-unit>
       <trans-unit id="loginErrorToast" datatype="html"><source>Invalid email or password.</source><target>Correo electrónico o contraseña no válidos.</target></trans-unit>
+      <trans-unit id="loginRequestErrorToast" datatype="html"><source>Unable to sign in. Please try again.</source><target>No se pudo iniciar sesión. Inténtelo de nuevo.</target></trans-unit>
       <trans-unit id="signedInAs" datatype="html"><source>Signed in as</source><target>Sesión iniciada como</target></trans-unit>
       <trans-unit id="signOut" datatype="html"><source>Sign out</source><target>Cerrar sesión</target></trans-unit>
       <trans-unit id="closeAction" datatype="html"><source>Close</source><target>Cerrar</target></trans-unit>
@@ -1697,6 +1704,42 @@
       <trans-unit id="3499267397168795824" datatype="html">
         <source>No charts selected. Use the settings button to enable charts.</source>
         <target>No hay gráficos seleccionados. Use el botón de configuración para habilitar gráficos.</target>
+      </trans-unit>
+      <trans-unit id="biomodelTypeLockedError" datatype="html">
+        <source>Biomodel type cannot be changed after passages have been created.</source>
+        <target>El tipo de biomodelo no se puede cambiar después de crear pases.</target>
+      </trans-unit>
+      <trans-unit id="biomodelTypeLockedHint" datatype="html">
+        <source>Type is fixed once passages exist.</source>
+        <target>El tipo queda fijado cuando existen pases.</target>
+      </trans-unit>
+      <trans-unit id="selectTumorOptionError" datatype="html">
+        <source>Select a tumor from the options.</source>
+        <target>Selecciona un tumor de las opciones.</target>
+      </trans-unit>
+      <trans-unit id="selectPassageOptionError" datatype="html">
+        <source>Select a passage from the options.</source>
+        <target>Selecciona un pase de las opciones.</target>
+      </trans-unit>
+      <trans-unit id="selectBiomodelOptionError" datatype="html">
+        <source>Select a biomodel from the options.</source>
+        <target>Selecciona un biomodelo de las opciones.</target>
+      </trans-unit>
+      <trans-unit id="parentPassageLbl" datatype="html">
+        <source>Parent Passage</source>
+        <target>Pase padre</target>
+      </trans-unit>
+      <trans-unit id="pdxHasIhqDataLbl" datatype="html">
+        <source>Has IHQ Data</source>
+        <target>Tiene datos IHQ</target>
+      </trans-unit>
+      <trans-unit id="pdxSimilarityLbl" datatype="html">
+        <source>Similarity</source>
+        <target>Similitud</target>
+      </trans-unit>
+      <trans-unit id="mouseStrainLbl" datatype="html">
+        <source>Strain</source>
+        <target>Cepa</target>
       </trans-unit>
     </body>
   </file>

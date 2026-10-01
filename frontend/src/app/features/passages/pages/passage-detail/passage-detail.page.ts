@@ -46,6 +46,7 @@ import {
   PageHeaderComponent,
 } from '@shared/components/page-header/page-header.component';
 import { LocalizedDatePipe } from '@shared/pipes/localized-date.pipe';
+import { formatSex, normalizeSex } from '@shared/utils/sex';
 import { PassageFormComponent } from '../../components/passage-form/passage-form.component';
 import { PassageService } from '../../services/passage.service';
 
@@ -132,7 +133,21 @@ interface MouseInVivoNode {
             </div>
             <div class="detail-item">
               <span class="detail-label" i18n="@@trialCreatedLbl">Created</span
-              ><span class="detail-value">{{ (passageResource.value()!.creation_date | localizedDate) || '—' }}</span>
+              ><span class="detail-value">{{
+                (passageResource.value()!.creation_date | localizedDate) || '—'
+              }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label" i18n="@@trialStatusLbl">Status</span>
+              <span class="detail-value">
+                @if (passageResource.value()!.status === true) {
+                  <ng-container i18n="@@activeStatusOpt">Active</ng-container>
+                } @else if (passageResource.value()!.status === false) {
+                  <ng-container i18n="@@inactiveStatusOpt">Inactive</ng-container>
+                } @else {
+                  —
+                }
+              </span>
             </div>
             <div class="detail-item">
               <span class="detail-label" i18n="@@trialBiobankShipmentLbl">Biobank Shipment</span
@@ -166,7 +181,12 @@ interface MouseInVivoNode {
             <mat-card-title i18n="@@pdxTrialDetailsTitle">PDX Trial Details</mat-card-title>
             @if (auth.isAdmin()) {
               @if (currentPdxTrial()) {
-                <button mat-icon-button (click)="openPdxTrialForm(currentPdxTrial()!)">
+                <button
+                  mat-icon-button
+                  (click)="openPdxTrialForm(currentPdxTrial()!)"
+                  aria-label="Edit"
+                  i18n-aria-label="@@editBtn"
+                >
                   <mat-icon>edit</mat-icon>
                 </button>
               } @else {
@@ -191,6 +211,14 @@ interface MouseInVivoNode {
                   <span class="detail-label" i18n="@@pdxIhqDataLbl">IHQ Data</span
                   ><span class="detail-value">{{ currentPdxTrial()!.ihq_data || '—' }}</span>
                 </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@pdxHasIhqDataLbl">Has IHQ Data</span>
+                  <span class="detail-value">{{ yesNo(currentPdxTrial()!.has_ihq_data) }}</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-label" i18n="@@pdxSimilarityLbl">Similarity</span>
+                  <span class="detail-value">{{ currentPdxTrial()!.similarity ?? '—' }}</span>
+                </div>
               </div>
             } @else {
               <div i18n="@@noDataMsg">No data</div>
@@ -205,7 +233,12 @@ interface MouseInVivoNode {
             <mat-card-title i18n="@@pdoTrialDetailsTitle">PDO Trial Details</mat-card-title>
             @if (auth.isAdmin()) {
               @if (currentPdoTrial()) {
-                <button mat-icon-button (click)="openPdoTrialForm(currentPdoTrial()!)">
+                <button
+                  mat-icon-button
+                  (click)="openPdoTrialForm(currentPdoTrial()!)"
+                  aria-label="Edit"
+                  i18n-aria-label="@@editBtn"
+                >
                   <mat-icon>edit</mat-icon>
                 </button>
               } @else {
@@ -248,7 +281,12 @@ interface MouseInVivoNode {
             <mat-card-title i18n="@@lcTrialDetailsTitle">LC Trial Details</mat-card-title>
             @if (auth.isAdmin()) {
               @if (currentLcTrial()) {
-                <button mat-icon-button (click)="openLcTrialForm(currentLcTrial()!)">
+                <button
+                  mat-icon-button
+                  (click)="openLcTrialForm(currentLcTrial()!)"
+                  aria-label="Edit"
+                  i18n-aria-label="@@editBtn"
+                >
                   <mat-icon>edit</mat-icon>
                 </button>
               } @else {
@@ -271,7 +309,9 @@ interface MouseInVivoNode {
                 </div>
                 <div class="detail-item">
                   <span class="detail-label" i18n="@@lcDigestionDateLbl">Digestion Date</span
-                  ><span class="detail-value">{{ (currentLcTrial()!.digestion_date | localizedDate) || '—' }}</span>
+                  ><span class="detail-value">{{
+                    (currentLcTrial()!.digestion_date | localizedDate) || '—'
+                  }}</span>
                 </div>
                 <div class="detail-item">
                   <span class="detail-label" i18n="@@lcPlateTypeLbl">Plate Type</span
@@ -310,6 +350,7 @@ interface MouseInVivoNode {
                     type="search"
                     i18n-placeholder="@@inVivoFilterPlaceholder"
                     i18n-aria-label="@@inVivoFilterLabel"
+                    aria-label="Filter mice, implants, or measures"
                     placeholder="Filter mice, implants, or measures…"
                     [value]="inVivoFilterQuery()"
                     (input)="inVivoFilterQuery.set($any($event.target).value)"
@@ -321,6 +362,7 @@ interface MouseInVivoNode {
                       type="button"
                       (click)="inVivoFilterQuery.set('')"
                       i18n-aria-label="@@clearFilterAria"
+                      aria-label="Clear filter"
                     >
                       <mat-icon>close</mat-icon>
                     </button>
@@ -362,7 +404,7 @@ interface MouseInVivoNode {
                 <mat-accordion class="in-vivo-accordion" multi displayMode="flat">
                   @for (node of inVivoHierarchyFiltered(); track node.mouse.id; let mi = $index) {
                     <mat-expansion-panel class="mouse-panel" [expanded]="true">
-                        <mat-expansion-panel-header>
+                      <mat-expansion-panel-header>
                         <mat-panel-title>
                           <span class="mouse-panel-title">
                             <span i18n="@@mouseOrdinalPrefix">Mouse</span>
@@ -390,7 +432,15 @@ interface MouseInVivoNode {
                       <div class="mouse-detail-grid">
                         <div class="mouse-detail-item">
                           <span class="detail-label" i18n="@@sexLbl">Sex</span>
-                          <span>{{ node.mouse.sex ? (node.mouse.sex === 'Male' ? 'M' : 'F') : '—' }}</span>
+                          <span>{{ formatSex(node.mouse.sex) }}</span>
+                        </div>
+                        <div class="mouse-detail-item">
+                          <span class="detail-label" i18n="@@mouseStrainLbl">Strain</span>
+                          <span>{{ node.mouse.strain || '—' }}</span>
+                        </div>
+                        <div class="mouse-detail-item">
+                          <span class="detail-label" i18n="@@mouseFieldProex">Proex</span>
+                          <span>{{ node.mouse.proex || '—' }}</span>
                         </div>
                         <div class="mouse-detail-item">
                           <span class="detail-label" i18n="@@deathDateLbl">Death Date</span>
@@ -468,7 +518,11 @@ interface MouseInVivoNode {
                                   @if (iw.implant.implant_date) {
                                     <span>{{ iw.implant.implant_date | localizedDate }}</span>
                                   }
-                                  @if (!iw.implant.implant_location && !iw.implant.type && !iw.implant.implant_date) {
+                                  @if (
+                                    !iw.implant.implant_location &&
+                                    !iw.implant.type &&
+                                    !iw.implant.implant_date
+                                  ) {
                                     <span class="muted" i18n="@@implantNoLocationType"
                                       >No location or type</span
                                     >
@@ -532,22 +586,28 @@ interface MouseInVivoNode {
                                         "
                                       >
                                         <td>{{ (mv.measure_date | localizedDate) || '—' }}</td>
-                                        <td>{{
-                                          mv.length !== null && mv.length !== undefined
-                                            ? mv.length + ' mm'
-                                            : '—'
-                                        }}</td>
-                                        <td>{{
-                                          mv.width !== null && mv.width !== undefined
-                                            ? mv.width + ' mm'
-                                            : '—'
-                                        }}</td>
-                                        <td>{{
-                                          mv.tumor_volume !== null &&
-                                          mv.tumor_volume !== undefined
-                                            ? mv.tumor_volume + ' mm³'
-                                            : '—'
-                                        }}</td>
+                                        <td>
+                                          {{
+                                            mv.length !== null && mv.length !== undefined
+                                              ? mv.length + ' mm'
+                                              : '—'
+                                          }}
+                                        </td>
+                                        <td>
+                                          {{
+                                            mv.width !== null && mv.width !== undefined
+                                              ? mv.width + ' mm'
+                                              : '—'
+                                          }}
+                                        </td>
+                                        <td>
+                                          {{
+                                            mv.tumor_volume !== null &&
+                                            mv.tumor_volume !== undefined
+                                              ? mv.tumor_volume + ' mm³'
+                                              : '—'
+                                          }}
+                                        </td>
                                       </tr>
                                     }
                                   </tbody>
@@ -695,18 +755,20 @@ interface MouseInVivoNode {
                         class="detail-value"
                         style="display: flex; align-items: center; gap: 4px;"
                       >
-                        @if (genomic.has_data) {
+                        @if (genomic.has_data === true) {
                           <mat-icon
                             color="primary"
                             style="font-size: 20px; width: 20px; height: 20px;"
                             >check_circle</mat-icon
                           >
                           <span i18n="@@yesLbl">Yes</span>
-                        } @else {
+                        } @else if (genomic.has_data === false) {
                           <mat-icon color="warn" style="font-size: 20px; width: 20px; height: 20px;"
                             >cancel</mat-icon
                           >
                           <span i18n="@@noLbl">No</span>
+                        } @else {
+                          —
                         }
                       </span>
                     </div>
@@ -778,18 +840,20 @@ interface MouseInVivoNode {
                         class="detail-value"
                         style="display: flex; align-items: center; gap: 4px;"
                       >
-                        @if (molecular.has_data) {
+                        @if (molecular.has_data === true) {
                           <mat-icon
                             color="primary"
                             style="font-size: 20px; width: 20px; height: 20px;"
                             >check_circle</mat-icon
                           >
                           <span i18n="@@yesLbl">Yes</span>
-                        } @else {
+                        } @else if (molecular.has_data === false) {
                           <mat-icon color="warn" style="font-size: 20px; width: 20px; height: 20px;"
                             >cancel</mat-icon
                           >
                           <span i18n="@@noLbl">No</span>
+                        } @else {
+                          —
                         }
                       </span>
                     </div>
@@ -997,7 +1061,7 @@ interface MouseInVivoNode {
         padding-left: 16px;
         border-left: 3px solid var(--mat-sys-outline-variant);
         font: var(--mat-sys-body-medium);
-        color: var(--mat-sys-outline);
+        color: var(--mat-sys-on-surface-variant);
       }
 
       .measures-table-wrap {
@@ -1049,6 +1113,7 @@ interface MouseInVivoNode {
 })
 export class PassageDetailPage {
   id = input.required<string>();
+  protected readonly formatSex = formatSex;
 
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
@@ -1283,6 +1348,12 @@ export class PassageDetailPage {
         { name: 'ffpe', label: $localize`:@@pdxFfpeLbl:FFPE`, type: 'boolean' },
         { name: 'he_slide', label: $localize`:@@pdxHeSlideLbl:HE Slide`, type: 'boolean' },
         { name: 'ihq_data', label: $localize`:@@pdxIhqDataLbl:IHQ Data`, type: 'text' },
+        {
+          name: 'has_ihq_data',
+          label: $localize`:@@pdxHasIhqDataLbl:Has IHQ Data`,
+          type: 'boolean',
+        },
+        { name: 'similarity', label: $localize`:@@pdxSimilarityLbl:Similarity`, type: 'number' },
       ],
       this.pdxTrialsResource,
       entity,
@@ -1363,7 +1434,7 @@ export class PassageDetailPage {
         { name: 'proex', label: $localize`:@@mouseFieldProex:Proex`, type: 'text' },
       ],
       this.mouseResource,
-      entity,
+      entity ? { ...entity, sex: normalizeSex(entity.sex) } : null,
       { pdx_trial_id: this.id() },
     );
   }
@@ -1371,7 +1442,7 @@ export class PassageDetailPage {
   openImplantForm(entity: Implant | null = null, presetDefaults: Record<string, unknown> = {}) {
     const miceOpts = this.filteredMice().map((m) => ({
       value: m.id,
-      label: `${m.strain ?? '—'} · ${m.sex ? (m.sex === 'Male' ? 'M' : 'F') : '—'}`,
+      label: `${m.strain ?? '—'} · ${formatSex(m.sex)}`,
     }));
     const lockMouse = !entity && presetDefaults['mouse_id'] != null;
     this.openEntityForm(
@@ -1399,7 +1470,7 @@ export class PassageDetailPage {
   openMeasureForm(entity: Measure | null = null, presetDefaults: Record<string, unknown> = {}) {
     const implantOpts = this.filteredImplants().map((i) => {
       const mouse = this.filteredMice().find((m) => m.id === i.mouse_id);
-      const mouseBit = mouse ? `${mouse.strain ?? '—'} · ${mouse.sex ? (mouse.sex === 'Male' ? 'M' : 'F') : '—'}` : '—';
+      const mouseBit = mouse ? `${mouse.strain ?? '—'} · ${formatSex(mouse.sex)}` : '—';
       return {
         value: i.id,
         label: `${i.implant_location ?? '—'} · ${i.type ?? '—'} (${mouseBit})`,

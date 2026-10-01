@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { API_URL } from '@core/tokens/api-url.token';
 import { Biomodel, Passage } from '@generated/models';
+import { synchronizeAutocompleteSelection } from '@shared/forms/autocomplete-selection';
 
 export interface PassageFormData {
   mode: 'create' | 'edit';
@@ -70,6 +71,11 @@ export interface PassageFormData {
                 <mat-option [value]="biomodel.id">{{ biomodel.id }}</mat-option>
               }
             </mat-autocomplete>
+            @if (biomodelSearch.hasError('invalidSelection')) {
+              <mat-error i18n="@@selectBiomodelOptionError"
+                >Select a biomodel from the options.</mat-error
+              >
+            }
           </mat-form-field>
         }
 
@@ -153,7 +159,8 @@ export class PassageFormComponent {
 
   readonly form = this.formBuilder.group({
     id: this.formBuilder.nonNullable.control(this.data.passage?.id ?? '', {
-      validators: this.data.mode === 'create' ? [Validators.required, Validators.pattern(/\S/)] : [],
+      validators:
+        this.data.mode === 'create' ? [Validators.required, Validators.pattern(/\S/)] : [],
     }),
     description: this.formBuilder.control<Passage['description']>(
       this.data.passage?.description ?? null,
@@ -174,9 +181,19 @@ export class PassageFormComponent {
     ),
   });
 
+  constructor() {
+    synchronizeAutocompleteSelection({
+      search: this.biomodelSearch,
+      selection: this.form.controls.biomodel_id,
+      emptyValue: '',
+    });
+  }
+
   filteredBiomodels(): Biomodel[] {
     const query = this.biomodelSearch.value.trim().toLowerCase();
-    return this.biomodelsResource.value().filter((biomodel) => biomodel.id.toLowerCase().includes(query));
+    return this.biomodelsResource
+      .value()
+      .filter((biomodel) => biomodel.id.toLowerCase().includes(query));
   }
 
   selectBiomodel(biomodelId: string): void {

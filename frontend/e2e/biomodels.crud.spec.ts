@@ -52,7 +52,7 @@ test('biomodels CRUD flow', async ({ page, request }) => {
     await selectMatOption(page, 'Status', 'Inactive');
     const editDialog = page.locator('mat-dialog-container');
     await editDialog.getByRole('button', { name: 'Save' }).click();
-    await expect(page.locator('.detail-item', { hasText: 'Status' })).toContainText('inactive');
+    await expect(page.locator('.detail-item', { hasText: 'Status' })).toContainText('Inactive');
 
     await page.getByRole('button', { name: 'Delete', exact: true }).first().click();
     await confirmDialogAction(page, 'Delete');

@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -53,17 +53,17 @@ export interface ColumnDef {
   key: string;
   label: string;
   sortable?: boolean;
-  type?: 'text' | 'date' | 'boolean' | 'number' | 'organ';
+  type?: 'text' | 'date' | 'boolean' | 'number' | 'organ' | 'status';
   suffix?: string;
 }
 
 @Component({
   selector: 'app-data-table',
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: MatPaginatorIntl, useClass: CustomPaginatorIntl }],
   imports: [
     MatTableModule,
+    NgTemplateOutlet,
     MatSortModule,
     MatPaginatorModule,
     MatInputModule,
@@ -119,7 +119,9 @@ export interface ColumnDef {
           }
         </div>
 
-        <span class="table-count" i18n="@@tableRecordCount"> {{ dataSource().filteredData.length }} records </span>
+        <span class="table-count" i18n="@@tableRecordCount">
+          {{ dataSource().filteredData.length }} records
+        </span>
       </div>
 
       <div class="table-container">
@@ -135,29 +137,67 @@ export interface ColumnDef {
                 {{ col.label }}
               </th>
               <td mat-cell *matCellDef="let row">
-                @switch (col.type) {
-                  @case ('boolean') {
-                    @if (row[col.key] === true) {
-                      <mat-icon class="bool-icon yes">check_circle</mat-icon>
-                    } @else if (row[col.key] === false) {
-                      <mat-icon class="bool-icon no">cancel</mat-icon>
-                    } @else {
-                      <span class="null-value">—</span>
+                @if (col.key === columnKeys()[0]) {
+                  <button
+                    type="button"
+                    class="row-action"
+                    (click)="onRowClick(row); $event.stopPropagation()"
+                  >
+                    <ng-container [ngTemplateOutlet]="cellContent" />
+                  </button>
+                } @else {
+                  <ng-container [ngTemplateOutlet]="cellContent" />
+                }
+                <ng-template #cellContent>
+                  @switch (col.type) {
+                    @case ('status') {
+                      @if (row[col.key] === true) {
+                        <span i18n="@@activeStatusOpt">Active</span>
+                      } @else if (row[col.key] === false) {
+                        <span i18n="@@inactiveStatusOpt">Inactive</span>
+                      } @else {
+                        <span class="null-value">—</span>
+                      }
+                    }
+                    @case ('boolean') {
+                      @if (row[col.key] === true) {
+                        <mat-icon class="bool-icon yes">check_circle</mat-icon>
+                      } @else if (row[col.key] === false) {
+                        <mat-icon class="bool-icon no">cancel</mat-icon>
+                      } @else {
+                        <span class="null-value">—</span>
+                      }
+                    }
+                    @case ('organ') {
+                      {{
+                        row[col.key] !== null && row[col.key] !== undefined
+                          ? (row[col.key] | organTranslate)
+                          : '—'
+                      }}
+                    }
+                    @case ('date') {
+                      {{
+                        row[col.key] !== null && row[col.key] !== undefined
+                          ? (row[col.key] | localizedDate)
+                          : '—'
+                      }}
+                    }
+                    @case ('number') {
+                      {{
+                        row[col.key] !== null && row[col.key] !== undefined
+                          ? row[col.key] + (col.suffix || '')
+                          : '—'
+                      }}
+                    }
+                    @default {
+                      {{
+                        row[col.key] !== null && row[col.key] !== undefined
+                          ? row[col.key] + (col.suffix || '')
+                          : '—'
+                      }}
                     }
                   }
-                  @case ('organ') {
-                    {{ row[col.key] !== null && row[col.key] !== undefined ? (row[col.key] | organTranslate) : '—' }}
-                  }
-                  @case ('date') {
-                    {{ row[col.key] !== null && row[col.key] !== undefined ? (row[col.key] | localizedDate) : '—' }}
-                  }
-                  @case ('number') {
-                    {{ row[col.key] !== null && row[col.key] !== undefined ? row[col.key] + (col.suffix || '') : '—' }}
-                  }
-                  @default {
-                    {{ row[col.key] !== null && row[col.key] !== undefined ? row[col.key] + (col.suffix || '') : '—' }}
-                  }
-                }
+                </ng-template>
               </td>
             </ng-container>
           }
@@ -169,10 +209,6 @@ export interface ColumnDef {
             class="clickable-row"
             [class.selected]="row === selectedRow()"
             (click)="onRowClick(row)"
-            (keydown.enter)="onRowClick(row)"
-            (keydown.space)="onRowClick(row); $event.preventDefault()"
-            tabindex="0"
-            role="button"
           ></tr>
           <tr class="mat-row empty-row" *matNoDataRow>
             <td class="mat-cell" [attr.colspan]="columnKeys().length">
@@ -230,7 +266,7 @@ export interface ColumnDef {
 
     .table-count {
       font: var(--mat-sys-label-medium);
-      color: var(--mat-sys-outline);
+      color: var(--mat-sys-on-surface-variant);
       white-space: nowrap;
       margin-left: auto;
     }
@@ -251,6 +287,24 @@ export interface ColumnDef {
       letter-spacing: 0.02em;
       color: var(--mat-sys-on-surface-variant);
       background: var(--mat-sys-surface-container-low);
+    }
+
+    .row-action {
+      min-height: 44px;
+      padding: 4px;
+      border: 0;
+      background: transparent;
+      color: var(--mat-sys-primary);
+      font: inherit;
+      text-align: left;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .row-action:focus-visible {
+      outline: 2px solid var(--mat-sys-primary);
+      outline-offset: 2px;
+      border-radius: 4px;
     }
 
     .clickable-row {

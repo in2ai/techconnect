@@ -28,7 +28,7 @@ class PDXTrial(SQLModel, table=True):
 
     # Relationships
     passage: Optional["Passage"] = Relationship(back_populates="pdx_trial")
-    mouse: Optional["Mouse"] = Relationship(
+    mice: list["Mouse"] = Relationship(
         back_populates="pdx_trial",
         sa_relationship_kwargs={"cascade": "all, delete-orphan"},
     )

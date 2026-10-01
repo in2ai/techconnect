@@ -6,12 +6,12 @@ test.describe('dashboard', () => {
     await page.goto('/dashboard');
     await loginIfNeeded(page);
 
-    const grid = page.locator('section.dashboard-grid');
+    const grid = page.locator('.vitals-strip');
     await expect(grid).toBeVisible();
 
     const expected = ['Patients', 'Tumors', 'Samples', 'Biomodels', 'Passages'];
     for (const title of expected) {
-      await expect(grid.getByRole('heading', { level: 3, name: title })).toBeVisible();
+      await expect(grid.getByText(title, { exact: true })).toBeVisible();
     }
 
     await grid.getByRole('link').filter({ hasText: 'Patients' }).click();
@@ -23,15 +23,15 @@ test.describe('dashboard', () => {
     await page.goto('/dashboard');
     await loginIfNeeded(page);
 
-    const cards = page.locator('.entity-card');
+    const cards = page.locator('.vital-tile');
     await expect(cards).toHaveCount(5);
 
     for (const card of await cards.all()) {
-      const count = card.locator('.card-count');
+      const count = card.locator('.vital-count');
       await expect(count).toBeVisible();
       await expect
         .poll(async () => (await count.textContent())?.trim() ?? '', { timeout: 10000 })
-        .not.toBe('');
+        .toMatch(/^(\d+|error_outline)$/);
       await expect(count.locator('mat-spinner')).toHaveCount(0);
     }
   });

@@ -26,22 +26,22 @@ test('tumors CRUD flow', async ({ page, request }) => {
     const createDialog = page.locator('mat-dialog-container');
     await createDialog.getByLabel('Biobank Code').fill(biobankCode);
     await selectMatOption(page, 'Patient', patientNHC);
-    await createDialog.getByLabel('Classification').fill('Initial Classification');
+    await selectMatOption(page, 'Classification', 'Adenocarcinoma');
     await createDialog.getByRole('button', { name: 'Create' }).click();
     createdTumorCode = biobankCode;
 
     await clickFilteredRow(page, biobankCode);
     await expect(page).toHaveURL(new RegExp(`/tumors/${biobankCode}$`));
     await expect(page.locator('.detail-item', { hasText: 'Classification' })).toContainText(
-      'Initial Classification',
+      'Adenocarcinoma',
     );
 
     await page.getByRole('button', { name: 'Edit' }).click();
     const editDialog = page.locator('mat-dialog-container');
-    await editDialog.getByLabel('Classification').fill('Updated Classification');
+    await selectMatOption(page, 'Classification', 'Sarcoma');
     await editDialog.getByRole('button', { name: 'Save' }).click();
     await expect(page.locator('.detail-item', { hasText: 'Classification' })).toContainText(
-      'Updated Classification',
+      'Sarcoma',
     );
 
     await page.getByRole('button', { name: 'Delete', exact: true }).first().click();

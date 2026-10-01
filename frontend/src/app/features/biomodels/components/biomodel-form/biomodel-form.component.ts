@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,9 +9,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { API_URL } from '@core/tokens/api-url.token';
 import { Biomodel, Passage, Tumor } from '@generated/models';
+import { synchronizeAutocompleteSelection } from '@shared/forms/autocomplete-selection';
 
 type TumorOption = Pick<Tumor, 'biobank_code' | 'classification'>;
-type PassageOption = Pick<Passage, 'id' | 'description'>;
+type PassageOption = Pick<Passage, 'id' | 'description' | 'biomodel_id'>;
 
 export interface BiomodelFormData {
   mode: 'create' | 'edit';
@@ -75,6 +76,9 @@ export interface BiomodelFormData {
               <mat-option [value]="tumor.biobank_code">{{ tumor.biobank_code }}</mat-option>
             }
           </mat-autocomplete>
+          @if (tumorSearch.hasError('invalidSelection')) {
+            <mat-error i18n="@@selectTumorOptionError">Select a tumor from the options.</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -96,6 +100,11 @@ export interface BiomodelFormData {
               <mat-option [value]="passage.id">{{ passage.id }}</mat-option>
             }
           </mat-autocomplete>
+          @if (parentPassageSearch.hasError('invalidSelection')) {
+            <mat-error i18n="@@selectPassageOptionError"
+              >Select a passage from the options.</mat-error
+            >
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -105,6 +114,9 @@ export interface BiomodelFormData {
             <mat-option value="PDO" i18n="@@pdoTypeOpt">PDO</mat-option>
             <mat-option value="LC" i18n="@@lcTypeOpt">LC</mat-option>
           </mat-select>
+          @if (hasPassages()) {
+            <mat-hint i18n="@@biomodelTypeLockedHint">Type is fixed once passages exist.</mat-hint>
+          }
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label i18n="@@biomodelStatusLbl">Status</mat-label>
@@ -208,6 +220,36 @@ export class BiomodelFormComponent {
   readonly tumorSearch = this.formBuilder.nonNullable.control(
     this.data.biomodel?.tumor_biobank_code ?? '',
   );
+
+  readonly hasPassages = computed(
+    () =>
+      this.passagesResource.hasValue() &&
+      this.passagesResource
+        .value()
+        .some((passage) => passage.biomodel_id === this.data.biomodel?.id),
+  );
+
+  constructor() {
+    synchronizeAutocompleteSelection({
+      search: this.tumorSearch,
+      selection: this.form.controls.tumor_biobank_code,
+      emptyValue: '',
+    });
+    synchronizeAutocompleteSelection({
+      search: this.parentPassageSearch,
+      selection: this.form.controls.parent_passage_id,
+      emptyValue: null,
+    });
+    effect(() => {
+      const locked =
+        this.data.mode === 'edit' &&
+        (this.passagesResource.isLoading() ||
+          !!this.passagesResource.error() ||
+          this.hasPassages());
+      if (locked) this.form.controls.type.disable({ emitEvent: false });
+      else this.form.controls.type.enable({ emitEvent: false });
+    });
+  }
 
   filteredTumors(): TumorOption[] {
     const query = this.tumorSearch.value.trim().toLowerCase();

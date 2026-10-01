@@ -3,7 +3,9 @@ import { expect, test } from '@playwright/test';
 import { loginIfNeeded, uniqueSuffix } from './helpers/ui-helpers';
 
 test.describe('dataset transfer', () => {
-  test('admin can export a workbook and import it to restore exported values', async ({ page }, testInfo) => {
+  test('admin can export a workbook and import it to restore exported values', async ({
+    page,
+  }, testInfo) => {
     const suffix = uniqueSuffix();
     const patientId = `E2E-PAT-${suffix}`;
     const tumorId = `E2E-TUM-${suffix}`;
@@ -57,15 +59,17 @@ test.describe('dataset transfer', () => {
 
     await page.locator('#datasetTransferUpload').setInputFiles(downloadPath);
     await expect(page.getByText(/Workbook upload detected/i)).toBeVisible();
-    await page.getByRole('button', { name: 'Import package' }).click();
+    await page.getByRole('button', { name: 'Import Excel file' }).click();
 
     const summary = page.locator('.results-card');
     await expect(summary).toBeVisible({ timeout: 15000 });
     await expect(summary).toContainText('Transfer summary');
     await expect(page.locator('.summary-pill')).toContainText(/Completed/i);
-    await expect(page.locator('.entity-card').filter({ hasText: 'Patient' })).toContainText(
-      /[1-9]\d*\s*updated/i,
-    );
+    await expect(
+      page
+        .locator('.entity-card')
+        .filter({ has: page.locator('.entity-card__title', { hasText: /^Patient$/ }) }),
+    ).toContainText(/[1-9]\d*\s*updated/i);
     const tumorCard = page
       .locator('.entity-card')
       .filter({ has: page.locator('.entity-card__title', { hasText: /^Tumor$/ }) });

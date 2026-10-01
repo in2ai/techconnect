@@ -38,7 +38,7 @@ interface NavItem {
         [mode]="isMobile() ? 'over' : 'side'"
         [opened]="!isMobile()"
         class="app-sidenav"
-        role="navigation"
+        role="complementary"
       >
         <div class="sidenav-header">
           <a routerLink="/dashboard" class="brand-link">

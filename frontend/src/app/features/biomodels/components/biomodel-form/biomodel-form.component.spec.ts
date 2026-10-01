@@ -21,7 +21,9 @@ describe('BiomodelFormComponent', () => {
     const httpMock = TestBed.inject(HttpTestingController);
     fixture.detectChanges();
     httpMock.expectOne('/api/tumors').flush([{ biobank_code: 'TB-1' }]);
-    httpMock.expectOne('/api/passages').flush([{ id: 'BM-1-P1', description: 'passage one' }]);
+    httpMock
+      .expectOne('/api/passages')
+      .flush([{ id: 'BM-1-P1', description: 'passage one', biomodel_id: 'B-9' }]);
     httpMock.expectOne('/api/biomodels').flush([{ id: 'B-EXISTING' }]);
     fixture.detectChanges();
     return { fixture, component: fixture.componentInstance, httpMock };
@@ -33,7 +35,8 @@ describe('BiomodelFormComponent', () => {
     expect(component.form.controls.tumor_biobank_code.value).toBe('');
     expect(component.form.invalid).toBe(true);
 
-    component.form.patchValue({ id: 'B-1', tumor_biobank_code: 'TB-1' });
+    component.selectTumor('TB-1');
+    component.form.patchValue({ id: 'B-1' });
     expect(component.form.valid).toBe(true);
     httpMock.verify();
   });
@@ -71,6 +74,7 @@ describe('BiomodelFormComponent', () => {
       },
     });
     expect(component.form.controls.id.disabled).toBe(true);
+    expect(component.form.controls.type.disabled).toBe(true);
     const payload = component.buildDialogResult();
     expect(payload.id).toBe('B-9');
     expect(payload.success).toBe(false);
@@ -101,6 +105,49 @@ describe('BiomodelFormComponent', () => {
     component.selectParentPassage('BM-1-P1');
     expect(component.form.controls.parent_passage_id.value).toBe('BM-1-P1');
     expect(component.parentPassageSearch.value).toBe('BM-1-P1');
+    httpMock.verify();
+  });
+
+  it('clears the submitted relationship when the search text changes', async () => {
+    const { component, httpMock } = await setup({ mode: 'create' });
+    component.selectTumor('TB-1');
+    component.tumorSearch.setValue('edited text');
+    expect(component.form.controls.tumor_biobank_code.value).toBe('');
+    expect(component.form.invalid).toBe(true);
+    component.tumorSearch.setValue('');
+    expect(component.form.controls.tumor_biobank_code.value).toBe('');
+    expect(component.form.invalid).toBe(true);
+    component.selectTumor('TB-1');
+    expect(component.form.controls.tumor_biobank_code.valid).toBe(true);
+    httpMock.verify();
+  });
+
+  it('clears an optional parent and rejects unmatched search text', async () => {
+    const { component, httpMock } = await setup({ mode: 'create' });
+    component.form.controls.id.setValue('NEW');
+    component.selectTumor('TB-1');
+    component.selectParentPassage('BM-1-P1');
+    expect(component.form.valid).toBe(true);
+    component.parentPassageSearch.setValue('another passage');
+    expect(component.form.controls.parent_passage_id.value).toBeNull();
+    expect(component.form.invalid).toBe(true);
+    component.parentPassageSearch.setValue('');
+    expect(component.form.controls.parent_passage_id.value).toBeNull();
+    expect(component.form.valid).toBe(true);
+    httpMock.verify();
+  });
+
+  it('allows type edits when the biomodel has no passages', async () => {
+    const { component, fixture, httpMock } = await setup({
+      mode: 'edit',
+      biomodel: {
+        id: 'B-NEW',
+        type: 'PDX',
+        tumor_biobank_code: 'TB-1',
+      } as BiomodelFormData['biomodel'],
+    });
+    await fixture.whenStable();
+    expect(component.form.controls.type.enabled).toBe(true);
     httpMock.verify();
   });
 });

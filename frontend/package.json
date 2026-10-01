@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.0.0",
   "scripts": {
-    "codegen:models": "cd .. && uv run --package techconnect-schemas export-schema --format typescript --output frontend/src/app/generated/models.ts",
+    "codegen:models": "cd .. && uv run --inexact --package techconnect-schemas export-schema --format typescript --output frontend/src/app/generated/models.ts",
     "ng": "ng",
     "start": "npm run codegen:models && ng serve",
     "start:es": "npm run codegen:models && ng serve --configuration=es",
@@ -47,6 +47,7 @@
     "@angular/compiler-cli": "^21.2.7",
     "@angular/localize": "^21.2.7",
     "@angular/material": "^21.2.5",
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.6.0",

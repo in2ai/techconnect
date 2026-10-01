@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -270,8 +271,15 @@ export class LoginPage {
           this.notification.success($localize`:@@loginSuccessToast:Signed in successfully.`);
           void this.router.navigateByUrl(this.auth.consumeRedirectUrl());
         },
-        error: () => {
-          this.notification.error($localize`:@@loginErrorToast:Invalid email or password.`);
+        error: (error: unknown) => {
+          if (error instanceof HttpErrorResponse && error.status === 401) {
+            this.notification.error($localize`:@@loginErrorToast:Invalid email or password.`);
+          } else {
+            this.notification.requestError(
+              error,
+              $localize`:@@loginRequestErrorToast:Unable to sign in. Please try again.`,
+            );
+          }
         },
       });
   }

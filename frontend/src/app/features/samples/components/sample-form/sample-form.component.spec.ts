@@ -35,7 +35,7 @@ describe('SampleFormComponent', () => {
     expect(component.form.controls.tumor_biobank_code.value).toBe('');
     expect(component.form.invalid).toBe(true);
 
-    component.form.patchValue({ tumor_biobank_code: 'TB-1' });
+    component.selectTumor('TB-1');
     fixture.detectChanges();
 
     expect(component.form.valid).toBe(true);
@@ -106,6 +106,20 @@ describe('SampleFormComponent', () => {
     component.selectTumor('TB-1');
     expect(component.form.controls.tumor_biobank_code.value).toBe('TB-1');
     expect(component.tumorSearch.value).toBe('TB-1');
+    httpMock.verify();
+  });
+
+  it('clears the submitted relationship when the search text changes', async () => {
+    const { component, httpMock } = await setup({ mode: 'create' });
+    component.selectTumor('TB-1');
+    component.tumorSearch.setValue('edited text');
+    expect(component.form.controls.tumor_biobank_code.value).toBe('');
+    expect(component.form.invalid).toBe(true);
+    component.tumorSearch.setValue('');
+    expect(component.form.controls.tumor_biobank_code.value).toBe('');
+    expect(component.form.invalid).toBe(true);
+    component.selectTumor('TB-1');
+    expect(component.form.controls.tumor_biobank_code.valid).toBe(true);
     httpMock.verify();
   });
 });

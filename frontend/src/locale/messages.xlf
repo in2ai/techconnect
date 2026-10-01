@@ -382,6 +382,9 @@
           <context context-type="linenumber">274</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="loginRequestErrorToast" datatype="html">
+        <source>Unable to sign in. Please try again.</source>
+      </trans-unit>
       <trans-unit id="newBiomodelTitle" datatype="html">
         <source>New Biomodel</source>
         <context-group purpose="location">
@@ -3742,6 +3745,39 @@
           <context context-type="sourcefile">src/app/shared/layout/app-shell.component.ts</context>
           <context context-type="linenumber">491</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="biomodelTypeLockedError" datatype="html">
+        <source>Biomodel type cannot be changed after passages have been created.</source>
+      </trans-unit>
+      <trans-unit id="biomodelTypeLockedHint" datatype="html">
+        <source>Type is fixed once passages exist.</source>
+      </trans-unit>
+      <trans-unit id="selectTumorOptionError" datatype="html">
+        <source>Select a tumor from the options.</source>
+      </trans-unit>
+      <trans-unit id="selectPassageOptionError" datatype="html">
+        <source>Select a passage from the options.</source>
+      </trans-unit>
+      <trans-unit id="selectBiomodelOptionError" datatype="html">
+        <source>Select a biomodel from the options.</source>
+      </trans-unit>
+      <trans-unit id="parentPassageLbl" datatype="html">
+        <source>Parent Passage</source>
+      </trans-unit>
+      <trans-unit id="pdxHasIhqDataLbl" datatype="html">
+        <source>Has IHQ Data</source>
+      </trans-unit>
+      <trans-unit id="pdxSimilarityLbl" datatype="html">
+        <source>Similarity</source>
+      </trans-unit>
+      <trans-unit id="mouseStrainLbl" datatype="html">
+        <source>Strain</source>
+      </trans-unit>
+      <trans-unit id="inVivoFilterLabel" datatype="html">
+        <source>Filter mice, implants, or measures</source>
+      </trans-unit>
+      <trans-unit id="clearFilterAria" datatype="html">
+        <source>Clear filter</source>
       </trans-unit>
     </body>
   </file>

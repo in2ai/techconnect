@@ -1,5 +1,6 @@
+import csv
 from collections.abc import Iterator
-from io import BytesIO
+from io import BytesIO, StringIO
 from zipfile import ZipFile
 
 import pytest
@@ -239,6 +240,27 @@ def test_download_dataset_template_workbook(client: TestClient):
             "implant_2_type",
             "implant_2_date",
         )
+        for sheet_name, legacy_column_name in (
+            ("mouse", "pdx_trial_id"),
+            ("facs", "lc_trial_id"),
+        ):
+            headers, notes = list(
+                workbook[sheet_name].iter_rows(min_row=1, max_row=2, values_only=True)
+            )
+            assert legacy_column_name not in headers
+            assert "fk:passage.id" in notes[headers.index("passage_id")].split(" | ")
+
+        for worksheet in workbook:
+            notes = next(worksheet.iter_rows(min_row=2, max_row=2, values_only=True))
+            for note in notes:
+                for part in note.split(" | "):
+                    if part.startswith("fk:"):
+                        sheet_name, column_name = part.removeprefix("fk:").split(".")
+                        assert sheet_name in workbook.sheetnames
+                        headers = next(
+                            workbook[sheet_name].iter_rows(min_row=1, max_row=1, values_only=True)
+                        )
+                        assert column_name in headers
     finally:
         workbook.close()
 
@@ -274,9 +296,19 @@ def test_download_dataset_template_csv_zip(client: TestClient):
         assert "implant_measure.csv" not in names
         patient_csv = archive.read("patient.csv").decode("utf-8").strip()
         readme = archive.read("README.txt").decode("utf-8")
+        for sheet_name, legacy_column_name in (("mouse", "pdx_trial_id"), ("facs", "lc_trial_id")):
+            headers = archive.read(f"{sheet_name}.csv").decode("utf-8").strip().split(",")
+            assert "passage_id" in headers
+            assert legacy_column_name not in headers
 
     assert patient_csv == "nhc,sex,age"
     assert "Dates should use YYYY-MM-DD." in readme
+    assert "- pdx_passage: /api/pdx-trials" in readme
+    assert "- lc_passage: /api/lc-trials" in readme
+    assert "mouse.passage_id -> passage.id" in readme
+    assert "facs.passage_id -> passage.id" in readme
+    assert "- pdx_trial:" not in readme
+    assert "- lc_trial:" not in readme
 
 
 def test_export_dataset_workbook_includes_existing_rows(client: TestClient):
@@ -308,6 +340,16 @@ def test_export_dataset_workbook_includes_existing_rows(client: TestClient):
         assert workbook.sheetnames[0] == "patient"
         assert "measure" in workbook.sheetnames
         assert "implant" not in workbook.sheetnames
+        mouse_headers, mouse_notes = list(
+            workbook["mouse"].iter_rows(min_row=1, max_row=2, values_only=True)
+        )
+        facs_headers, facs_notes = list(
+            workbook["facs"].iter_rows(min_row=1, max_row=2, values_only=True)
+        )
+        assert "pdx_trial_id" not in mouse_headers
+        assert "lc_trial_id" not in facs_headers
+        assert "fk:passage.id" in mouse_notes[mouse_headers.index("passage_id")]
+        assert "fk:passage.id" in facs_notes[facs_headers.index("passage_id")]
         patient_rows = list(workbook["patient"].iter_rows(min_row=3, values_only=True))
         tumor_rows = list(workbook["tumor"].iter_rows(min_row=3, values_only=True))
     finally:
@@ -495,7 +537,10 @@ def test_import_dataset_workbook_defers_biomodel_parent_passage_references(clien
     assert child_passage_response.status_code == 200
 
 
-def test_import_dataset_workbook_updates_auto_created_facs_for_lc_passages(client: TestClient):
+@pytest.mark.parametrize("legacy_notes", [None, "passage", "trial"])
+def test_import_dataset_workbook_updates_auto_created_facs_for_lc_passages(
+    client: TestClient, legacy_notes: str | None
+):
     login_response = client.post(
         "/api/auth/login",
         json={"email": "admin@example.com", "password": "super-secret-password"},
@@ -504,6 +549,8 @@ def test_import_dataset_workbook_updates_auto_created_facs_for_lc_passages(clien
 
     template_response = client.get("/api/imports/dataset-template.xlsx")
     workbook = load_workbook(BytesIO(template_response.content))
+    if legacy_notes:
+        _use_legacy_foreign_key_notes(workbook, legacy_notes)
     patient_sheet = workbook["patient"]
     tumor_sheet = workbook["tumor"]
     biomodel_sheet = workbook["biomodel"]
@@ -539,6 +586,7 @@ def test_import_dataset_workbook_updates_auto_created_facs_for_lc_passages(clien
     assert response.status_code == 200
     body = response.json()
     assert body["rows_failed"] == 0, body
+    assert body["rows_skipped"] == 0, body
     assert body["table_counts"]["facs"] == {"created": 0, "updated": 1}
 
     facs_response = client.get("/api/facs")
@@ -634,7 +682,10 @@ def test_import_dataset_workbook_normalizes_passage_identifier_spaces(client: Te
     assert pdx_trial_response.status_code == 200
 
 
-def test_import_dataset_workbook_creates_mouse_implants_from_mouse_sheet(client: TestClient):
+@pytest.mark.parametrize("legacy_notes", [None, "passage", "trial"])
+def test_import_dataset_workbook_creates_mouse_implants_from_mouse_sheet(
+    client: TestClient, legacy_notes: str | None
+):
     login_response = client.post(
         "/api/auth/login",
         json={"email": "admin@example.com", "password": "super-secret-password"},
@@ -643,6 +694,8 @@ def test_import_dataset_workbook_creates_mouse_implants_from_mouse_sheet(client:
 
     template_response = client.get("/api/imports/dataset-template.xlsx")
     workbook = load_workbook(BytesIO(template_response.content))
+    if legacy_notes:
+        _use_legacy_foreign_key_notes(workbook, legacy_notes)
     patient_sheet = workbook["patient"]
     tumor_sheet = workbook["tumor"]
     biomodel_sheet = workbook["biomodel"]
@@ -697,6 +750,7 @@ def test_import_dataset_workbook_creates_mouse_implants_from_mouse_sheet(client:
     assert response.status_code == 200
     body = response.json()
     assert body["rows_failed"] == 0
+    assert body["rows_skipped"] == 0, body
     assert body["table_counts"]["mouse"] == {"created": 1, "updated": 0}
     assert body["table_counts"]["implant"] == {"created": 2, "updated": 0}
 
@@ -712,6 +766,19 @@ def test_import_dataset_workbook_creates_mouse_implants_from_mouse_sheet(client:
     assert {implant["mouse_id"] for implant in implants} == {mice[0]["id"]}
     assert {implant["implant_location"] for implant in implants} == {"izquierda", "derecha"}
     assert {implant["implant_date"] for implant in implants} == {"2023-04-15", "2023-04-20"}
+
+
+def _use_legacy_foreign_key_notes(workbook: Workbook, suffix: str) -> None:
+    for sheet_name, column_name, table_name in (
+        ("mouse", "pdx_trial_id", "pdx"),
+        ("facs", "lc_trial_id", "lc"),
+    ):
+        worksheet = workbook[sheet_name]
+        headers = [cell.value for cell in worksheet[1]]
+        column_index = headers.index("passage_id") + 1
+        worksheet.cell(row=1, column=column_index, value=column_name)
+        cell = worksheet.cell(row=2, column=column_index)
+        cell.value = cell.value.split(" | fk:")[0] + f" | fk:{table_name}_{suffix}.id"
 
 
 def test_exported_dataset_workbook_roundtrips_seed_data(client: TestClient):
@@ -743,6 +810,48 @@ def test_exported_dataset_workbook_roundtrips_seed_data(client: TestClient):
     assert body["rows_failed"] == 0
     assert body["errors"] == []
     assert body["table_counts"]["mouse"]["updated"] > 0
+
+
+@pytest.mark.parametrize("legacy_headers", [False, True])
+def test_exported_dataset_csv_zip_roundtrips_seed_data(client: TestClient, legacy_headers: bool):
+    login_response = client.post(
+        "/api/auth/login",
+        json={"email": "admin@example.com", "password": "super-secret-password"},
+    )
+    assert login_response.status_code == 200
+    assert seed_database().created > 0
+
+    export_response = client.get("/api/imports/dataset.zip")
+    assert export_response.status_code == 200
+    archive_bytes = export_response.content
+    if legacy_headers:
+        legacy_buffer = BytesIO()
+        with ZipFile(BytesIO(archive_bytes)) as source, ZipFile(legacy_buffer, "w") as target:
+            for filename in source.namelist():
+                content = source.read(filename)
+                legacy_column = {"mouse.csv": "pdx_trial_id", "facs.csv": "lc_trial_id"}.get(
+                    filename
+                )
+                if legacy_column:
+                    rows = list(csv.reader(StringIO(content.decode("utf-8"))))
+                    rows[0][rows[0].index("passage_id")] = legacy_column
+                    csv_buffer = StringIO()
+                    csv.writer(csv_buffer).writerows(rows)
+                    content = csv_buffer.getvalue().encode("utf-8")
+                target.writestr(filename, content)
+        archive_bytes = legacy_buffer.getvalue()
+
+    import_response = client.post(
+        "/api/imports/dataset-csv-zip",
+        files={"file": ("dataset.zip", archive_bytes, "application/zip")},
+    )
+
+    assert import_response.status_code == 200
+    body = import_response.json()
+    assert body["rows_failed"] == 0, body
+    assert body["errors"] == []
+    assert body["table_counts"]["mouse"]["updated"] > 0
+    assert body["table_counts"]["facs"]["updated"] > 0
 
 
 def test_import_dataset_csv_zip_reports_partial_failures(client: TestClient):

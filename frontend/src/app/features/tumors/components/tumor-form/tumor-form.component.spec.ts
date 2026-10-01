@@ -30,7 +30,8 @@ describe('TumorFormComponent', () => {
     const { fixture, component, httpMock } = await setup({ mode: 'create' });
     expect(component.form.invalid).toBe(true);
 
-    component.form.patchValue({ biobank_code: 'TB-1', patient_nhc: 'P-1' });
+    component.form.patchValue({ biobank_code: 'TB-1' });
+    component.selectPatient('P-1');
     fixture.detectChanges();
     expect(component.form.valid).toBe(true);
 
@@ -64,9 +65,9 @@ describe('TumorFormComponent', () => {
     const { fixture, component, httpMock } = await setup({ mode: 'create' });
     component.form.patchValue({
       biobank_code: 'TB-42',
-      patient_nhc: 'P-1',
       classification: 'Adenocarcinoma',
     });
+    component.selectPatient('P-1');
     fixture.detectChanges();
 
     const submitButton = fixture.debugElement.query(By.css('button[mat-flat-button]'));
@@ -76,6 +77,48 @@ describe('TumorFormComponent', () => {
       patient_nhc: 'P-1',
       classification: 'Adenocarcinoma',
     });
+    httpMock.verify();
+  });
+
+  it.each(['', 'P-2'])('disables Save when the selected patient is changed to %j', async (text) => {
+    const { fixture, component, httpMock } = await setup({
+      mode: 'edit',
+      tumor: {
+        biobank_code: 'TB-1',
+        patient_nhc: 'P-1',
+        tube_code: null,
+        classification: null,
+        ap_diagnosis: null,
+        grade: null,
+        organ: null,
+        stage: null,
+        tnm: null,
+        intervention_date: null,
+      },
+    });
+    const submitButton = fixture.debugElement.query(By.css('button[mat-flat-button]'))
+      .nativeElement as HTMLButtonElement;
+    expect(submitButton.disabled).toBe(false);
+
+    const patientInput = fixture.debugElement.query(
+      By.css('input[placeholder="Search patient NHC"]'),
+    ).nativeElement as HTMLInputElement;
+    patientInput.value = text;
+    patientInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(submitButton.disabled).toBe(true);
+    expect(component.form.controls.patient_nhc.value).toBe('');
+
+    patientInput.value = 'P-1';
+    patientInput.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(submitButton.disabled).toBe(true);
+
+    component.selectPatient('P-1');
+    fixture.detectChanges();
+    expect(submitButton.disabled).toBe(false);
+    expect(component.form.getRawValue().patient_nhc).toBe('P-1');
     httpMock.verify();
   });
 

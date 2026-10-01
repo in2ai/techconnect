@@ -85,6 +85,11 @@ DATASET_SHEET_NAME_ALIASES = {
     "lc_trial": "lc_passage",
 }
 
+DATASET_COLUMN_NAME_ALIASES = {
+    "mouse": {"pdx_trial_id": "passage_id"},
+    "facs": {"lc_trial_id": "passage_id"},
+}
+
 
 MOUSE_RELATED_COLUMNS: tuple[DatasetColumnSpec, ...] = (
     DatasetColumnSpec(
@@ -224,7 +229,7 @@ def import_dataset_workbook(
             expected_columns = _workbook_columns(table_spec)
             expected_headers = tuple(column.name for column in expected_columns)
             actual_headers = _normalize_headers(header_row)
-            if actual_headers != expected_headers:
+            if not _dataset_headers_match(table_spec, actual_headers):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Worksheet {_sheet_name(table_spec)!r} does not match the expected template headers.",
@@ -236,9 +241,7 @@ def import_dataset_workbook(
                 ),
                 None,
             )
-            has_note_row = note_row is not None and tuple(
-                _normalize_text(value) for value in note_row
-            ) == tuple(_column_note(column) for column in expected_columns)
+            has_note_row = note_row is not None and _is_template_note_row(table_spec, note_row)
             data_start_row = 3 if has_note_row else 2
 
             for row_number, values in enumerate(
@@ -273,7 +276,7 @@ def build_dataset_template_csv_zip() -> bytes:
         for table_spec in get_dataset_table_specs():
             csv_buffer = StringIO()
             writer = csv.writer(csv_buffer)
-            writer.writerow([column.name for column in _workbook_columns(table_spec)])
+            writer.writerow(_dataset_headers(table_spec))
             archive.writestr(f"{_sheet_name(table_spec)}.csv", csv_buffer.getvalue())
 
     return buffer.getvalue()
@@ -287,7 +290,7 @@ def build_dataset_export_csv_zip(session: Session) -> bytes:
         for table_spec in get_dataset_table_specs():
             csv_buffer = StringIO()
             writer = csv.writer(csv_buffer)
-            writer.writerow([column.name for column in _workbook_columns(table_spec)])
+            writer.writerow(_dataset_headers(table_spec))
             for item in session.exec(select(table_spec.model)).all():
                 writer.writerow(_export_workbook_row_values(session, table_spec, item))
             archive.writestr(f"{_sheet_name(table_spec)}.csv", csv_buffer.getvalue())
@@ -347,9 +350,7 @@ def import_dataset_csv_zip(
             if header_row is None:
                 continue
 
-            expected_columns = _workbook_columns(table_spec)
-            expected_headers = tuple(column.name for column in expected_columns)
-            if tuple(header_row) != expected_headers:
+            if not _dataset_headers_match(table_spec, tuple(header_row)):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"CSV file {filename_in_archive!r} does not match the expected template headers.",
@@ -391,6 +392,33 @@ def _sheet_name(table_spec: DatasetTableSpec) -> str:
     return DATASET_SHEET_NAME_ALIASES.get(table_spec.table_name, table_spec.table_name)
 
 
+def _dataset_foreign_key(foreign_key: str) -> str:
+    """Document shared passage identifiers while keeping subtype database FKs intact."""
+    table_name, _, column_name = foreign_key.partition(".")
+    if table_name in DATASET_SHEET_NAME_ALIASES:
+        table_name = "passage"
+    return f"{table_name}.{column_name}"
+
+
+def _dataset_column_name(table_spec: DatasetTableSpec, column_name: str) -> str:
+    return DATASET_COLUMN_NAME_ALIASES.get(table_spec.table_name, {}).get(column_name, column_name)
+
+
+def _dataset_headers(table_spec: DatasetTableSpec) -> tuple[str, ...]:
+    return tuple(
+        _dataset_column_name(table_spec, column.name) for column in _workbook_columns(table_spec)
+    )
+
+
+def _dataset_headers_match(table_spec: DatasetTableSpec, headers: tuple[str, ...]) -> bool:
+    """Accept current headings and legacy model headings in their original positions."""
+    columns = _workbook_columns(table_spec)
+    return len(headers) == len(columns) and all(
+        header in (column.name, _dataset_column_name(table_spec, column.name))
+        for header, column in zip(headers, columns, strict=True)
+    )
+
+
 def _workbook_columns(table_spec: DatasetTableSpec) -> tuple[DatasetColumnSpec, ...]:
     if table_spec.table_name == "mouse":
         return table_spec.columns + MOUSE_RELATED_COLUMNS
@@ -423,9 +451,7 @@ def _collect_workbook_source_passage_ids(worksheets: dict[str, Any]) -> set[str]
         worksheet.iter_rows(min_row=2, max_row=2, max_col=len(expected_headers), values_only=True),
         None,
     )
-    has_note_row = note_row is not None and tuple(
-        _normalize_text(value) for value in note_row
-    ) == tuple(_column_note(column) for column in expected_columns)
+    has_note_row = note_row is not None and _is_template_note_row(passage_spec, note_row)
     data_start_row = 3 if has_note_row else 2
 
     return _collect_source_primary_keys_from_rows(
@@ -482,7 +508,7 @@ def _build_base_workbook() -> Workbook:
         )
         worksheet.title = _sheet_name(table_spec)
         workbook_columns = _workbook_columns(table_spec)
-        header_row = [column.name for column in workbook_columns]
+        header_row = _dataset_headers(table_spec)
         note_row = [_column_note(column) for column in workbook_columns]
         worksheet.append(header_row)
         worksheet.append(note_row)
@@ -683,8 +709,14 @@ def _upsert_mouse_row(
 
     pdx_trial_id = payload.get("pdx_trial_id")
     if pdx_trial_id is not None:
-        existing = session.exec(select(Mouse).where(Mouse.pdx_trial_id == pdx_trial_id)).first()
-        if existing is not None:
+        mice = session.exec(select(Mouse).where(Mouse.pdx_trial_id == pdx_trial_id)).all()
+        if len(mice) > 1:
+            raise HTTPException(
+                status_code=400,
+                detail="Specify the mouse ID when a PDX trial has multiple mice.",
+            )
+        if mice:
+            existing = mice[0]
             item = Mouse.model_validate({**existing.model_dump(), **payload})
             return "updated", update_item(session, Mouse, str(existing.id), item)
 
@@ -942,13 +974,24 @@ def _build_readme_text() -> str:
         "Keep the header row unchanged.",
         "Preserve primary key values to update existing records; new keys create new records.",
         "Foreign keys must reference an existing or earlier-imported parent row.",
+        "Foreign key references below use the CSV filenames without the .csv extension.",
+        "PDX, PDO, and LC passage sheets reuse the corresponding passage.id values.",
+        "Mouse passage_id must identify a PDX passage; FACS passage_id must identify an LC passage.",
         "Boolean values accept true/false, yes/no, or 1/0. Dates should use YYYY-MM-DD.",
         "Authentication and session tables are excluded from this package.",
         "",
         "Tables:",
     ]
     for table_spec in get_dataset_table_specs():
-        lines.append(f"- {table_spec.table_name}: /api/{table_spec.route_prefix}")
+        lines.append(f"- {_sheet_name(table_spec)}: /api/{table_spec.route_prefix}")
+    lines.extend(["", "Foreign keys:"])
+    for table_spec in get_dataset_table_specs():
+        for column in table_spec.columns:
+            for foreign_key in column.foreign_keys:
+                lines.append(
+                    f"- {_sheet_name(table_spec)}.{_dataset_column_name(table_spec, column.name)}"
+                    f" -> {_dataset_foreign_key(foreign_key)}"
+                )
     return "\n".join(lines)
 
 
@@ -963,7 +1006,7 @@ def _column_note(column: DatasetColumnSpec) -> str:
     parts.append(f"type:{column.data_type}")
     if column.format_hint:
         parts.append(f"format:{column.format_hint}")
-    parts.extend(f"fk:{foreign_key}" for foreign_key in column.foreign_keys)
+    parts.extend(f"fk:{_dataset_foreign_key(foreign_key)}" for foreign_key in column.foreign_keys)
     return " | ".join(parts)
 
 

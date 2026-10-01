@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { NotificationService } from '@core/services/notification.service';
 import { API_URL } from '@core/tokens/api-url.token';
@@ -38,6 +38,7 @@ import { BiomodelService } from '../../services/biomodel.service';
     DataTableComponent,
     LoadingStateComponent,
     LocalizedDatePipe,
+    RouterLink,
   ],
   template: `
     <app-page-header
@@ -114,6 +115,16 @@ import { BiomodelService } from '../../services/biomodel.service';
               <span class="detail-label" i18n="@@biomodelTumorLbl">Tumor</span
               ><span class="detail-value">{{ biomodelResource.value()!.tumor_biobank_code }}</span>
             </div>
+            <div class="detail-item">
+              <span class="detail-label" i18n="@@parentPassageLbl">Parent Passage</span>
+              <span class="detail-value">
+                @if (biomodelResource.value()!.parent_passage_id; as parentId) {
+                  <a [routerLink]="['/passages', parentId]">{{ parentId }}</a>
+                } @else {
+                  —
+                }
+              </span>
+            </div>
           </div>
         </mat-card-content>
       </mat-card>
@@ -189,7 +200,7 @@ export class BiomodelDetailPage {
 
   passageColumns: ColumnDef[] = [
     { key: 'id', label: $localize`ID`, sortable: true },
-    { key: 'status', label: $localize`Status`, sortable: true },
+    { key: 'status', label: $localize`Status`, sortable: true, type: 'status' },
     {
       key: 'success',
       label: $localize`:@@trialSuccessLbl:Success`,

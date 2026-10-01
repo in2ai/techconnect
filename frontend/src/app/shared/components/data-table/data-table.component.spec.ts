@@ -47,6 +47,7 @@ describe('DataTableComponent', () => {
     let emitted: Row | null = null;
     fixture.componentInstance.rowClicked.subscribe((r) => (emitted = r));
     const firstRow = fixture.nativeElement.querySelector('tr.clickable-row') as HTMLElement;
+    expect(firstRow.getAttribute('role')).toBe('row');
     firstRow.click();
     expect(emitted).toEqual(rows[0]);
     expect(fixture.componentInstance.selectedRow()).toEqual(rows[0]);
@@ -79,12 +80,15 @@ describe('DataTableComponent', () => {
     expect(fixture.componentInstance.activeFilters()).toEqual({});
   });
 
-  it('activates a row on Enter key', () => {
+  it('exposes a native action button inside each row', () => {
     const fixture = createTable();
     let emitted: Row | null = null;
     fixture.componentInstance.rowClicked.subscribe((r) => (emitted = r));
     const firstRow = fixture.nativeElement.querySelector('tr.clickable-row') as HTMLElement;
-    firstRow.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    const action = firstRow.querySelector('button') as HTMLButtonElement;
+    expect(action.type).toBe('button');
+    expect(action.textContent?.trim()).toBe('R-1');
+    action.click();
     expect(emitted).toEqual(rows[0]);
   });
 
@@ -94,6 +98,15 @@ describe('DataTableComponent', () => {
     fixture.detectChanges();
     const empty = fixture.nativeElement.querySelector('.empty-row');
     expect(empty).toBeTruthy();
+  });
+  it('renders translated passage statuses with an unknown state', () => {
+    const fixture = createTable();
+    fixture.componentRef.setInput('columns', [{ key: 'active', label: 'Status', type: 'status' }]);
+    fixture.detectChanges();
+    const cells = Array.from(
+      fixture.nativeElement.querySelectorAll('td.mat-mdc-cell') as NodeListOf<HTMLElement>,
+    );
+    expect(cells.map((cell) => cell.textContent?.trim())).toEqual(['Active', 'Inactive', '—']);
   });
 });
 

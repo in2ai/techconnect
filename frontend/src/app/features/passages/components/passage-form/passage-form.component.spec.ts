@@ -29,14 +29,16 @@ describe('PassageFormComponent', () => {
     const { component, httpMock } = await setup({ mode: 'create' });
     expect(component.showBiomodelPicker).toBe(true);
     expect(component.form.invalid).toBe(true);
-    component.form.patchValue({ id: 'P-1', biomodel_id: 'BM-1' });
+    component.selectBiomodel('BM-1');
+    component.form.patchValue({ id: 'P-1' });
     expect(component.form.valid).toBe(true);
     httpMock.verify();
   });
 
   it('computes composite id from passage number and biomodel_id in create mode', async () => {
     const { component, httpMock } = await setup({ mode: 'create' });
-    component.form.patchValue({ id: 'P-1', biomodel_id: 'BM-1' });
+    component.selectBiomodel('BM-1');
+    component.form.patchValue({ id: 'P-1' });
     const payload = component.buildDialogResult();
     expect(payload.id).toBe('BM-1-P-1');
     httpMock.verify();
@@ -113,6 +115,20 @@ describe('PassageFormComponent', () => {
 
     httpMock.expectOne('/api/biomodels').flush([]);
     fixture.detectChanges();
+    httpMock.verify();
+  });
+
+  it('clears the submitted relationship when the search text changes', async () => {
+    const { component, httpMock } = await setup({ mode: 'create' });
+    component.selectBiomodel('BM-1');
+    component.biomodelSearch.setValue('edited text');
+    expect(component.form.controls.biomodel_id.value).toBe('');
+    expect(component.form.invalid).toBe(true);
+    component.biomodelSearch.setValue('');
+    expect(component.form.controls.biomodel_id.value).toBe('');
+    expect(component.form.invalid).toBe(true);
+    component.selectBiomodel('BM-1');
+    expect(component.form.controls.biomodel_id.valid).toBe(true);
     httpMock.verify();
   });
 });

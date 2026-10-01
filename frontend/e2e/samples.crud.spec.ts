@@ -47,7 +47,7 @@ test('samples CRUD flow', async ({ page, request }) => {
     expect(createdSampleId).toBe(`${biobankCode}-M1`);
     await expect(page).toHaveURL(new RegExp(`/samples/${createdSampleId}$`));
     await expect(page.locator('.detail-item', { hasText: 'Obtain Date' })).toContainText(
-      createdDate,
+      '07/10/2024',
     );
 
     await page.getByRole('button', { name: 'Edit' }).click();
@@ -55,7 +55,7 @@ test('samples CRUD flow', async ({ page, request }) => {
     await editDialog.getByLabel('Obtain Date').fill(updatedDate);
     await editDialog.getByRole('button', { name: 'Save' }).click();
     await expect(page.locator('.detail-item', { hasText: 'Obtain Date' })).toContainText(
-      updatedDate,
+      '08/11/2024',
     );
 
     await page.getByRole('button', { name: 'Delete', exact: true }).first().click();

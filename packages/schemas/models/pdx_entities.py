@@ -120,11 +120,11 @@ class Mouse(SQLModel, table=True):
     sex: Optional[str] = Field(default=None, max_length=20)
     death_date: Union[date, None] = Field(default=None)
     
-    # Foreign keys (required - 1:1 relationship with PDXTrial)
+    # Foreign keys (required - N:1 relationship with PDXTrial)
     pdx_trial_id: str = Field(foreign_key="pdx_trial.id", description="FK to PDXTrial")
     
     # Relationships
-    pdx_trial: Optional["PDXTrial"] = Relationship(back_populates="mouse")
+    pdx_trial: Optional["PDXTrial"] = Relationship(back_populates="mice")
     implants: list["Implant"] = Relationship(
         back_populates="mouse",
         sa_relationship_kwargs={"cascade": "all, delete-orphan"},

@@ -1,61 +1,15 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
+import type {
+  Patient as PatientPayload,
+  Tumor as TumorPayload,
+  Sample as SamplePayload,
+  Biomodel as BiomodelPayload,
+  Passage as PassagePayload,
+} from '../../src/app/generated/models';
 
 export const apiBaseUrl = process.env.E2E_API_URL ?? 'http://127.0.0.1:8000/api';
 const authEmail = process.env.E2E_AUTH_EMAIL ?? 'admin@techconnect.local';
 const authPassword = process.env.E2E_AUTH_PASSWORD ?? 'techconnect-dev-password';
-
-interface PatientPayload {
-  nhc: string;
-  sex: string | null;
-  age: number | null;
-}
-
-interface TumorPayload {
-  biobank_code: string;
-  patient_nhc: string;
-  tube_code: string | null;
-  classification: string | null;
-  ap_diagnosis: string | null;
-  grade: string | null;
-  organ: string | null;
-  stage: string | null;
-  tnm: string | null;
-  intervention_date: string | null;
-}
-
-interface SamplePayload {
-  id: string;
-  has_serum: boolean | null;
-  has_buffy: boolean | null;
-  has_plasma: boolean | null;
-  has_tumor_tissue_oct: boolean | null;
-  has_non_tumor_tissue_oct: boolean | null;
-  obtain_date: string | null;
-  organ: string | null;
-  tumor_biobank_code: string;
-}
-
-interface BiomodelPayload {
-  id: string;
-  type: string | null;
-  description: string | null;
-  creation_date: string | null;
-  status: string | null;
-  success: boolean | null;
-  tumor_biobank_code: string;
-  parent_passage_id: string | null;
-}
-
-interface PassagePayload {
-  id: string;
-  description: string | null;
-  success: boolean | null;
-  status: boolean | null;
-  creation_date: string | null;
-  biobank_shipment: boolean | null;
-  biobank_arrival_date: string | null;
-  biomodel_id: string;
-}
 
 async function ensureOk(response: APIResponse, action: string): Promise<void> {
   if (response.ok()) {
@@ -157,7 +111,7 @@ export async function createBiomodel(
     type,
     description: 'fixture',
     creation_date: '2024-01-01',
-    status: 'active',
+    status: true,
     success: true,
     tumor_biobank_code: tumorBiobankCode,
     parent_passage_id: null,

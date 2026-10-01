@@ -69,7 +69,7 @@ async function setup(opts: SetupOptions = {}) {
                   error: { detail: 'A tumor can generate max 3 biomodels' },
                 }),
             )
-        : of({} as Biomodel),
+          : of({} as Biomodel),
     ),
   } as unknown as BiomodelService;
   const sampleService = {
@@ -233,5 +233,36 @@ describe('TumorDetailPage', () => {
     const { fixture, tumorService } = await setup({ dialogResult: false });
     fixture.componentInstance.confirmDelete();
     expect(tumorService.delete).not.toHaveBeenCalled();
+  });
+
+  it('renders unknown genomic and molecular availability separately from No', async () => {
+    const { fixture, httpMock } = await setup({
+      genomic: [
+        {
+          id: 'G-1',
+          tumor_biobank_code: 'T-1',
+          has_data: null,
+          data: null,
+        } as TumorGenomicSequencing,
+      ],
+      molecular: [
+        { id: 'M-1', tumor_biobank_code: 'T-1', has_data: null, data: null } as TumorMolecularData,
+      ],
+    });
+    const tabs = Array.from(
+      fixture.nativeElement.querySelectorAll('[role="tab"]') as NodeListOf<HTMLElement>,
+    );
+    for (const label of ['Genomic Sequencing', 'Molecular Data']) {
+      tabs.find((tab) => tab.textContent?.includes(label))!.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      const panel = fixture.nativeElement.querySelector('.mat-mdc-tab-body-active');
+      const item = Array.from(
+        panel.querySelectorAll('.detail-item') as NodeListOf<HTMLElement>,
+      ).find((item) => item.textContent?.includes('Has Data'));
+      expect(item?.textContent?.trim()).toMatch(/Has Data\s*—/);
+    }
+    httpMock.verify();
   });
 });

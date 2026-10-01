@@ -40,7 +40,12 @@ export async function selectMatOption(
 ): Promise<void> {
   const dialog = page.locator('mat-dialog-container');
   const scope = (await dialog.count()) > 0 ? dialog : page.locator('body');
-  await scope.getByRole('combobox', { name: label }).click();
+  const combobox = scope.getByRole('combobox', { name: label, exact: true });
+  if (await combobox.evaluate((element) => element.tagName === 'INPUT')) {
+    await combobox.fill(typeof optionText === 'string' ? optionText : '');
+  } else {
+    await combobox.click();
+  }
   if (typeof optionText === 'string') {
     await page.getByRole('option', { name: optionText, exact: true }).click();
     return;

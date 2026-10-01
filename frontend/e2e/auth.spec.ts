@@ -30,7 +30,7 @@ test.describe('authentication', () => {
 
     await expect(page).toHaveURL(/\/dashboard$/);
     await expect(
-      page.getByRole('heading', { level: 1, name: /Welcome to TechConnect/i }),
+      page.getByRole('heading', { level: 1, name: /Biomodels Management at IRYCIS Biobank/i }),
     ).toBeVisible();
 
     await page.getByRole('button', { name: 'Open account menu' }).click();

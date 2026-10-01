@@ -10,6 +10,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { httpResource } from '@angular/common/http';
 import { API_URL } from '@core/tokens/api-url.token';
 import { Patient, Tumor } from '@generated/models';
+import { synchronizeAutocompleteSelection } from '@shared/forms/autocomplete-selection';
 
 type PatientOption = Pick<Patient, 'nhc' | 'sex'>;
 
@@ -180,9 +181,19 @@ export class TumorFormComponent {
     }),
   });
 
+  constructor() {
+    synchronizeAutocompleteSelection({
+      search: this.patientSearch,
+      selection: this.form.controls.patient_nhc,
+      emptyValue: '',
+    });
+  }
+
   filteredPatients(): PatientOption[] {
     const query = this.patientSearch.value.trim().toLowerCase();
-    return this.patientsResource.value().filter((patient) => patient.nhc.toLowerCase().includes(query));
+    return this.patientsResource
+      .value()
+      .filter((patient) => patient.nhc.toLowerCase().includes(query));
   }
 
   selectPatient(patientNhc: string): void {

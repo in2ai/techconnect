@@ -86,7 +86,7 @@ uv run --package techconnect-schemas init-db
 Patient (1) ──────── (N) Tumor
                       ├── (N) Sample
                       ├── (N) Biomodel ──────── (N) Passage
-                      │                           ├── (0..1) PDXTrial ──────── (0..1) Mouse ──────── (N) Implant ──────── (N) Measure
+                      │                           ├── (0..1) PDXTrial ──────── (N) Mouse ──────── (N) Implant ──────── (N) Measure
                       │                           ├── (0..1) PDOTrial
                       │                           ├── (0..1) LCTrial ──────── (0..1) FACS
                       │                           ├── (N) UsageRecord

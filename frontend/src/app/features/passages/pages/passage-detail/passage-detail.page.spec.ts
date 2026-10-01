@@ -22,12 +22,14 @@ import {
 } from '@generated/models';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
+import { GenericEntityDialogData } from '@shared/components/generic-entity-form/generic-entity-form.component';
 import { PassageService } from '../../services/passage.service';
 import { PassageDetailPage } from './passage-detail.page';
 
 interface SetupOptions {
   id?: string;
   dialogResult?: unknown;
+  pdx?: Partial<PDXTrial>;
   deleteResult?: 'ok' | 'error';
 }
 
@@ -80,6 +82,7 @@ async function setup(opts: SetupOptions = {}) {
     id,
     biomodel_id: 'BM-1',
     success: true,
+    status: false,
   } as Passage);
   httpMock.expectOne('/api/biomodels').flush([
     {
@@ -105,11 +108,13 @@ async function setup(opts: SetupOptions = {}) {
       tumor_organ: null,
     },
   ] as Biomodel[]);
-  httpMock.expectOne('/api/pdx-trials').flush([{ id } as PDXTrial]);
+  httpMock.expectOne('/api/pdx-trials').flush([{ id, ...opts.pdx } as PDXTrial]);
   httpMock.expectOne('/api/pdo-trials').flush([]);
   httpMock.expectOne('/api/lc-trials').flush([{ id } as LCTrial]);
   httpMock.expectOne('/api/implants').flush([]);
-  httpMock.expectOne('/api/mice').flush([{ id: 'M-1', pdx_trial_id: id } as Mouse]);
+  httpMock
+    .expectOne('/api/mice')
+    .flush([{ id: 'M-1', pdx_trial_id: id, sex: 'M', strain: 'NSG', proex: 'PROEX-1' } as Mouse]);
   httpMock
     .expectOne('/api/usage-records')
     .flush([
@@ -124,7 +129,9 @@ async function setup(opts: SetupOptions = {}) {
   httpMock.expectOne('/api/facs').flush([{ id: 'F-1', lc_trial_id: id } as FACS]);
   httpMock
     .expectOne('/api/trial-genomic-sequencings')
-    .flush([{ id: 'G-1', passage_id: id, has_data: true, data: 'seq-data' } as TrialGenomicSequencing]);
+    .flush([
+      { id: 'G-1', passage_id: id, has_data: null, data: 'seq-data' } as TrialGenomicSequencing,
+    ]);
   httpMock
     .expectOne('/api/trial-molecular-data')
     .flush([{ id: 'MO-1', passage_id: id, has_data: false, data: null } as TrialMolecularData]);
@@ -179,5 +186,43 @@ describe('PassageDetailPage', () => {
     const { fixture, notification } = await setup({ dialogResult: true, deleteResult: 'error' });
     fixture.componentInstance.confirmDelete();
     expect(notification.error).toHaveBeenCalled();
+  });
+
+  it('shows populated PDX fields, mouse metadata, and inactive status', async () => {
+    const { fixture, httpMock } = await setup({ pdx: { similarity: 0, has_ihq_data: true } });
+    const text = fixture.nativeElement.textContent as string;
+    expect(text).toContain('Similarity');
+    const details = Array.from(
+      fixture.nativeElement.querySelectorAll('.detail-item') as NodeListOf<HTMLElement>,
+    );
+    expect(details.find((item) => item.textContent?.includes('Similarity'))?.textContent).toContain(
+      '0',
+    );
+    expect(
+      details.find((item) => item.textContent?.includes('Has IHQ Data'))?.textContent,
+    ).toContain('Yes');
+    expect(details.find((item) => item.textContent?.includes('Status'))?.textContent).toContain(
+      'Inactive',
+    );
+    expect(text).toContain('NSG');
+    expect(text).toContain('PROEX-1');
+    expect(text).not.toContain('Female');
+    httpMock.verify();
+  });
+
+  it('provides editable fields for every stored PDX value', async () => {
+    const { fixture, httpMock } = await setup();
+    fixture.componentInstance.openPdxTrialForm(fixture.componentInstance.currentPdxTrial()!);
+    const dialog = TestBed.inject(MatDialog);
+    const data = vi.mocked(dialog.open).mock.calls[0][1]?.data as GenericEntityDialogData;
+    const fields = data.fields;
+    expect(fields.map((field) => field.name)).toEqual([
+      'ffpe',
+      'he_slide',
+      'ihq_data',
+      'has_ihq_data',
+      'similarity',
+    ]);
+    httpMock.verify();
   });
 });

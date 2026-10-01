@@ -172,4 +172,23 @@ describe('BiomodelDetailPage', () => {
     fixture.componentInstance.confirmDelete();
     expect(biomodelService.delete).not.toHaveBeenCalled();
   });
+
+  it('links the parent passage and displays passage status consistently', async () => {
+    const { fixture, httpMock } = await setup({
+      biomodel: {
+        id: 'B-1',
+        type: 'PDX',
+        tumor_biobank_code: 'T-1',
+        parent_passage_id: 'PARENT-P1',
+      } as Biomodel,
+      passages: [{ id: 'B-1-P1', biomodel_id: 'B-1', status: false } as Passage],
+    });
+    const link = fixture.nativeElement.querySelector(
+      'a[href="/passages/PARENT-P1"]',
+    ) as HTMLAnchorElement;
+    expect(link.textContent).toBe('PARENT-P1');
+    expect(fixture.nativeElement.querySelector('.mat-column-status').textContent).not.toBe('false');
+    expect(fixture.nativeElement.textContent).toContain('Inactive');
+    httpMock.verify();
+  });
 });

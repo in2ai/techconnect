@@ -1,21 +1,31 @@
+import { HttpErrorResponse, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
+import { errorInterceptor } from '@core/interceptors/error.interceptor';
 import { NotificationService } from '@core/services/notification.service';
+import { API_URL } from '@core/tokens/api-url.token';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { LoginPage } from './login.page';
 
 function setup(opts: { loginResult: 'ok' | 'error'; redirectUrl?: string }) {
   const loginMock = vi.fn(() =>
-    opts.loginResult === 'ok' ? of({ id: 'u-1' }) : throwError(() => new Error('bad')),
+    opts.loginResult === 'ok'
+      ? of({ id: 'u-1' })
+      : throwError(() => new HttpErrorResponse({ status: 401 })),
   );
   const authMock = {
     login: loginMock,
     consumeRedirectUrl: vi.fn(() => opts.redirectUrl ?? '/dashboard'),
-  } as unknown as AuthService;
-  const notification = { success: vi.fn(), error: vi.fn() };
+  };
+  const notification = {
+    success: vi.fn(),
+    error: vi.fn(),
+    requestError: NotificationService.prototype.requestError,
+  };
 
   TestBed.configureTestingModule({
     imports: [LoginPage],
@@ -80,5 +90,50 @@ describe('LoginPage', () => {
     expect(fixture.componentInstance.hidePassword()).toBe(true);
     fixture.componentInstance.hidePassword.set(false);
     expect(fixture.componentInstance.hidePassword()).toBe(false);
+  });
+
+  it.each([
+    { status: 401, message: 'Invalid email or password.' },
+    { status: 500, message: 'A server error occurred. Please try again later.' },
+    { status: 0, message: 'Unable to connect to the server. Please check your connection.' },
+  ])('shows one appropriate login error for HTTP $status', ({ status, message }) => {
+    const notification = {
+      success: vi.fn(),
+      error: vi.fn(),
+      requestError: NotificationService.prototype.requestError,
+    };
+    TestBed.configureTestingModule({
+      imports: [LoginPage],
+      providers: [
+        provideRouter([]),
+        provideNoopAnimations(),
+        provideHttpClient(withInterceptors([errorInterceptor])),
+        provideHttpClientTesting(),
+        { provide: API_URL, useValue: '/api' },
+        { provide: NotificationService, useValue: notification },
+      ],
+    });
+    const fixture = TestBed.createComponent(LoginPage);
+    fixture.componentInstance.form.setValue({ email: 'admin@example.com', password: 'test' });
+    fixture.componentInstance.submit();
+    const http = TestBed.inject(HttpTestingController);
+    http.expectOne('/api/auth/login').flush(null, { status, statusText: 'Login failed' });
+
+    expect(notification.error).toHaveBeenCalledExactlyOnceWith(message);
+    expect(notification.success).not.toHaveBeenCalled();
+    expect(fixture.componentInstance.isSubmitting()).toBe(false);
+    http.verify();
+  });
+
+  it('reports unexpected login failures without blaming the credentials', () => {
+    const { fixture, loginMock, notification } = setup({ loginResult: 'error' });
+    loginMock.mockReturnValue(throwError(() => new Error('unexpected failure')));
+    fixture.componentInstance.form.setValue({ email: 'admin@example.com', password: 'test' });
+    fixture.componentInstance.submit();
+
+    expect(notification.error).toHaveBeenCalledExactlyOnceWith(
+      'Unable to sign in. Please try again.',
+    );
+    expect(fixture.componentInstance.isSubmitting()).toBe(false);
   });
 });

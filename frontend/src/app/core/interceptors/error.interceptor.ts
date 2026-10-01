@@ -8,6 +8,10 @@ function mapDetailMessage(detail: string): string {
     return $localize`:@@biomodelTumorLimitToast:This tumor already has the maximum of 3 biomodels.`;
   }
 
+  if (detail === 'Biomodel type cannot be changed after passages have been created.') {
+    return $localize`:@@biomodelTypeLockedError:Biomodel type cannot be changed after passages have been created.`;
+  }
+
   return detail;
 }
 
@@ -29,9 +33,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       } else if (error.status >= 500) {
         message = 'A server error occurred. Please try again later.';
       } else if (error.error?.detail) {
-        message = typeof error.error.detail === 'string'
-          ? mapDetailMessage(error.error.detail)
-          : 'Request failed. Please try again.';
+        message =
+          typeof error.error.detail === 'string'
+            ? mapDetailMessage(error.error.detail)
+            : 'Request failed. Please try again.';
       }
 
       notification.error(message);

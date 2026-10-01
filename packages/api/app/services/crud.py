@@ -5,10 +5,13 @@ from typing import Any, TypeVar
 from uuid import UUID
 
 from fastapi import HTTPException
+from fastapi.exceptions import RequestValidationError
+from pydantic import ValidationError
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload, selectinload
 from sqlmodel import SQLModel, Session, select, func
 
-from models import FACS, Biomodel, LCTrial, PDOTrial, PDXTrial
+from models import FACS, Biomodel, LCTrial, PDOTrial, PDXTrial, Passage
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 
@@ -64,13 +67,17 @@ def _format_database_error(model: type[ModelType], raw_detail: str, *, action: s
     model_name = _format_model_name(model)
 
     if action == "delete":
-        if "FOREIGN KEY constraint failed" in raw_detail or _NOT_NULL_CONSTRAINT_PATTERN.search(raw_detail):
+        if "FOREIGN KEY constraint failed" in raw_detail or _NOT_NULL_CONSTRAINT_PATTERN.search(
+            raw_detail
+        ):
             return f"This {model_name} cannot be deleted because related records still exist."
         return f"Could not delete this {model_name}. Please try again."
 
     unique_match = _UNIQUE_CONSTRAINT_PATTERN.search(raw_detail)
     if unique_match:
-        columns = [column.strip().split(".")[-1] for column in unique_match.group("columns").split(",")]
+        columns = [
+            column.strip().split(".")[-1] for column in unique_match.group("columns").split(",")
+        ]
         if len(columns) == 1:
             field_name = _format_field_name(columns[0])
             return f"A {model_name} with this {field_name} already exists."
@@ -90,7 +97,9 @@ def _format_database_error(model: type[ModelType], raw_detail: str, *, action: s
     return f"Could not save this {model_name}. Please review the input and try again."
 
 
-def _check_constraints(session: Session, model: type[ModelType], payload_data: dict, item_id: Any = None) -> None:
+def _check_constraints(
+    session: Session, model: type[ModelType], payload_data: dict, item_id: Any = None
+) -> None:
     if model.__name__ == "Biomodel":
         if item_id is None:
             biomodel_id = payload_data.get("id")
@@ -98,10 +107,25 @@ def _check_constraints(session: Session, model: type[ModelType], payload_data: d
                 raise HTTPException(status_code=400, detail="Enter a biomodel ID.")
             if session.get(model, biomodel_id) is not None:
                 raise HTTPException(status_code=400, detail="This biomodel ID already exists.")
+        else:
+            biomodel = session.get(Biomodel, item_id)
+            if biomodel is not None and payload_data.get("type") != biomodel.type:
+                passage_count = session.scalar(
+                    select(func.count()).select_from(Passage).where(Passage.biomodel_id == item_id)
+                )
+                if passage_count:
+                    raise HTTPException(
+                        status_code=409,
+                        detail="Biomodel type cannot be changed after passages have been created.",
+                    )
 
         tumor_code = payload_data.get("tumor_biobank_code")
         if tumor_code:
-            stmt = select(func.count()).select_from(model).where(getattr(model, "tumor_biobank_code") == tumor_code)
+            stmt = (
+                select(func.count())
+                .select_from(model)
+                .where(getattr(model, "tumor_biobank_code") == tumor_code)
+            )
             if item_id:
                 stmt = stmt.where(getattr(model, "id") != item_id)
             if (session.scalar(stmt) or 0) >= 3:
@@ -109,8 +133,10 @@ def _check_constraints(session: Session, model: type[ModelType], payload_data: d
 
         parent_passage_id = payload_data.get("parent_passage_id")
         if parent_passage_id:
-            stmt = select(func.count()).select_from(model).where(
-                getattr(model, "parent_passage_id") == parent_passage_id
+            stmt = (
+                select(func.count())
+                .select_from(model)
+                .where(getattr(model, "parent_passage_id") == parent_passage_id)
             )
             if item_id:
                 stmt = stmt.where(getattr(model, "id") != item_id)
@@ -120,7 +146,11 @@ def _check_constraints(session: Session, model: type[ModelType], payload_data: d
     elif model.__name__ == "Implant":
         mouse_uuid = _as_uuid(payload_data.get("mouse_id"))
         if mouse_uuid is not None:
-            stmt = select(func.count()).select_from(model).where(getattr(model, "mouse_id") == mouse_uuid)
+            stmt = (
+                select(func.count())
+                .select_from(model)
+                .where(getattr(model, "mouse_id") == mouse_uuid)
+            )
             if item_id:
                 stmt = stmt.where(getattr(model, "id") != item_id)
             if (session.scalar(stmt) or 0) >= 2:
@@ -202,10 +232,6 @@ def _prepare_create_payload(
     return payload_data
 
 
-
-from sqlalchemy.orm import joinedload, selectinload
-
-
 def list_items(
     session: Session,
     model: type[ModelType],
@@ -232,15 +258,15 @@ def get_item_or_404(session: Session, model: type[ModelType], item_id: str) -> M
         item = session.exec(statement).first()
     elif model.__name__ == "Mouse":
         statement = (
-            select(model)
-            .where(getattr(model, "id") == pk)
-            .options(selectinload(model.implants))
+            select(model).where(getattr(model, "id") == pk).options(selectinload(model.implants))
         )
         item = session.exec(statement).first()
     else:
         item = session.get(model, pk)
     if item is None:
-        raise HTTPException(status_code=404, detail=f"{_sentence_case(_format_model_name(model))} not found.")
+        raise HTTPException(
+            status_code=404, detail=f"{_sentence_case(_format_model_name(model))} not found."
+        )
     return item
 
 
@@ -249,20 +275,18 @@ def create_item(session: Session, model: type[ModelType], payload: ModelType) ->
     payload_dump = _prepare_create_payload(session, model, payload.model_dump())
     _check_constraints(session, model, payload_dump)
 
-    validated = model.model_validate(payload_dump)
+    validated = _validate_payload(model, payload_dump)
     session.add(validated)
+    with session.no_autoflush:
+        _create_passage_subtype_defaults(session, validated)
     _commit_or_400(session, model, action="save")
     session.refresh(validated)
-
-    _create_passage_subtype_defaults(session, model, payload_dump, validated)
     return validated
 
 
 def _create_passage_subtype_defaults(
     session: Session,
-    model: type[ModelType],
-    payload_data: dict,
-    validated: ModelType,
+    passage: SQLModel,
 ) -> None:
     """Create the empty sub-records (PDXTrial/LCTrial/PDOTrial + FACS) tied to a new Passage.
 
@@ -270,15 +294,10 @@ def _create_passage_subtype_defaults(
     so that the "In Vivo Data" (PDX) and "FACS" (LC) tabs and their "Add" actions are
     immediately available for newly created passages of matching biomodel types.
     """
-    if model.__name__ != "Passage":
+    if not isinstance(passage, Passage):
         return
-
-    biomodel_id = payload_data.get("biomodel_id")
-    passage_id = getattr(validated, "id", None)
-    if not biomodel_id or not passage_id:
-        return
-
-    biomodel = session.get(Biomodel, biomodel_id)
+    passage_id = passage.id
+    biomodel = session.get(Biomodel, passage.biomodel_id)
     biomodel_type = (biomodel.type or "").upper() if biomodel is not None else ""
 
     if biomodel_type == "PDX":
@@ -288,17 +307,6 @@ def _create_passage_subtype_defaults(
         session.add(FACS.model_validate({"lc_trial_id": passage_id}))
     elif biomodel_type == "PDO":
         session.add(PDOTrial.model_validate({"id": passage_id}))
-
-    if not session.new:
-        return
-
-    try:
-        session.commit()
-    except SQLAlchemyError as exc:
-        session.rollback()
-        raw_detail = str(getattr(exc, "orig", exc))
-        detail = _format_database_error(model, raw_detail, action="save")
-        raise HTTPException(status_code=400, detail=detail) from exc
 
 
 def update_item(
@@ -316,8 +324,8 @@ def update_item(
 
     merged_data = {**db_item.model_dump(), **payload_data}
     _check_constraints(session, model, merged_data, _coerce_pk(model, item_id))
-    
-    validated_item = model.model_validate(merged_data)
+
+    validated_item = _validate_payload(model, merged_data)
     validated_data = validated_item.model_dump()
     clean_data = {field: validated_data[field] for field in payload_data}
 
@@ -326,6 +334,17 @@ def update_item(
     _commit_or_400(session, model, action="save")
     session.refresh(db_item)
     return db_item
+
+
+def _validate_payload(model: type[ModelType], data: dict[str, Any]) -> ModelType:
+    """Report request validation failures before persisting table-model input."""
+    try:
+        return model.model_validate(data)
+    except ValidationError as exc:
+        errors = [
+            {**error, "loc": ("body", *error["loc"])} for error in exc.errors(include_context=False)
+        ]
+        raise RequestValidationError(errors) from exc
 
 
 def delete_item(session: Session, model: type[ModelType], item_id: str) -> dict[str, bool]:

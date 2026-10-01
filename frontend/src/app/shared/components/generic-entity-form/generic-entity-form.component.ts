@@ -1,10 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -24,7 +29,7 @@ export interface EntityField {
   required?: boolean;
   /** When true, control is disabled after init (e.g. preset FK from context). Use with defaultValues. */
   disabled?: boolean;
-  options?: { value: any; label: string }[];
+  options?: { value: string | number | boolean | null; label: string }[];
   autocompleteOptions?: string[];
   min?: number;
   max?: number;
@@ -34,8 +39,8 @@ export interface GenericEntityDialogData {
   title: string;
   endpoint: string; // e.g. '/implants'
   fields: EntityField[];
-  entity?: any; // the object being edited
-  defaultValues?: Record<string, any>; // default fields like mouse_id: 'auto'
+  entity?: object | null;
+  defaultValues?: Record<string, unknown>;
 }
 
 /** Values for native `<input type="date">` (yyyy-MM-dd). */
@@ -88,7 +93,6 @@ function applyPayloadFieldTransforms(
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatCheckboxModule,
     MatAutocompleteModule,
     NumericInputDirective,
   ],
@@ -107,12 +111,7 @@ function applyPayloadFieldTransforms(
           @if (field.type === 'autocomplete') {
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>{{ field.label }}</mat-label>
-              <input
-                matInput
-                type="text"
-                [formControlName]="field.name"
-                [matAutocomplete]="auto"
-              />
+              <input matInput type="text" [formControlName]="field.name" [matAutocomplete]="auto" />
               <mat-autocomplete #auto="matAutocomplete">
                 @for (opt of getFilteredAutocompleteOptions(field); track opt) {
                   <mat-option [value]="opt">{{ opt }}</mat-option>
@@ -144,9 +143,14 @@ function applyPayloadFieldTransforms(
           }
 
           @if (field.type === 'boolean') {
-            <mat-checkbox [formControlName]="field.name" class="full-width">
-              {{ field.label }}
-            </mat-checkbox>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ field.label }}</mat-label>
+              <mat-select [formControlName]="field.name">
+                <mat-option [value]="null">—</mat-option>
+                <mat-option [value]="true" i18n="@@yesOpt">Yes</mat-option>
+                <mat-option [value]="false" i18n="@@noOpt">No</mat-option>
+              </mat-select>
+            </mat-form-field>
           }
 
           @if (field.type === 'select') {
@@ -165,7 +169,9 @@ function applyPayloadFieldTransforms(
     <mat-dialog-actions align="end">
       @if (auth.isAdmin()) {
         @if (isEdit) {
-          <button mat-button color="warn" (click)="deleteEntity()" i18n="@@deleteBtn">Delete</button>
+          <button mat-button color="warn" (click)="deleteEntity()" i18n="@@deleteBtn">
+            Delete
+          </button>
         }
         <span class="spacer"></span>
         <button mat-button mat-dialog-close i18n="@@cancelBtn">Cancel</button>
@@ -175,7 +181,9 @@ function applyPayloadFieldTransforms(
           [disabled]="form.invalid || submitting"
           (click)="save()"
           i18n="@@saveBtn"
-        >Save</button>
+        >
+          Save
+        </button>
       } @else {
         <span class="spacer"></span>
         <button mat-button mat-dialog-close i18n="@@closeAction">Close</button>
@@ -195,9 +203,6 @@ function applyPayloadFieldTransforms(
       .spacer {
         flex: 1 1 auto;
       }
-      mat-checkbox {
-        margin-bottom: 8px;
-      }
     `,
   ],
 })
@@ -210,13 +215,14 @@ export class GenericEntityFormComponent implements OnInit {
   apiUrl = inject(API_URL);
   auth = inject(AuthService);
 
-  form!: FormGroup;
+  form = new FormGroup<Record<string, FormControl<unknown>>>({});
+  private readonly entityValues: Record<string, unknown> = { ...this.data.entity };
   isEdit = false;
   submitting = false;
 
   ngOnInit() {
     this.isEdit = !!this.data.entity;
-    const group: Record<string, any> = {};
+    const group: Record<string, FormControl<unknown>> = {};
 
     for (const field of this.data.fields) {
       const validators = [...(field.required ? [Validators.required] : [])];
@@ -226,9 +232,9 @@ export class GenericEntityFormComponent implements OnInit {
         if (field.max !== undefined) validators.push(Validators.max(field.max));
       }
 
-      let initValue = null;
+      let initValue: unknown = null;
       if (this.isEdit && this.data.entity) {
-        initValue = this.data.entity[field.name];
+        initValue = this.entityValues[field.name];
       } else if (this.data.defaultValues && field.name in this.data.defaultValues) {
         initValue = this.data.defaultValues[field.name];
       }
@@ -237,7 +243,7 @@ export class GenericEntityFormComponent implements OnInit {
         initValue = toDateInputValue(initValue);
       }
 
-      group[field.name] = [initValue, validators];
+      group[field.name] = this.fb.control<unknown>(initValue, validators);
     }
     this.form = this.fb.group(group);
 
@@ -270,7 +276,7 @@ export class GenericEntityFormComponent implements OnInit {
     applyPayloadFieldTransforms(payload, this.data.fields);
 
     const request = this.isEdit
-      ? this.http.patch(`${this.apiUrl}${this.data.endpoint}/${this.data.entity.id}`, payload)
+      ? this.http.patch(`${this.apiUrl}${this.data.endpoint}/${this.entityValues['id']}`, payload)
       : this.http.post(`${this.apiUrl}${this.data.endpoint}`, payload);
 
     request.subscribe({
@@ -289,7 +295,7 @@ export class GenericEntityFormComponent implements OnInit {
     if (!confirm('Are you sure you want to delete this item?')) return;
 
     this.submitting = true;
-    this.http.delete(`${this.apiUrl}${this.data.endpoint}/${this.data.entity.id}`).subscribe({
+    this.http.delete(`${this.apiUrl}${this.data.endpoint}/${this.entityValues['id']}`).subscribe({
       next: () => {
         this.notification.success('Item deleted');
         this.dialogRef.close(true);

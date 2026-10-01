@@ -260,18 +260,20 @@ import { TumorService } from '../../services/tumor.service';
                         class="detail-value"
                         style="display: flex; align-items: center; gap: 4px;"
                       >
-                        @if (genomic.has_data) {
+                        @if (genomic.has_data === true) {
                           <mat-icon
                             color="primary"
                             style="font-size: 20px; width: 20px; height: 20px;"
                             >check_circle</mat-icon
                           >
                           <span i18n="@@yesLbl">Yes</span>
-                        } @else {
+                        } @else if (genomic.has_data === false) {
                           <mat-icon color="warn" style="font-size: 20px; width: 20px; height: 20px;"
                             >cancel</mat-icon
                           >
                           <span i18n="@@noLbl">No</span>
+                        } @else {
+                          —
                         }
                       </span>
                     </div>
@@ -343,18 +345,20 @@ import { TumorService } from '../../services/tumor.service';
                         class="detail-value"
                         style="display: flex; align-items: center; gap: 4px;"
                       >
-                        @if (molecular.has_data) {
+                        @if (molecular.has_data === true) {
                           <mat-icon
                             color="primary"
                             style="font-size: 20px; width: 20px; height: 20px;"
                             >check_circle</mat-icon
                           >
                           <span i18n="@@yesLbl">Yes</span>
-                        } @else {
+                        } @else if (molecular.has_data === false) {
                           <mat-icon color="warn" style="font-size: 20px; width: 20px; height: 20px;"
                             >cancel</mat-icon
                           >
                           <span i18n="@@noLbl">No</span>
+                        } @else {
+                          —
                         }
                       </span>
                     </div>

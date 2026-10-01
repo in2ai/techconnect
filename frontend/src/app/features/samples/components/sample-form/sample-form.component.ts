@@ -3,13 +3,13 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { API_URL } from '@core/tokens/api-url.token';
 import { Sample, Tumor } from '@generated/models';
+import { synchronizeAutocompleteSelection } from '@shared/forms/autocomplete-selection';
 
 type TumorOption = Pick<Tumor, 'biobank_code'>;
 
@@ -28,7 +28,6 @@ export interface SampleFormData {
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatCheckboxModule,
     ReactiveFormsModule,
   ],
   template: `
@@ -60,6 +59,9 @@ export interface SampleFormData {
               <mat-option [value]="tumor.biobank_code">{{ tumor.biobank_code }}</mat-option>
             }
           </mat-autocomplete>
+          @if (tumorSearch.hasError('invalidSelection')) {
+            <mat-error i18n="@@selectTumorOptionError">Select a tumor from the options.</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -80,25 +82,46 @@ export interface SampleFormData {
             <mat-option value="Bone/Hard tissue" i18n="@@hardPartsOpt">Bone/Hard tissue</mat-option>
           </mat-select>
         </mat-form-field>
-        <div class="checkbox-group">
-          <mat-checkbox formControlName="has_serum" i18n="@@sampleHasSerumLbl"
-            >Has Serum</mat-checkbox
-          >
-          <mat-checkbox formControlName="has_buffy" i18n="@@sampleHasBuffyCoatLbl"
-            >Has Buffy Coat</mat-checkbox
-          >
-          <mat-checkbox formControlName="has_plasma" i18n="@@sampleHasPlasmaLbl"
-            >Has Plasma</mat-checkbox
-          >
-          <mat-checkbox formControlName="has_tumor_tissue_oct" i18n="@@sampleHasTumorTissueOctLbl"
-            >Has Tumor Tissue OCT</mat-checkbox
-          >
-          <mat-checkbox
-            formControlName="has_non_tumor_tissue_oct"
-            i18n="@@sampleHasNonTumorTissueOctLbl"
-            >Has Non-Tumor Tissue OCT</mat-checkbox
-          >
-        </div>
+        <mat-form-field appearance="outline">
+          <mat-label i18n="@@sampleHasSerumLbl">Has Serum</mat-label>
+          <mat-select formControlName="has_serum">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option [value]="true" i18n="@@yesOpt">Yes</mat-option>
+            <mat-option [value]="false" i18n="@@noOpt">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label i18n="@@sampleHasBuffyCoatLbl">Has Buffy Coat</mat-label>
+          <mat-select formControlName="has_buffy">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option [value]="true" i18n="@@yesOpt">Yes</mat-option>
+            <mat-option [value]="false" i18n="@@noOpt">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label i18n="@@sampleHasPlasmaLbl">Has Plasma</mat-label>
+          <mat-select formControlName="has_plasma">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option [value]="true" i18n="@@yesOpt">Yes</mat-option>
+            <mat-option [value]="false" i18n="@@noOpt">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label i18n="@@sampleHasTumorTissueOctLbl">Has Tumor Tissue OCT</mat-label>
+          <mat-select formControlName="has_tumor_tissue_oct">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option [value]="true" i18n="@@yesOpt">Yes</mat-option>
+            <mat-option [value]="false" i18n="@@noOpt">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label i18n="@@sampleHasNonTumorTissueOctLbl">Has Non-Tumor Tissue OCT</mat-label>
+          <mat-select formControlName="has_non_tumor_tissue_oct">
+            <mat-option [value]="null">—</mat-option>
+            <mat-option [value]="true" i18n="@@yesOpt">Yes</mat-option>
+            <mat-option [value]="false" i18n="@@noOpt">No</mat-option>
+          </mat-select>
+        </mat-form-field>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
@@ -118,13 +141,6 @@ export interface SampleFormData {
       grid-template-columns: 1fr 1fr;
       gap: 0.5rem;
       min-width: 360px;
-    }
-    .checkbox-group {
-      grid-column: 1 / -1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      padding: 0.5rem 0;
     }
   `,
 })
@@ -162,6 +178,14 @@ export class SampleFormComponent {
       { validators: [Validators.required] },
     ),
   });
+
+  constructor() {
+    synchronizeAutocompleteSelection({
+      search: this.tumorSearch,
+      selection: this.form.controls.tumor_biobank_code,
+      emptyValue: '',
+    });
+  }
 
   filteredTumors(): TumorOption[] {
     const query = this.tumorSearch.value.trim().toLowerCase();

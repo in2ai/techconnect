@@ -21,7 +21,7 @@ test('passages CRUD flow', async ({ page, request }) => {
   const suffix = uniqueSuffix();
   const patientNHC = `E2E-PP-${suffix}`;
   const biobankCode = `E2E-PT-${suffix}`;
-  const biomodelType = `PASS-BM-${suffix}`;
+  const biomodelType = 'PDX';
   const description = `Passage description ${suffix}`;
 
   let createdPatientNHC: string | null = null;
@@ -42,6 +42,7 @@ test('passages CRUD flow', async ({ page, request }) => {
     await page.getByRole('button', { name: 'Add Passage' }).click();
     const createDialog = page.locator('mat-dialog-container');
     await selectMatOption(page, 'Biomodel', biomodel.id);
+    await createDialog.getByLabel('Passage number').fill('P1');
     await createDialog.getByLabel('Description').fill(description);
     await createDialog.getByRole('button', { name: 'Create' }).click();
 

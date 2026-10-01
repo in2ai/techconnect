@@ -254,4 +254,22 @@ describe('GenericEntityFormComponent', () => {
     component.form.patchValue({ project: 'alpha' });
     expect(component.getFilteredAutocompleteOptions(autocompleteField)).toEqual(['Alpha Project']);
   });
+  it('submits null boolean values and zero similarity without coercing them', () => {
+    const { component, httpMock } = setup({
+      data: {
+        title: 'PDX Trial',
+        endpoint: '/pdx-trials',
+        fields: [
+          { name: 'has_ihq_data', label: 'Has IHQ Data', type: 'boolean' },
+          { name: 'similarity', label: 'Similarity', type: 'number' },
+        ],
+        entity: { id: 'BM-P1', has_ihq_data: true, similarity: 88.5 },
+      },
+    });
+    component.form.patchValue({ has_ihq_data: null, similarity: '0' });
+    component.save();
+    const req = httpMock.expectOne('/api/pdx-trials/BM-P1');
+    expect(req.request.body).toEqual({ has_ihq_data: null, similarity: 0 });
+    req.flush({});
+  });
 });

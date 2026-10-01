@@ -138,7 +138,8 @@ npm run build
 # Unit tests
 npm run test
 
-# End-to-end tests
+# End-to-end tests (keep the API running on port 8000 with a test database)
+npx playwright install chromium
 npm run test:e2e
 
 # Extract translation source files
