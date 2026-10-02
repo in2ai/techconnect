@@ -11,8 +11,15 @@ _password_hasher = PasswordHasher()
 
 
 def utc_now() -> datetime:
-    """Return a naive UTC timestamp for database comparisons and storage."""
-    return datetime.now(UTC).replace(tzinfo=None)
+    """Return a timezone-aware UTC timestamp for database comparisons and storage."""
+    return datetime.now(UTC)
+
+
+def ensure_utc(dt: datetime) -> datetime:
+    """Ensure a datetime is timezone-aware and represented in UTC."""
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=UTC)
+    return dt.astimezone(UTC)
 
 
 def normalize_email(email: str) -> str:

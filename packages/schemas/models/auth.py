@@ -8,8 +8,8 @@ from sqlmodel import Field, Relationship, SQLModel
 
 
 def utc_now() -> datetime:
-    """Return a naive UTC timestamp for database storage consistency."""
-    return datetime.now(UTC).replace(tzinfo=None)
+    """Return a timezone-aware UTC timestamp for database storage consistency."""
+    return datetime.now(UTC)
 
 
 class AuthUser(SQLModel, table=True):

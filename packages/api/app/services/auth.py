@@ -9,6 +9,7 @@ from sqlmodel import Session, select
 
 from app.core.config import get_settings
 from app.core.security import (
+    ensure_utc,
     generate_session_token,
     hash_password,
     hash_session_token,
@@ -101,7 +102,7 @@ def get_user_for_session_token(session: Session, token: str) -> AuthUser | None:
     if auth_session is None:
         return None
 
-    if auth_session.expires_at <= utc_now():
+    if ensure_utc(auth_session.expires_at) <= utc_now():
         session.delete(auth_session)
         session.commit()
         return None
