@@ -11,7 +11,7 @@ from uuid import UUID
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from fastapi import HTTPException, status
-from models import Biomodel, FACS, Implant, Measure, Mouse, Passage
+from models import Biomodel, FACS, Implant, Mouse, Passage
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 from pydantic import BaseModel, Field, ValidationError
@@ -109,7 +109,7 @@ MOUSE_RELATED_COLUMNS: tuple[DatasetColumnSpec, ...] = (
 
 def get_dataset_table_specs() -> tuple[DatasetTableSpec, ...]:
     """Return ordered dataset table specs for all supported domain entities."""
-    excluded_tables = {"implant", "measure"}
+    excluded_tables = {"implant"}
     return tuple(
         DatasetTableSpec(
             model=model,
@@ -141,8 +141,6 @@ def build_dataset_export_workbook(session: Session) -> bytes:
         for item in session.exec(select(table_spec.model)).all():
             worksheet.append(_export_workbook_row_values(session, table_spec, item))
 
-    _add_measure_export_sheet(workbook, session)
-
     buffer = BytesIO()
     workbook.save(buffer)
     workbook.close()
@@ -169,18 +167,6 @@ def _export_workbook_row_values(
         missing_implant_slots = 2 - min(len(implants), 2)
         values.extend([None, None, None, None] * missing_implant_slots)
     return values
-
-
-def _add_measure_export_sheet(workbook: Workbook, session: Session) -> None:
-    worksheet = workbook.create_sheet(title="measure")
-    columns = _get_model_columns(Measure)
-    worksheet.append([column.name for column in columns])
-    worksheet.append([_column_note(column) for column in columns])
-    worksheet.freeze_panes = "A3"
-    for cell in worksheet[1]:
-        cell.font = Font(bold=True)
-    for item in session.exec(select(Measure)).all():
-        worksheet.append([_serialize_value(getattr(item, column.name, None)) for column in columns])
 
 
 def import_dataset_workbook(
@@ -295,16 +281,6 @@ def build_dataset_export_csv_zip(session: Session) -> bytes:
                 writer.writerow(_export_workbook_row_values(session, table_spec, item))
             archive.writestr(f"{_sheet_name(table_spec)}.csv", csv_buffer.getvalue())
 
-        csv_buffer = StringIO()
-        writer = csv.writer(csv_buffer)
-        measure_columns = _get_model_columns(Measure)
-        writer.writerow([column.name for column in measure_columns])
-        for item in session.exec(select(Measure)).all():
-            writer.writerow(
-                [_serialize_value(getattr(item, column.name, None)) for column in measure_columns]
-            )
-        archive.writestr("measure.csv", csv_buffer.getvalue())
-
     return buffer.getvalue()
 
 
@@ -393,7 +369,9 @@ def _sheet_name(table_spec: DatasetTableSpec) -> str:
 
 
 def _dataset_foreign_key(foreign_key: str) -> str:
-    """Document shared passage identifiers while keeping subtype database FKs intact."""
+    """Document dataset references while keeping database foreign keys intact."""
+    if foreign_key == "implant.id":
+        return "mouse.implant_1_id or mouse.implant_2_id"
     table_name, _, column_name = foreign_key.partition(".")
     if table_name in DATASET_SHEET_NAME_ALIASES:
         table_name = "passage"
@@ -927,7 +905,8 @@ def _is_template_note_row(
 def _validate_foreign_keys(
     session: Session, table_spec: DatasetTableSpec, payload: dict[str, Any]
 ) -> None:
-    table_specs_by_name = {spec.table_name: spec for spec in get_dataset_table_specs()}
+    models_by_table_name = {spec.table_name: spec.model for spec in get_dataset_table_specs()}
+    models_by_table_name["implant"] = Implant
 
     for column in table_spec.columns:
         value = payload.get(column.name)
@@ -936,18 +915,20 @@ def _validate_foreign_keys(
 
         for foreign_key in column.foreign_keys:
             table_name, _, field_name = foreign_key.partition(".")
-            referenced_spec = table_specs_by_name.get(table_name)
-            if referenced_spec is None:
+            referenced_model = models_by_table_name.get(table_name)
+            if referenced_model is None:
                 continue
 
             referenced_primary_key = next(
-                spec_column for spec_column in referenced_spec.columns if spec_column.is_primary_key
+                spec_column
+                for spec_column in _get_model_columns(referenced_model)
+                if spec_column.is_primary_key
             )
             if field_name != referenced_primary_key.name:
                 continue
 
             referenced_value = _coerce_primary_key_value(value)
-            if session.get(referenced_spec.model, referenced_value) is None:
+            if session.get(referenced_model, referenced_value) is None:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Foreign key {column.name} references missing {table_name}.{field_name}: {value}",
@@ -977,6 +958,9 @@ def _build_readme_text() -> str:
         "Foreign key references below use the CSV filenames without the .csv extension.",
         "PDX, PDO, and LC passage sheets reuse the corresponding passage.id values.",
         "Mouse passage_id must identify a PDX passage; FACS passage_id must identify an LC passage.",
+        "Measure implant_id must identify an existing implant or match mouse.implant_1_id or mouse.implant_2_id in this import.",
+        "Measurement length and width are in mm; tumor volume is calculated automatically.",
+        "A blank measure.id creates a new measurement on every import. Export after the first import and preserve IDs to update measurements without duplicates.",
         "Boolean values accept true/false, yes/no, or 1/0. Dates should use YYYY-MM-DD.",
         "Authentication and session tables are excluded from this package.",
         "",
@@ -1004,6 +988,8 @@ def _column_note(column: DatasetColumnSpec) -> str:
     else:
         parts.append("optional")
     parts.append(f"type:{column.data_type}")
+    if column.name in {"length", "width"}:
+        parts.append("unit:mm")
     if column.format_hint:
         parts.append(f"format:{column.format_hint}")
     parts.extend(f"fk:{_dataset_foreign_key(foreign_key)}" for foreign_key in column.foreign_keys)

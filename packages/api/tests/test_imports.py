@@ -1,6 +1,7 @@
 import csv
 from collections.abc import Iterator
 from io import BytesIO, StringIO
+from uuid import uuid4
 from zipfile import ZipFile
 
 import pytest
@@ -217,7 +218,7 @@ def test_download_dataset_template_workbook(client: TestClient):
         assert "pdo_trial" not in workbook.sheetnames
         assert "lc_trial" not in workbook.sheetnames
         assert "implant" not in workbook.sheetnames
-        assert "measure" not in workbook.sheetnames
+        assert "measure" in workbook.sheetnames
         assert "implant_measure" not in workbook.sheetnames
 
         patient_headers = next(
@@ -240,6 +241,13 @@ def test_download_dataset_template_workbook(client: TestClient):
             "implant_2_type",
             "implant_2_date",
         )
+        measure_headers, measure_notes = list(
+            workbook["measure"].iter_rows(min_row=1, max_row=2, values_only=True)
+        )
+        assert measure_headers == ("id", "measure_date", "length", "width", "implant_id")
+        assert "fk:mouse.implant_1_id or mouse.implant_2_id" in measure_notes[-1]
+        assert "unit:mm" in measure_notes[2]
+        assert "unit:mm" in measure_notes[3]
         for sheet_name, legacy_column_name in (
             ("mouse", "pdx_trial_id"),
             ("facs", "lc_trial_id"),
@@ -255,12 +263,15 @@ def test_download_dataset_template_workbook(client: TestClient):
             for note in notes:
                 for part in note.split(" | "):
                     if part.startswith("fk:"):
-                        sheet_name, column_name = part.removeprefix("fk:").split(".")
-                        assert sheet_name in workbook.sheetnames
-                        headers = next(
-                            workbook[sheet_name].iter_rows(min_row=1, max_row=1, values_only=True)
-                        )
-                        assert column_name in headers
+                        for reference in part.removeprefix("fk:").split(" or "):
+                            sheet_name, column_name = reference.split(".")
+                            assert sheet_name in workbook.sheetnames
+                            headers = next(
+                                workbook[sheet_name].iter_rows(
+                                    min_row=1, max_row=1, values_only=True
+                                )
+                            )
+                            assert column_name in headers
     finally:
         workbook.close()
 
@@ -292,10 +303,13 @@ def test_download_dataset_template_csv_zip(client: TestClient):
         assert "pdo_trial.csv" not in names
         assert "lc_trial.csv" not in names
         assert "implant.csv" not in names
-        assert "measure.csv" not in names
+        assert "measure.csv" in names
         assert "implant_measure.csv" not in names
         patient_csv = archive.read("patient.csv").decode("utf-8").strip()
         readme = archive.read("README.txt").decode("utf-8")
+        assert archive.read("measure.csv").decode("utf-8").strip() == (
+            "id,measure_date,length,width,implant_id"
+        )
         for sheet_name, legacy_column_name in (("mouse", "pdx_trial_id"), ("facs", "lc_trial_id")):
             headers = archive.read(f"{sheet_name}.csv").decode("utf-8").strip().split(",")
             assert "passage_id" in headers
@@ -307,6 +321,9 @@ def test_download_dataset_template_csv_zip(client: TestClient):
     assert "- lc_passage: /api/lc-trials" in readme
     assert "mouse.passage_id -> passage.id" in readme
     assert "facs.passage_id -> passage.id" in readme
+    assert "measure.implant_id -> mouse.implant_1_id or mouse.implant_2_id" in readme
+    assert "length and width are in mm" in readme
+    assert "blank measure.id creates a new measurement on every import" in readme
     assert "- pdx_trial:" not in readme
     assert "- lc_trial:" not in readme
 
@@ -694,6 +711,9 @@ def test_import_dataset_workbook_creates_mouse_implants_from_mouse_sheet(
 
     template_response = client.get("/api/imports/dataset-template.xlsx")
     workbook = load_workbook(BytesIO(template_response.content))
+    # Older templates have no measurements sheet.
+    if "measure" in workbook.sheetnames:
+        del workbook["measure"]
     if legacy_notes:
         _use_legacy_foreign_key_notes(workbook, legacy_notes)
     patient_sheet = workbook["patient"]
@@ -889,6 +909,205 @@ def test_import_dataset_csv_zip_reports_partial_failures(client: TestClient):
     assert patient_response.status_code == 200
     assert tumor_response.status_code == 200
     assert missing_tumor_response.status_code == 404
+
+
+@pytest.fixture
+def implant_dataset_rows(client: TestClient) -> dict[str, list[dict[str, object]]]:
+    assert (
+        client.post(
+            "/api/auth/login",
+            json={"email": "admin@example.com", "password": "super-secret-password"},
+        ).status_code
+        == 200
+    )
+    implant_ids = [str(uuid4()), str(uuid4())]
+    return {
+        "patient": [{"nhc": "PAT-MEASURE"}],
+        "tumor": [{"biobank_code": "TUM-MEASURE", "patient_nhc": "PAT-MEASURE"}],
+        "biomodel": [{"id": "BM-MEASURE", "type": "PDX", "tumor_biobank_code": "TUM-MEASURE"}],
+        "passage": [{"id": "BM-MEASURE-P1", "biomodel_id": "BM-MEASURE"}],
+        "pdx_passage": [{"id": "BM-MEASURE-P1"}],
+        "mouse": [
+            {
+                "id": str(uuid4()),
+                "passage_id": "BM-MEASURE-P1",
+                "implant_1_id": implant_ids[0],
+                "implant_1_location": "left",
+                "implant_2_id": implant_ids[1],
+                "implant_2_location": "right",
+            }
+        ],
+        "measure": [
+            {
+                "id": str(uuid4()),
+                "measure_date": measure_date,
+                "length": length,
+                "width": width,
+                "implant_id": implant_id,
+            }
+            for implant_id, measure_date, length, width in (
+                (implant_ids[0], "2026-09-30", 10.5, 8),
+                (implant_ids[0], "2026-09-30", 11, 8.5),
+                (implant_ids[1], "2026-10-01", 12, 9),
+            )
+        ],
+    }
+
+
+def _upload_dataset(client: TestClient, format_name: str, content: bytes):
+    endpoint, filename, media_type = (
+        (
+            "dataset-workbook",
+            "dataset.xlsx",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        if format_name == "xlsx"
+        else ("dataset-csv-zip", "dataset.zip", "application/zip")
+    )
+    return client.post(f"/api/imports/{endpoint}", files={"file": (filename, content, media_type)})
+
+
+def _import_dataset_rows(
+    client: TestClient, format_name: str, rows_by_table: dict[str, list[dict[str, object]]]
+):
+    suffix = "xlsx" if format_name == "xlsx" else "zip"
+    template = client.get(f"/api/imports/dataset-template.{suffix}")
+    assert template.status_code == 200
+    buffer = BytesIO()
+    if format_name == "xlsx":
+        workbook = load_workbook(BytesIO(template.content))
+        for sheet_name in list(workbook.sheetnames):
+            if sheet_name not in rows_by_table:
+                del workbook[sheet_name]
+        for sheet_name, rows in rows_by_table.items():
+            sheet = workbook[sheet_name]
+            headers = [cell.value for cell in sheet[1]]
+            for row in rows:
+                sheet.append([row.get(header) for header in headers])
+        # Measurements must import after their parents regardless of sheet order.
+        if "measure" in workbook.sheetnames:
+            workbook.move_sheet("measure", offset=-workbook.sheetnames.index("measure"))
+        workbook.save(buffer)
+        workbook.close()
+    else:
+        with ZipFile(BytesIO(template.content)) as source, ZipFile(buffer, "w") as target:
+            for sheet_name, rows in reversed(list(rows_by_table.items())):
+                headers = next(
+                    csv.reader(StringIO(source.read(f"{sheet_name}.csv").decode("utf-8")))
+                )
+                csv_buffer = StringIO()
+                writer = csv.DictWriter(csv_buffer, fieldnames=headers)
+                writer.writeheader()
+                writer.writerows(rows)
+                target.writestr(f"{sheet_name}.csv", csv_buffer.getvalue())
+    response = _upload_dataset(client, format_name, buffer.getvalue())
+    assert response.status_code == 200, response.text
+    return response.json()
+
+
+@pytest.mark.parametrize("format_name", ["xlsx", "csv-zip"])
+def test_import_measures_for_new_implants_and_reimport_updates(
+    client: TestClient, implant_dataset_rows, format_name: str
+):
+    result = _import_dataset_rows(client, format_name, implant_dataset_rows)
+    assert result["errors"] == []
+    assert result["table_counts"]["implant"] == {"created": 2, "updated": 0}
+    assert result["table_counts"]["measure"] == {"created": 3, "updated": 0}
+    measures = client.get("/api/measures").json()
+    expected = implant_dataset_rows["measure"]
+    assert {row["id"] for row in measures} == {row["id"] for row in expected}
+    for row in expected:
+        actual = next(measure for measure in measures if measure["id"] == row["id"])
+        assert all(actual[key] == value for key, value in row.items())
+        assert actual["tumor_volume"] == row["length"] * row["width"] ** 2 / 2
+
+    expected[0]["length"] = 14
+    result = _import_dataset_rows(client, format_name, implant_dataset_rows)
+    assert result["errors"] == []
+    assert result["table_counts"]["implant"] == {"created": 0, "updated": 2}
+    assert result["table_counts"]["measure"] == {"created": 0, "updated": 3}
+    assert len(client.get("/api/measures").json()) == 3
+    updated = client.get(f"/api/measures/{expected[0]['id']}").json()
+    assert updated["length"] == 14
+    assert updated["tumor_volume"] == 448
+
+
+@pytest.mark.parametrize("format_name", ["xlsx", "csv-zip"])
+def test_import_measures_without_ids_for_existing_implant(
+    client: TestClient, implant_dataset_rows, format_name: str
+):
+    parents = {name: rows for name, rows in implant_dataset_rows.items() if name != "measure"}
+    assert _import_dataset_rows(client, format_name, parents)["errors"] == []
+    measures = [{**row, "id": None} for row in implant_dataset_rows["measure"][:2]]
+    result = _import_dataset_rows(client, format_name, {"measure": measures})
+    assert result["errors"] == []
+    assert result["table_counts"]["measure"] == {"created": 2, "updated": 0}
+    stored = client.get("/api/measures").json()
+    assert len(stored) == 2
+    assert len({row["id"] for row in stored}) == 2
+    assert {row["implant_id"] for row in stored} == {measures[0]["implant_id"]}
+
+    result = _import_dataset_rows(client, format_name, {"measure": measures})
+    assert result["table_counts"]["measure"] == {"created": 2, "updated": 0}
+    assert len(client.get("/api/measures").json()) == 4
+
+
+@pytest.mark.parametrize("format_name", ["xlsx", "csv-zip"])
+def test_import_measures_reports_invalid_rows_and_continues(
+    client: TestClient, implant_dataset_rows, format_name: str
+):
+    assert _import_dataset_rows(client, format_name, implant_dataset_rows)["errors"] == []
+    original = implant_dataset_rows["measure"][0]
+    invalid_rows = [
+        {**original, "implant_id": str(uuid4())},
+        {**original, "implant_id": "not-a-uuid"},
+        {**original, "implant_id": None},
+        {**original, "measure_date": "not-a-date"},
+        {**original, "length": "not-a-number"},
+    ]
+    valid_row = {**original, "id": str(uuid4()), "length": 15}
+    result = _import_dataset_rows(client, format_name, {"measure": [*invalid_rows, valid_row]})
+    assert result["rows_failed"] == 5
+    assert result["rows_imported"] == 1
+    assert result["table_counts"]["measure"] == {"created": 1, "updated": 0}
+    assert all(error["table"] == "measure" for error in result["errors"])
+    first_row = 3 if format_name == "xlsx" else 2
+    assert [error["row_number"] for error in result["errors"]] == list(
+        range(first_row, first_row + 5)
+    )
+    assert "references missing implant.id" in result["errors"][0]["message"]
+    retained = client.get(f"/api/measures/{original['id']}").json()
+    assert all(retained[key] == value for key, value in original.items())
+    assert client.get(f"/api/measures/{valid_row['id']}").json()["length"] == 15
+    assert len(client.get("/api/measures").json()) == 4
+
+
+@pytest.mark.parametrize("format_name", ["xlsx", "csv-zip"])
+def test_exported_measures_restore_with_implants(
+    client: TestClient, implant_dataset_rows, format_name: str
+):
+    assert _import_dataset_rows(client, format_name, implant_dataset_rows)["errors"] == []
+    before = client.get("/api/measures").json()
+    suffix = "xlsx" if format_name == "xlsx" else "zip"
+    exported = client.get(f"/api/imports/dataset.{suffix}")
+    assert exported.status_code == 200
+    if format_name == "xlsx":
+        workbook = load_workbook(BytesIO(exported.content), read_only=True)
+        assert workbook.sheetnames.count("measure") == 1
+        workbook.close()
+    else:
+        with ZipFile(BytesIO(exported.content)) as archive:
+            assert archive.namelist().count("measure.csv") == 1
+    assert client.delete("/api/passages/BM-MEASURE-P1").status_code == 200
+    assert client.get("/api/implants").json() == []
+    assert client.get("/api/measures").json() == []
+    restored = _upload_dataset(client, format_name, exported.content)
+    assert restored.status_code == 200, restored.text
+    assert restored.json()["errors"] == []
+    assert restored.json()["table_counts"]["measure"] == {"created": 3, "updated": 0}
+    assert sorted(client.get("/api/measures").json(), key=lambda row: row["id"]) == sorted(
+        before, key=lambda row: row["id"]
+    )
 
 
 def _build_workbook(*, age: int, diagnosis: str) -> BytesIO:

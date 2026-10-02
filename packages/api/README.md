@@ -71,6 +71,28 @@ uv run --package techconnect-api seed-db
 - entity routers from `entities.py` - protected CRUD routes for patients, tumors, biomodels, passages, samples, and related domain models
 - import/export routes from `imports.py` - dataset template download, dataset export, dataset import, and legacy PDX workbook import
 
+## Importing implant measurements
+
+The Excel template includes a `measure` sheet; the CSV ZIP template includes
+`measure.csv`. Each row records one measurement, with columns `id`, `measure_date`,
+`length`, `width`, and `implant_id`. Length and width are in mm; tumor volume is
+calculated automatically and is not an import column.
+
+Implants are entered in the `mouse` sheet using `implant_1_*` and `implant_2_*`
+columns. To import a new implant and its measurements together, supply its UUID
+in `mouse.implant_1_id` or `mouse.implant_2_id` and use that same UUID as
+`measure.implant_id`. An existing implant can be referenced by its exported ID.
+Mice and implants are processed before measurements regardless of sheet order.
+
+A supplied measurement `id` creates or updates that record. Leaving it blank
+generates a new ID and creates a new measurement on each import. Export the
+dataset after the first import and preserve those IDs when editing and
+reimporting to avoid duplicates. Multiple measurements on the same date are
+allowed. Dates use `YYYY-MM-DD`.
+
+Invalid measurement rows appear in the import error summary; valid rows can
+still import. Files without a `measure` sheet or CSV remain supported.
+
 ## Project Structure
 
 ```text
