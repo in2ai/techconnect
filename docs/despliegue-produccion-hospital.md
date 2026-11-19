@@ -110,6 +110,16 @@ echo "/data/containerd /var/lib/containerd none bind 0 0" | sudo tee -a /etc/fst
 sudo systemctl daemon-reload && sudo mount -a
 
 df -h /var/lib/docker /var/lib/containerd  # ambos deben mostrar el disco de datos
+sudo findmnt --verify                      # "Success, no errors or warnings detected"
+
+# Que Docker y containerd no arranquen antes de que estén montados
+for s in docker containerd; do
+  sudo mkdir -p /etc/systemd/system/$s.service.d
+  printf '[Unit]\nRequiresMountsFor=/var/lib/docker /var/lib/containerd\n' \
+    | sudo tee /etc/systemd/system/$s.service.d/data-mounts.conf >/dev/null
+done
+sudo systemctl daemon-reload
+
 sudo systemctl start containerd docker
 docker images                              # las imágenes que hubiera siguen ahí
 ```
@@ -139,23 +149,39 @@ sudo systemctl restart docker
 
 ### Si el hospital usa proxy de salida
 
-1. **Para que Docker pueda descargar imágenes** (`postgres`, `node`, `python`, `nginx`…), configura el proxy del demonio:
+Con proxy, cada pieza que sale a Internet necesita su propia configuración. Hacen falta **las tres** siguientes; si falta una, `docker pull` puede funcionar y el build fallar igualmente.
+
+1. **Demonios `docker` y `containerd`** (descarga de imágenes). Desde Docker 29 las imágenes las gestiona containerd, así que el proxy va en los dos servicios:
 
    ```bash
-   sudo mkdir -p /etc/systemd/system/docker.service.d
-   sudo tee /etc/systemd/system/docker.service.d/http-proxy.conf >/dev/null <<'EOF'
+   for s in docker containerd; do
+     sudo mkdir -p /etc/systemd/system/$s.service.d
+     sudo tee /etc/systemd/system/$s.service.d/http-proxy.conf >/dev/null <<'EOF'
    [Service]
    Environment="HTTP_PROXY=http://proxy.hospital.local:8080"
    Environment="HTTPS_PROXY=http://proxy.hospital.local:8080"
-   Environment="NO_PROXY=localhost,127.0.0.1"
+   Environment="NO_PROXY=localhost,127.0.0.1,::1"
    EOF
-   sudo systemctl daemon-reload && sudo systemctl restart docker
+   done
+   sudo systemctl daemon-reload && sudo systemctl restart containerd docker
    docker info | grep -i proxy   # debe mostrar el proxy
    ```
 
-   Usa este fichero de systemd aunque `/etc/docker/daemon.json` ya tenga una sección `"proxies"`. Con `daemon.json` solo funciona `docker pull`; `docker build` no usa ese proxy para descargar las imágenes base y falla con `lookup auth.docker.io … server misbehaving`.
+   Usa estos ficheros de systemd aunque `/etc/docker/daemon.json` ya tenga una sección `"proxies"`.
 
-2. **Para que `npm` y `uv` puedan descargar dependencias durante el build**, crea `~/.docker/config.json` en el usuario que vaya a lanzar el build:
+2. **Cliente `docker` / `docker compose`** (tokens del registro). Con BuildKit, el token de Docker Hub para las imágenes base (`FROM …`) lo pide el propio comando `docker compose build`, no el demonio. Si la shell que lo lanza no tiene proxy, el build falla con `failed to fetch anonymous token … lookup auth.docker.io … server misbehaving` aunque `docker pull` funcione. Déjalo fijo para todos los usuarios:
+
+   ```bash
+   sudo tee /etc/profile.d/docker-proxy.sh >/dev/null <<'EOF'
+   export HTTP_PROXY=http://proxy.hospital.local:8080
+   export HTTPS_PROXY=http://proxy.hospital.local:8080
+   export NO_PROXY=localhost,127.0.0.1,::1
+   EOF
+   ```
+
+   Cierra sesión y vuelve a entrar, y comprueba con `env | grep _PROXY`. Este fichero solo se carga en sesiones interactivas: si el build se lanza desde un script o `cron`, exporta esas variables en el propio script.
+
+3. **Dentro de los contenedores** (`npm ci` y `uv sync` durante el build), crea `~/.docker/config.json` en el usuario que vaya a lanzar el build:
 
    ```json
    {
@@ -171,7 +197,7 @@ sudo systemctl restart docker
 
    `db,api,web` en `noProxy` es **obligatorio**: esta configuración también se inyecta en los contenedores y, sin ella, la API intentaría llegar a la base de datos a través del proxy.
 
-3. Si el proxy hace **inspección TLS** (sustituye certificados), `npm ci` y `uv sync` fallarán con errores tipo `SELF_SIGNED_CERT_IN_CHAIN` o `certificate verify failed`. En ese caso lo más sencillo es construir las imágenes fuera ([sección 4B](#4b-servidor-sin-acceso-a-internet-construir-fuera-y-trasladar-imágenes)) o pedir a Sistemas una excepción del proxy para esos dominios.
+4. Si el proxy hace **inspección TLS** (sustituye certificados), `npm ci` y `uv sync` fallarán con errores tipo `SELF_SIGNED_CERT_IN_CHAIN` o `certificate verify failed`. En ese caso lo más sencillo es construir las imágenes fuera ([sección 4B](#4b-servidor-sin-acceso-a-internet-construir-fuera-y-trasladar-imágenes)) o pedir a Sistemas una excepción del proxy para esos dominios.
 
 ---
 
@@ -321,6 +347,16 @@ docker compose --env-file .env.docker logs --tail=50 api
 Al arrancar, la API crea las tablas y el usuario administrador definido en `AUTH_BOOTSTRAP_*`.
 
 `/api/health` solo indica que la API está viva; no consulta la base de datos. Si la API no pudiera conectar con PostgreSQL, fallaría al arrancar (crea las tablas al inicio) y aparecería en bucle de reinicio en `docker compose ps`.
+
+### Probar desde tu PC antes de tener HTTPS
+
+Mientras no esté el Nginx del servidor, la web solo escucha en `127.0.0.1:8080` del servidor. Para verla desde tu PC (conectado a la VPN), abre un túnel SSH y deja esa sesión abierta:
+
+```bash
+ssh -L 8080:127.0.0.1:8080 <usuario>@<servidor>
+```
+
+Entra en `http://localhost:8080/` desde el navegador. Como la conexión es HTTP, el login solo se mantiene con `AUTH_COOKIE_SECURE=false` en `.env.docker` (aplicar con `docker compose --env-file .env.docker up -d`). Vuelve a ponerlo a `true` en cuanto la web se sirva por HTTPS.
 
 > Usa siempre `--env-file .env.docker` en los comandos de Compose. Sin él, Compose no lee `TECHCONNECT_HTTP_PORT` y usa el puerto por defecto.
 
@@ -652,7 +688,7 @@ Monitorización mínima recomendada: que el sistema de monitorización del hospi
 | Falta `DATABASE_URL` y la API arranca igual | La API usa SQLite dentro del contenedor | Corregir `.env.docker`; nunca operar así en producción |
 | `npm ci` / `uv sync` fallan en el build con errores de certificado | Proxy con inspección TLS | Excepción en el proxy o construir fuera ([sección 4B](#4b-servidor-sin-acceso-a-internet-construir-fuera-y-trasladar-imágenes)) |
 | `docker pull` o el build fallan con `403 Forbidden` y la cabecera `X-Squid-Error: ERR_ACCESS_DENIED` | El proxy no permite ese dominio | Pedir a Sistemas que lo autorice (lista de dominios en la [sección 2](#2-antes-de-empezar-qué-pedir-a-sistemas-del-hospital)). Para ver cuál falla: `curl -sI -x http://<proxy>:<puerto> https://<dominio>/` |
-| `docker pull` funciona pero `docker compose build` falla con `lookup auth.docker.io … server misbehaving` | El proxy solo está en `daemon.json`; el build no lo usa para las imágenes base | Configurar el fichero de systemd `http-proxy.conf` de la [sección 3](#si-el-hospital-usa-proxy-de-salida) |
+| `docker pull` funciona pero `docker compose build` falla con `failed to fetch anonymous token … lookup auth.docker.io … server misbehaving` | La shell que lanza el build no tiene `HTTPS_PROXY` (el token lo pide el cliente, no el demonio) | Configurar `/etc/profile.d/docker-proxy.sh` y los ficheros de systemd de la [sección 3](#si-el-hospital-usa-proxy-de-salida), y volver a entrar en la sesión |
 | `npm ci` o `uv sync` fallan en el build con `ENOTFOUND` / `Name or service not known` | Falta `~/.docker/config.json` con el proxy, o se ha creado para otro usuario | Crearlo para el usuario que lanza el build ([sección 3](#si-el-hospital-usa-proxy-de-salida)) |
 | `bind: address already in use` al arrancar | El puerto 8080 ya lo usa otro servicio del servidor | Cambiar `TECHCONNECT_HTTP_PORT` y el `proxy_pass` del Nginx del host |
 | El build de `web` se corta sin error claro | Falta de memoria al compilar Angular | Más RAM/swap en el servidor o construir fuera |
