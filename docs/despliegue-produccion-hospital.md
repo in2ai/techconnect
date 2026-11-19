@@ -15,7 +15,8 @@ El despliegue usa Docker Compose con tres contenedores, definidos en [compose.ya
         │  HTTPS :443
         ▼
  ┌──────────────────────────────┐
- │ Nginx del servidor (host)    │  ← termina TLS con el certificado del hospital
+ │ Nginx con HTTPS              │  ← termina TLS con el certificado del hospital
+ │ (en el servidor o en Docker) │
  └──────────────┬───────────────┘
                 │  HTTP 127.0.0.1:8080 (solo accesible desde el propio servidor)
  ┌──────────────▼───────────────────────────────────────────────┐
@@ -28,6 +29,7 @@ El despliegue usa Docker Compose con tres contenedores, definidos en [compose.ya
 ```
 
 - Solo el contenedor `web` publica un puerto, y únicamente en `127.0.0.1`. La API y la base de datos **no** son accesibles desde fuera de Docker.
+- Si no se puede instalar Nginx en el servidor, el Nginx con HTTPS va también en Docker: un cuarto contenedor `tls` que publica 80 y 443 ([sección 6A](#6a-nginx-dentro-de-docker-recomendada)).
 - Toda la información vive en el volumen Docker `techconnect_postgres-data`. No hay ficheros subidos en disco: las importaciones Excel/CSV se procesan y se guardan en la base de datos.
 - Las tablas se crean automáticamente al arrancar la API (no hay sistema de migraciones; ver [sección 9](#9-actualizar-a-una-nueva-versión)).
 
@@ -39,6 +41,7 @@ Ficheros relevantes del repositorio:
 | [docker/api.Dockerfile](../docker/api.Dockerfile) | Imagen de la API (Python 3.14 + uv) |
 | [docker/web.Dockerfile](../docker/web.Dockerfile) | Compila Angular y lo sirve con Nginx |
 | [docker/nginx/default.conf](../docker/nginx/default.conf) | Nginx interno: idiomas, SPA y proxy `/api` |
+| [compose.tls.yaml](../compose.tls.yaml) + [docker/nginx/tls.conf](../docker/nginx/tls.conf) | Contenedor `tls` opcional: HTTPS sin instalar Nginx en el servidor |
 | [.env.docker.example](../.env.docker.example) | Plantilla de variables de entorno |
 | [docs/examples/techconnect.nginx.site.conf](examples/techconnect.nginx.site.conf) | Ejemplo de Nginx del host (versión VPS con Let's Encrypt) |
 
@@ -236,7 +239,8 @@ sudo git clone --branch v1.0.0 <url-del-repositorio> /opt/techconnect
 
 ```bash
 # En tu equipo, desde el repositorio
-git archive --format=tar.gz --prefix=techconnect/ -o techconnect-v1.0.0.tar.gz v1.0.0
+# core.autocrlf=false: en Windows, sin esto los ficheros salen con finales de línea CRLF
+git -c core.autocrlf=false archive --format=tar.gz --prefix=techconnect/ -o techconnect-v1.0.0.tar.gz v1.0.0
 scp techconnect-v1.0.0.tar.gz <usuario>@<servidor>:/tmp/
 ```
 
@@ -299,6 +303,8 @@ Referencia de todas las variables:
 | `AUTH_COOKIE_SECURE` | Sí en producción | `true`: la cookie de sesión solo viaja por HTTPS. |
 | `AUTH_SESSION_TTL_MINUTES` | No (720) | Caducidad de las sesiones. |
 | `AUTH_COOKIE_SAME_SITE` | No (`lax`) | No cambiar salvo indicación nuestra. |
+| `COMPOSE_FILE` | Solo con la opción 6A | `compose.yaml:compose.tls.yaml` añade el contenedor `tls` (HTTPS). |
+| `TECHCONNECT_TLS_DIR` | Solo con la opción 6A (`/etc/techconnect/tls`) | Directorio del servidor con `techconnect.crt` y `techconnect.key`. |
 
 `.env.docker` contiene secretos: no lo subas a git (ya está en `.gitignore`), no lo mandes por correo ni chat, y guarda las contraseñas en el gestor de contraseñas que use el hospital.
 
@@ -348,7 +354,7 @@ docker compose --env-file .env.docker up -d
 docker compose --env-file .env.docker ps
 ```
 
-Los tres servicios deben aparecer como `running` y `db` y `api` como `(healthy)`. El orden de arranque es automático: `db` → `api` (espera a que la base de datos esté sana) → `web` (espera a la API).
+Los servicios deben aparecer como `running` y `db` y `api` como `(healthy)` (y `tls` también, si usas la [opción 6A](#6a-nginx-dentro-de-docker-recomendada)). El orden de arranque es automático: `db` → `api` (espera a que la base de datos esté sana) → `web` (espera a la API) → `tls`.
 
 Comprobaciones desde el propio servidor:
 
@@ -362,23 +368,116 @@ Al arrancar, la API crea las tablas y el usuario administrador definido en `AUTH
 
 `/api/health` solo indica que la API está viva; no consulta la base de datos. Si la API no pudiera conectar con PostgreSQL, fallaría al arrancar (crea las tablas al inicio) y aparecería en bucle de reinicio en `docker compose ps`.
 
-### Probar desde tu PC antes de tener HTTPS
+### Probar desde tu PC con un túnel SSH
 
-Mientras no esté el Nginx del servidor, la web solo escucha en `127.0.0.1:8080` del servidor. Para verla desde tu PC (conectado a la VPN), abre un túnel SSH y deja esa sesión abierta:
+Útil mientras los firewalls de red no dejan llegar a los puertos 80/443 del servidor (normalmente solo está abierto SSH). Abre el túnel desde tu PC (conectado a la VPN) y deja esa sesión abierta.
+
+Con HTTPS ya activo ([sección 6](#6-https)):
+
+```bash
+ssh -L 8443:127.0.0.1:443 <usuario>@<servidor>
+```
+
+Entra en `https://localhost:8443/`. El navegador avisará de que el certificado no coincide con `localhost` (o de que es autofirmado): acéptalo solo para esta prueba.
+
+Sin HTTPS todavía:
 
 ```bash
 ssh -L 8080:127.0.0.1:8080 <usuario>@<servidor>
 ```
 
-Entra en `http://localhost:8080/` desde el navegador. Como la conexión es HTTP, el login solo se mantiene con `AUTH_COOKIE_SECURE=false` en `.env.docker` (aplicar con `docker compose --env-file .env.docker up -d`). Vuelve a ponerlo a `true` en cuanto la web se sirva por HTTPS.
+Entra en `http://localhost:8080/`. Como la conexión es HTTP, el login solo se mantiene con `AUTH_COOKIE_SECURE=false` en `.env.docker` (aplicar con `docker compose --env-file .env.docker up -d`). Vuelve a ponerlo a `true` en cuanto la web se sirva por HTTPS.
 
 > Usa siempre `--env-file .env.docker` en los comandos de Compose. Sin él, Compose no lee `TECHCONNECT_HTTP_PORT` y usa el puerto por defecto.
 
 ---
 
-## 6. Nginx del servidor y HTTPS
+## 6. HTTPS
 
-El contenedor `web` solo escucha en `127.0.0.1:8080`. Los usuarios entran por un Nginx instalado en el propio servidor, que termina HTTPS con el certificado del hospital.
+El contenedor `web` solo escucha en `127.0.0.1:8080`. Para que los usuarios entren por HTTPS con el certificado del hospital hay dos opciones:
+
+- **6A. Nginx dentro de Docker (recomendada en el hospital).** Un contenedor más (`tls`) publica los puertos 80 y 443 y termina HTTPS. No hay que instalar nada en el sistema: sirve aunque `dnf`/`apt` estén restringidos.
+- **6B. Nginx instalado en el servidor.** Útil si el servidor ya tiene un Nginx que sirve otras aplicaciones.
+
+Usa solo una de las dos: ambas necesitan los puertos 80 y 443 del servidor.
+
+### Certificado
+
+Pide a Sistemas el certificado del nombre DNS de la aplicación, emitido por la CA interna, en formato PEM: el certificado **con la cadena intermedia concatenada detrás** (`techconnect.crt`) y la clave privada (`techconnect.key`).
+
+Si prefieren que la clave no salga del servidor, genera tú la clave y la solicitud (CSR) y mándales solo el `.csr`:
+
+```bash
+sudo install -d -m 755 /etc/techconnect/tls
+cd /etc/techconnect/tls
+sudo openssl req -new -newkey rsa:2048 -nodes \
+  -keyout techconnect.key -out techconnect.csr \
+  -subj "/CN=techconnect.hospital.local" \
+  -addext "subjectAltName=DNS:techconnect.hospital.local"
+sudo chmod 600 techconnect.key
+```
+
+#### Certificado temporal autofirmado
+
+Mientras llega el certificado del hospital, puedes poner uno autofirmado para tener HTTPS ya (el navegador mostrará un aviso que hay que aceptar). Usa la IP y el nombre real del servidor:
+
+```bash
+sudo install -d -m 755 /etc/techconnect/tls
+cd /etc/techconnect/tls
+sudo openssl req -x509 -newkey rsa:2048 -nodes -days 365 \
+  -subj "/CN=<nombre-servidor>/O=TechConnect (certificado temporal autofirmado)" \
+  -addext "subjectAltName=IP:<ip-servidor>,DNS:<nombre-servidor>" \
+  -keyout techconnect.key -out techconnect.crt
+sudo chmod 600 techconnect.key && sudo chmod 644 techconnect.crt
+```
+
+### 6A. Nginx dentro de Docker (recomendada)
+
+Usa [compose.tls.yaml](../compose.tls.yaml) y [docker/nginx/tls.conf](../docker/nginx/tls.conf), que ya vienen en el repositorio:
+
+```text
+ Usuarios ──HTTPS :443──▶ tls (Nginx, certificado) ──▶ web ──▶ api ──▶ db
+           HTTP :80 ────▶ tls → redirige a HTTPS
+```
+
+1. Coloca el certificado en `/etc/techconnect/tls/` con exactamente estos nombres (fuera de `/opt/techconnect`, para que no se pierda al actualizar):
+
+   ```bash
+   sudo install -d -m 755 /etc/techconnect/tls
+   sudo install -m 644 techconnect.crt /etc/techconnect/tls/techconnect.crt   # certificado + cadena intermedia
+   sudo install -m 600 techconnect.key /etc/techconnect/tls/techconnect.key
+   ```
+
+2. Activa el contenedor `tls` añadiendo a `.env.docker` (Compose lee `COMPOSE_FILE` del propio `--env-file`, así que **todos** los comandos de esta guía y `backup.sh` siguen funcionando igual):
+
+   ```bash
+   COMPOSE_FILE=compose.yaml:compose.tls.yaml
+   TECHCONNECT_TLS_DIR=/etc/techconnect/tls
+   AUTH_COOKIE_SECURE=true
+   ```
+
+3. Arranca y comprueba:
+
+   ```bash
+   cd /opt/techconnect
+   docker compose --env-file .env.docker up -d
+   docker compose --env-file .env.docker ps      # tls debe aparecer (healthy)
+   curl -s  http://127.0.0.1/healthz             # → ok
+   curl -sk https://127.0.0.1/api/health         # → {"status":"healthy"}
+   curl -sI http://127.0.0.1/es/ | grep -i location   # → https://127.0.0.1/es/
+   ```
+
+**Cambiar el certificado** (cuando llegue el del hospital o al renovarlo): sustituye los dos ficheros de `/etc/techconnect/tls/` y reinicia solo ese contenedor:
+
+```bash
+docker compose --env-file .env.docker restart tls
+openssl s_client -connect 127.0.0.1:443 -servername techconnect.hospital.local </dev/null 2>/dev/null \
+  | openssl x509 -noout -subject -issuer -enddate
+```
+
+Apunta la fecha de caducidad (`notAfter`) y pon un recordatorio para renovarlo antes.
+
+### 6B. Nginx instalado en el servidor
 
 ```bash
 # Ubuntu/Debian
@@ -387,7 +486,7 @@ sudo apt install nginx
 sudo dnf install nginx
 ```
 
-En RHEL, `dnf` necesita que el servidor tenga una suscripción activa y acceso a los repositorios (directo o por el proxy configurado en `/etc/dnf/dnf.conf`). Si `dnf install` falla con `Cannot download repomd.xml` o `subscription-manager status` dice que el sistema "is not receiving updates", pide a Sistemas que lo arreglen **antes** del despliegue: sin `dnf` no se puede instalar Nginx ni aplicar parches de seguridad. Si algún repositorio concreto falla (por ejemplo `docker-ce-stable`) y bloquea la instalación, se puede saltar puntualmente con `--disablerepo=docker-ce-stable`.
+En RHEL, `dnf` necesita que el servidor tenga una suscripción activa y acceso a los repositorios (directo o por el proxy configurado en `/etc/dnf/dnf.conf`). Si `dnf install` falla con `Cannot download repomd.xml` o `subscription-manager status` dice que el sistema "is not receiving updates", usa la [opción 6A](#6a-nginx-dentro-de-docker-recomendada) y pide igualmente a Sistemas que lo arreglen: sin `dnf` el servidor no recibe parches de seguridad. Si algún repositorio concreto falla (por ejemplo `docker-ce-stable`) y bloquea la instalación, se puede saltar puntualmente con `--disablerepo=docker-ce-stable`.
 
 Copia el certificado y la clave:
 
@@ -452,7 +551,9 @@ En **RHEL/Rocky con SELinux activo**, Nginx no puede conectar con `127.0.0.1:808
 sudo setsebool -P httpd_can_network_connect 1
 ```
 
-Si el servidor tiene firewall local:
+### Firewall (ambas opciones)
+
+Abre 80 y 443 en el firewall local. Además, Sistemas tiene que permitirlos en los firewalls de red desde las redes de los usuarios (y desde la VPN si se va a usar desde fuera): si no, desde los PC no responde aunque en el servidor todo funcione.
 
 ```bash
 # Ubuntu (ufw)
@@ -736,10 +837,13 @@ Monitorización mínima recomendada: que el sistema de monitorización del hospi
 
 | Síntoma | Causa probable | Solución |
 | --- | --- | --- |
-| `413 Request Entity Too Large` al importar | Falta `client_max_body_size` en el Nginx del host (el interno ya admite 50 MB) | Revisar la configuración de la [sección 6](#6-nginx-del-servidor-y-https) |
+| `413 Request Entity Too Large` al importar | Falta `client_max_body_size` en el Nginx del host (el interno y el contenedor `tls` ya admiten 50 MB) | Revisar la configuración de la [sección 6B](#6b-nginx-instalado-en-el-servidor) |
 | El login parece funcionar, pero vuelve a la pantalla de login | `AUTH_COOKIE_SECURE=true` y se está entrando por HTTP | Entrar por `https://`; comprobar la redirección 80 → 443 |
 | `502 Bad Gateway` | La API o `web` no están levantados o no están sanos | `docker compose ps` y `docker compose logs api` |
-| `502` en RHEL con los contenedores sanos | SELinux bloquea a Nginx | `sudo setsebool -P httpd_can_network_connect 1` |
+| `502` en RHEL con los contenedores sanos | SELinux bloquea a Nginx (opción 6B) | `sudo setsebool -P httpd_can_network_connect 1` |
+| `tls` no arranca o se reinicia en bucle | Falta el certificado o tiene otro nombre en `TECHCONNECT_TLS_DIR` | `docker compose --env-file .env.docker logs tls`; deben existir `techconnect.crt` y `techconnect.key` |
+| `bind: address already in use` en los puertos 80/443 | Otro servicio (por ejemplo un Nginx o Apache del servidor) ya los usa | Usar una sola opción de la [sección 6](#6-https); `sudo ss -tlnp \| grep -E ':(80\|443) '` muestra quién los ocupa |
+| Desde los PC no carga, pero en el servidor `curl -k https://127.0.0.1/` funciona | Los firewalls de red no permiten 80/443 hacia el servidor | Pedirlo a Sistemas; mientras, usar un [túnel SSH](#probar-desde-tu-pc-con-un-túnel-ssh) |
 | `api` en bucle de reinicio con `password authentication failed` | Se cambió `POSTGRES_PASSWORD` después de crear el volumen (Postgres solo la aplica la primera vez) | Volver a poner la contraseña original, o cambiarla dentro de Postgres: `ALTER USER techconnect PASSWORD '...';` y actualizar `DATABASE_URL` |
 | Los datos "desaparecen" tras redesplegar | Se ha usado otro directorio (otro nombre de proyecto, otro volumen) o se ejecutó `down -v` | Comprobar `docker volume ls`; restaurar el último backup |
 | Falta `DATABASE_URL` y la API arranca igual | La API usa SQLite dentro del contenedor | Corregir `.env.docker`; nunca operar así en producción |

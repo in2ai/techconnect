@@ -21,7 +21,7 @@ Estado real del servidor de producción de TechConnect y de todo lo que se ha ca
 | Docker | Engine 29.10.0 · Compose 5.7.2 · containerd 2.4.2 (almacén de imágenes de containerd) |
 | Versión desplegada | `v1.0.0` (`/opt/techconnect/VERSION`) |
 | Fecha del despliegue | 2026-11-19 |
-| URL de la aplicación | Pendiente de DNS y certificado (ver [pendientes](#6-pendiente)). Ahora solo por túnel SSH |
+| URL de la aplicación | `https://10.196.58.23/` en cuanto se abran los firewalls de red (certificado temporal). Nombre DNS pendiente (ver [pendientes](#6-pendiente)). Ahora solo por túnel SSH |
 | Ubicación de los backups | `/data/backups/techconnect` (en el propio servidor; copia externa pendiente) |
 | Contacto de Sistemas | Informática GAE Ramón y Cajal Área 4 |
 | Contacto técnico de in2ai | Marcos Javier Magni Mattoni |
@@ -51,8 +51,11 @@ Copias de los ficheros originales antes de tocarlos: `/root/pre-techconnect-back
 | Proxy dentro de los contenedores de build | `~/.docker/config.json` de `root` y de `marcos` | `noProxy: localhost,127.0.0.1,db,api,web` |
 | `daemon.json` | `/etc/docker/daemon.json` | Ya tenía `proxies` (configurado antes de este despliegue); se añadió rotación de logs `json-file`, `20m` × 5 |
 | Firewall | firewalld, zona `public` | Añadidos `http` y `https` (había `ssh`, `cockpit`, `dhcpv6-client`) |
+| Certificado TLS | `/etc/techconnect/tls/` (`techconnect.crt` `644`, `techconnect.key` `600`, `root`) | **Temporal autofirmado** (CN `HRCBIOMODELOS`, SAN `IP:10.196.58.23`, `DNS:HRCBIOMODELOS`), caduca 2027-11-19. Sustituir por el de la CA del hospital |
 
-Estado de partida que **no** se ha cambiado: SELinux desactivado; `/etc/dnf/dnf.conf` usa otro proxy (`172.22.201.205:8080`) y `dnf` no funciona (ver pendientes); `chronyd` parado.
+Estado de partida que **no** se ha cambiado: SELinux desactivado; `/etc/dnf/dnf.conf` usa otro proxy (`172.22.201.205:8080`) que no responde, `subscription-manager` no llega a Red Hat (403 del proxy) y por tanto `dnf` no funciona (ver pendientes); `chronyd` parado y apuntando a `2.rhel.pool.ntp.org`, que no es accesible.
+
+No se ha instalado ningún paquete del sistema: HTTPS lo hace un contenedor Nginx ([guía, opción 6A](despliegue-produccion-hospital.md#6a-nginx-dentro-de-docker-recomendada)).
 
 ---
 
@@ -61,22 +64,26 @@ Estado de partida que **no** se ha cambiado: SELinux desactivado; `/etc/dnf/dnf.
 | Qué | Valor |
 | --- | --- |
 | Código | `/opt/techconnect` (copiado con `git archive` del tag `v1.0.0`; en el servidor no hay `git`) |
-| Configuración | `/opt/techconnect/.env.docker` (`600`, `marcos`) |
-| Proyecto de Compose | `techconnect` → contenedores `techconnect-{db,api,web}-1`, volumen `techconnect_postgres-data` |
-| Puerto publicado | Solo `127.0.0.1:8080` (contenedor `web`). 8000 y 5432 no están expuestos |
+| Configuración | `/opt/techconnect/.env.docker` (`600`, `marcos`), con `COMPOSE_FILE=compose.yaml:compose.tls.yaml` y `TECHCONNECT_TLS_DIR=/etc/techconnect/tls` |
+| Proyecto de Compose | `techconnect` → contenedores `techconnect-{db,api,web,tls}-1`, volumen `techconnect_postgres-data` |
+| Puertos publicados | `tls`: `0.0.0.0:80` (redirige a HTTPS) y `0.0.0.0:443`. `web`: solo `127.0.0.1:8080`. 8000 y 5432 no están expuestos |
 | Administrador inicial | `admin@techconnect.local` (contraseña en `AUTH_BOOTSTRAP_PASSWORD` de `.env.docker`) |
-| `AUTH_COOKIE_SECURE` | `false` **temporalmente**, mientras se accede por HTTP con túnel SSH |
+| `AUTH_COOKIE_SECURE` | `true` (HTTPS activo) |
 | `AUTH_SESSION_TTL_MINUTES` | `480` (8 h) |
 
-Comprobado tras el despliegue: `db` y `api` sanos, `/healthz` y `/api/health` responden, `/` redirige a `/es/` o `/en/`, login del administrador correcto.
+Comprobado: los cuatro contenedores sanos; `http://` redirige a `https://`; `/` redirige a `/es/` o `/en/`; `/api/health` responde por HTTPS; login del administrador correcto con cookie `Secure`; la web sigue llegando a la API después de recrear el contenedor `api`.
 
-### Cómo entrar ahora (sin HTTPS)
+### Cómo entrar ahora
+
+Los firewalls de red todavía no dejan llegar a 80/443 desde los PC ni desde la VPN (solo SSH). Mientras tanto, por túnel:
 
 ```bash
-ssh -L 8080:127.0.0.1:8080 marcos@10.196.58.23
+ssh -L 8443:127.0.0.1:443 marcos@10.196.58.23
 ```
 
-Con esa sesión abierta: `http://localhost:8080/` en el navegador.
+Con esa sesión abierta: `https://localhost:8443/` en el navegador (aceptar el aviso del certificado temporal).
+
+Cuando Sistemas abra los puertos: `https://10.196.58.23/` (con aviso mientras el certificado sea autofirmado) y, con DNS y certificado del hospital, `https://<nombre-dns>/`.
 
 ---
 
@@ -99,6 +106,7 @@ Con esa sesión abierta: `http://localhost:8080/` en el navegador.
 | Fecha | Versión | Qué se hizo |
 | --- | --- | --- |
 | 2026-11-19 | `v1.0.0` | Preparación del servidor (usuario, disco de datos, proxy, logs, firewall), primer despliegue, backups programados y restauración probada |
+| 2026-11-19 | `v1.0.0` + HTTPS | Contenedor `tls` (Nginx con HTTPS) con certificado temporal autofirmado; `AUTH_COOKIE_SECURE=true`; Nginx de `web` re-resuelve `api`. Ficheros copiados al servidor antes de tener tag: **pendiente publicar `v1.1.0` y actualizar `VERSION`** |
 
 Añade una fila en cada actualización, cambio de configuración o restauración.
 
@@ -109,16 +117,20 @@ Añade una fila en cada actualización, cambio de configuración o restauración
 Bloqueado por Sistemas:
 
 - [ ] **Nombre DNS interno y certificado TLS** de la CA del hospital.
-- [ ] **Arreglar `dnf`**: la suscripción de RHEL "is not receiving updates" y el repositorio `docker-ce-stable` no descarga. Hace falta para instalar Nginx y aplicar parches.
+- [ ] **Abrir 443 (y 80)** hacia `10.196.58.23` en los firewalls de red, desde la red de usuarios y la VPN.
 - [ ] **Servidor NTP** para `chronyd` (ahora parado y el reloj sin sincronizar).
 - [ ] **Destino para la copia externa de backups** y activar el `rsync` de `backup.sh`.
-- [ ] **Abrir 443 (y 80)** hacia `10.196.58.23` en los firewalls de red, desde la red de usuarios.
+- [ ] **Arreglar `dnf`** (no bloquea la aplicación, pero sin él no hay parches de seguridad del sistema): proxy `172.22.201.205:8080` sin respuesta y `subscription.rhsm.redhat.com` bloqueado.
 
-Cuando lo anterior esté:
+Cuando llegue el certificado del hospital:
 
-- [ ] Instalar Nginx en el servidor con el certificado ([guía, sección 6](despliegue-produccion-hospital.md#6-nginx-del-servidor-y-https)).
-- [ ] Poner `AUTH_COOKIE_SECURE=true` en `.env.docker` y `docker compose --env-file .env.docker up -d`.
+- [ ] Sustituir `/etc/techconnect/tls/techconnect.{crt,key}` y `docker compose --env-file .env.docker restart tls` ([guía, opción 6A](despliegue-produccion-hospital.md#6a-nginx-dentro-de-docker-recomendada)).
+- [ ] Anotar la caducidad del certificado nuevo en la [tabla de cambios](#2-cambios-hechos-en-el-sistema) y poner un recordatorio de renovación.
 - [ ] Completar la URL en la [tabla de datos](#1-datos-del-servidor-y-del-despliegue).
+
+Del repositorio:
+
+- [ ] Publicar el tag `v1.1.0` con el contenedor `tls` y desplegarlo con el procedimiento de actualización ([guía, sección 9](despliegue-produccion-hospital.md#9-actualizar-a-una-nueva-versión)). La `v1.0.0` se empaquetó en Windows sin `core.autocrlf=false` y sus ficheros tienen finales CRLF (funciona, pero la `v1.1.0` lo corrige).
 
 Seguridad (hacer ya):
 
