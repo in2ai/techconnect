@@ -4,7 +4,7 @@ Estado real del servidor de producción de TechConnect y de todo lo que se ha ca
 
 > Aquí no hay contraseñas ni secretos. Las credenciales de la aplicación están en `/opt/techconnect/.env.docker` (permisos `600`, solo `marcos`) y deben guardarse en el gestor de contraseñas.
 
-Última actualización: 2026-11-19.
+Última actualización: 2026-11-19 (v1.1.0).
 
 ---
 
@@ -19,7 +19,7 @@ Estado real del servidor de producción de TechConnect y de todo lo que se ha ca
 | Discos | `/dev/sda` 50 GB (sistema) · `/dev/sdb` 100 GB (datos, montado en `/data`) |
 | Proxy de salida | `proxyserviciosjc.madrid.org` (`172.22.201.195`), puerto 80, sin autenticación |
 | Docker | Engine 29.10.0 · Compose 5.7.2 · containerd 2.4.2 (almacén de imágenes de containerd) |
-| Versión desplegada | `v1.0.0` (`/opt/techconnect/VERSION`) |
+| Versión desplegada | `v1.1.0` (`/opt/techconnect/VERSION`) |
 | Fecha del despliegue | 2026-11-19 |
 | URL de la aplicación | `https://10.196.58.23/` en cuanto se abran los firewalls de red (certificado temporal). Nombre DNS pendiente (ver [pendientes](#6-pendiente)). Ahora solo por túnel SSH |
 | Ubicación de los backups | `/data/backups/techconnect` (en el propio servidor; copia externa pendiente) |
@@ -63,7 +63,8 @@ No se ha instalado ningún paquete del sistema: HTTPS lo hace un contenedor Ngin
 
 | Qué | Valor |
 | --- | --- |
-| Código | `/opt/techconnect` (copiado con `git archive` del tag `v1.0.0`; en el servidor no hay `git`) |
+| Código | `/opt/techconnect` (copiado con `git -c core.autocrlf=false archive` del tag `v1.1.0`; en el servidor no hay `git`) |
+| Versión anterior (rollback) | `/opt/techconnect-v1.0.0` (incluye una copia de `.env.docker`; borrar cuando ya no haga falta volver atrás) |
 | Configuración | `/opt/techconnect/.env.docker` (`600`, `marcos`), con `COMPOSE_FILE=compose.yaml:compose.tls.yaml` y `TECHCONNECT_TLS_DIR=/etc/techconnect/tls` |
 | Proyecto de Compose | `techconnect` → contenedores `techconnect-{db,api,web,tls}-1`, volumen `techconnect_postgres-data` |
 | Puertos publicados | `tls`: `0.0.0.0:80` (redirige a HTTPS) y `0.0.0.0:443`. `web`: solo `127.0.0.1:8080`. 8000 y 5432 no están expuestos |
@@ -106,7 +107,8 @@ Cuando Sistemas abra los puertos: `https://10.196.58.23/` (con aviso mientras el
 | Fecha | Versión | Qué se hizo |
 | --- | --- | --- |
 | 2026-11-19 | `v1.0.0` | Preparación del servidor (usuario, disco de datos, proxy, logs, firewall), primer despliegue, backups programados y restauración probada |
-| 2026-11-19 | `v1.0.0` + HTTPS | Contenedor `tls` (Nginx con HTTPS) con certificado temporal autofirmado; `AUTH_COOKIE_SECURE=true`; Nginx de `web` re-resuelve `api`. Ficheros copiados al servidor antes de tener tag: **pendiente publicar `v1.1.0` y actualizar `VERSION`** |
+| 2026-11-19 | `v1.0.0` + HTTPS | Prueba del contenedor `tls` (Nginx con HTTPS) con certificado temporal autofirmado copiando los ficheros a mano; `AUTH_COOKIE_SECURE=true` |
+| 2026-11-19 | `v1.1.0` | Actualización con el procedimiento de la guía (sección 9, sin git): backup previo, código nuevo con finales LF, `.env.docker` y `backup.sh` conservados, `up -d --build` y `tls` recreado. Verificado: HTTPS, login, datos intactos, backup |
 
 Añade una fila en cada actualización, cambio de configuración o restauración.
 
@@ -128,9 +130,9 @@ Cuando llegue el certificado del hospital:
 - [ ] Anotar la caducidad del certificado nuevo en la [tabla de cambios](#2-cambios-hechos-en-el-sistema) y poner un recordatorio de renovación.
 - [ ] Completar la URL en la [tabla de datos](#1-datos-del-servidor-y-del-despliegue).
 
-Del repositorio:
+Limpieza:
 
-- [ ] Publicar el tag `v1.1.0` con el contenedor `tls` y desplegarlo con el procedimiento de actualización ([guía, sección 9](despliegue-produccion-hospital.md#9-actualizar-a-una-nueva-versión)). La `v1.0.0` se empaquetó en Windows sin `core.autocrlf=false` y sus ficheros tienen finales CRLF (funciona, pero la `v1.1.0` lo corrige).
+- [ ] Borrar `/opt/techconnect-v1.0.0` cuando la `v1.1.0` lleve unos días funcionando sin problemas (`sudo rm -rf /opt/techconnect-v1.0.0`).
 
 Seguridad (hacer ya):
 

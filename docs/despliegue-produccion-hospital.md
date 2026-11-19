@@ -768,11 +768,11 @@ Como complemento (no sustituto), un administrador puede descargar el dataset com
    echo v1.1.0 | sudo tee techconnect/VERSION
    sudo chown -R $USER:$USER /opt/techconnect
    cd /opt/techconnect
-   docker compose --env-file .env.docker up -d --build
+   docker compose --env-file .env.docker up -d --build --force-recreate
    docker compose --env-file .env.docker ps
    ```
 
-   El directorio nuevo se sigue llamando `techconnect`, así que Compose reutiliza el mismo volumen de datos.
+   El directorio nuevo se sigue llamando `techconnect`, así que Compose reutiliza el mismo volumen de datos. `--force-recreate` es necesario: los contenedores cuya configuración no ha cambiado (por ejemplo `tls`) no se recrearían y seguirían usando los ficheros montados desde el directorio antiguo.
 
    Sin Internet: carga las imágenes nuevas como en la [sección 4B](#4b-servidor-sin-acceso-a-internet-construir-fuera-y-trasladar-imágenes) y usa `--no-build`.
 
