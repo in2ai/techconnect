@@ -4,14 +4,16 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     UV_LINK_MODE=copy
 
-COPY --from=ghcr.io/astral-sh/uv:0.8.22 /uv /uvx /bin/
+# Installed from PyPI instead of ghcr.io: restricted networks often allow PyPI
+# but block GitHub's container blob storage.
+RUN pip install --no-cache-dir uv==0.8.22
 
 WORKDIR /app
 
-COPY pyproject.toml ./
+COPY pyproject.toml uv.lock ./
 COPY packages ./packages
 
-RUN uv sync --package techconnect-api --no-dev
+RUN uv sync --package techconnect-api --no-dev --locked
 
 ENV PATH="/app/.venv/bin:${PATH}"
 
