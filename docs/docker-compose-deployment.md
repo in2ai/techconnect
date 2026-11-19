@@ -2,6 +2,8 @@
 
 This repository includes a production-oriented Docker Compose stack for a VPS with multiple services.
 
+For the hospital's internal servers (outbound proxy, no Let's Encrypt, internal CA certificates, backups and patient-data requirements), follow the Spanish guide [despliegue-produccion-hospital.md](despliegue-produccion-hospital.md) instead.
+
 ## Services
 
 - `web`: Nginx container that serves the Angular production build, redirects `/` to a localized path, serves `/en/` and `/es/`, and proxies `/api` to the backend.
@@ -82,11 +84,11 @@ This VPS already follows the common pattern of one host-level Nginx instance ter
 2. Create a host-level Nginx site that proxies the public hostname to `127.0.0.1:${TECHCONNECT_HTTP_PORT}`.
 3. Let Certbot manage TLS on the host Nginx instance.
 
-Example site file for `/etc/nginx/sites-available/techconnect.in2ai.com`:
+Example site file for `/etc/nginx/sites-available/techconnect.mjmmattoni.dev` (also available as [examples/techconnect.nginx.site.conf](examples/techconnect.nginx.site.conf)):
 
 ```nginx
 server {
-   server_name techconnect.in2ai.com;
+   server_name techconnect.mjmmattoni.dev;
 
    client_max_body_size 50m;
 
@@ -106,18 +108,18 @@ server {
    }
 
    listen 443 ssl; # managed by Certbot
-   ssl_certificate /etc/letsencrypt/live/techconnect.in2ai.com/fullchain.pem; # managed by Certbot
-   ssl_certificate_key /etc/letsencrypt/live/techconnect.in2ai.com/privkey.pem; # managed by Certbot
+   ssl_certificate /etc/letsencrypt/live/techconnect.mjmmattoni.dev/fullchain.pem; # managed by Certbot
+   ssl_certificate_key /etc/letsencrypt/live/techconnect.mjmmattoni.dev/privkey.pem; # managed by Certbot
    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 }
 
 server {
-   if ($host = techconnect.in2ai.com) {
+   if ($host = techconnect.mjmmattoni.dev) {
       return 301 https://$host$request_uri;
    }
 
-   server_name techconnect.in2ai.com;
+   server_name techconnect.mjmmattoni.dev;
    listen 80;
    return 404;
 }
@@ -126,10 +128,10 @@ server {
 Then enable the site and issue the certificate:
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/techconnect.in2ai.com /etc/nginx/sites-enabled/techconnect.in2ai.com
+sudo ln -s /etc/nginx/sites-available/techconnect.mjmmattoni.dev /etc/nginx/sites-enabled/techconnect.mjmmattoni.dev
 sudo nginx -t
 sudo systemctl reload nginx
-sudo certbot --nginx -d techconnect.in2ai.com
+sudo certbot --nginx -d techconnect.mjmmattoni.dev
 ```
 
 ## Notes
@@ -137,5 +139,5 @@ sudo certbot --nginx -d techconnect.in2ai.com
 - The backend currently creates tables on startup. That is convenient for bootstrapping but is not a replacement for schema migrations.
 - The default frontend API URL is `/api`, so the single-domain Nginx setup works without frontend environment rewrites.
 - The bundled Nginx config uses the `Accept-Language` header to redirect `/` to `/en/` or `/es/`, and it serves localized Angular builds from those paths.
-- If you terminate TLS at the host-level Nginx, set `AUTH_COOKIE_SECURE=true` in `.env.docker` so session cookies stay HTTPS-only.
+- `.env.docker.example` sets `AUTH_COOKIE_SECURE=true` so session cookies stay HTTPS-only behind the host-level Nginx. If you test the stack over plain HTTP (for example `http://127.0.0.1:8080`), set it to `false` temporarily or login will not persist.
 - For production data, back up the `postgres-data` Docker volume.

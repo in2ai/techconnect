@@ -271,7 +271,9 @@ A production-oriented Docker Compose stack is available for VPS deployments with
 
 The web container is published on `127.0.0.1:${TECHCONNECT_HTTP_PORT}` so a host-level Nginx instance can front it without exposing the container port directly.
 
-See `docs/docker-compose-deployment.md` for setup and operations.
+See [docs/docker-compose-deployment.md](docs/docker-compose-deployment.md) for setup and operations on a public VPS.
+
+For production on the hospital's internal servers (outbound proxy, internal TLS certificates, backups, upgrades), follow [docs/despliegue-produccion-hospital.md](docs/despliegue-produccion-hospital.md).
 
 ## Development Workflow
 

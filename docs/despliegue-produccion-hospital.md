@@ -53,7 +53,18 @@ Resuelve esto **antes** del día del despliegue; casi todos los bloqueos vienen 
 - [ ] **Docker Engine ≥ 24 con el plugin Compose v2** (`docker compose`, no `docker-compose`). Si solo permiten Podman, avísanos: el stack no está validado con Podman.
 - [ ] **Nombre DNS interno** para la aplicación (p. ej. `techconnect.hospital.local`) apuntando a la IP del servidor.
 - [ ] **Certificado TLS** para ese nombre, emitido por la CA interna del hospital (fichero `.crt` con la cadena intermedia + fichero `.key`). En una red interna **Let's Encrypt/Certbot no funciona**, no uses el ejemplo de Certbot del repo tal cual.
-- [ ] **Acceso a Internet de salida** desde el servidor, o en su defecto el proxy corporativo. Para construir las imágenes hace falta llegar a: Docker Hub (`registry-1.docker.io`), `ghcr.io`, `registry.npmjs.org`, `pypi.org` y `files.pythonhosted.org`. Si no hay salida, usa la [sección 4B](#4b-servidor-sin-acceso-a-internet-construir-fuera-y-trasladar-imágenes).
+- [ ] **Acceso a Internet de salida** desde el servidor, o en su defecto el proxy corporativo. Para construir las imágenes hace falta llegar por HTTPS (443) a:
+
+  | Dominio | Para qué |
+  | --- | --- |
+  | `registry-1.docker.io` | Docker Hub: índice de imágenes |
+  | `auth.docker.io` | Docker Hub: token de descarga (sin él falla todo `docker pull`) |
+  | `production.cloudflare.docker.com` y `production.cloudfront.docker.com` | Docker Hub: capas de las imágenes |
+  | `registry.npmjs.org` | Dependencias del frontend (`npm ci`) |
+  | `pypi.org` y `files.pythonhosted.org` | `uv` y dependencias de la API |
+
+  No hacen falta GitHub, `ghcr.io` ni Google Fonts: `uv` se instala desde PyPI y las fuentes van incluidas en la aplicación. Si no hay salida, usa la [sección 4B](#4b-servidor-sin-acceso-a-internet-construir-fuera-y-trasladar-imágenes).
+- [ ] **Disco para datos**: si el servidor trae un disco aparte para datos, es ahí donde deben ir las imágenes y la base de datos (ver [sección 3](#disco-de-datos-para-docker)).
 - [ ] **Firewall**: abrir 443/TCP (y 80/TCP solo para redirigir a HTTPS) desde la red de usuarios. SSH solo desde la red de administración. **Nunca** exponer 5432 ni 8000.
 - [ ] **Política de backups**: dónde se deben copiar los volcados de base de datos fuera del servidor (NAS, almacenamiento de backup del hospital) y cuánto tiempo se retienen.
 - [ ] **Protección de datos**: confirmar con el DPD/Seguridad de la Información del hospital que el despliegue está autorizado. Son datos de salud (categoría especial, art. 9 RGPD / LOPDGDD).
@@ -67,8 +78,40 @@ Instala Docker siguiendo la guía oficial para la distribución (<https://docs.d
 
 ```bash
 docker --version          # >= 24
-docker compose version    # v2.x
+docker compose version    # v2 o superior (plugin "docker compose", no "docker-compose")
 sudo systemctl enable --now docker
+```
+
+### Disco de datos para Docker
+
+Docker guarda los datos en dos sitios:
+
+- `/var/lib/docker`: volúmenes, entre ellos la base de datos (`postgres-data`).
+- `/var/lib/containerd`: imágenes y caché de build. Docker 29 y posteriores usan por defecto el almacén de imágenes de containerd.
+
+Si el servidor tiene un disco de datos separado (por ejemplo `/dev/sdb` sin particionar), móntalo en `/data` y lleva **los dos** directorios ahí, **antes** de construir o arrancar nada. Comprueba primero el nombre del disco con `lsblk` y que está vacío: `mkfs` borra su contenido.
+
+```bash
+lsblk -f                                   # el disco de datos no debe tener FSTYPE ni MOUNTPOINT
+sudo systemctl stop docker docker.socket containerd
+
+sudo mkfs.xfs /dev/sdb
+sudo mkdir -p /data
+echo "UUID=$(sudo blkid -s UUID -o value /dev/sdb) /data xfs defaults 0 0" | sudo tee -a /etc/fstab
+sudo systemctl daemon-reload && sudo mount /data
+
+# Mover el contenido actual y montarlo en su ruta original
+sudo mkdir -p /data/docker /data/containerd
+sudo cp -a /var/lib/docker/. /data/docker/
+sudo cp -a /var/lib/containerd/. /data/containerd/
+sudo rm -rf /var/lib/docker/* /var/lib/containerd/*
+echo "/data/docker     /var/lib/docker     none bind 0 0" | sudo tee -a /etc/fstab
+echo "/data/containerd /var/lib/containerd none bind 0 0" | sudo tee -a /etc/fstab
+sudo systemctl daemon-reload && sudo mount -a
+
+df -h /var/lib/docker /var/lib/containerd  # ambos deben mostrar el disco de datos
+sudo systemctl start containerd docker
+docker images                              # las imágenes que hubiera siguen ahí
 ```
 
 Añade tu usuario al grupo `docker` (cierra sesión y vuelve a entrar después):
@@ -88,6 +131,8 @@ Por defecto Docker guarda los logs de los contenedores sin límite y acaban llen
 }
 ```
 
+Si `/etc/docker/daemon.json` ya existe (`cat /etc/docker/daemon.json`), **añade** estas claves a las que ya tenga en lugar de sobrescribir el fichero, y comprueba que sigue siendo JSON válido (`python3 -m json.tool /etc/docker/daemon.json`). Un JSON roto impide que Docker arranque.
+
 ```bash
 sudo systemctl restart docker
 ```
@@ -105,7 +150,10 @@ sudo systemctl restart docker
    Environment="NO_PROXY=localhost,127.0.0.1"
    EOF
    sudo systemctl daemon-reload && sudo systemctl restart docker
+   docker info | grep -i proxy   # debe mostrar el proxy
    ```
+
+   Usa este fichero de systemd aunque `/etc/docker/daemon.json` ya tenga una sección `"proxies"`. Con `daemon.json` solo funciona `docker pull`; `docker build` no usa ese proxy para descargar las imágenes base y falla con `lookup auth.docker.io … server misbehaving`.
 
 2. **Para que `npm` y `uv` puedan descargar dependencias durante el build**, crea `~/.docker/config.json` en el usuario que vaya a lanzar el build:
 
@@ -128,6 +176,38 @@ sudo systemctl restart docker
 ---
 
 ## 4. Configurar y construir
+
+### 4.0 Copiar el código al servidor
+
+Cada despliegue corresponde a un **tag de git** (`v1.0.0`, `v1.1.0`…), así siempre se sabe qué versión hay en producción y a cuál volver. Si todavía no existe, créalo en el equipo de desarrollo antes del primer despliegue:
+
+```bash
+git tag -a v1.0.0 -m "Primer despliegue en el hospital"
+git push origin v1.0.0
+```
+
+**Opción A: el servidor tiene `git` y llega a GitHub**
+
+```bash
+sudo git clone --branch v1.0.0 <url-del-repositorio> /opt/techconnect
+```
+
+**Opción B: sin `git` en el servidor o con GitHub bloqueado por el proxy** (lo habitual en la red del hospital). Empaqueta el tag en tu equipo y cópialo por SSH:
+
+```bash
+# En tu equipo, desde el repositorio
+git archive --format=tar.gz --prefix=techconnect/ -o techconnect-v1.0.0.tar.gz v1.0.0
+scp techconnect-v1.0.0.tar.gz <usuario>@<servidor>:/tmp/
+```
+
+```bash
+# En el servidor
+sudo tar xzf /tmp/techconnect-v1.0.0.tar.gz -C /opt
+echo v1.0.0 | sudo tee /opt/techconnect/VERSION   # sin git no hay "git describe"
+sudo chown -R $USER:$USER /opt/techconnect
+```
+
+El directorio debe llamarse `techconnect`: Compose usa ese nombre para el proyecto, las imágenes (`techconnect-api`, `techconnect-web`) y el volumen de datos (`techconnect_postgres-data`).
 
 ### 4.1 Fichero de entorno `.env.docker`
 
@@ -212,7 +292,7 @@ sha256sum -c techconnect-v1.0.0-images.tar.gz.sha256
 gunzip -c techconnect-v1.0.0-images.tar.gz | docker load
 ```
 
-En el servidor también hace falta el repositorio (al menos `compose.yaml` y `docker/`) en `/opt/techconnect`, en el mismo tag. A partir de aquí, arranca siempre con `--no-build` para que Compose no intente construir:
+En el servidor también hace falta el repositorio (al menos `compose.yaml` y `docker/`) en `/opt/techconnect`, en el mismo tag, copiado como en la [sección 4.0](#40-copiar-el-código-al-servidor). A partir de aquí, arranca siempre con `--no-build` para que Compose no intente construir:
 
 ```bash
 docker compose --env-file .env.docker up -d --no-build
@@ -234,11 +314,13 @@ Comprobaciones desde el propio servidor:
 
 ```bash
 curl -s http://127.0.0.1:8080/healthz           # → ok          (Nginx interno)
-curl -s http://127.0.0.1:8080/api/health        # → {"status":"healthy"}  (API + base de datos)
+curl -s http://127.0.0.1:8080/api/health        # → {"status":"healthy"}  (la API responde)
 docker compose --env-file .env.docker logs --tail=50 api
 ```
 
 Al arrancar, la API crea las tablas y el usuario administrador definido en `AUTH_BOOTSTRAP_*`.
+
+`/api/health` solo indica que la API está viva; no consulta la base de datos. Si la API no pudiera conectar con PostgreSQL, fallaría al arrancar (crea las tablas al inicio) y aparecería en bucle de reinicio en `docker compose ps`.
 
 > Usa siempre `--env-file .env.docker` en los comandos de Compose. Sin él, Compose no lee `TECHCONNECT_HTTP_PORT` y usa el puerto por defecto.
 
@@ -254,6 +336,8 @@ sudo apt install nginx
 # RHEL/Rocky
 sudo dnf install nginx
 ```
+
+En RHEL, `dnf` necesita que el servidor tenga una suscripción activa y acceso a los repositorios (directo o por el proxy configurado en `/etc/dnf/dnf.conf`). Si `dnf install` falla con `Cannot download repomd.xml` o `subscription-manager status` dice que el sistema "is not receiving updates", pide a Sistemas que lo arreglen **antes** del despliegue: sin `dnf` no se puede instalar Nginx ni aplicar parches de seguridad. Si algún repositorio concreto falla (por ejemplo `docker-ce-stable`) y bloquea la instalación, se puede saltar puntualmente con `--disablerepo=docker-ce-stable`.
 
 Copia el certificado y la clave:
 
@@ -466,17 +550,37 @@ Como complemento (no sustituto), un administrador puede descargar el dataset com
    /opt/techconnect/backup.sh
    ```
 
-3. Anota la versión actual para poder volver atrás: `git describe --tags`.
-4. Actualiza el código y reconstruye:
+3. Anota la versión actual para poder volver atrás: `git describe --tags`, o `cat /opt/techconnect/VERSION` si se copió sin git.
+4. Actualiza el código y reconstruye.
+
+   Con git en el servidor (opción A de la [sección 4.0](#40-copiar-el-código-al-servidor)):
 
    ```bash
    cd /opt/techconnect
    git fetch --tags
    git checkout v1.1.0
    docker compose --env-file .env.docker up -d --build
-   # (Sin Internet: cargar las imágenes nuevas como en la sección 4B y usar --no-build)
    docker compose --env-file .env.docker ps
    ```
+
+   Sin git (opción B): genera y copia `techconnect-v1.1.0.tar.gz` como en la sección 4.0, guarda la versión actual aparte y sustituye el código **conservando `.env.docker`**:
+
+   ```bash
+   cd /opt
+   sudo mv techconnect techconnect-v1.0.0                 # versión anterior, para el rollback
+   sudo tar xzf /tmp/techconnect-v1.1.0.tar.gz -C /opt
+   sudo cp -p techconnect-v1.0.0/.env.docker techconnect/
+   sudo cp -p techconnect-v1.0.0/backup.sh techconnect/   # si el script de backup vive aquí
+   echo v1.1.0 | sudo tee techconnect/VERSION
+   sudo chown -R $USER:$USER /opt/techconnect
+   cd /opt/techconnect
+   docker compose --env-file .env.docker up -d --build
+   docker compose --env-file .env.docker ps
+   ```
+
+   El directorio nuevo se sigue llamando `techconnect`, así que Compose reutiliza el mismo volumen de datos.
+
+   Sin Internet: carga las imágenes nuevas como en la [sección 4B](#4b-servidor-sin-acceso-a-internet-construir-fuera-y-trasladar-imágenes) y usa `--no-build`.
 
 5. Repite las comprobaciones de la [sección 7](#7-verificación-final-y-primeros-pasos).
 6. Limpia imágenes antiguas cuando todo funcione: `docker image prune`.
@@ -495,9 +599,21 @@ La API solo **crea tablas nuevas** al arrancar; **no modifica tablas existentes*
 
 ### Volver atrás (rollback)
 
+Con git:
+
 ```bash
 cd /opt/techconnect
 git checkout v1.0.0     # versión anterior
+docker compose --env-file .env.docker up -d --build
+```
+
+Sin git (se conservó la versión anterior en `/opt/techconnect-v1.0.0`):
+
+```bash
+cd /opt
+sudo mv techconnect techconnect-v1.1.0-fallida
+sudo mv techconnect-v1.0.0 techconnect
+cd /opt/techconnect
 docker compose --env-file .env.docker up -d --build
 ```
 
@@ -535,6 +651,9 @@ Monitorización mínima recomendada: que el sistema de monitorización del hospi
 | Los datos "desaparecen" tras redesplegar | Se ha usado otro directorio (otro nombre de proyecto, otro volumen) o se ejecutó `down -v` | Comprobar `docker volume ls`; restaurar el último backup |
 | Falta `DATABASE_URL` y la API arranca igual | La API usa SQLite dentro del contenedor | Corregir `.env.docker`; nunca operar así en producción |
 | `npm ci` / `uv sync` fallan en el build con errores de certificado | Proxy con inspección TLS | Excepción en el proxy o construir fuera ([sección 4B](#4b-servidor-sin-acceso-a-internet-construir-fuera-y-trasladar-imágenes)) |
+| `docker pull` o el build fallan con `403 Forbidden` y la cabecera `X-Squid-Error: ERR_ACCESS_DENIED` | El proxy no permite ese dominio | Pedir a Sistemas que lo autorice (lista de dominios en la [sección 2](#2-antes-de-empezar-qué-pedir-a-sistemas-del-hospital)). Para ver cuál falla: `curl -sI -x http://<proxy>:<puerto> https://<dominio>/` |
+| `docker pull` funciona pero `docker compose build` falla con `lookup auth.docker.io … server misbehaving` | El proxy solo está en `daemon.json`; el build no lo usa para las imágenes base | Configurar el fichero de systemd `http-proxy.conf` de la [sección 3](#si-el-hospital-usa-proxy-de-salida) |
+| `npm ci` o `uv sync` fallan en el build con `ENOTFOUND` / `Name or service not known` | Falta `~/.docker/config.json` con el proxy, o se ha creado para otro usuario | Crearlo para el usuario que lanza el build ([sección 3](#si-el-hospital-usa-proxy-de-salida)) |
 | `bind: address already in use` al arrancar | El puerto 8080 ya lo usa otro servicio del servidor | Cambiar `TECHCONNECT_HTTP_PORT` y el `proxy_pass` del Nginx del host |
 | El build de `web` se corta sin error claro | Falta de memoria al compilar Angular | Más RAM/swap en el servidor o construir fuera |
 
