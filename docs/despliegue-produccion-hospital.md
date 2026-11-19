@@ -49,7 +49,7 @@ Ficheros relevantes del repositorio:
 Resuelve esto **antes** del día del despliegue; casi todos los bloqueos vienen de aquí.
 
 - [ ] **Servidor**: Linux x86_64 (Ubuntu 22.04/24.04, Debian 12 o RHEL/Rocky 9). Mínimo recomendado: 2 vCPU, 4 GB de RAM (compilar Angular consume bastante memoria), 30 GB de disco más el espacio para backups.
-- [ ] **Usuario con sudo** y acceso SSH al servidor.
+- [ ] **Usuario con sudo** y acceso SSH al servidor. Si solo dan acceso como `root`, crea un usuario propio ([sección 3](#usuario-de-trabajo)).
 - [ ] **Docker Engine ≥ 24 con el plugin Compose v2** (`docker compose`, no `docker-compose`). Si solo permiten Podman, avísanos: el stack no está validado con Podman.
 - [ ] **Nombre DNS interno** para la aplicación (p. ej. `techconnect.hospital.local`) apuntando a la IP del servidor.
 - [ ] **Certificado TLS** para ese nombre, emitido por la CA interna del hospital (fichero `.crt` con la cadena intermedia + fichero `.key`). En una red interna **Let's Encrypt/Certbot no funciona**, no uses el ejemplo de Certbot del repo tal cual.
@@ -73,6 +73,26 @@ Resuelve esto **antes** del día del despliegue; casi todos los bloqueos vienen 
 ---
 
 ## 3. Preparar el servidor
+
+### Usuario de trabajo
+
+No despliegues ni operes como `root`. Si Sistemas solo te ha dado acceso como `root`, crea un usuario propio con `sudo` y acceso a Docker (sustituye `marcos` por el tuyo):
+
+```bash
+# Como root
+useradd -m -G wheel,docker -c "Nombre Apellido" marcos   # en Debian/Ubuntu el grupo de sudo es "sudo", no "wheel"
+passwd marcos                                            # necesaria para usar sudo
+
+# Mismo acceso SSH por clave que root (si entras a root con tu clave)
+install -d -m 700 -o marcos -g marcos /home/marcos/.ssh
+install -m 600 -o marcos -g marcos /root/.ssh/authorized_keys /home/marcos/.ssh/authorized_keys
+```
+
+Si Docker aún no está instalado, el grupo `docker` no existe todavía: crea el usuario sin él y añádelo después con `sudo usermod -aG docker marcos` (y vuelve a iniciar sesión).
+
+Comprueba desde tu PC que entras con `ssh marcos@<servidor>` y que `sudo -v` y `docker ps` funcionan. A partir de aquí, todos los pasos se hacen con este usuario. Cambia también la contraseña de `root` si se ha compartido por correo o documentos.
+
+### Docker
 
 Instala Docker siguiendo la guía oficial para la distribución (<https://docs.docker.com/engine/install/>) y comprueba:
 
@@ -122,12 +142,6 @@ sudo systemctl daemon-reload
 
 sudo systemctl start containerd docker
 docker images                              # las imágenes que hubiera siguen ahí
-```
-
-Añade tu usuario al grupo `docker` (cierra sesión y vuelve a entrar después):
-
-```bash
-sudo usermod -aG docker $USER
 ```
 
 ### Rotación de logs de Docker (importante)
@@ -524,14 +538,23 @@ Desde un PC de la red del hospital:
 
 Todos los datos están en PostgreSQL. Haz un volcado diario con `pg_dump` y copia el fichero **fuera del servidor**.
 
+Elige dónde guardar los volcados:
+
+- Con disco de datos montado en `/data` ([sección 3](#disco-de-datos-para-docker)): `/data/backups/techconnect`.
+- Sin disco de datos: `/var/backups/techconnect`.
+
+Los ejemplos usan `/data/backups/techconnect`; cámbialo en todos los comandos si usas la otra ruta.
+
 Script `/opt/techconnect/backup.sh`:
 
 ```bash
 #!/usr/bin/env bash
+# Volcado diario de PostgreSQL de TechConnect
 set -euo pipefail
+umask 077   # los volcados contienen datos de pacientes: solo legibles por su propietario
 
 cd /opt/techconnect
-DEST=/var/backups/techconnect
+DEST=/data/backups/techconnect
 RETENTION_DAYS=30
 STAMP=$(date +%F_%H%M)
 
@@ -544,32 +567,66 @@ docker compose --env-file .env.docker exec -T db \
 test "$(stat -c %s "$DEST/techconnect_$STAMP.dump")" -gt 1024
 
 find "$DEST" -name 'techconnect_*.dump' -mtime +"$RETENTION_DAYS" -delete
+echo "$(date -Is) OK $DEST/techconnect_$STAMP.dump"
 
 # Copia fuera del servidor (adaptar al destino que indique Sistemas):
 # rsync -a "$DEST/" backup@nas.hospital.local:/backups/techconnect/
 ```
 
+Prepara el directorio y el log (el log va en `/var/log`, donde un usuario normal no puede crear ficheros: si no lo creas antes, el cron falla sin avisar y **no se hace ningún backup**), ejecútalo una vez a mano y prográmalo:
+
 ```bash
 chmod 700 /opt/techconnect/backup.sh
-sudo mkdir -p /var/backups/techconnect && sudo chown $USER:$USER /var/backups/techconnect
-chmod 700 /var/backups/techconnect
+sudo install -d -m 700 -o $USER -g $USER /data/backups/techconnect
+sudo install -m 600 -o $USER -g $USER /dev/null /var/log/techconnect-backup.log
+
+/opt/techconnect/backup.sh | tee -a /var/log/techconnect-backup.log
+ls -l /data/backups/techconnect/        # permisos -rw------- y tamaño > 1 KB
+
 crontab -e
 # Añadir (todos los días a las 02:30):
 30 2 * * * /opt/techconnect/backup.sh >> /var/log/techconnect-backup.log 2>&1
 ```
 
+Al día siguiente comprueba que hay una línea `OK` nueva en `/var/log/techconnect-backup.log`.
+
 Los volcados contienen datos de pacientes: el directorio debe tener permisos restringidos y la copia externa tiene que cumplir la política de cifrado del hospital.
 
-### Restaurar un backup
+### Probar que un backup se puede restaurar (sin tocar producción)
 
-Prueba la restauración **al menos una vez antes de dar el sistema por terminado** (un backup que nunca se ha restaurado no es un backup):
+Hazlo **al menos una vez antes de dar el sistema por terminado** (un backup que nunca se ha restaurado no es un backup). Se restaura en una base temporal `restore_test`, se compara con la real y se borra; la aplicación sigue funcionando mientras tanto:
+
+```bash
+cd /opt/techconnect
+LAST=$(ls -t /data/backups/techconnect/techconnect_*.dump | head -1)
+DB="docker compose --env-file .env.docker exec -T db"
+
+$DB sh -c 'createdb -U "$POSTGRES_USER" restore_test'
+$DB sh -c 'pg_restore -U "$POSTGRES_USER" -d restore_test --no-owner' < "$LAST"
+
+# Las dos líneas de cada consulta deben coincidir (temporal / producción)
+for d in restore_test techconnect; do
+  $DB sh -c "psql -U \"\$POSTGRES_USER\" -d $d -tAc \"select count(*) from information_schema.tables where table_schema = 'public'\"" </dev/null
+done
+for d in restore_test techconnect; do
+  $DB sh -c "psql -U \"\$POSTGRES_USER\" -d $d -tAc 'select count(*) from patient'" </dev/null
+done
+
+$DB sh -c 'dropdb -U "$POSTGRES_USER" restore_test' </dev/null
+```
+
+> `docker compose exec -T` lee la entrada estándar. Si lanzas estos comandos dentro de un script que se ejecuta con `bash -s` o con una tubería, añade `</dev/null` a cada `exec` que no reciba un fichero; si no, el primer `exec` se come el resto del script.
+
+### Restaurar un backup sobre producción
+
+Solo en caso de pérdida o corrupción de datos. **Sustituye** el contenido actual de la base de datos por el del volcado:
 
 ```bash
 cd /opt/techconnect
 docker compose --env-file .env.docker stop web api
 docker compose --env-file .env.docker exec -T db \
   sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists --no-owner' \
-  < /var/backups/techconnect/techconnect_AAAA-MM-DD_HHMM.dump
+  < /data/backups/techconnect/techconnect_AAAA-MM-DD_HHMM.dump
 docker compose --env-file .env.docker start api web
 ```
 
@@ -653,7 +710,7 @@ cd /opt/techconnect
 docker compose --env-file .env.docker up -d --build
 ```
 
-Si la versión nueva había modificado la base de datos, restaura además el backup previo a la actualización ([sección 8](#restaurar-un-backup)).
+Si la versión nueva había modificado la base de datos, restaura además el backup previo a la actualización ([sección 8](#restaurar-un-backup-sobre-producción)).
 
 ---
 
@@ -709,6 +766,8 @@ Monitorización mínima recomendada: que el sistema de monitorización del hospi
 ---
 
 ## 13. Datos del despliegue (rellenar)
+
+Para cada servidor, lleva un registro aparte con estos datos, lo que se ha cambiado en el sistema y el historial de versiones. Ejemplo real: [despliegue-hrcbiomodelos.md](despliegue-hrcbiomodelos.md) (Hospital Ramón y Cajal).
 
 | Dato | Valor |
 | --- | --- |
