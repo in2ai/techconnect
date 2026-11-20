@@ -4,7 +4,7 @@ Estado real del servidor de producción de TechConnect y de todo lo que se ha ca
 
 > Aquí no hay contraseñas ni secretos. Las credenciales de la aplicación están en `/opt/techconnect/.env.docker` (permisos `600`, solo `marcos`) y deben guardarse en el gestor de contraseñas.
 
-Última actualización: 2026-11-19 (v1.1.0).
+Última actualización: 2026-11-20 (v1.1.0; DNS creado y CSR enviada a Sistemas).
 
 ---
 
@@ -21,7 +21,8 @@ Estado real del servidor de producción de TechConnect y de todo lo que se ha ca
 | Docker | Engine 29.10.0 · Compose 5.7.2 · containerd 2.4.2 (almacén de imágenes de containerd) |
 | Versión desplegada | `v1.1.0` (`/opt/techconnect/VERSION`) |
 | Fecha del despliegue | 2026-11-19 |
-| URL de la aplicación | `https://10.196.58.23/` en cuanto se abran los firewalls de red (certificado temporal). Nombre DNS pendiente (ver [pendientes](#6-pendiente)). Ahora solo por túnel SSH |
+| URL de la aplicación | `https://techconnect.ryc/` (con aviso del navegador hasta que se instale el certificado de CA-RYC). Desde las redes de usuarios del hospital ya hay acceso; desde la VPN solo SSH (túnel) hasta que se amplíe el GAR (ver [pendientes](#6-pendiente)) |
+| Nombres DNS (servidores `.ryc` de Sistemas) | `hrcbiomodelos.ryc` (registro A → `10.196.58.23`), `in2aihrc01.ryc` (alias para Sistemas), `techconnect.ryc` (alias funcional de la aplicación, CNAME). Búsqueda DNS del servidor: `salud.madrid.org`; servidores `10.128.66.28`, `10.128.4.45` |
 | Ubicación de los backups | `/data/backups/techconnect` (en el propio servidor; copia externa pendiente) |
 | Contacto de Sistemas | Informática GAE Ramón y Cajal Área 4 |
 | Contacto técnico de in2ai | Marcos Javier Magni Mattoni |
@@ -52,6 +53,7 @@ Copias de los ficheros originales antes de tocarlos: `/root/pre-techconnect-back
 | `daemon.json` | `/etc/docker/daemon.json` | Ya tenía `proxies` (configurado antes de este despliegue); se añadió rotación de logs `json-file`, `20m` × 5 |
 | Firewall | firewalld, zona `public` | Añadidos `http` y `https` (había `ssh`, `cockpit`, `dhcpv6-client`) |
 | Certificado TLS | `/etc/techconnect/tls/` (`techconnect.crt` `644`, `techconnect.key` `600`, `root`) | **Temporal autofirmado** (CN `HRCBIOMODELOS`, SAN `IP:10.196.58.23`, `DNS:HRCBIOMODELOS`), caduca 2027-11-19. Sustituir por el de la CA del hospital |
+| Clave y CSR para CA-RYC | `/etc/techconnect/tls/techconnect-ryc.key` (`600`, RSA 2048) y `techconnect-ryc.csr` | Generadas el 2026-11-20 en el servidor (la clave no ha salido de él). Subject `C=ES, ST=Madrid, L=Madrid, O=IN2AI, OU=ryc, CN=techconnect.ryc`, SAN `DNS:techconnect.ryc`, firma SHA-256. CSR enviada a Sistemas para que la firme CA-RYC |
 
 Estado de partida que **no** se ha cambiado: SELinux desactivado; `/etc/dnf/dnf.conf` usa otro proxy (`172.22.201.205:8080`) que no responde, `subscription-manager` no llega a Red Hat (403 del proxy) y por tanto `dnf` no funciona (ver pendientes); `chronyd` parado y apuntando a `2.rhel.pool.ntp.org`, que no es accesible.
 
@@ -109,6 +111,7 @@ Cuando Sistemas abra los puertos: `https://10.196.58.23/` (con aviso mientras el
 | 2026-11-19 | `v1.0.0` | Preparación del servidor (usuario, disco de datos, proxy, logs, firewall), primer despliegue, backups programados y restauración probada |
 | 2026-11-19 | `v1.0.0` + HTTPS | Prueba del contenedor `tls` (Nginx con HTTPS) con certificado temporal autofirmado copiando los ficheros a mano; `AUTH_COOKIE_SECURE=true` |
 | 2026-11-19 | `v1.1.0` | Actualización con el procedimiento de la guía (sección 9, sin git): backup previo, código nuevo con finales LF, `.env.docker` y `backup.sh` conservados, `up -d --build` y `tls` recreado. Verificado: HTTPS, login, datos intactos, backup |
+| 2026-11-20 | `v1.1.0` | Sistemas confirma DNS (`techconnect.ryc`) y acceso abierto desde las redes de usuarios. Generadas en el servidor la clave y la CSR para CA-RYC |
 
 Añade una fila en cada actualización, cambio de configuración o restauración.
 
@@ -118,17 +121,19 @@ Añade una fila en cada actualización, cambio de configuración o restauración
 
 Bloqueado por Sistemas:
 
-- [ ] **Nombre DNS interno y certificado TLS** de la CA del hospital.
-- [ ] **Abrir 443 (y 80)** hacia `10.196.58.23` en los firewalls de red, desde la red de usuarios y la VPN.
+- [x] **Nombre DNS interno**: `techconnect.ryc` (2026-11-20).
+- [x] **Acceso desde las redes de usuarios del hospital**: ya permitido por defecto en los firewalls perimetrales.
+- [ ] **Certificado TLS de CA-RYC**: CSR enviada el 2026-11-20; falta que Sistemas devuelva el certificado firmado.
+- [ ] **Acceso por la VPN a 443 y 80**: hay que pedir la ampliación de destinos del Grupo de Acceso Remoto (GAR) rellenando de nuevo el formulario de acceso a la VPN, solo los Anexos I (modificación, datos y firma del responsable de la empresa) y IV (una línea por destino: `10.196.58.23` TCP `443` y `10.196.58.23` TCP `80`).
 - [ ] **Servidor NTP** para `chronyd` (ahora parado y el reloj sin sincronizar).
 - [ ] **Destino para la copia externa de backups** y activar el `rsync` de `backup.sh`.
 - [ ] **Arreglar `dnf`** (no bloquea la aplicación, pero sin él no hay parches de seguridad del sistema): proxy `172.22.201.205:8080` sin respuesta y `subscription.rhsm.redhat.com` bloqueado.
 
 Cuando llegue el certificado del hospital:
 
-- [ ] Sustituir `/etc/techconnect/tls/techconnect.{crt,key}` y `docker compose --env-file .env.docker restart tls` ([guía, opción 6A](despliegue-produccion-hospital.md#6a-nginx-dentro-de-docker-recomendada)).
+- [ ] Comprobar que el certificado corresponde a `techconnect-ryc.key`, guardar el autofirmado (`techconnect.{crt,key}` → `*.autofirmado`), instalar el nuevo como `techconnect.crt` y `techconnect-ryc.key` como `techconnect.key`, y `docker compose --env-file .env.docker restart tls` ([guía, opción 6A](despliegue-produccion-hospital.md#6a-nginx-dentro-de-docker-recomendada)). CA-RYC firma directamente, sin intermedia.
 - [ ] Anotar la caducidad del certificado nuevo en la [tabla de cambios](#2-cambios-hechos-en-el-sistema) y poner un recordatorio de renovación.
-- [ ] Completar la URL en la [tabla de datos](#1-datos-del-servidor-y-del-despliegue).
+- [x] Completar la URL en la [tabla de datos](#1-datos-del-servidor-y-del-despliegue).
 
 Limpieza:
 
